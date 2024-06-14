@@ -1,18 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { get } from "../../utils/request";
+import { fetchBook, get } from "../../utils/request";
+import { collection, getDocs, getFirestore } from "firebase/firestore";
 
 export default function Home() {
-    const [quiz, setQuiz] = useState();
+    const [quiz, setQuiz] = useState([]);
+
+    const db = getFirestore();
 
     useEffect(() => {
-        const fetchQuiz = async () => {
-            const response = await get("topic");
-            setQuiz(response);
+        const fetchBook = async () => {
+            const querySnapshot = await getDocs(collection(db, "quiz"));
+            querySnapshot.forEach((doc) => {
+                setQuiz((prev) => [
+                    ...prev,
+                    {
+                        id: doc.id,
+                        data: doc.data(),
+                    },
+                ]);
+            });
         };
-        fetchQuiz();
+        fetchBook();
     }, []);
 
+    console.log(quiz);
     return (
         <div className=" ">
             <div className="">
@@ -28,26 +40,26 @@ export default function Home() {
                         <button className="bg-green-500 text-white">Thêm bài mới</button>
                     </a>
                 </div>
-                <div className=""></div>
                 <div className="bg-white p-5 mt-2 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {quiz?.map((item) => (
                         <NavLink to={`/quiz/${item.id}`} className="relative" key={item.id}>
                             <div className=" shadow-md border-2 rounded-lg overflow-hidden group">
-                                <img src={item.img} alt="" className="h-[150px] w-full object-cover" />
+                                <img src={item.data.img} alt="" className="h-[150px] w-full object-cover" />
                                 <div className="p-3">
-                                    <h1 className="text-lg group-hover:text-red-500 h-[28px]">{item.title}</h1>
-                                    <p className="text-gray-500 line-clamp-2 h-[48px] my-3">{item.content}</p>
+                                    <h1 className="text-lg group-hover:text-red-500 h-[28px]">{item.data.title}</h1>
+                                    <p className="text-gray-500 line-clamp-2 h-[48px] my-3">{item.data.content}</p>
                                     <div className="text-right">
                                         <button className="bg-green-500 text-white">Làm bài ngay</button>
                                     </div>
                                 </div>
                             </div>
                             <div className="absolute top-0 left-0">
-                                <p className="text-green-500 bg-green-200 p-2 rounded-lg text-sm font-bold">{item.date_post}</p>
+                                <p className="text-green-500 bg-green-200 p-2 rounded-lg text-sm font-bold">{item.data.date_post}</p>
                             </div>
                         </NavLink>
                     ))}
                 </div>
+                <div className=""></div>
             </div>
         </div>
     );

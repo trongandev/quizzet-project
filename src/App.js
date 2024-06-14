@@ -11,6 +11,14 @@ import AnsResult from "./pages/Quiz/AnsResult";
 import Post from "./pages/Quiz/Post";
 import Tool from "./pages/Quiz/Tool";
 import Refer from "./pages/Quiz/Refer";
+import AdminLayout from "./layout/AdminLayout";
+import Admin from "./pages/Admin/Admin";
+import Users from "./pages/Admin/Users";
+import TopicManager from "./pages/Admin/TopicManager";
+import Question from "./pages/Admin/Question";
+import Test from "./pages/Quiz/Test";
+import Profile from "./pages/User/Profile";
+import Forget from "./pages/Auth/Forget";
 
 function App() {
     return (
@@ -26,6 +34,15 @@ function App() {
                 <Route path="/answer/:id" element={<AnsResult />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/test" element={<Test />} />
+                <Route path="/profile/:uid" element={<Profile />} />
+                <Route path="/forget" element={<Forget />} />
+            </Route>
+            <Route path="/admin" element={<AdminLayout />}>
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/admin/users" element={<Users />} />
+                <Route path="/admin/topic" element={<TopicManager />} />
+                <Route path="/admin/question" element={<Question />} />
             </Route>
         </Routes>
     );

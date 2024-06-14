@@ -24,11 +24,14 @@ button:hover {
 }
 
 .active {
-    background-color: #62b669;
+    background-color: #bbf7d0;
+    color: #22c55e;
+    font-weight: bold;
 }
 
 input,
-textarea {
+textarea,
+select {
     padding: 6px 20px;
     border: 1px solid #ccc;
     width: 100%;
@@ -42,4 +45,39 @@ textarea:focus-visible {
 
 .helvetica {
     font-family: Helvetica, sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+textarea {
+    resize: none;
+}
+
+textarea::-webkit-scrollbar {
+    width: 3px;
+}
+
+/* Handle */
+textarea::-webkit-scrollbar-thumb {
+    background: #22c55e;
+    border-radius: 5px;
+}
+
+.frm-post::-webkit-scrollbar {
+    width: 5px;
+}
+
+.frm-post::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #ccc;
 }

@@ -1,406 +1,291 @@
 {
-    "users": [
+  "users": [
+    {
+      "id": "12f8",
+      "username": "john",
+      "email": "john@gmail.com",
+      "createdAt": "12/6/2024",
+      "password": "k1Hjg3I8bsy7eOR ",
+      "token": "ruo7xyX2LBJb0TIXss76VXa9",
+      "role": "admin",
+      "status": true
+    },
+    {
+      "id": "8752",
+      "username": "troandev",
+      "email": "troandev@gmail.com",
+      "createdAt": "12/6/2024",
+      "password": "k1Hjg3I8bsy7eOR ",
+      "token": "sDZu0K4pmPFmBHJFApE0RXwN",
+      "role": "admin",
+      "status": true
+    },
+    {
+      "id": "6af2",
+      "username": "troandev2",
+      "email": "thngan25k3@gmail.com",
+      "createdAt": "12/6/2024",
+      "password": "k1Hjg3I8bsy7eOR ",
+      "token": "lUXzJhr3ckiwWz8ELKSHuYig",
+      "status": false,
+      "role": "user"
+    },
+    {
+      "id": "6efb",
+      "username": "locmaymo",
+      "email": "trongandev@gmail.com",
+      "createdAt": "12/6/2024",
+      "password": "k1Hjg3I8bsy7eOR ",
+      "token": "r0LK91EdKmvfAdICvvjkeWou",
+      "status": true,
+      "role": "user"
+    },
+    {
+      "id": "033b",
+      "username": "troandev33",
+      "email": "troandev@gmail.com",
+      "createdAt": "12/6/2024",
+      "password": "k1Hjg3I8bsy7eOR ",
+      "token": "8sBn8LIko5X0r2c13uXiggAM",
+      "status": false,
+      "role": "user"
+    }
+  ],
+  "questions": [
+    {
+      "id": "3bd3",
+      "title": "Kinh tế chính trị",
+      "content": "",
+      "img": "https://images.sachquocgia.vn/Picture/2024/3/21/image-20240321140905939.jpg",
+      "date_post": "13/6/2024",
+      "status": false,
+      "questions": [
         {
-            "id": "1",
-            "name": "John Doe",
-            "username": "johndoe",
-            "email": "trongandev@gmail.com",
-            "password": "123456",
-            "token": "3huZ8Tg9eKQe01Dq5KSG2aBz"
+          "id": 0,
+          "question": "Để khai báo một phần tử điều khiển khi nhấn vào sẽ gửi thông tin của form đi ta sử dụng thẻ?",
+          "answers": [
+            "<input type= \"text\">",
+            " <input type = \"submit\"",
+            " <input type=\"password\"",
+            " <input type =\"reset\""
+          ],
+          "correct": 1
         },
         {
-            "id": "2",
-            "name": "Jane Doe",
-            "username": "janedoe",
-            "email": "notfound@gmail.com",
-            "password": "123456",
-            "token": "kAEF3Sn5Bs1RpElKHDT1qM48"
+          "id": 6,
+          "question": "Để khai báo một phần tử điều khiển tạo một nút nhấn trên trang web ta sử dụng thẻ:",
+          "answers": [
+            "<input type= \"file\">",
+            "<input type =\"button\">",
+            " <input type= \"hidden\"",
+            "<input type =\"image\">"
+          ],
+          "correct": 1
         },
         {
-            "id": "b59c",
-            "username": "trongan",
-            "email": "thngan25k3@gmail.com",
-            "password": "k1Hjg3I8bsy7eOR ",
-            "token": "LSf9jLxpW28otU7fLX82xlq9"
+          "id": 12,
+          "question": "Để khai báo một phần tử điều khiển để mở một hộp thoại giúp người dùng mở một file trên hệ thống thư mục của máy tính ta sử dụng thẻ:",
+          "answers": [
+            "<input type= \"file\">",
+            "<input type = \"button\">",
+            "<input type= \"hidden\"",
+            "<input type = \"image\">"
+          ],
+          "correct": 0
         },
         {
-            "id": "2038",
-            "username": "trongan",
-            "email": "thngan25k3@gmail.com",
-            "password": "k1Hjg3I8bsy7eOR ",
-            "token": "MRUbQRsxy89UUQKg1eNsAW9K"
+          "id": 18,
+          "question": "Để xác định trình tự nhận tiêu điểm của phần tử thông qua bàn phím ta sử dụng thuộc tính:",
+          "answers": [
+            "Focus",
+            "Accesskey",
+            "Tabindex",
+            "Id"
+          ],
+          "correct": 2
         },
         {
-            "id": "7223",
-            "username": "troandev",
-            "email": "thngan25k3@gmail.com",
-            "password": "k1Hjg3I8bsy7eOR ",
-            "token": "5iqbPHtV1Ir2fXeNCTCPXVCW"
+          "id": 24,
+          "question": "Thứ tự xép tầng của css theo độ ưu tiên từ thấp đến cao như sau:",
+          "answers": [
+            "External style sheet, internal style sheet, browser default, inline style",
+            "Inline style, browser default, external style sheet, internal style sheet",
+            "Browser default, internal style sheet, inline style, external style sheet",
+            "Browser default, external style sheet, internal style sheet, inline style"
+          ],
+          "correct": 3
         },
         {
-            "id": "118c",
-            "username": "troandev",
-            "email": "thngan25k3@gmail.com",
-            "password": "k1Hjg3I8bsy7eOR ",
-            "token": "yKmg96xHtRkFteCNV9voyUV5"
+          "id": 30,
+          "question": "Css định nghĩa các style khác nhau cho cùng một loại html element bằng cách sử dụng:",
+          "answers": [
+            "Class selector",
+            "Id selector",
+            "Name selector",
+            "Type selector"
+          ],
+          "correct": 3
         },
         {
-            "id": "a727",
-            "username": "troandev",
-            "email": "thngan25k3@gmail.com",
-            "password": "k1Hjg3I8bsy7eOR ",
-            "token": "6pF1mkoAltcIMSuzIhlczcSt"
+          "id": 36,
+          "question": "Để liên kết tới external style sheet ta sử dụng thẻ:",
+          "answers": [
+            "<style>",
+            "<a>",
+            "<link>",
+            "<css>"
+          ],
+          "correct": 1
         },
         {
-            "id": "0382",
-            "username": "troandev2",
-            "email": "thngan25k3@gmail.com",
-            "password": "k1Hjg3I8bsy7eOR ",
-            "token": "mHzRRb77ZtnVlcCfxNbwkXbc"
+          "id": 42,
+          "question": "JavaScript là ngôn ngữ xử lý ở:",
+          "answers": [
+            "Client",
+            "Server",
+            "Server/client",
+            "Không có dạng nào."
+          ],
+          "correct": 0
+        },
+        {
+          "id": 54,
+          "question": "Phương thức viết chương trình của Javascript như thế nào?",
+          "answers": [
+            "Viết riêng một trang",
+            "Viết chung với HTML",
+            "Cả hai dạng A và B",
+            "Không có dạng nào."
+          ],
+          "correct": 2
+        },
+        {
+          "id": 60,
+          "question": "JavaScript được bắt đầu bằng?",
+          "answers": [
+            "<scritp> ... </script>",
+            "<Javascript> ... <Javascript>",
+            "C.<java>   </java>",
+            "Tất cả các dạng trên."
+          ],
+          "correct": 0
+        },
+        {
+          "id": 66,
+          "question": "Javascript có các dạng biến?",
+          "answers": [
+            "Number, String, Boolean",
+            "Number, Integer, char",
+            "Number, String, Boolean, Null",
+            "Tất cả các loại trên."
+          ],
+          "correct": 3
+        },
+        {
+          "id": 72,
+          "question": "Trong Javascript hàm parseInt() dùng để làm gì?",
+          "answers": [
+            "Chuyển một chuỗi thành số",
+            "Chuyển một chuỗi thành số nguyên",
+            "Chuyển một chuỗi thành số thực",
+            "Chuyển một số nguyên thành một chuỗi"
+          ],
+          "correct": 1
+        },
+        {
+          "id": 78,
+          "question": "Làm thế nào thay màu nền của chữ (text)?",
+          "answers": [
+            "Text-color=",
+            "Fgcolor:",
+            "Color:",
+            "Text-color:"
+          ],
+          "correct": 2
+        },
+        {
+          "id": 84,
+          "question": "Thuộc tính nào thay đổi kích cỡ chữ?",
+          "answers": [
+            "Font-style",
+            "Font-size",
+            "Text-style",
+            "Text-size"
+          ],
+          "correct": 1
+        },
+        {
+          "id": 90,
+          "question": "Thuộc tính nào làm chữ trong tag p trở thành chữ đậm?",
+          "answers": [
+            "{text-size:bold}",
+            "<p style=\"pont-size:bold\">",
+            "<p style=\"text-size:bold\">",
+            "P {font-weight:bold}"
+          ],
+          "correct": 3
+        },
+        {
+          "id": 96,
+          "question": "Làm sao để hiển thị liên kết mà ko có gạch chân bên dưới?",
+          "answers": [
+            "",
+            "",
+            "",
+            ""
+          ],
+          "correct": 0
         }
-    ],
-    "topic": [
+      ],
+      "default": "Để khai báo một phần tử điều khiển khi nhấn vào sẽ gửi thông tin của form đi ta sử dụng thẻ?\nA. <input type= \"text\">\nB.  <input type = \"submit\"\nC.  <input type=\"password\"\nD.  <input type =\"reset\"\n2\nĐể khai báo một phần tử điều khiển tạo một nút nhấn trên trang web ta sử dụng thẻ:\nA. <input type= \"file\">\nB. <input type =\"button\">\nC.  <input type= \"hidden\"\nD. <input type =\"image\">\n2\nĐể khai báo một phần tử điều khiển để mở một hộp thoại giúp người dùng mở một file trên hệ thống thư mục của máy tính ta sử dụng thẻ:\nA. <input type= \"file\">\nB. <input type = \"button\">\nC. <input type= \"hidden\"\nD. <input type = \"image\">\n1\nĐể xác định trình tự nhận tiêu điểm của phần tử thông qua bàn phím ta sử dụng thuộc tính:\nA. Focus\nB. Accesskey\nC. Tabindex\nD. Id\n3\nThứ tự xép tầng của css theo độ ưu tiên từ thấp đến cao như sau:\nA. External style sheet, internal style sheet, browser default, inline style\nB. Inline style, browser default, external style sheet, internal style sheet\nC. Browser default, internal style sheet, inline style, external style sheet\nD. Browser default, external style sheet, internal style sheet, inline style\n4\nCss định nghĩa các style khác nhau cho cùng một loại html element bằng cách sử dụng:\nA. Class selector\nB. Id selector\nC. Name selector\nD. Type selector\n4\nĐể liên kết tới external style sheet ta sử dụng thẻ:\nA. <style>\nB. <a>\nC. <link>\nD. <css>\n2\nJavaScript là ngôn ngữ xử lý ở:\nA. Client\nB. Server\nC. Server/client\nD. Không có dạng nào.\n1\nJavascript là ngôn ngữ thông dịch hay biên dịch\nA. Thông dịch\nB. Biên dịch\nC. Cả hai dạng\nD. Không có dạng nào ở trên\n3\nPhương thức viết chương trình của Javascript như thế nào?\nA. Viết riêng một trang\nB. Viết chung với HTML\nC. Cả hai dạng A và B\nD. Không có dạng nào.\n3\nJavaScript được bắt đầu bằng?\nA. <scritp> ... </script>\nB. <Javascript> ... <Javascript>\nC.<java>   </java>\nD. Tất cả các dạng trên.\n1\nJavascript có các dạng biến?\nA. Number, String, Boolean\nB. Number, Integer, char\nC. Number, String, Boolean, Null\nD. Tất cả các loại trên.\n4\nTrong Javascript hàm parseInt() dùng để làm gì?\nA. Chuyển một chuỗi thành số\nB. Chuyển một chuỗi thành số nguyên\nC. Chuyển một chuỗi thành số thực\nD. Chuyển một số nguyên thành một chuỗi\n2\nLàm thế nào thay màu nền của chữ (text)?\nA. Text-color=\nB. Fgcolor:\nC. Color:\nD. Text-color:\n3\nThuộc tính nào thay đổi kích cỡ chữ?\nA. Font-style\nB. Font-size\nC. Text-style\nD. Text-size\n2\nThuộc tính nào làm chữ trong tag p trở thành chữ đậm?\nA. {text-size:bold}\nB. <p style=\"pont-size:bold\">\nC. <p style=\"text-size:bold\">\nD. P {font-weight:bold}\n4\nLàm sao để hiển thị liên kết mà ko có gạch chân bên dưới?"
+    },
+    {
+      "id": "df15",
+      "title": "Kinh tế chính trị 2",
+      "content": "",
+      "img": "https://images.sachquocgia.vn/Picture/2024/3/21/image-20240321140905939.jpg",
+      "date_post": "13/6/2024",
+      "status": false,
+      "questions": [
         {
-            "id": "1",
-            "title": "React JS",
-            "content": "Trắc nghiệm về frontend ReactJS",
-            "img": "https://cdn.sayonetech.com/media/cache/80/86/808687cdd2df9c612baf1c863511db25.jpg",
-            "date_post": "9/6/2024"
-        },
-        {
-            "id": "2",
-            "title": "Node JS",
-            "content": "Trắc nghiệm về backend NodeJS",
-            "img": "https://images.clickittech.com/2020/wp-content/uploads/2022/02/28224925/Nodejs-Frameworks-86.jpg",
-            "date_post": "9/2/2024"
-        },
-        {
-            "id": "3",
-            "title": "Angular JS",
-            "content": "Trắc nghiệm về frontend AngularJS",
-            "img": "https://bizflyportal.mediacdn.vn/thumb_wm/1000,100/bizflyportal/images/ang16145638173866.jpg",
-            "date_post": "11/6/2024"
-        },
-        {
-            "id": "4",
-            "title": "Vue JS",
-            "content": "Trắc nghiệm về frontend VueJS",
-            "img": "https://i.ytimg.com/vi/hNPwdOZ3qFU/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCPrp1q4hasXTi-Uax9a5c7RpFd4Q",
-            "date_post": "11/6/2024"
-        },
-        {
-            "id": "5",
-            "title": "PHP",
-            "content": "Trắc nghiệm về backend PHP",
-            "img": "https://t3h.edu.vn/sites/default/files/php-la-gi_1.png",
-            "date_post": "11/6/2024"
-        },
-        {
-            "id": "f9f5",
-            "title": "",
-            "content": "",
-            "img": "https://minhducpc.vn/uploads/images/hinh-cute01.png",
-            "date_post": "11/6/2024"
-        },
-        {
-            "id": "ba5e",
-            "title": "hong co",
-            "content": "dsfdsf",
-            "img": "https://minhducpc.vn/uploads/images/hinh-cute01.png",
-            "date_post": "11/6/2024"
-        },
-        {
-            "id": "77e0",
-            "title": "hong co",
-            "content": "dsfdsf",
-            "img": "https://minhducpc.vn/uploads/images/hinh-cute01.png",
-            "date_post": "11/6/2024"
+          "id": 1,
+          "question": "Hàng hóa là gì?",
+          "answers": [
+            "Sản phẩm của lao động",
+            "Tất cả những gì có ích",
+            "Những gì có thể mua bán",
+            "Sản phẩm của lao động, có thể thỏa mãn nhu cầu nào đó của con người thông qua trao đổi mua bán"
+          ],
+          "correct": 3
         }
-    ],
-    "questions": [
+      ],
+      "default": ""
+    },
+    {
+      "id": "4095",
+      "title": "Kinh tế chính trị",
+      "content": "Ôn tập lại các câu hỏi về môn kinh tế chính trị",
+      "img": "https://images.sachquocgia.vn/Picture/2024/3/21/image-20240321140905939.jpg",
+      "date_post": "13/6/2024",
+      "status": true,
+      "questions": [
         {
-            "id": "1",
-            "topic_id": 1,
-            "question": "React là gì?",
-            "answers": ["Framework", "Library", "Cả 2", "Không biết"],
-            "correctAnswer": 2
-        },
-        {
-            "id": "2",
-            "topic_id": 1,
-            "question": "React được tạo ra bởi công ty nào?",
-            "answers": ["Facebook", "Google", "Apple", "Microsoft"],
-            "correctAnswer": 1
-        },
-        {
-            "id": "3",
-            "topic_id": 1,
-            "question": "React được tạo ra vào năm nào?",
-            "answers": ["2010", "2011", "2012", "2013"],
-            "correctAnswer": 3
-        },
-        {
-            "id": "4",
-            "topic_id": 1,
-            "question": "React sử dụng cơ chế gì để render giao diện?",
-            "answers": ["Virtual DOM", "Real DOM", "Shadow DOM", "HTML DOM"],
-            "correctAnswer": 0
-        },
-        {
-            "id": "5",
-            "topic_id": 1,
-            "question": "React có hỗ trợ server-side rendering không?",
-            "answers": ["Có", "Không"],
-            "correctAnswer": 1
-        },
-        {
-            "id": "6",
-            "topic_id": 1,
-            "question": "React có hỗ trợ TypeScript không?",
-            "answers": ["Có", "Không"],
-            "correctAnswer": 0
-        },
-        {
-            "id": "7",
-            "topic_id": 1,
-            "question": "React có hỗ trợ routing không?",
-            "answers": ["Có", "Không"],
-            "correctAnswer": 0
-        },
-        {
-            "id": "8",
-            "topic_id": 1,
-            "question": "React có hỗ trợ state management không?",
-            "answers": ["Có", "Không"],
-            "correctAnswer": 0
-        },
-        {
-            "id": "9",
-            "topic_id": 1,
-            "question": "React có hỗ trợ testing không?",
-            "answers": ["Có", "Không"],
-            "correctAnswer": 0
-        },
-        {
-            "id": "10",
-            "topic_id": 2,
-            "question": "NodeJS là gì?",
-            "answers": ["Framework", "Library", "Cả 2", "Không biết"],
-            "correctAnswer": 2
-        },
-        {
-            "id": "11",
-            "topic_id": 2,
-            "question": "Node.js sử dụng ngôn ngữ lập trình nào?",
-            "answers": ["JavaScript", "Python", "Java", "C++"],
-            "correctAnswer": 3
-        },
-        {
-            "id": "12",
-            "topic_id": 2,
-            "question": "Node.js được phát triển bởi ai?",
-            "answers": ["Google", "Facebook", "Microsoft", "Apple"],
-            "correctAnswer": 0
-        },
-        {
-            "id": "13",
-            "topic_id": 2,
-            "question": "Node.js được phát hành lần đầu vào năm nào?",
-            "answers": ["2009", "2010", "2011", "2012"],
-            "correctAnswer": 0
-        },
-        {
-            "id": "14",
-            "topic_id": 2,
-            "question": "Node.js được xây dựng trên nền tảng nào?",
-            "answers": ["V8 Engine", "SpiderMonkey", "Chakra", "Rhino"],
-            "correctAnswer": 0
-        },
-        {
-            "id": "15",
-            "topic_id": 2,
-            "question": "Node.js có hỗ trợ bất đồng bộ không?",
-            "answers": ["Có", "Không"],
-            "correctAnswer": 0
-        },
-        {
-            "id": "16",
-            "topic_id": 2,
-            "question": "Node.js có hỗ trợ xử lý sự kiện không?",
-            "answers": ["Có", "Không"],
-            "correctAnswer": 0
-        },
-        {
-            "id": "17",
-            "topic_id": 2,
-            "question": "Node.js có hỗ trợ module hóa không?",
-            "answers": ["Có", "Không"],
-            "correctAnswer": 0
-        },
-        {
-            "id": "18",
-            "topic_id": 2,
-            "question": "Node.js có hỗ trợ phát triển ứng dụng web không?",
-            "answers": ["Có", "Không"],
-            "correctAnswer": 0
-        },
-        {
-            "id": "19",
-            "topic_id": 2,
-            "question": "Node.js có hỗ trợ giao tiếp với cơ sở dữ liệu không?",
-            "answers": ["Có", "Không"],
-            "correctAnswer": 0
-        },
-        {
-            "id": "20",
-            "topic_id": 2,
-            "question": "Node.js có hỗ trợ đa luồng không?",
-            "answers": ["Có", "Không"],
-            "correctAnswer": 0
+          "id": 1,
+          "question": "Hàng hóa là gì?",
+          "answers": [
+            "Sản phẩm của lao động",
+            "Tất cả những gì có ích",
+            "Những gì có thể mua bán",
+            "Sản phẩm của lao động, có thể thỏa mãn nhu cầu nào đó của con người thông qua trao đổi mua bán"
+          ],
+          "correct": 3
         }
-    ],
-    "history": [
-        {
-            "id": "d5ea",
-            "topic_id": 1,
-            "user_id": "7223",
-            "title": "React JS",
-            "content": "Trắc nghiệm về frontend ReactJS",
-            "score": 1,
-            "date": "10/6/2024",
-            "questions": [
-                {
-                    "question_id": 1,
-                    "answer_id": 1,
-                    "answer": "Library",
-                    "status": false
-                },
-                {
-                    "question_id": 2,
-                    "answer_id": 0,
-                    "answer": "Facebook",
-                    "status": false
-                },
-                {
-                    "question_id": 3,
-                    "answer_id": 1,
-                    "answer": "2011",
-                    "status": false
-                },
-                {
-                    "question_id": 4,
-                    "answer_id": 1,
-                    "answer": "Real DOM",
-                    "status": false
-                },
-                {
-                    "question_id": 5,
-                    "answer_id": 0,
-                    "answer": "Có",
-                    "status": false
-                },
-                {
-                    "question_id": 6,
-                    "answer_id": 1,
-                    "answer": "Không",
-                    "status": false
-                },
-                {
-                    "question_id": 7,
-                    "answer_id": 1,
-                    "answer": "Không",
-                    "status": false
-                },
-                {
-                    "question_id": 8,
-                    "answer_id": 0,
-                    "answer": "Có",
-                    "status": true
-                },
-                {
-                    "question_id": 9,
-                    "answer_id": 1,
-                    "answer": "Không",
-                    "status": false
-                }
-            ]
-        },
-        {
-            "id": "3e10",
-            "topic_id": 2,
-            "user_id": "7223",
-            "title": "Node JS",
-            "content": "Trắc nghiệm về backend NodeJS",
-            "score": 4,
-            "date": "10/6/2024",
-            "questions": [
-                {
-                    "question_id": 10,
-                    "answer_id": 3,
-                    "answer": "Không biết",
-                    "status": false
-                },
-                {
-                    "question_id": 11,
-                    "answer_id": 1,
-                    "answer": "Python",
-                    "status": false
-                },
-                {
-                    "question_id": 12,
-                    "answer_id": 1,
-                    "answer": "Facebook",
-                    "status": false
-                },
-                {
-                    "question_id": 13,
-                    "answer_id": 3,
-                    "answer": "2012",
-                    "status": false
-                },
-                {
-                    "question_id": 14,
-                    "answer_id": 1,
-                    "answer": "SpiderMonkey",
-                    "status": false
-                },
-                {
-                    "question_id": 15,
-                    "answer_id": 1,
-                    "answer": "Không",
-                    "status": false
-                },
-                {
-                    "question_id": 16,
-                    "answer_id": 1,
-                    "answer": "Không",
-                    "status": false
-                },
-                {
-                    "question_id": 17,
-                    "answer_id": 0,
-                    "answer": "Có",
-                    "status": true
-                },
-                {
-                    "question_id": 18,
-                    "answer_id": 0,
-                    "answer": "Có",
-                    "status": true
-                },
-                {
-                    "question_id": 19,
-                    "answer_id": 0,
-                    "answer": "Có",
-                    "status": true
-                },
-                {
-                    "question_id": 20,
-                    "answer_id": 0,
-                    "answer": "Có",
-                    "status": true
-                }
-            ]
-        }
-    ]
+      ],
+      "default": ""
+    },
+    {
+      "id": "9a33"
+    }
+  ],
+  "history": []
 }
