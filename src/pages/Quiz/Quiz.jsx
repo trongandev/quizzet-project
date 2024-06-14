@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { get, post } from "../../utils/request";
 import { getCookie } from "../../helpers/cookie";
 import Swal from "sweetalert2";
-import { collection, getDocs, getFirestore } from "firebase/firestore";
+import { addDoc, collection, getDocs, getFirestore } from "firebase/firestore";
+import { Button, Modal } from "antd";
+import { IoIosArrowUp } from "react-icons/io";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
 export default function Quiz() {
     const [question, setQuestion] = useState([]);
+    const [IdQuiz, setIdQuiz] = useState();
     const [selectedAnswers, setSelectedAnswers] = useState({});
     const [saveAns, setSaveAns] = useState({});
     const params = useParams();
@@ -17,6 +22,7 @@ export default function Quiz() {
             const querySnapshot = await getDocs(collection(db, "quiz"));
             querySnapshot.forEach((doc) => {
                 if (doc.id === params.id) {
+                    setIdQuiz(doc.id);
                     setQuestion(doc.data());
                 }
             });
@@ -24,7 +30,25 @@ export default function Quiz() {
         fetchBook();
     }, []);
 
-    console.log(question);
+    const [user, setUser] = useState();
+    const auth = getAuth();
+    const navigate = useNavigate();
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setUser(user);
+            } else {
+                Swal.fire({
+                    title: "Bạn chưa đăng nhập",
+                    text: "Vui lòng đăng nhập để tiếp tục",
+                    icon: "warning",
+                    didClose: () => {
+                        navigate("/login");
+                    },
+                });
+            }
+        });
+    }, []);
 
     const handleSelect = (questionId, answerIndex) => {
         setSelectedAnswers({
@@ -44,56 +68,69 @@ export default function Quiz() {
 
         let score = 0;
         question.questions.map((item) => {
-            if (item.correctAnswer === selectedAnswers[item.id]) {
+            if (item.correct === selectedAnswers[item.id]) {
                 score++;
             }
         });
 
-        const data = {
-            username: getCookie("username"),
-            title: question.title,
-            content: question.content,
-            score: score,
-            date: new Date().toLocaleDateString("vi-VN"),
-            questions: [
-                ...question.questions.map((item) => {
-                    var isTrue = item.correctAnswer === selectedAnswers[item.id];
+        const db = getFirestore();
+        const pushData = async () => {
+            try {
+                const docRef = await addDoc(collection(db, "histories"), {
+                    username: user.displayName || null,
+                    uid: user.uid,
+                    title: question.title,
+                    content: question.content,
+                    score: score || null,
+                    date: new Date().toLocaleDateString("vi-VN"),
+                    idQuiz: IdQuiz,
+                    questions: [
+                        ...question.questions.map((item) => {
+                            var isTrue = item.correct === selectedAnswers[item.id];
 
-                    return {
-                        question_id: item.id,
-                        answer_id: selectedAnswers[item.id],
-                        answer: item.answers[selectedAnswers[item.id]],
-                        status: isTrue,
-                    };
-                }),
-            ],
+                            return {
+                                question_id: item.id,
+                                question_name: item.question,
+                                answer_choose: selectedAnswers[item.id],
+                                answers: [item.answers[0], item.answers[1], item.answers[2], item.answers[3]],
+                                answer_correct: item.correct,
+                                status: isTrue,
+                            };
+                        }),
+                    ],
+                });
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Gửi bài thành công",
+                    didClose: () => {
+                        navigate("/answer/" + docRef.id);
+                    },
+                });
+            } catch (e) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Gửi bài không thành công",
+                    text: "Mã lỗi\n" + e,
+                });
+            }
         };
-
-        console.log(data);
-
-        // const checkIDQuiz = get("history?title=" + question.title + "&username=" + getCookie("username"));
-        // checkIDQuiz.then((res) => {
-        //     if (res.length === 0) {
-        //         post("history", data);
-
-        //         Swal.fire({
-        //             icon: "success",
-        //             title: "Nộp bài thành công\nBạn được " + score + " điểm",
-        //             willClose: () => {
-        //                 window.location.href = "/answer/" + params.title;
-        //             },
-        //         });
-        //     } else {
-        //         Swal.fire({
-        //             icon: "error",
-        //             title: "Bạn đã làm bài quiz này rồi",
-        //             willClose: () => {
-        //                 window.location.href = "/";
-        //             },
-        //         });
-        //     }
-        // });
+        pushData();
     }
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
 
     return (
         <div className="">
@@ -138,22 +175,46 @@ export default function Quiz() {
                         </button>
                     </div>
                 </div>
-                <div className="hidden md:fixed md:w-1/4 p-5 right-5 ">
-                    <div className=" w-[240px] bg-gray-200 p-5">
-                        <h1 className="text-lg font-bold text-green-500 text-center mb-3">Danh sách câu hỏi</h1>
-                        <div className="grid grid-cols-4 gap-3">
-                            {question.questions?.map((item, index) => (
-                                <a
-                                    href={`#${item.id}`}
-                                    key={index}
-                                    className={`flex items-center justify-center w-[50px] h-[50px] ${
-                                        selectedAnswers[item.id] !== undefined ? "bg-green-500 text-green-100 font-bold" : "bg-red-500 text-red-100"
-                                    }`}>
-                                    <p>{index + 1}</p>
-                                </a>
-                            ))}
+                <div className="hidden md:block">
+                    <div className="fixed md:w-1/4 p-5 right-5 ">
+                        <div className=" w-[240px] bg-gray-200 p-5">
+                            <h1 className="text-lg font-bold text-green-500 text-center mb-3">Danh sách câu hỏi</h1>
+                            <div className="grid grid-cols-4 gap-3">
+                                {question.questions?.map((item, index) => (
+                                    <a
+                                        href={`#${item.id}`}
+                                        key={index}
+                                        className={`flex items-center justify-center w-[50px] h-[50px] ${
+                                            selectedAnswers[item.id] !== undefined ? "bg-green-500 text-green-100 font-bold" : "bg-red-500 text-red-100"
+                                        }`}>
+                                        <p>{index + 1}</p>
+                                    </a>
+                                ))}
+                            </div>
                         </div>
                     </div>
+                </div>
+                <div className="fixed right-[10px] bottom-[60px] ">
+                    <div onClick={showModal} className="w-[50px] h-[50px] px-2 bg-red-500 flex items-center justify-center rounded-full text-white animate-bounce">
+                        <IoIosArrowUp />
+                    </div>
+                    <Modal title="Danh sách câu hỏi" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                        <div className="p-2">
+                            <div className="grid grid-cols-5 gap-3">
+                                {question.questions?.map((item, index) => (
+                                    <a
+                                        href={`#${item.id}`}
+                                        key={index}
+                                        onClick={handleCancel}
+                                        className={`flex items-center justify-center w-full h-[58px] ${
+                                            selectedAnswers[item.id] !== undefined ? "bg-green-500 text-green-100 font-bold" : "bg-red-500 text-red-100"
+                                        }`}>
+                                        <p>{index + 1}</p>
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+                    </Modal>
                 </div>
             </form>
         </div>

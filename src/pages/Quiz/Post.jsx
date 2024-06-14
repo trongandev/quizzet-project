@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { post } from "../../utils/request";
 import Swal from "sweetalert2";
 import { Button, Modal } from "antd";
 import { addDoc, collection, getFirestore } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 export default function Post() {
     const [quiz, setQuiz] = useState({
@@ -18,6 +20,26 @@ export default function Post() {
             correct: 3,
         },
     ]);
+
+    const [user, setUser] = useState();
+    const auth = getAuth();
+    const navigate = useNavigate();
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setUser(user);
+            } else {
+                Swal.fire({
+                    title: "Bạn chưa đăng nhập",
+                    text: "Vui lòng đăng nhập để tiếp tục",
+                    icon: "warning",
+                    didClose: () => {
+                        navigate("/login");
+                    },
+                });
+            }
+        });
+    }, []);
 
     const [defaultValue, setDefaultValue] = useState("");
 
@@ -55,6 +77,7 @@ export default function Post() {
             try {
                 const docRef = await addDoc(collection(db, "quiz"), {
                     title: title,
+                    uid: user.uid,
                     content: content,
                     img: image,
                     date_post: new Date().toLocaleDateString("vi-VN"),
@@ -67,7 +90,7 @@ export default function Post() {
                     icon: "success",
                     title: "Thêm bài viết thành công",
                     didClose: () => {
-                        window.location.href = "/";
+                        navigate("/");
                     },
                 });
             } catch (e) {
@@ -132,8 +155,8 @@ export default function Post() {
     };
 
     return (
-        <div className="flex items-center justify-center gap-5">
-            <div className="w-[700px] bg-white p-5">
+        <div className="flex items-center justify-center gap-5 flex-col md:flex-row">
+            <div className="w-full h-[500px] md:h-auto md:w-[700px] bg-white p-2 md:p-5">
                 <form action="" onSubmit={handlePost} className="frm-post my-3 overflow-y-scroll h-[600px]">
                     <h1 className="text-2xl font-bold text-green-500 text-center">Thêm bài quiz mới</h1>
                     <div className="mb-3">
@@ -240,7 +263,7 @@ export default function Post() {
                     </div>
                 </form>
             </div>
-            <div className="w-[700px] h-[650px] bg-white p-5 overflow-y-auto frm-post">
+            <div className="w-full md:w-[700px] md:h-[650px] bg-white p-5 overflow-y-auto frm-post">
                 <h1 className="text-xl font-bold text-green-500 text-center">Preview</h1>
                 <div className="flex items-center justify-center flex-col my-3">
                     <div className=" shadow-md border-2 rounded-lg overflow-hidden group w-[200px] ">

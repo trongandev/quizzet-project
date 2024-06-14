@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import Swal from "sweetalert2";
 import { Button, Popover } from "antd";
@@ -13,11 +13,12 @@ export default function Header() {
     const [open, setOpen] = useState(false);
     const auth = getAuth();
 
+    const navigate = useNavigate();
     const handleLogout = () => {
         signOut(auth)
             .then(() => {
                 setIsLogin(false);
-                window.location.href = "/";
+                navigate("/");
             })
             .catch((error) => {
                 Swal.fire({
@@ -50,8 +51,8 @@ export default function Header() {
         setOpen(newOpen);
     };
     return (
-        <header className="bg-orange-500 px-2 md:px-5 lg:px-10 text-white">
-            <div className="flex items-center justify-between px-5 py-3 md:px-0 md:py-0">
+        <header className="bg-orange-500 px-2 md:px-5 lg:px-10 text-white w-full">
+            <div className="flex items-center justify-between px-5 py-1 md:px-0 md:py-0">
                 <Link to="/">
                     <h1 className="text-2xl font-bold">QuizzEt</h1>
                 </Link>
@@ -103,11 +104,11 @@ export default function Header() {
                                 open={open}
                                 onOpenChange={handleOpenChange}>
                                 {user.photoURL ? (
-                                    <div className="w-[35px] h-[35px] rounded-full overflow-hidden">
+                                    <div className="w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden">
                                         <img src={user.photoURL} alt="" className="object-cover" />
                                     </div>
                                 ) : (
-                                    <Avatar size={35} icon={<UserOutlined />} />
+                                    <Avatar className="w-[50px] md:w-[35px]" icon={<UserOutlined />} />
                                 )}
                             </Popover>
                         </div>
