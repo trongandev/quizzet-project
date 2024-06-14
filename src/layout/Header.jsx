@@ -50,12 +50,12 @@ export default function Header() {
         setOpen(newOpen);
     };
     return (
-        <header className="bg-orange-500 px-10 text-white">
-            <div className="flex items-center justify-between">
-                <a href="/">
+        <header className="bg-orange-500 px-2 md:px-5 lg:px-10 text-white">
+            <div className="flex items-center justify-between px-5 py-3 md:px-0 md:py-0">
+                <Link to="/">
                     <h1 className="text-2xl font-bold">QuizzEt</h1>
-                </a>
-                <ul className="flex">
+                </Link>
+                <ul className="hidden md:flex">
                     <li>
                         <NavLink to="/" className="block px-5 py-3">
                             Trang chủ

@@ -81,7 +81,7 @@ export default function Login() {
 
     return (
         <div className="flex justify-center flex-col items-center">
-            <div className=" w-[500px] border-[1px] border-green-500 px-10 py-5 rounded-lg shadow-lg bg-white">
+            <div className="w-full mt-10 md:mt-0 md:w-[500px] border-[1px] border-green-500 px-3 md:px-10 py-5 rounded-lg shadow-lg bg-white">
                 <form action="" onSubmit={handleLogin} className="">
                     <h1 className="text-2xl font-bold text-green-500 text-center mb-5">Đăng nhập</h1>
                     <div className="mb-3">

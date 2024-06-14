@@ -102,7 +102,7 @@ export default function Quiz() {
                 <p className="text-gray-600">Nội dung: {question.content}</p>
             </div>
             <form action="" onSubmit={handleQuiz} className="relative flex">
-                <div className="w-2/3 ">
+                <div className="w-full md:w-2/3 ">
                     {question.questions?.map((item, index) => (
                         <div className="bg-white p-5 mt-2" key={index} id={item.id}>
                             <h1 className="text-lg font-bold text-green-500 mb-3">
@@ -138,7 +138,7 @@ export default function Quiz() {
                         </button>
                     </div>
                 </div>
-                <div className="fixed w-1/4 p-5 right-5 ">
+                <div className="hidden md:fixed md:w-1/4 p-5 right-5 ">
                     <div className=" w-[240px] bg-gray-200 p-5">
                         <h1 className="text-lg font-bold text-green-500 text-center mb-3">Danh sách câu hỏi</h1>
                         <div className="grid grid-cols-4 gap-3">
