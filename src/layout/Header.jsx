@@ -2,15 +2,16 @@ import React, { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import Swal from "sweetalert2";
-import { Button, Popover } from "antd";
+import { Button, Popover, Alert, Space, Avatar, Badge } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-import { Avatar, Space } from "antd";
 import { FiLogOut } from "react-icons/fi";
+import { IoMdNotificationsOutline } from "react-icons/io";
 
 export default function Header() {
     const [isLogin, setIsLogin] = useState(false);
     const [user, setUser] = useState({});
     const [open, setOpen] = useState(false);
+    const [openNoti, setOpenNoti] = useState(false);
     const auth = getAuth();
 
     const navigate = useNavigate();
@@ -50,6 +51,10 @@ export default function Header() {
     const handleOpenChange = (newOpen) => {
         setOpen(newOpen);
     };
+
+    const handleOpenNoti = (newOpen) => {
+        setOpenNoti(newOpen);
+    };
     return (
         <header className="bg-orange-500 px-2 md:px-5 lg:px-10 text-white w-full">
             <div className="flex items-center justify-between px-5 py-1 md:px-0 md:py-0">
@@ -70,8 +75,8 @@ export default function Header() {
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink to="/answer" className="block px-5 py-3 ">
-                                    Đáp án
+                                <NavLink to="/history" className="block px-5 py-3 ">
+                                    Lịch sử
                                 </NavLink>
                             </li>
                         </>
@@ -85,7 +90,25 @@ export default function Header() {
                     </div>
                 ) : (
                     <div className="flex gap-2 items-center">
-                        <div className="flex gap-1">
+                        <div className="flex gap-3 items-center">
+                            <Popover
+                                content={
+                                    <Space
+                                        direction="vertical"
+                                        style={{
+                                            width: "100%",
+                                        }}>
+                                        <Alert message="Tạo tài khoản thành công" type="success" showIcon />
+                                    </Space>
+                                }
+                                trigger="click"
+                                open={openNoti}
+                                onOpenChange={handleOpenNoti}
+                                title="Thông báo">
+                                <Badge count={1} offset={[-5, 5]} size="small" className="text-white">
+                                    <IoMdNotificationsOutline size={30} />
+                                </Badge>
+                            </Popover>
                             <Popover
                                 content={
                                     <>
@@ -105,7 +128,7 @@ export default function Header() {
                                 onOpenChange={handleOpenChange}>
                                 {user.photoURL ? (
                                     <div className="w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden">
-                                        <img src={user.photoURL} alt="" className="object-cover" />
+                                        <img src={user.photoURL} alt="" className="object-cover h-full" />
                                     </div>
                                 ) : (
                                     <Avatar className="w-[50px] md:w-[35px]" icon={<UserOutlined />} />

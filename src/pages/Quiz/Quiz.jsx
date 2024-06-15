@@ -20,12 +20,26 @@ export default function Quiz() {
     useEffect(() => {
         const fetchBook = async () => {
             const querySnapshot = await getDocs(collection(db, "quiz"));
+            let found = false;
+
             querySnapshot.forEach((doc) => {
                 if (doc.id === params.id) {
                     setIdQuiz(doc.id);
                     setQuestion(doc.data());
+                    found = true;
                 }
             });
+
+            if (!found) {
+                Swal.fire({
+                    title: "Không tìm thấy bài quiz",
+                    text: "Bài quiz bạn tìm không tồn tại hoặc đã bị xóa",
+                    icon: "error",
+                    didClose: () => {
+                        navigate("/");
+                    },
+                });
+            }
         };
         fetchBook();
     }, []);
@@ -40,7 +54,7 @@ export default function Quiz() {
             } else {
                 Swal.fire({
                     title: "Bạn chưa đăng nhập",
-                    text: "Vui lòng đăng nhập để tiếp tục",
+                    text: "Vui lòng đăng nhập để làm bài này",
                     icon: "warning",
                     didClose: () => {
                         navigate("/login");
@@ -77,11 +91,11 @@ export default function Quiz() {
         const pushData = async () => {
             try {
                 const docRef = await addDoc(collection(db, "histories"), {
-                    username: user.displayName || null,
+                    username: user.displayName || user.email,
                     uid: user.uid,
                     title: question.title,
                     content: question.content,
-                    score: score || null,
+                    score: score,
                     date: new Date().toLocaleDateString("vi-VN"),
                     idQuiz: IdQuiz,
                     questions: [
@@ -137,6 +151,8 @@ export default function Quiz() {
             <div className="">
                 <h1 className="text-xl font-bold text-green-500">Bài quiz về chủ đê: {question.title}</h1>
                 <p className="text-gray-600">Nội dung: {question.content}</p>
+                <p className="text-gray-600">Tác giả: {question.author}</p>
+                <p className="text-gray-600">Ngày đăng: {question.date_post}</p>
             </div>
             <form action="" onSubmit={handleQuiz} className="relative flex">
                 <div className="w-full md:w-2/3 ">
@@ -178,6 +194,9 @@ export default function Quiz() {
                 <div className="hidden md:block">
                     <div className="fixed md:w-1/4 p-5 right-5 ">
                         <div className=" w-[240px] bg-gray-200 p-5">
+                            <div className="">
+                                <h1 className="text-lg font-bold text-green-500 text-center mb-3">Công cụ</h1>
+                            </div>
                             <h1 className="text-lg font-bold text-green-500 text-center mb-3">Danh sách câu hỏi</h1>
                             <div className="grid grid-cols-4 gap-3">
                                 {question.questions?.map((item, index) => (
@@ -194,7 +213,7 @@ export default function Quiz() {
                         </div>
                     </div>
                 </div>
-                <div className="fixed right-[10px] bottom-[60px] ">
+                <div className="fixed right-[10px] bottom-[60px] md:hidden">
                     <div onClick={showModal} className="w-[50px] h-[50px] px-2 bg-red-500 flex items-center justify-center rounded-full text-white animate-bounce">
                         <IoIosArrowUp />
                     </div>

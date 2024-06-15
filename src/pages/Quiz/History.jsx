@@ -3,20 +3,50 @@ import { useParams } from "react-router-dom";
 import { get, post } from "../../utils/request";
 import { getCookie } from "../../helpers/cookie";
 import Swal from "sweetalert2";
-export default function Answer() {
-    const [history, setHistory] = useState([]);
+import { collection, getDocs, getFirestore } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+export default function History() {
+    const [quiz, setQuiz] = useState([]);
+
+    const db = getFirestore();
+
+    const [user, setUser] = useState({});
+    const auth = getAuth();
 
     useEffect(() => {
-        const fetchHistory = async () => {
-            const response = await get("history");
-            setHistory(response);
+        const handleCheckLogin = () => {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    setUser(user);
+                }
+            });
         };
-        fetchHistory();
+        handleCheckLogin();
     }, []);
+    console.log(user.uid);
+
+    useEffect(() => {
+        const fetchBook = async () => {
+            const querySnapshot = await getDocs(collection(db, "histories"));
+            querySnapshot.forEach((doc) => {
+                setQuiz((prev) => [
+                    ...prev,
+                    {
+                        id: doc.id,
+                        data: doc.data(),
+                    },
+                ]);
+            });
+        };
+        fetchBook();
+    }, []);
+
+    // console.log(quiz)
+    console.log(quiz);
     return (
         <div>
             <p className="text-2xl font-bold text-green-500">Lịch sử làm bài</p>
-            <div className="grid grid-cols-4 gap-5 my-5">
+            {/* <div className="grid grid-cols-4 gap-5 my-5">
                 {history.map((item) => (
                     <div key={item.id} className="bg-white p-3 border-[1px] shadow-md">
                         <h1 className="text-lg mb-3">
@@ -34,7 +64,7 @@ export default function Answer() {
                         </a>
                     </div>
                 ))}
-            </div>
+            </div> */}
         </div>
     );
 }

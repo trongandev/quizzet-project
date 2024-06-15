@@ -1,14 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { get, post } from "../../utils/request";
-import { getCookie } from "../../helpers/cookie";
-import Swal from "sweetalert2";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
+import { Progress } from "antd";
 export default function Answer() {
-    const [question, setQuestion] = useState([]);
     const [quiz, setQuiz] = useState([]);
-
-    const [selectedAnswers, setSelectedAnswers] = useState({});
     const params = useParams();
     const db = getFirestore();
 
@@ -34,12 +29,20 @@ export default function Answer() {
                     <p className="text-gray-600" key={quiz.id}>
                         Nội dung: {quiz.content}
                     </p>
+                    <p>
+                        Tổng số câu: {quiz.score}/{quiz.questions?.length} câu
+                    </p>
                 </div>
-                <div className="">
-                    <h1 className="text-xl font-bold text-green-500">
-                        Tổng câu đúng: {quiz.score}/{quiz.questions.length}
-                    </h1>
-                    <p className="text-gray-600">Tỉ lệ đúng: {Math.floor((quiz.score / quiz.questions.length) * 100)}%</p>
+                <div className="flex gap-5 text-center">
+                    <div className="">
+                        <Progress type="circle" percent={quiz.questions?.length - quiz.score} status="exception" />
+                        <p className="text-gray-600 mt-1">Câu sai: {quiz.questions?.length - quiz.score}</p>
+                    </div>
+
+                    <div className="">
+                        <Progress type="circle" percent={(quiz.score / quiz.questions?.length) * 100} />
+                        <p className="text-gray-600 mt-1">Tỉ lệ đúng</p>
+                    </div>
                 </div>
             </div>
 
@@ -62,7 +65,7 @@ export default function Answer() {
                                     <input type="radio" name={item.id} className="w-1 invisible" disabled id={`${item.id}ans${ansIndex}`} defaultChecked={item.answer_correct === ansIndex} />
                                     <label
                                         htmlFor={`${item.id}ans${ansIndex}`}
-                                        className={`absolute font-bold p-3    ${item.answer_correct === ansIndex ? "!bg-green-400 !text-white" : ""} ${
+                                        className={`absolute  h-full font-bold p-3 flex items-center justify-center   ${item.answer_correct === ansIndex ? "!bg-green-400 !text-white" : ""} ${
                                             item.answer_choose === ansIndex ? "bg-red-500 text-white" : " "
                                         }`}>
                                         {ansIndex === 0 ? "A" : ansIndex === 1 ? "B" : ansIndex === 2 ? "C" : "D"}

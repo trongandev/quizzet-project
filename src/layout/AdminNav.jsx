@@ -3,7 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 import { MdDashboard } from "react-icons/md";
 import { HiUsers } from "react-icons/hi";
 import { MdOutlineTopic } from "react-icons/md";
-import { RiQuestionAnswerFill } from "react-icons/ri";
+import { MdHistory } from "react-icons/md";
 
 export default function AdminNav() {
     return (
@@ -30,9 +30,9 @@ export default function AdminNav() {
                     </NavLink>
                 </li>
                 <li>
-                    <NavLink to="/admin/question" className="p-3 flex items-center gap-2">
-                        <RiQuestionAnswerFill />
-                        Questions
+                    <NavLink to="/admin/history" className="p-3 flex items-center gap-2">
+                        <MdHistory />
+                        History
                     </NavLink>
                 </li>
             </ul>

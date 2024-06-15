@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { post } from "../../utils/request";
 import Swal from "sweetalert2";
-import { Button, Modal } from "antd";
+import { Button, Form, Modal, Popover, Select, Input } from "antd";
 import { addDoc, collection, getFirestore } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
 
 export default function Post() {
     const [quiz, setQuiz] = useState({
-        title: "Kinh tế chính trị",
-        content: "Ôn tập lại các câu hỏi về môn kinh tế chính trị",
-        img: "https://images.sachquocgia.vn/Picture/2024/3/21/image-20240321140905939.jpg",
+        title: "",
+        content: "",
+        img: "",
     });
     const [quest, setQuest] = useState([
         {
@@ -57,6 +57,50 @@ export default function Post() {
         setIsModalOpen(false);
     };
 
+    const onFinish = (values) => {
+        const now = new Date();
+        const db = getFirestore();
+        const pushData = async () => {
+            try {
+                await addDoc(collection(db, "quiz"), {
+                    title: values.title,
+                    uid: user.uid,
+                    subject: values.subject,
+                    author: user.displayName,
+                    email: user.email,
+                    verify: user.emailVerified,
+                    image_author: user.photoURL,
+                    content: values.content,
+                    img: values.image,
+                    date_post: format(now, "HH:mm:ss dd/MM/yyyy"),
+                    status: false,
+                    questions: quest,
+                    default: defaultValue,
+                });
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Thêm bài viết thành công",
+                    text: "Bài viết của bạn sẽ được kiểm duyệt trước khi hiển thị",
+                    didClose: () => {
+                        navigate("/");
+                    },
+                });
+            } catch (e) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Thêm không thành công",
+                    text: "Mã lỗi\n" + e.code,
+                });
+            }
+        };
+        pushData();
+    };
+
+    const onFinishFailed = (errorInfo) => {
+        console.log("Failed:", errorInfo);
+    };
+
     function handlePost(e) {
         e.preventDefault();
         const title = quiz.title;
@@ -71,37 +115,6 @@ export default function Post() {
             });
             return;
         }
-
-        const db = getFirestore();
-        const pushData = async () => {
-            try {
-                const docRef = await addDoc(collection(db, "quiz"), {
-                    title: title,
-                    uid: user.uid,
-                    content: content,
-                    img: image,
-                    date_post: new Date().toLocaleDateString("vi-VN"),
-                    status: true,
-                    questions: quest,
-                    default: defaultValue,
-                });
-
-                Swal.fire({
-                    icon: "success",
-                    title: "Thêm bài viết thành công",
-                    didClose: () => {
-                        navigate("/");
-                    },
-                });
-            } catch (e) {
-                Swal.fire({
-                    icon: "error",
-                    title: "Thêm không thành công",
-                    text: "Mã lỗi\n" + e.code,
-                });
-            }
-        };
-        pushData();
     }
 
     const handleImage = (e) => {
@@ -154,70 +167,165 @@ export default function Post() {
         setQuest(arr);
     };
 
+    const [open, setOpen] = useState(false);
+
+    const hide = () => {
+        setOpen(false);
+    };
+
+    const handleOpenChange = (newOpen) => {
+        setOpen(newOpen);
+    };
+
     return (
         <div className="flex items-center justify-center gap-5 flex-col md:flex-row">
             <div className="w-full h-[500px] md:h-auto md:w-[700px] bg-white p-2 md:p-5">
-                <form action="" onSubmit={handlePost} className="frm-post my-3 overflow-y-scroll h-[600px]">
-                    <h1 className="text-2xl font-bold text-green-500 text-center">Thêm bài quiz mới</h1>
-                    <div className="mb-3">
-                        <label htmlFor="title" className="block text-md  text-gray-500">
-                            Tiêu đề*
-                        </label>
-                        <input
-                            type="text"
-                            onChange={(e) => handleTitle(e)}
-                            name="title"
-                            id="title"
-                            className="w-full p-2 border-[1px] border-gray-200"
-                            placeholder="Nhập tiêu đề..."
-                            value={quiz.title}
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="content" className="block text-md  text-gray-500">
-                            Nội dung
-                        </label>
-                        <input
-                            type="text"
-                            onChange={(e) => handleContent(e)}
-                            name="content"
-                            id="content"
-                            className="w-full p-2 border-[1px] border-gray-200"
-                            placeholder="Nhập nội dung..."
-                            value={quiz.content}
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="image" className="block text-md  text-gray-500">
-                            Đường dẫn hình ảnh*
-                        </label>
-                        <div className="flex items-center">
-                            <input
-                                type="text"
-                                onChange={(e) => handleImage(e)}
-                                name="image"
-                                id="image"
-                                className="w-full p-2 border-[1px] border-gray-200"
-                                placeholder="Dán URL hình ảnh ở đây..."
-                                value={quiz.img}
-                            />
-                            <Button className="bg-gray-200 text-gray-500 font-bold h-full" onClick={showModal}>
-                                ?
-                            </Button>
-                            <Modal title="Các lưu ý trong quá trình thêm câu hỏi " open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                                <p>
-                                    - Phải có kí tự <label className="text-red-500 font-bold">"?" hoặc ":"</label> ở cuối câu hỏi
-                                </p>
-                                <p>
-                                    - Các đáp án chỉ có <label className="text-red-500 font-bold">4</label>
-                                </p>
-                                <p>
-                                    - Bấm phím <label className="text-red-500 font-bold">Enter</label> để xuống đáp án tiếp theo
-                                </p>
-                                <img src="./guide.png" alt="" className="mt-3 border-[5px] border-green-500 rounded-lg" />
-                                <img src="./guide3.png" alt="" className="mt-3 border-[5px] border-green-500 rounded-lg" />
-                            </Modal>
+                <Form onFinish={onFinish} onFinishFailed={onFinishFailed} autoComplete="off" layout="vertical" className="frm-post my-3 overflow-y-scroll h-[600px]">
+                    <h1 className="text-2xl font-bold text-green-500 text-center mb-5">Thêm bài quiz mới</h1>
+                    <div className="flex gap-3">
+                        <div className="flex-1">
+                            <Form.Item
+                                label="Tiêu đề"
+                                name="title"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Vui lòng nhập tiêu đề!",
+                                    },
+                                ]}>
+                                <Input type="text" onChange={(e) => handleTitle(e)} name="title" id="title" placeholder="Nhập tiêu đề..." value={quiz.title} />
+                            </Form.Item>
                         </div>
+                        <div className="flex-1">
+                            <Form.Item
+                                label="Nghành học - môn học"
+                                name="subject"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: "Vui lòng chọn nghành học - môn học!",
+                                    },
+                                ]}>
+                                <Select
+                                    className="w-full"
+                                    showSearch
+                                    placeholder="Tìm kiếm nghành học - môn học..."
+                                    optionFilterProp="children"
+                                    filterOption={(input, option) => (option?.label ?? "").includes(input)}
+                                    filterSort={(optionA, optionB) => (optionA?.label ?? "").toLowerCase().localeCompare((optionB?.label ?? "").toLowerCase())}
+                                    options={[
+                                        {
+                                            value: "cntt",
+                                            label: "CNTT",
+                                        },
+                                        {
+                                            value: "ketoan",
+                                            label: "Kế toán",
+                                        },
+                                        {
+                                            value: "dieuduong",
+                                            label: "Điều dưỡng",
+                                        },
+                                        {
+                                            value: "kythuat",
+                                            label: "Kỹ thuật",
+                                        },
+                                        {
+                                            value: "thucpham",
+                                            label: "Thực phẩm",
+                                        },
+                                        {
+                                            value: "taichinh",
+                                            label: "Tài chính - ngân hàng",
+                                        },
+                                        {
+                                            value: "qtkd",
+                                            label: "Quản trị kinh doanh",
+                                        },
+                                        {
+                                            value: "dulich",
+                                            label: "Du lịch - lữ hành",
+                                        },
+                                        {
+                                            value: "khachsan",
+                                            label: "Quản trị khách sạn",
+                                        },
+                                        {
+                                            value: "dongphuonghoc",
+                                            label: "Đông phương học",
+                                        },
+                                        {
+                                            value: "anh",
+                                            label: "Ngôn ngữ anh",
+                                        },
+                                        {
+                                            value: "trung",
+                                            label: "Ngôn ngữ Trung",
+                                        },
+                                        {
+                                            value: "tthcm",
+                                            label: "Tư tưởng Hồ Chí Minh",
+                                        },
+                                        {
+                                            value: "lsdang",
+                                            label: "Lịch sử Đảng Cộng sản Việt Nam",
+                                        },
+                                        {
+                                            value: "pldc",
+                                            label: "Pháp luật đại cương	",
+                                        },
+                                        {
+                                            value: "kttt",
+                                            label: "Kinh tế chính trị Mác - Lênin",
+                                        },
+                                        {
+                                            value: "cnxh",
+                                            label: "Chủ nghĩa xã hội khoa học",
+                                        },
+                                        {
+                                            value: "triet",
+                                            label: "Triết học Mác - Lênin",
+                                        },
+                                    ]}
+                                />
+                            </Form.Item>
+                        </div>
+                    </div>
+                    <div className="mb-3">
+                        <Form.Item
+                            label="Nội dung"
+                            name="content"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Vui lòng nhập nội dung",
+                                },
+                            ]}>
+                            <Input type="text" onChange={(e) => handleContent(e)} name="content" id="content" placeholder="Nhập nội dung..." value={quiz.content} />
+                        </Form.Item>
+                    </div>
+                    <div className="mb-3">
+                        <Form.Item
+                            label="Đường dẫn hình ảnh"
+                            name="image"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: "Vui lòng nhập đường dẫn hình ảnh",
+                                },
+                            ]}>
+                            <div className="flex items-center">
+                                <Input type="text" onChange={(e) => handleImage(e)} name="image" id="image" placeholder="Dán URL hình ảnh ở đây..." value={quiz.img} />
+                                <Popover
+                                    content={<img width={400} src="./guide4.png" alt="" className="" />}
+                                    title="Cách lấy đường đẫn hình ảnh (Image Address)"
+                                    trigger="click"
+                                    open={open}
+                                    onOpenChange={handleOpenChange}>
+                                    <Button className="text-gray-500 font-bold rounded-none mx-2">?</Button>
+                                </Popover>
+                            </div>
+                        </Form.Item>
                     </div>
 
                     <div className="my-5">
@@ -261,7 +369,7 @@ export default function Post() {
                             Thêm bài viết này
                         </button>
                     </div>
-                </form>
+                </Form>
             </div>
             <div className="w-full md:w-[700px] md:h-[650px] bg-white p-5 overflow-y-auto frm-post">
                 <h1 className="text-xl font-bold text-green-500 text-center">Preview</h1>

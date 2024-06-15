@@ -7,13 +7,25 @@ import { useDispatch } from "react-redux";
 import { checkLogin } from "../../actions/login";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
-import { createUserWithEmailAndPassword, sendPasswordResetEmail, updatePassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail, updatePassword } from "firebase/auth";
 import { auth } from "./firebase";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "firebase/auth";
 
 export default function Login() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    const handleCheckLogin = () => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                navigate("/");
+            }
+        });
+    };
+
+    useEffect(() => {
+        handleCheckLogin();
+    }, []);
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -27,9 +39,7 @@ export default function Login() {
                 const user = userCredential.user;
                 Swal.fire({
                     title: "Đăng nhập thành công",
-                    text: "Bạn sẽ tự chuyển hướng sau 1s",
                     icon: "success",
-                    timer: 1000,
                     didClose: () => {
                         navigate("/");
                     },
@@ -50,14 +60,15 @@ export default function Login() {
         const auth = getAuth();
         signInWithPopup(auth, provider)
             .then((result) => {
-                // This gives you a Google Access Token. You can use it to access the Google API.
-                const credential = GoogleAuthProvider.credentialFromResult(result);
-                const token = credential.accessToken;
-                // The signed-in user info.
-                const user = result.user;
-                // IdP data available using getAdditionalUserInfo(result)
-                // ...
-                console.log(user);
+                Swal.fire({
+                    title: "Đăng nhập thành công",
+                    text: "Bạn sẽ tự chuyển hướng sau 1s",
+                    icon: "info",
+                    timer: 100,
+                    didClose: () => {
+                        navigate("/");
+                    },
+                });
             })
             .catch((error) => {
                 Swal.fire({

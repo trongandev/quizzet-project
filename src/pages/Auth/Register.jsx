@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { generateRandomToken } from "../../helpers/cookie";
@@ -6,11 +6,24 @@ import { get, post } from "../../utils/request";
 import Swal from "sweetalert2";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
-import { getAuth, signInWithPopup, createUserWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
+import { getAuth, signInWithPopup, createUserWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, onAuthStateChanged } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function Register() {
     const navigate = useNavigate();
+
+    const handleCheckLogin = () => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                navigate("/");
+            }
+        });
+    };
+
+    useEffect(() => {
+        handleCheckLogin();
+    }, []);
+
     const formik = useFormik({
         initialValues: {
             username: "",
