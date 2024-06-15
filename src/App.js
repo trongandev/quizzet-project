@@ -14,6 +14,7 @@ import Admin from "./pages/Admin/Admin";
 import Users from "./pages/Admin/Users";
 import TopicManager from "./pages/Admin/TopicManager";
 import History from "./pages/Admin/History";
+import Historyy from "./pages/Quiz/History";
 import Test from "./pages/Quiz/Test";
 import Profile from "./pages/User/Profile";
 import Forget from "./pages/Auth/Forget";
@@ -29,7 +30,7 @@ function App() {
                 <Route path="/tool" element={<Tool />} />
                 <Route path="/tool/:id" element={<Refer />} />
                 <Route path="/post" element={<Post />} />
-                <Route path="/history" element={<History />} />
+                <Route path="/history" element={<Historyy />} />
                 <Route path="/answer/:id" element={<AnsResult />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />

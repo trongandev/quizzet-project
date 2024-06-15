@@ -7,6 +7,7 @@ import { addDoc, collection, getDocs, getFirestore } from "firebase/firestore";
 import { Button, Modal } from "antd";
 import { IoIosArrowUp } from "react-icons/io";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { format } from "date-fns";
 
 export default function Quiz() {
     const [question, setQuestion] = useState([]);
@@ -88,7 +89,9 @@ export default function Quiz() {
         });
 
         const db = getFirestore();
+
         const pushData = async () => {
+            const now = new Date();
             try {
                 const docRef = await addDoc(collection(db, "histories"), {
                     username: user.displayName || user.email,
@@ -96,7 +99,7 @@ export default function Quiz() {
                     title: question.title,
                     content: question.content,
                     score: score,
-                    date: new Date().toLocaleDateString("vi-VN"),
+                    date: format(now, "HH:mm:ss dd/MM/yyyy"),
                     idQuiz: IdQuiz,
                     questions: [
                         ...question.questions.map((item) => {

@@ -40,7 +40,7 @@ export default function Answer() {
                     </div>
 
                     <div className="">
-                        <Progress type="circle" percent={(quiz.score / quiz.questions?.length) * 100} />
+                        <Progress type="circle" percent={Math.floor((quiz.score / quiz.questions?.length) * 100)} />
                         <p className="text-gray-600 mt-1">Tỉ lệ đúng</p>
                     </div>
                 </div>
