@@ -6,6 +6,8 @@ import Swal from "sweetalert2";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { UserOutlined } from "@ant-design/icons";
+import { parse, format } from "date-fns";
+import sortArrayByTime from "../../helpers/sort";
 
 export default function History() {
     const [history, setHistory] = useState([]);
@@ -15,8 +17,10 @@ export default function History() {
     useEffect(() => {
         const fetchBook = async () => {
             const fetchTopic = await get_firebase(db, "histories");
-            console.log(fetchTopic);
-            setHistory(fetchTopic);
+
+            const sortedTopic = sortArrayByTime(fetchTopic);
+            console.log(sortedTopic);
+            setHistory(sortedTopic);
         };
         fetchBook();
     }, []);

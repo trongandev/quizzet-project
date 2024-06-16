@@ -6,6 +6,7 @@ import { CiTimer } from "react-icons/ci";
 import { Avatar, Tooltip } from "antd";
 import { MdOutlineVerified } from "react-icons/md";
 import { UserOutlined } from "@ant-design/icons";
+import sortArrayByTime from "../../helpers/sort";
 
 export default function Home() {
     const [quiz, setQuiz] = useState([]);
@@ -20,14 +21,12 @@ export default function Home() {
             querySnapshot.forEach((doc) => {
                 const data = doc.data();
                 if (data.status === true) {
-                    filteredQuiz.push({
-                        id: doc.id,
-                        data: data,
-                    });
+                    filteredQuiz.push({ ...doc.data(), id: doc.id });
                 }
             });
 
-            setQuiz(filteredQuiz);
+            const result = sortArrayByTime(filteredQuiz);
+            setQuiz(result);
         };
         fetchBook();
     }, []);
@@ -52,20 +51,20 @@ export default function Home() {
                     {quiz?.map((item) => (
                         <NavLink to={`/quiz/${item.id}`} key={item.id}>
                             <div className=" shadow-md border-2 rounded-lg overflow-hidden group">
-                                <img src={item.data.img} alt="" className="h-[150px] w-full object-cover" />
+                                <img src={item.img} alt="" className="h-[150px] w-full object-cover" />
                                 <div className="p-3">
                                     <div className="flex items-center gap-2 mb-3">
-                                        {item.data.image_author ? (
+                                        {item.image_author ? (
                                             <div className="w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden">
-                                                <img src={item.data.image_author} alt="" className="object-cover h-full" />
+                                                <img src={item.image_author} alt="" className="object-cover h-full" />
                                             </div>
                                         ) : (
                                             <Avatar className="w-[40px] h-[40px] md:w-[35px] md:h-[35px]" icon={<UserOutlined />} />
                                         )}
                                         <div className="">
                                             <div className="flex items-center gap-1">
-                                                <h2 className="text-gray-800 text-sm line-clamp-1 overflow-hidden">{item.data.author || item.data.email}</h2>
-                                                {!quiz.data?.verify ? (
+                                                <h2 className="text-gray-800 text-sm line-clamp-1 overflow-hidden">{item.author || item.email}</h2>
+                                                {!quiz?.verify ? (
                                                     <Tooltip title="Tài khoản đã được xác thực">
                                                         <MdOutlineVerified color="#3b82f6" />
                                                     </Tooltip>
@@ -74,14 +73,14 @@ export default function Home() {
                                                 )}
                                             </div>
                                             <p className="text-gray-400 text-[10px] flex gap-1 items-center">
-                                                <CiTimer color="#1f2937" /> {item.data.date_post}
+                                                <CiTimer color="#1f2937" /> {item.date}
                                             </p>
                                         </div>
                                     </div>
-                                    <h1 className="text-lg h-[56px] font-bold text-gray-800">{item.data.title}</h1>
-                                    <p className="text-gray-700 line-clamp-2 h-[45px] my-3 text-[15px]">{item.data.content}</p>
+                                    <h1 className="text-lg h-[56px] font-bold text-gray-800">{item.title}</h1>
+                                    <p className="text-gray-700 line-clamp-2 h-[45px] my-3 text-[15px]">{item.content}</p>
                                     <div className="flex justify-between items-center">
-                                        <p>Lượt làm: {item.data.noa}</p>
+                                        <p>Lượt làm: {item.noa}</p>
                                         <div className="text-right">
                                             <button className="bg-green-600 text-white">Làm bài ngay</button>
                                         </div>

@@ -72,8 +72,8 @@ export default function Post() {
                     image_author: user.photoURL,
                     content: values.content,
                     img: values.image,
-                    noa: 0,//số lần làm bài number of attemps
-                    date_post: format(now, "HH:mm:ss dd/MM/yyyy"),
+                    noa: 0, //số lần làm bài number of attemps
+                    date: format(now, "HH:mm:ss dd/MM/yyyy"),
                     status: false,
                     questions: quest,
                     default: defaultValue,

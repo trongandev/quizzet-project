@@ -5,6 +5,7 @@ import { deleteDoc, doc, getFirestore, updateDoc } from "firebase/firestore";
 import Swal from "sweetalert2";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { FaRegTrashAlt } from "react-icons/fa";
+import sortArrayByTime from "../../helpers/sort";
 
 export default function TopicManager() {
     const [topic, setTopic] = useState([]);
@@ -14,8 +15,8 @@ export default function TopicManager() {
     useEffect(() => {
         const fetchBook = async () => {
             const fetchTopic = await get_firebase(db, "quiz");
-            console.log(fetchTopic);
-            setTopic(fetchTopic);
+            const result = sortArrayByTime(fetchTopic);
+            setTopic(result);
         };
         fetchBook();
     }, []);
@@ -120,7 +121,7 @@ export default function TopicManager() {
                                         {index + 1}
                                     </th>
                                     <td className="">
-                                        <img src={item.img} className="w-[150px] h-full object-cover" alt="" />
+                                        <img src={item.img} className="w-[150px] object-cover h-[80px]" alt="" />
                                     </td>
                                     <td className="px-6 py-4 hover:text-red-500 hover:underline">
                                         <a target="_blank" href={`/quiz/${item.id}`} rel="noreferrer">
@@ -129,7 +130,7 @@ export default function TopicManager() {
                                     </td>
                                     <td className="px-6 py-4 w-[150px]">{item.content}</td>
 
-                                    <td className="px-6 py-4">{item.date_post}</td>
+                                    <td className="px-6 py-4">{item.date}</td>
                                     <td className="px-6 py-4">
                                         {item.status ? (
                                             <div className="bg-green-200 text-green-500 rounded-full text-center px-1">Duyệt</div>
