@@ -3,8 +3,9 @@ import { Link, NavLink } from "react-router-dom";
 import { fetchBook, get } from "../../utils/request";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
 import { CiTimer } from "react-icons/ci";
-import { Tooltip } from "antd";
+import { Avatar, Tooltip } from "antd";
 import { MdOutlineVerified } from "react-icons/md";
+import { UserOutlined } from "@ant-design/icons";
 
 export default function Home() {
     const [quiz, setQuiz] = useState([]);
@@ -47,23 +48,29 @@ export default function Home() {
                         <button className="bg-green-500 text-white">Thêm bài mới</button>
                     </a>
                 </div>
-                <div className="bg-white p-5 mt-2 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div className="bg-white p-5 mt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {quiz?.map((item) => (
                         <NavLink to={`/quiz/${item.id}`} key={item.id}>
                             <div className=" shadow-md border-2 rounded-lg overflow-hidden group">
                                 <img src={item.data.img} alt="" className="h-[150px] w-full object-cover" />
                                 <div className="p-3">
                                     <div className="flex items-center gap-2 mb-3">
-                                        <img src={item.data.image_author} alt="" width={35} height={35} className="rounded-full" />
+                                        {item.data.image_author ? (
+                                            <div className="w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden">
+                                                <img src={item.data.image_author} alt="" className="object-cover h-full" />
+                                            </div>
+                                        ) : (
+                                            <Avatar className="w-[40px] h-[40px] md:w-[35px] md:h-[35px]" icon={<UserOutlined />} />
+                                        )}
                                         <div className="">
                                             <div className="flex items-center gap-1">
-                                                <h2 className="text-gray-800 text-sm line-clamp-1 w-[142px] overflow-hidden">{item.data.author}</h2>
+                                                <h2 className="text-gray-800 text-sm line-clamp-1 overflow-hidden">{item.data.author || item.data.email}</h2>
                                                 {!quiz.data?.verify ? (
                                                     <Tooltip title="Tài khoản đã được xác thực">
                                                         <MdOutlineVerified color="#3b82f6" />
                                                     </Tooltip>
                                                 ) : (
-                                                    "chưa có"
+                                                    ""
                                                 )}
                                             </div>
                                             <p className="text-gray-400 text-[10px] flex gap-1 items-center">
@@ -71,10 +78,13 @@ export default function Home() {
                                             </p>
                                         </div>
                                     </div>
-                                    <h1 className="text-lg h-[28px] font-bold text-gray-800">{item.data.title}</h1>
+                                    <h1 className="text-lg h-[56px] font-bold text-gray-800">{item.data.title}</h1>
                                     <p className="text-gray-700 line-clamp-2 h-[45px] my-3 text-[15px]">{item.data.content}</p>
-                                    <div className="text-right">
-                                        <button className="bg-green-600 text-white">Làm bài ngay</button>
+                                    <div className="flex justify-between items-center">
+                                        <p>Lượt làm: {item.data.noa}</p>
+                                        <div className="text-right">
+                                            <button className="bg-green-600 text-white">Làm bài ngay</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

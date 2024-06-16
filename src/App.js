@@ -19,6 +19,7 @@ import Test from "./pages/Quiz/Test";
 import Profile from "./pages/User/Profile";
 import Forget from "./pages/Auth/Forget";
 import PageNotFound from "./layout/PageNotFound";
+import Edit from "./pages/Quiz/Edit";
 
 function App() {
     return (
@@ -30,12 +31,13 @@ function App() {
                 <Route path="/tool" element={<Tool />} />
                 <Route path="/tool/:id" element={<Refer />} />
                 <Route path="/post" element={<Post />} />
+                <Route path="/edit/:id" element={<Edit />} />
                 <Route path="/history" element={<Historyy />} />
                 <Route path="/answer/:id" element={<AnsResult />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/test" element={<Test />} />
-                <Route path="/profile/:uid" element={<Profile />} />
+                <Route path="/profile" element={<Profile />} />
                 <Route path="/forget" element={<Forget />} />
                 <Route path="*" element={<PageNotFound />} />
             </Route>

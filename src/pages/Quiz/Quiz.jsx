@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { get, post } from "../../utils/request";
 import { getCookie } from "../../helpers/cookie";
 import Swal from "sweetalert2";
-import { addDoc, collection, getDocs, getFirestore } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, getFirestore, updateDoc } from "firebase/firestore";
 import { Button, Modal } from "antd";
 import { IoIosArrowUp } from "react-icons/io";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -71,6 +71,24 @@ export default function Quiz() {
             [questionId]: answerIndex,
         });
     };
+
+    // tăng 1 số lượng người đã làm bài
+    const handleIncNOA = async (id) => {
+        const quizDocRef = doc(db, "quiz", id);
+
+        try {
+            await updateDoc(quizDocRef, {
+                noa: question.noa + 1,
+            });
+        } catch (error) {
+            Swal.fire({
+                title: "Có lỗi xảy ra",
+                text: error.message,
+                icon: "error",
+            });
+        }
+    };
+
     function handleQuiz(e) {
         e.preventDefault();
         if (Object.keys(selectedAnswers).length !== question.questions.length) {
@@ -95,6 +113,7 @@ export default function Quiz() {
             try {
                 const docRef = await addDoc(collection(db, "histories"), {
                     username: user.displayName || user.email,
+                    image: user.photoURL,
                     uid: user.uid,
                     title: question.title,
                     content: question.content,
@@ -133,6 +152,7 @@ export default function Quiz() {
             }
         };
         pushData();
+        handleIncNOA(params.id);
     }
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -152,9 +172,9 @@ export default function Quiz() {
     return (
         <div className="">
             <div className="">
-                <h1 className="text-xl font-bold text-green-500">Bài quiz về chủ đê: {question.title}</h1>
-                <p className="text-gray-600">Nội dung: {question.content}</p>
-                <p className="text-gray-600">Tác giả: {question.author}</p>
+                <h1 className="text-xl font-bold text-green-500">{question.title}</h1>
+                <p className="text-gray-600">{question.content}</p>
+                <p className="text-gray-600">Tác giả: {question.author || question.email}</p>
                 <p className="text-gray-600">Ngày đăng: {question.date_post}</p>
             </div>
             <form action="" onSubmit={handleQuiz} className="relative flex">
@@ -188,10 +208,14 @@ export default function Quiz() {
                             </div>
                         </div>
                     ))}
-                    <div className="mt-5 text-right">
-                        <button type="submit" className="bg-green-500 text-white">
-                            Nộp bài
-                        </button>
+                    <div className="mt-5 md:text-right">
+                        {question.status ? (
+                            <button type="submit" className="bg-green-500 text-white">
+                                Nộp bài
+                            </button>
+                        ) : (
+                            "Bài quiz đang kiểm duyệt không thể nộp bài"
+                        )}
                     </div>
                 </div>
                 <div className="hidden md:block">

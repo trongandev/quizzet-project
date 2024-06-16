@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { get, get_firebase, patch } from "../../utils/request";
-import { Switch, Button, Popover } from "antd";
+import { Switch, Button, Popover, Avatar } from "antd";
 import { deleteDoc, doc, getFirestore, updateDoc } from "firebase/firestore";
 import Swal from "sweetalert2";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { FaRegTrashAlt } from "react-icons/fa";
+import { UserOutlined } from "@ant-design/icons";
 
 export default function History() {
     const [history, setHistory] = useState([]);
@@ -102,7 +103,7 @@ export default function History() {
                             </th>
 
                             <th scope="col" className="px-6 py-3">
-                                Ngày đăng
+                                Ngày làm
                             </th>
                             <th scope="col" className="px-6 py-3">
                                 Số câu đúng
@@ -120,6 +121,13 @@ export default function History() {
                                         {index + 1}
                                     </th>
                                     <td className="px-6 py-4">
+                                        {item.image ? (
+                                            <div className="w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden">
+                                                <img src={item.image} alt="" className="object-cover h-full" />
+                                            </div>
+                                        ) : (
+                                            <Avatar className="w-[40px] h-[40px] md:w-[35px] md:h-[35px]" icon={<UserOutlined />} />
+                                        )}{" "}
                                         <p>{item.username || item.email}</p>
                                     </td>
                                     <td className="px-6 py-4 hover:text-red-500 hover:underline">
@@ -127,7 +135,7 @@ export default function History() {
                                             {item.title}
                                         </a>
                                     </td>
-                                    <td className="px-6 py-4 w-[150px]">{item.content}</td>
+                                    <td className="px-6 py-4">{item.content}</td>
 
                                     <td className="px-6 py-4">{item.date}</td>
                                     <td className="px-6 py-4">

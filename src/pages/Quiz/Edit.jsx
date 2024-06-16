@@ -1,28 +1,22 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { Button, Form, Modal, Popover, Select, Input } from "antd";
-import { addDoc, collection, getFirestore } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, getFirestore, updateDoc } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
-import { format } from "date-fns";
+import { useNavigate, useParams } from "react-router-dom";
+import { format, sub } from "date-fns";
 
-export default function Post() {
-    const [quiz, setQuiz] = useState({
-        title: "",
-        content: "",
-        img: "",
-    });
-    const [quest, setQuest] = useState([
-        {
-            id: 1,
-            question: "Hàng hóa là gì?",
-            answers: ["Sản phẩm của lao động", "Tất cả những gì có ích", "Những gì có thể mua bán", "Sản phẩm của lao động, có thể thỏa mãn nhu cầu nào đó của con người thông qua trao đổi mua bán"],
-            correct: 3,
-        },
-    ]);
+export default function Edit() {
+    const params = useParams();
+    const [quiz, setQuiz] = useState();
+    const [quest, setQuest] = useState([]);
+    const [defaultValue, setDefaultValue] = useState("");
 
     const [user, setUser] = useState();
     const auth = getAuth();
+    const db = getFirestore();
+    const [form] = Form.useForm();
+
     const navigate = useNavigate();
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
@@ -41,7 +35,42 @@ export default function Post() {
         });
     }, []);
 
-    const [defaultValue, setDefaultValue] = useState("");
+    useEffect(() => {
+        const fetchQuiz = async () => {
+            const querySnapshot = await getDocs(collection(db, "quiz"));
+            const filteredQuiz = [];
+
+            querySnapshot.forEach((doc) => {
+                const data = doc;
+                if (data.id === params.id) {
+                    filteredQuiz.push({
+                        id: doc.id,
+                        data: doc.data(),
+                    });
+                }
+            });
+
+            setQuiz({
+                title: filteredQuiz[0].data.title,
+                content: filteredQuiz[0].data.content,
+                image: filteredQuiz[0].data.img,
+                subject: filteredQuiz[0].data.subject,
+            });
+
+            setQuest(filteredQuiz[0].data.questions);
+            setDefaultValue(filteredQuiz[0].data.default);
+        };
+
+        fetchQuiz();
+    }, [params.id, navigate]);
+
+    console.log(quiz);
+
+    useEffect(() => {
+        if (quiz) {
+            form.setFieldsValue(quiz);
+        }
+    }, [quiz, form]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -58,11 +87,12 @@ export default function Post() {
     };
 
     const onFinish = (values) => {
-        const now = new Date();
         const db = getFirestore();
-        const pushData = async () => {
+        const updateData = async () => {
+            const quizDocRef = doc(db, "quiz", params.id);
+
             try {
-                await addDoc(collection(db, "quiz"), {
+                await updateDoc(quizDocRef, {
                     title: values.title,
                     uid: user.uid,
                     subject: values.subject,
@@ -72,56 +102,36 @@ export default function Post() {
                     image_author: user.photoURL,
                     content: values.content,
                     img: values.image,
-                    noa: 0,//số lần làm bài number of attemps
-                    date_post: format(now, "HH:mm:ss dd/MM/yyyy"),
                     status: false,
                     questions: quest,
                     default: defaultValue,
                 });
-
                 Swal.fire({
                     icon: "success",
-                    title: "Thêm bài viết thành công",
-                    text: "Bài viết của bạn sẽ được kiểm duyệt trước khi hiển thị",
+                    title: "Cập nhật thành công",
                     didClose: () => {
                         navigate("/");
                     },
                 });
-            } catch (e) {
+            } catch (error) {
                 Swal.fire({
                     icon: "error",
-                    title: "Thêm không thành công",
-                    text: "Mã lỗi\n" + e.code,
+                    title: "Cập nhật không thành công",
+                    text: "Mã lỗi\n" + error.code,
                 });
             }
         };
-        pushData();
+        updateData();
     };
 
     const onFinishFailed = (errorInfo) => {
         console.log("Failed:", errorInfo);
     };
 
-    function handlePost(e) {
-        e.preventDefault();
-        const title = quiz.title;
-        const content = quiz.content;
-        const image = quiz.img;
-
-        if (title === "" || image === "" || content === "") {
-            Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Vui lòng điền đầy đủ thông tin ở phần tiêu đề, nội dung, đường dẫn hình ảnh",
-            });
-            return;
-        }
-    }
-
     const handleImage = (e) => {
         setQuiz({
             ...quiz,
-            img: e.target.value,
+            image: e.target.value,
         });
     };
 
@@ -181,8 +191,8 @@ export default function Post() {
     return (
         <div className="flex items-center justify-center gap-5 flex-col md:flex-row">
             <div className="w-full h-[500px] md:h-auto md:w-[700px] bg-white p-2 md:p-5">
-                <Form onFinish={onFinish} onFinishFailed={onFinishFailed} autoComplete="off" layout="vertical" className="frm-post my-3 overflow-y-scroll h-[600px]">
-                    <h1 className="text-2xl font-bold text-green-500 text-center mb-5">Thêm bài quiz mới</h1>
+                <Form form={form} onFinish={onFinish} onFinishFailed={onFinishFailed} autoComplete="off" layout="vertical" className="frm-post my-3 overflow-y-scroll h-[600px]">
+                    <h1 className="text-2xl font-bold text-green-500 text-center mb-5">Cập nhật bài quiz</h1>
                     <div className="flex gap-3">
                         <div className="flex-1">
                             <Form.Item
@@ -194,7 +204,7 @@ export default function Post() {
                                         message: "Vui lòng nhập tiêu đề!",
                                     },
                                 ]}>
-                                <Input type="text" onChange={(e) => handleTitle(e)} name="title" id="title" placeholder="Nhập tiêu đề..." value={quiz.title} />
+                                <Input type="text" onChange={(e) => handleTitle(e)} name="title" id="title" placeholder="Nhập tiêu đề..." value={quiz?.title} />
                             </Form.Item>
                         </div>
                         <div className="flex-1">
@@ -212,6 +222,7 @@ export default function Post() {
                                     showSearch
                                     placeholder="Tìm kiếm nghành học - môn học..."
                                     optionFilterProp="children"
+                                    value={quiz?.subject}
                                     filterOption={(input, option) => (option?.label ?? "").includes(input)}
                                     filterSort={(optionA, optionB) => (optionA?.label ?? "").toLowerCase().localeCompare((optionB?.label ?? "").toLowerCase())}
                                     options={[
@@ -289,6 +300,7 @@ export default function Post() {
                                         },
                                     ]}
                                 />
+                                <div className=""></div>
                             </Form.Item>
                         </div>
                     </div>
@@ -302,7 +314,7 @@ export default function Post() {
                                     message: "Vui lòng nhập nội dung",
                                 },
                             ]}>
-                            <Input type="text" onChange={(e) => handleContent(e)} name="content" id="content" placeholder="Nhập nội dung..." value={quiz.content} />
+                            <Input type="text" onChange={(e) => handleContent(e)} name="content" id="content" placeholder="Nhập nội dung..." value={quiz?.content} />
                         </Form.Item>
                     </div>
                     <div className="mb-3">
@@ -316,7 +328,7 @@ export default function Post() {
                                 },
                             ]}>
                             <div className="flex items-center">
-                                <Input type="text" onChange={(e) => handleImage(e)} name="image" id="image" placeholder="Dán URL hình ảnh ở đây..." value={quiz.img} />
+                                <Input type="text" onChange={(e) => handleImage(e)} name="image" id="image" placeholder="Dán URL hình ảnh ở đây..." value={quiz?.image} />
                                 <Popover
                                     content={<img width={400} src="./guide4.png" alt="" className="" />}
                                     title="Cách lấy đường đẫn hình ảnh (Image Address)"
@@ -328,10 +340,9 @@ export default function Post() {
                             </div>
                         </Form.Item>
                     </div>
-
                     <div className="my-5">
                         <div className="mb-3">
-                            <h1 className="text-2xl font-bold text-green-500 text-center mb-3">Thêm câu hỏi</h1>
+                            <h1 className="text-2xl font-bold text-green-500 text-center mb-3">Cập nhật câu hỏi</h1>
 
                             <div className="block text-sm text-red-500">
                                 <div className="flex items-center gap-2">
@@ -361,13 +372,13 @@ export default function Post() {
                                     className="w-full p-2 border-[1px] border-gray-200 h-[400px] text-xl"
                                     placeholder=""
                                     onChange={(e) => handleQuest(e)}
-                                    defaultValue={`Hàng hóa là gì?\nSản phẩm của lao động\nTất cả những gì có ích\nNhững gì có thể mua bán\nSản phẩm của lao động, có thể thỏa mãn nhu cầu nào đó của con người thông qua trao đổi mua bán\n4`}></textarea>
+                                    defaultValue={defaultValue}></textarea>
                             </div>
                         </div>
                     </div>
                     <div className="mt-3 text-right">
                         <button type="submit" className="bg-green-500 text-white ">
-                            Thêm bài viết này
+                            Cập nhật bài viết này
                         </button>
                     </div>
                 </Form>
@@ -376,35 +387,36 @@ export default function Post() {
                 <h1 className="text-xl font-bold text-green-500 text-center">Preview</h1>
                 <div className="flex items-center justify-center flex-col my-3">
                     <div className=" shadow-md border-2 rounded-lg overflow-hidden group w-[200px] ">
-                        {quiz.img ? <img src={quiz.img} alt="" className="w-full h-[100px] object-cover" /> : ""}
+                        {quiz?.image ? <img src={quiz?.image} alt="" className="w-full h-[100px] object-cover" /> : ""}
                         <div className="p-3">
-                            <h1 className="text-md text-green-500 font-bold line-clamp-1 h-[24px]">{quiz.title}</h1>
-                            <p className="text-gray-500 line-clamp-1 text-sm h-[20px]">{quiz.content}</p>
+                            <h1 className="text-md text-green-500 font-bold line-clamp-1 h-[24px]">{quiz?.title}</h1>
+                            <p className="text-gray-500 line-clamp-1 text-sm h-[20px]">{quiz?.content}</p>
                         </div>
                     </div>
                 </div>
                 <div className="">
-                    {quest.map((item, index) => {
-                        return (
-                            <div className="bg-white p-2 mt-2" key={index}>
-                                <h1 className="text-lg font-bold text-green-500 mb-3">
-                                    Câu {index + 1}: {item.question}
-                                </h1>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                    {item.answers.map((answer, index) => (
-                                        <div key={index} className={`border relative flex items-center ${item.correct === index ? "bg-green-100 text-green-500 font-bold" : ""}`}>
-                                            <label className={`absolute h-full flex items-center justify-center font-bold p-3 ${item.correct === index ? "bg-green-500 text-white" : ""}`}>
-                                                {index === 0 ? "A" : index === 1 ? "B" : index === 2 ? "C" : "D"}
-                                            </label>
-                                            <input className="w-1 invisible" type="radio" id={item} name={item} checked={item.correct === index} />
-                                            <label className="block w-full ml-7 p-3">{answer}</label>
-                                        </div>
-                                    ))}
-                                    <p className="text-green-500 line-clamp-2 h-[48px]`">Đáp án đúng: {item.answers[item.correct]}</p>
+                    {quest &&
+                        quest.map((item, index) => {
+                            return (
+                                <div className="bg-white p-2 mt-2" key={index}>
+                                    <h1 className="text-lg font-bold text-green-500 mb-3">
+                                        Câu {index + 1}: {item.question}
+                                    </h1>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                        {item.answers.map((answer, index) => (
+                                            <div key={index} className={`border relative flex items-center ${item.correct === index ? "bg-green-100 text-green-500 font-bold" : ""}`}>
+                                                <label className={`absolute h-full flex items-center justify-center font-bold p-3 ${item.correct === index ? "bg-green-500 text-white" : ""}`}>
+                                                    {index === 0 ? "A" : index === 1 ? "B" : index === 2 ? "C" : "D"}
+                                                </label>
+                                                <input className="w-1 invisible" type="radio" id={item} name={item} checked={item.correct === index} />
+                                                <label className="block w-full ml-7 p-3">{answer}</label>
+                                            </div>
+                                        ))}
+                                        <p className="text-green-500 line-clamp-2 h-[48px]`">Đáp án đúng: {item.answers[item.correct]}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        );
-                    })}
+                            );
+                        })}
                 </div>
             </div>
         </div>

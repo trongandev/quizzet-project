@@ -112,7 +112,7 @@ export default function Header() {
                             <Popover
                                 content={
                                     <>
-                                        <Link to={`/profile/${user.uid}`} className="flex items-center gap-2 p-2 hover:bg-gray-100">
+                                        <Link to={`/profile`} className="flex items-center gap-2 p-2 hover:bg-gray-100">
                                             <UserOutlined />
                                             <p>Quản lí tài khoản</p>
                                         </Link>
@@ -131,7 +131,7 @@ export default function Header() {
                                         <img src={user.photoURL} alt="" className="object-cover h-full" />
                                     </div>
                                 ) : (
-                                    <Avatar className="w-[50px] md:w-[35px]" icon={<UserOutlined />} />
+                                    <Avatar className="w-[40px] h-[40px] md:w-[35px] md:h-[35px]" icon={<UserOutlined />} />
                                 )}
                             </Popover>
                         </div>

@@ -119,8 +119,8 @@ export default function TopicManager() {
                                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                         {index + 1}
                                     </th>
-                                    <td className="px-6 py-4">
-                                        <img src={item.img} className="w-[150px] h-[50px] object-cover" alt="" />
+                                    <td className="">
+                                        <img src={item.img} className="w-[150px] h-full object-cover" alt="" />
                                     </td>
                                     <td className="px-6 py-4 hover:text-red-500 hover:underline">
                                         <a target="_blank" href={`/quiz/${item.id}`} rel="noreferrer">
@@ -148,8 +148,8 @@ export default function TopicManager() {
                                                         </div>
                                                         <div className="flex items-center gap-2">
                                                             <p>Xoá bài viết</p>
-                                                            <Button>
-                                                                <FaRegTrashAlt size={20} onClick={() => handleRemove(item.id)} />
+                                                            <Button onClick={() => handleRemove(item.id)}>
+                                                                <FaRegTrashAlt size={20} />
                                                             </Button>
                                                         </div>
                                                     </div>
