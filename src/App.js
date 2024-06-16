@@ -20,7 +20,6 @@ import Profile from "./pages/User/Profile";
 import Forget from "./pages/Auth/Forget";
 import PageNotFound from "./layout/PageNotFound";
 import Edit from "./pages/Quiz/Edit";
-
 function App() {
     return (
         <Routes>

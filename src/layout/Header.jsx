@@ -59,7 +59,7 @@ export default function Header() {
         <header className="bg-orange-500 px-2 md:px-5 lg:px-10 text-white w-full">
             <div className="flex items-center justify-between px-5 py-1 md:px-0 md:py-0">
                 <Link to="/">
-                    <h1 className="text-2xl font-bold">QuizzEt</h1>
+                    <h1 className="text-3xl bebas-neue-regular ">Quizzet</h1>
                 </Link>
                 <ul className="hidden md:flex">
                     <li>

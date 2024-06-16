@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { generateRandomToken } from "../../helpers/cookie";
@@ -8,9 +8,10 @@ import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import { getAuth, signInWithPopup, createUserWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, onAuthStateChanged } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
-
+import ReCAPTCHA from "react-google-recaptcha";
 export default function Register() {
     const navigate = useNavigate();
+    const [capVal, setCapVal] = useState(null);
 
     const handleCheckLogin = () => {
         onAuthStateChanged(auth, (user) => {
@@ -98,6 +99,10 @@ export default function Register() {
             });
     };
 
+    function onSubmit(token) {
+        document.getElementById("demo-form").submit();
+    }
+
     return (
         <div className="flex justify-center flex-col items-center ">
             <div className="w-full mt-10 md:mt-0 md:w-[500px] border-[1px] border-green-500 px-3 md:px-10 py-5 rounded-lg shadow-lg bg-white">
@@ -143,8 +148,9 @@ export default function Register() {
                         />
                         {formik.touched.rePassword && formik.errors.rePassword ? <div className="text-red-500">{formik.errors.rePassword}</div> : null}
                     </div>
+                    <ReCAPTCHA sitekey="6LdxGvopAAAAALOqa3Ytk-IGNlYlfeOx6N1XHV8M" onChange={(val) => setCapVal(val)} />
                     <div className="mb-3 text-right">
-                        <button type="submit" className="bg-green-500 text-white w-full">
+                        <button type="submit" className="bg-green-500 text-white w-full mt-3" disabled={!capVal}>
                             Đăng ký ngay
                         </button>
                     </div>

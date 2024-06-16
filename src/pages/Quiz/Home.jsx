@@ -48,7 +48,7 @@ export default function Home() {
                         <button className="bg-green-500 text-white">Thêm bài mới</button>
                     </a>
                 </div>
-                <div className="bg-white p-5 mt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="bg-white p-5 mt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {quiz?.map((item) => (
                         <NavLink to={`/quiz/${item.id}`} key={item.id}>
                             <div className=" shadow-md border-2 rounded-lg overflow-hidden group">
