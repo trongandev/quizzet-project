@@ -37,6 +37,7 @@ export default function Login() {
             .then((userCredential) => {
                 // Signed in
                 const user = userCredential.user;
+                
                 Swal.fire({
                     title: "Đăng nhập thành công",
                     icon: "success",

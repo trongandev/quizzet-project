@@ -8,58 +8,6 @@ import { collection, getDocs, getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 export default function Users() {
-    const [user, setUser] = useState([]);
-
-    useEffect(() => {
-        const listAllUsers = (nextPageToken) => {
-            // List batch of users, 1000 at a time.
-            getAuth()
-                .listUsers(1000, nextPageToken)
-                .then((listUsersResult) => {
-                    listUsersResult.users.forEach((userRecord) => {
-                        console.log("user", userRecord.toJSON());
-                    });
-                    if (listUsersResult.pageToken) {
-                        // List next batch of users.
-                        listAllUsers(listUsersResult.pageToken);
-                    }
-                })
-                .catch((error) => {
-                    console.log("Error listing users:", error);
-                });
-        };
-        // Start listing users from the beginning, 1000 at a time.
-        listAllUsers();
-    }, []);
-
-    console.log(user);
-
-    const handleChangeStatus = (id, status) => {
-        const newUser = user.map((item) => {
-            if (item.id === id) {
-                item.status = !item.status;
-            }
-            return item;
-        });
-        setUser(newUser);
-
-        patch(`users/${id}`, { status: !status });
-    };
-
-    const handleChangeRole = (id, value) => {
-        console.log(id + " " + value);
-        const newUser = user.map((item) => {
-            if (item.id === id) {
-                item.role = value;
-            }
-            return item;
-        });
-        console.log(newUser);
-        setUser(newUser);
-
-        patch(`users/${id}`, { role: value });
-    };
-
     return (
         <div className="">
             <div className="">

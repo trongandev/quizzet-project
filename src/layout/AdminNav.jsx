@@ -4,6 +4,7 @@ import { MdDashboard } from "react-icons/md";
 import { HiUsers } from "react-icons/hi";
 import { MdOutlineTopic } from "react-icons/md";
 import { MdHistory } from "react-icons/md";
+import { FaTools } from "react-icons/fa";
 
 export default function AdminNav() {
     return (
@@ -12,27 +13,33 @@ export default function AdminNav() {
             <hr className="my-3" />
             <ul className="text-gray-500">
                 <li>
-                    <Link to="/admin" className="p-3 flex items-center gap-2">
+                    <Link to="/whatheo" className="p-3 flex items-center gap-2">
                         <MdDashboard />
                         Dashboard
                     </Link>
                 </li>
                 <li>
-                    <NavLink to="/admin/users" className="p-3 flex items-center gap-2">
+                    <NavLink to="/whatheo/users" className="p-3 flex items-center gap-2">
                         <HiUsers />
                         Users
                     </NavLink>
                 </li>
                 <li>
-                    <NavLink to="/admin/topic" className="p-3 flex items-center gap-2">
+                    <NavLink to="/whatheo/topic" className="p-3 flex items-center gap-2">
                         <MdOutlineTopic />
                         Topic
                     </NavLink>
                 </li>
                 <li>
-                    <NavLink to="/admin/history" className="p-3 flex items-center gap-2">
+                    <NavLink to="/whatheo/history" className="p-3 flex items-center gap-2">
                         <MdHistory />
                         History
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/whatheo/tool" className="p-3 flex items-center gap-2">
+                        <FaTools />
+                        Tool
                     </NavLink>
                 </li>
             </ul>

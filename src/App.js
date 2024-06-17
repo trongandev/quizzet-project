@@ -21,6 +21,7 @@ import Forget from "./pages/Auth/Forget";
 import PageNotFound from "./layout/PageNotFound";
 import Edit from "./pages/Quiz/Edit";
 import ResultTopic from "./pages/Quiz/ResultTopic";
+import NewPostTool from "./pages/Admin/NewPostTool";
 function App() {
     return (
         <Routes>
@@ -42,11 +43,12 @@ function App() {
                 <Route path="/forget" element={<Forget />} />
                 <Route path="*" element={<PageNotFound />} />
             </Route>
-            <Route path="/admin" element={<AdminLayout />}>
-                <Route path="/admin" element={<Admin />} />
-                <Route path="/admin/users" element={<Users />} />
-                <Route path="/admin/topic" element={<TopicManager />} />
-                <Route path="/admin/history" element={<History />} />
+            <Route path="/whatheo" element={<AdminLayout />}>
+                <Route path="/whatheo" element={<Admin />} />
+                <Route path="/whatheo/users" element={<Users />} />
+                <Route path="/whatheo/topic" element={<TopicManager />} />
+                <Route path="/whatheo/history" element={<History />} />
+                <Route path="/whatheo/tool" element={<NewPostTool />} />
             </Route>
         </Routes>
     );
