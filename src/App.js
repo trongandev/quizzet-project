@@ -20,6 +20,7 @@ import Profile from "./pages/User/Profile";
 import Forget from "./pages/Auth/Forget";
 import PageNotFound from "./layout/PageNotFound";
 import Edit from "./pages/Quiz/Edit";
+import ResultTopic from "./pages/Quiz/ResultTopic";
 function App() {
     return (
         <Routes>
@@ -27,6 +28,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/quiz/:id" element={<Quiz />} />
                 <Route path="/topic" element={<Topic />} />
+                <Route path="/topic/:id" element={<ResultTopic />} />
                 <Route path="/tool" element={<Tool />} />
                 <Route path="/tool/:id" element={<Refer />} />
                 <Route path="/post" element={<Post />} />
