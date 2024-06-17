@@ -22,9 +22,9 @@ export default function Tool() {
         {
             id: 3,
             name: "ktqt",
-            title: "Kinh tế quản trị",
-            image: "https://hevobooks.com/wp-content/uploads/2022/01/Bia-Gt-KT-va-quan-tri-KD-Duoc_bia_1-scaled.jpg",
-            description: "Các đáp án, ôn tập về bộ môn kinh tế quản trị",
+            title: "Kế toán quản trị",
+            image: "https://shop.ueh.edu.vn/wp-content/uploads/2022/07/KTQT-phu-bia-truoc-scaled.jpg",
+            description: "Các đáp án, ôn tập về bộ môn Kế toán quản trị",
             date: "17/06/2024",
         },
     ]);
