@@ -19,6 +19,14 @@ export default function Tool() {
             description: "Các đáp án, ôn tập về bộ môn phân tích đầu tư chứng khoán",
             date: "17/06/2024",
         },
+        {
+            id: 3,
+            name: "ktqt",
+            title: "Kinh tế quản trị",
+            image: "https://hevobooks.com/wp-content/uploads/2022/01/Bia-Gt-KT-va-quan-tri-KD-Duoc_bia_1-scaled.jpg",
+            description: "Các đáp án, ôn tập về bộ môn kinh tế quản trị",
+            date: "17/06/2024",
+        },
     ]);
 
     return (
