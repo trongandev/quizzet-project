@@ -56,10 +56,10 @@ export default function NewPostTool() {
     const handlePost = async () => {
         const now = new Date();
         const data = {
-            name: "ptdtck",
-            title: "Phân tích đầu tư chứng khoán",
-            image: "https://salt.tikicdn.com/cache/w300/ts/product/cd/89/16/1bcc8417a62f87b210acdeb99d82bba1.jpg",
-            description: "Các đáp án, ôn tập về bộ môn phân tích đầu tư chứng khoán",
+            name: "thmac-lenin",
+            title: "Triết học mác - lênin",
+            image: "https://i.ytimg.com/vi/qw_U8Hb_aK4/maxresdefault.jpg",
+            description: "Các đáp án, ôn tập về bộ môn Triết học mác - lênin",
             date: format(now, "HH:mm:ss dd/MM/yyyy"),
         };
 

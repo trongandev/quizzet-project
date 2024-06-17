@@ -18,7 +18,7 @@ export default function Tool() {
     }, []);
     return (
         <div className="">
-            <div className="bg-white p-5 mt-2 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="bg-white p-5 mt-2 grid  grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {data.map((item, index) => (
                     <NavLink to={`/tool/${item.name}`} className="relative" key={index}>
                         <div className=" shadow-md border-2 rounded-lg overflow-hidden group">
@@ -26,7 +26,10 @@ export default function Tool() {
                             <div className="p-3">
                                 <h1 className="text-lg text-green-500 font-bold h-[56px]">{item.title}</h1>
                                 <p className="text-gray-500 line-clamp-2 h-[48px] my-1">{item.description}</p>
-                                <div className="text-right">
+                                <div className="text-right flex items-center justify-between">
+                                    <p className="">
+                                        Tổng câu hỏi: <label className="text-red-500 font-bold">{item.quest?.length}</label>{" "}
+                                    </p>
                                     <button className="bg-green-500 text-white">Xem ngay</button>
                                 </div>
                             </div>

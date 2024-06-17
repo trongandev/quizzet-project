@@ -7,6 +7,7 @@ import { Avatar, Tooltip } from "antd";
 import { MdOutlineVerified } from "react-icons/md";
 import { UserOutlined } from "@ant-design/icons";
 import sortArrayByTime from "../../helpers/sort";
+import Tool from "./Tool";
 
 export default function Home() {
     const [quiz, setQuiz] = useState([]);
@@ -90,7 +91,16 @@ export default function Home() {
                         </NavLink>
                     ))}
                 </div>
-                <div className=""></div>
+                <div className="bg-white p-5 mt-2 text-red-500 ">
+                    <h1 className="text-xl md:text-2xl text-green-700 font-bold">Một số tài liệu ôn các môn chuyên ngành</h1>
+                    <p className="text-sm md:text-md text-gray-500">Nếu bạn có tài liệu cần đưa lên web? bấm vào nút dưới để gửi tài liệu cho mình nhá 😍😍</p>
+                    <a href="mailto: thngan25k3@gmail.com">
+                        <button className="bg-green-500 text-white mt-2">Yêu cầu tài liệu mới</button>
+                    </a>
+                </div>
+                <div className="bg-white ">
+                    <Tool />
+                </div>
             </div>
         </div>
     );
