@@ -56,10 +56,10 @@ export default function NewPostTool() {
     const handlePost = async () => {
         const now = new Date();
         const data = {
-            name: "thmac-lenin",
-            title: "Triết học mác - lênin",
-            image: "https://i.ytimg.com/vi/qw_U8Hb_aK4/maxresdefault.jpg",
-            description: "Các đáp án, ôn tập về bộ môn Triết học mác - lênin",
+            name: "tacnoto",
+            title: "Tiếng anh chuyên ngành công nghệ ô tô",
+            image: "https://obdvietnam.vn/image/73853437.jpg",
+            description: "Các đáp án, ôn tập về bộ môn Tiếng anh chuyên ngành công nghệ ô tô",
             date: format(now, "HH:mm:ss dd/MM/yyyy"),
         };
 

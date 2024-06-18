@@ -59,8 +59,8 @@ export default function History() {
     return (
         <div>
             <p className="text-2xl font-bold text-green-500">Lịch sử làm bài</p>
+            {history.length === 0 ? "Bạn chưa có lịch sử làm bài..." : ""}
             <div className="grid grid-cols-4 gap-5 my-5 relative">
-                {history.length === 0 ? "Bạn chưa có lịch sử làm bài..." : ""}
                 {history.map((item) => (
                     <div key={item.id} className="bg-white p-3 border-[1px] shadow-md">
                         <h1 className="text-lg mb-3 text-green-500 font-bold h-[56px] line-clamp-2">{item.title}</h1>
