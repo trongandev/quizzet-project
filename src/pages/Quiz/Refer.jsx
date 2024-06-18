@@ -29,11 +29,11 @@ export default function Refer() {
                     Tổng: <label className="text-red-500 font-bold ">{tool.length}</label> câu hỏi
                 </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 md:gap-5 mt-5">
+            <div className="grid grid-cols-1 md:grid-cols-2  gap-2 md:gap-5 mt-5">
                 {tool.map((item, index) => (
                     <div className=" bg-white  p-5" key={index}>
                         <h1 className=" font-bold text-lg">
-                            Câu {index + 1}: {item.question}
+                            Câu {index + 1}: {item.question.replace("Câu ", "")}
                         </h1>
 
                         <p className="text-green-500">{item.answer}</p>
