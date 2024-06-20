@@ -22,6 +22,7 @@ import PageNotFound from "./layout/PageNotFound";
 import Edit from "./pages/Quiz/Edit";
 import ResultTopic from "./pages/Quiz/ResultTopic";
 import NewPostTool from "./pages/Admin/NewPostTool";
+import SubjectOutline from "./pages/Quiz/SubjectOutline";
 function App() {
     return (
         <Routes>
@@ -33,6 +34,7 @@ function App() {
                 <Route path="/tool" element={<Tool />} />
                 <Route path="/tool/:id" element={<Refer />} />
                 <Route path="/post" element={<Post />} />
+                <Route path="/tailieu" element={<SubjectOutline />} />
                 <Route path="/edit/:id" element={<Edit />} />
                 <Route path="/history" element={<Historyy />} />
                 <Route path="/answer/:id" element={<AnsResult />} />

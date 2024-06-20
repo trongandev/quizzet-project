@@ -1,1823 +1,1221 @@
 const template = [
     {
-      "question": "Một khi mức rủi ro kiểm soát của khoản mục tiền được đánh giá là tối đa và xét thấy không có khả năng giảm được trong thực tế thì các kiểm toán viên sẽ:",
-      "answer": "Không thực hiện các thử nghiệm kiểm soát"
+        question: "Đâu là thuế trực thu",
+        answer: "Thuế TNDN",
     },
     {
-      "question": "Khi thu thập bằng chứng về số dư tiền gửi ngân hàng, kiểm toán viên không cần xem xét:",
-      "answer": "Toàn bộ giấy báo Nợ và báo Có của ngân hàng vào tháng 12"
+        question: "Tìm nội dung KHÔNG phải là đặc trưng cơ bản\r\ncủa thuế",
+        answer: "Mang tính bắt buộc",
     },
     {
-      "question": "Việc gửi thư xác nhận cho ngân hàng về số dư của tài khoản tiền gửi ngân hàng vào thời điểm khóa sổ là thủ tục kiểm toán nhằm thỏa mãn mục tiêu nào:",
-      "answer": "Hiện hữu và đầy đủ"
+        question: "Đâu là đặc trưng của thuế gián thu?",
+        answer: "Được tính vào giá bán của hàng hóa, dịch vụ.",
     },
     {
-      "question": "Trong các nguyên tắc sau đây, nguyên tắc nào không phù hợp với nguyên tắc kiểm toán báo cáo tài chính?",
-      "answer": "Tuân thủ quy định của khách hàng"
+        question: "Đâu là đặc trưng của thuế trực thu?",
+        answer: "Đảm bảo sự công bằng trong việc thực hiện nghĩa vụ với ngân sách nhà nước; đánh vào thu\r\nnhập chịu thuế; tăng lên cùng mức tăng của thu nhập chịu thuế.",
     },
     {
-      "question": "Một cuộc kiểm toán được thiết kế để phát hiện ra những vi phạm về pháp luật của Nhà nước và quy định của công ty đó chính là một cuộc kiểm toán .............",
-      "answer": "Tuân thủ"
+        question: "Đối với các loại thuế kê khai theo quý, thời hạn nộp tờ khai chậm nhất là",
+        answer: "ngày thứ 30 của quý tiếp theo.",
     },
     {
-      "question": "Kiểm toán viên trong quá trình hoạt động cung cấp dịch vụ cho các doanh nghiệp khách hàng thì cần thiết phải thấm nhuần về điều gì?",
-      "answer": "Đạo đức nghề nghiệp"
+        question: "Đơn vị áp dụng năm tính thuế là năm dương\r\nlịch thì hồ sơ quyết toán thuế năm có thời hạn nộp chậm nhất là:",
+        answer: "ngày 31/3 của năm tiếp theo.",
     },
     {
-      "question": "Hoạt động kiểm toán luôn giữ một vai trò hết sức quan trọng và có ảnh hưởng rất nhiều đến hoạt động sản xuất kinh doanh của một doanh nghiệp vì .................",
-      "answer": "Lợi ích"
+        question: "Thuế nào sau đây là thuế gián thu",
+        answer: "Thuế GTGT",
     },
     {
-      "question": "Trong các biểu hiện dưới đây, biểu hiện nào không phải là biểu hiện của nhầm lẫn?",
-      "answer": "Trong các biểu hiện dưới đây, biểu hiện nào không phải là biểu hiện của nhầm lẫn?"
+        question: "Tính không hoàn trả trực tiếp của thuế được thể hiện là:",
+        answer: "việc thực hiện nghĩa vụ thuế không tương xứng với lợi ích mà chủ thể nộp thuế nhận được.",
     },
     {
-      "question": "Ngoài việc phải gánh chịu trách nhiệm hình sự trước pháp luật, các kiểm toán viên còn phải chịu trách nhiệm ................",
-      "answer": "Ngoài việc phải gánh chịu trách nhiệm hình sự trước pháp luật, các kiểm toán viên còn phải chịu trách nhiệm ................"
+        question:
+            "Công ty A nhận nhập khẩu uỷ thác một dây chuyền sản xuất cho công ty B, ngân hàng C là người bảo lãnh về số tiền thuế nhập khẩu phải nộp. Chủ thể có trách nhiệm nộp thuế nhập\r\nkhẩu của dây chuyền trên là:",
+        answer: "Công ty A",
     },
     {
-      "question": "Các thủ tục kiểm soát nào sau đây có thể giúp ngăn ngừa việc lập nhiều phiếu chi tiền mặt cho cùng một hóa đơn mua hàng:",
-      "answer": "Đánh dấu trên hóa đơn ngay khi ký duyệt"
+        question: "Đối tượng nộp thuế xuất nhập khẩu là:",
+        answer: "tất cả các tổ chức, cá nhân xuất nhập khẩu hàng hóa thuộc đối\r\ntượng chịu thuế theo quy định.",
     },
     {
-      "question": "Theo bạn, cụm từ \"VSA\" nghĩa là gì?",
-      "answer": "Hệ thống chuẩn mực Kiểm toán Việt Nam"
+        question:
+            "Đối với đối tượng nộp thuế chưa Thực hiện thanh toán qua ngân hàng theo quy định của pháp luật, có hàng hóa nhập khẩu\r\nlà vật tư, vật liệu để sản xuất hàng hóa xuất khẩu thì thời hạn nộp thuế nhập khẩu là:",
+        answer: "nộp thuế trước khi nhận hàng.",
     },
     {
-      "question": "Gian lận là gì?",
-      "answer": "Là những hành vi lừa dối nhằm biển thủ tài sản, tham ô tài sản, xuyên tạc thông tin"
+        question: "Tỷ giá làm cơ sở để xác định giá tính thuế đối với hàng hóa xuất khẩu, nhập khẩu là:",
+        answer: "tỷ giá do cơ quan Hải quan xác định.",
     },
     {
-      "question": "Trong quá trình tác nghiệp, khi nào các kiểm toán viên được phép viện dẫn các chuẩn mực kiểm toán quốc tế được chấp nhận?",
-      "answer": "Hệ thống chuẩn mực kiểm toán Việt Nam chưa quy định về vấn đề đó"
+        question: "Trường hợp người nộp thuế tính thuế, thì thời hạn nộp thuế",
+        answer: "30 ngày kể từ ngày đăng ký tờ khai hải quan.",
     },
     {
-      "question": "Khi kiểm kê tiền mặt tồn quỹ, kiểm toán viên cần phải tiến hành đối với tất cả các quỹ trong cùng một thời gian nhằm ngăn ngừa:",
-      "answer": "Sự hoán chuyển tiền từ quỹ này sang quỹ khác"
+        question: "Giá tính thuế xuất khẩu",
+        answer: "Giá bán tại cửa khẩu xuất ở Việt Nam (giá FOB, giá DAP) không\r\nbao gồm phí bảo hiểm I và phí vận tải F",
     },
     {
-      "question": "Khi kiểm tra việc khóa sổ các nghiệp vụ thu chi, kiểm toán viên phải thu thập phiếu thu, phiếu chi trước và sau bao nhiêu ngày liền kề kết thúc niên độ và đối chiếu với các nghiệp vụ thu, chi trên sổ sách:",
-      "answer": "5 ngày"
+        question: "Giá tính thuế nhập khẩu",
+        answer: "Giá CIF - I. cif=fob+I+f",
     },
     {
-      "question": "Kiểm toán viên yêu cầu bút toán điều chỉnh nào đối với phần chênh lệch (lãi) phát sinh giữa số tính lại của kiểm toán viên so với số ghi nhận trên sổ sách kế toán của đơn vị khi kiểm tra việc quy đổi ra tiền ngoại tệ:",
-      "answer": "Nợ 11*/Có 515"
+        question: "Thời điểm tính thuế xuất khẩu, thuế nhập khẩu là:",
+        answer: "ngày đối tượng nộp thuế đăng ký tờ khai hàng hóa xuất khẩu, nhập khẩu với cơ quan hải quan theo quy định của Luật Hải\r\nquan.",
     },
     {
-      "question": "Kiểm toán viên yêu cầu bút toán điều chỉnh nào đối với phần chênh lệch (lỗ) phát sinh giữa số tính lại của kiểm toán viên so với số ghi nhận trên sổ sách kế toán của đơn vị khi kiểm tra việc quy đổi ra tiền ngoại tệ:",
-      "answer": "Nợ 635/Có 11*"
+        question: "Số lượng hàng hóa làm căn cứ tính thuế xuất nhập khẩu là:",
+        answer: "số lượng của từng mặt hàng thực tế xuất nhập khẩu ghi trong tờ\r\nkhai hải quan.",
     },
     {
-      "question": "Trong một cuộc kiểm toán tiền, việc chứng kiến kiểm kê tiền tồn quỹ sẽ giúp kiểm toán viên xác định được …………… của tiền tại ngày kết thúc niên độ:",
-      "answer": "Sự hiện hữu"
+        question: "Phương thức nộp thuế xuất nhập khẩu nộp vào ngân sách nhà\r\nnước là:",
+        answer: "nộp tiền mặt hoặc chuyển khoản bằng đồng Việt Nam.",
     },
     {
-      "question": "giúp kiểm toán viên xác định số liệu ghi chép trên sổ sách kế toán của đơn vị tại ngày kết thúc niên độ có phù hợp với số tiền theo sự xác nhận của ngân hàng nơi đơn vị mở tài khoản giao dịch không:",
-      "answer": "Bảng tổng hợp thư xác nhận tiền gửi ngân hàng"
+        question: "Những hàng hóa nào sau đây thuộc diện được miễn thuế xuất\r\nkhẩu, nhập khẩu?",
+        answer: "Hàng hóa tạm nhập - tái xuất hoặc tạm xuất - tái nhập để tham dự hội trợ, triển lãm.",
     },
     {
-      "question": "Lý do chính của kiểm toán báo cáo tài chính là:",
-      "answer": "Cung cấp cho người sử dụng một sự đảm bảo về tính trung thực và hợp lý của thông tin trên báo cáo tài chính"
+        question: "Hàng hóa nào sau đây KHÔNG chịu thuế nhập khẩu?",
+        answer: "Hàng hóa quá cảnh, chuyển khẩu, trung chuyển.",
     },
     {
-      "question": "Kiểm toán hoạt động thường được tiến hành bởi kiểm toán nội bộ, hay kiểm toán viên nhà nước và đôi khi bởi kiểm toán viên độc lập.",
-      "answer": "Cung cấp sự đánh giá về hoạt động của một tổ chức trong việc đáp ứng mục tiêu của tổ chức đó"
+        question: "Hàng hóa nào sau đây KHÔNG chịu thuế nhập khẩu?",
+        answer: "Hàng nhập khẩu từ nước ngoài vào khu phi thuế quan.",
     },
     {
-      "question": "Thí dụ nào sau đây không phải là kiểm toán tuân thủ?",
-      "answer": "Kiểm toán tỷ lệ sản phẩm xấu của một phân xưởng mới thành lập để đánh giá hoạt động và đề xuất các biện pháp cải tiến"
+        question: "Hàng hóa nào sau đây thuộc diện miễn thuế xuất nhập khẩu?",
+        answer: "Hàng tạm nhập, tái xuất để tham dự hội trợ triển lãm trong thời",
     },
     {
-      "question": "Câu nào mô tả đúng nhất về kiểm toán hoạt động?",
-      "answer": "Xem xét và đánh giá về tính hữu hiệu và hiệu quả của một hoạt động hay một bộ phận trong đơn vị"
+        question: "Hàng hóa do các doanh nghiệp trong nước bán cho các doanh\r\nnghiệp chế xuất trong khu phi thuế quan:",
+        answer: "thuộc diện chịu thuế xuất khẩu.",
     },
     {
-      "question": "Kiểm toán khoản mục tiền là việc thực hiện kiểm toán đối với tiền mặt tại quỹ, tiền gửi ngân hàng, và …………… của doanh nghiệp:",
-      "answer": "Tiền đang chuyển"
+        question: "Thuế xuất khẩu- nhập khẩu là",
+        answer: "Thuế xuất khẩu – nhập khẩu là loại thuế gián thu, thu vào hàng hóa được phép giao thương qua biên giới các quốc gia, nhóm quốc gia, hình thành và gắn liền với hoạt động thương mại quốc",
     },
     {
-      "question": "Căn cứ vào những thông tin kiểm tra của biểu tổng hợp, kiểm toán viên sẽ xác định được số liệu ghi nhận trên báo cáo tài chính phù hợp với số liệu trên:",
-      "answer": "Sổ cái tài khoản"
+        question: "Đâu KHÔNG phải là đặc điểm của Thuế xuất khẩu- nhập khẩu",
+        answer: "Tạo khoản thu cho NSNN nhà nước",
     },
     {
-      "question": "Khi kiểm tra việc quy đổi sang đồng ngoại tệ, các kiểm toán viên sử dụng …………… tại thời điểm kết thúc niên độ kế toán để tính toán lại số dư ngoại tệ cuối kỳ:",
-      "answer": "Tỷ giá bình quân liên ngân hàng"
+        question: "Đâu KHÔNG phải là VAI TRÒ của Thuế xuất khẩu- nhập khẩu",
+        answer: "Thuế gián thu",
     },
     {
-      "question": "Thực hiện kiểm tra việc khóa sổ đối với các khoản thu, chi tiền sẽ giúp các kiểm toán viên xác định các nghiệp vụ thu, chi phát sinh được ghi nhận phù hợp với:",
-      "answer": "Niên độ kế toán"
+        question: "Đối tượng chịu thuế xuất khẩu - nhập khẩu",
+        answer: "Hàng hóa XK- NK qua cửa khẩu biên giới Việt Nam",
     },
     {
-      "question": "Khoản mục tiền được kế toán đơn vị trình bày trên bảng cân đối kế toán ở phần nào:",
-      "answer": "Tài sản ngắn hạn"
+        question: "Đối tượng chịu thuế xuất khẩu - nhập khẩu",
+        answer: "Hàng hóa XK từ thị trường trong nước vào khu phi thuế quan và",
     },
     {
-      "question": "Phát biểu nào sau đây không phải là mục tiêu cần đạt được của cuộc kiểm toán đối với khoản mục tiền:",
-      "answer": "Phương pháp kiểm toán là khác nhau đối với từng khoản mục tiền của doanh nghiệp"
+        question: "Đối tượng chịu thuế xuất khẩu - nhập khẩu",
+        answer: "Hàng hóa xuất khẩu, nhập khẩu tại chỗ và hàng hóa xuất khẩu, nhập\r\nkhẩu của DN thực hiện quyền xuất khẩu, quyền nhập khẩu, quyền phân phối",
     },
     {
-      "question": "Số liệu ghi trên sổ chi tiết tiền được tổng cộng đúng và phù hợp với tài khoản tổng hợp trên sổ cái cho biết mục tiêu kiểm toán nào về tiền đã được tuân thủ:",
-      "answer": "Ghi chép chính xác"
+        question: "Đối tượng không chịu thế xuất khẩu - nhập khẩu",
+        answer: "Hàng hóa quá cảnh, chuyển khẩu, trung chuyển",
     },
     {
-      "question": "Số dư tiền được phân loại và trình bày thích hợp trên báo cáo tài chính, các trường hợp tiền bị hạn chế quyền sử dụng đều được khai báo đầy đủ thể hiện mục tiêu nào của kiểm toán tiền được tuân thủ:",
-      "answer": "Trình bày và công bố"
+        question: "Đối tượng không chịu thế xuất khẩu - nhập khẩu (3 câu này đều ;à\r\nđáp án chịu thuế)",
+        answer: "B) Hàng hóa viện trợ nhân đạo không hoàn lại",
     },
     {
-      "question": "Số dư của tiền được ghi phù hợp với giá được xác định theo chuẩn mực và chế độ kế toán hiện hành cho thấy mục tiêu gì của kiểm toán tiền được tuân thủ:",
-      "answer": "Đánh giá"
+        question: "Đối tượng không chịu thế xuất khẩu - nhập khẩu",
+        answer: "Phần dầu khí được dùng để trả thuế tài nguyên cho Nhà nước khi\r\nxuất khẩu",
     },
     {
-      "question": "Khi thực hiện kiểm toán đối với khoản mục tiền của đơn vị, kiểm toán viên không cần quan tâm đến sự ảnh hưởng của chu trình nghiệp vụ nào sau đây:",
-      "answer": "Chu trình sản xuất"
+        question: "Đối tượng không chịu thế xuất khẩu - nhập khẩu",
+        answer: "Hàng hóa xuất khẩu từ khu phi thuế quan ra nước ngoài; hàng hóa nhập khẩu từ nước ngoài vào khu phi thuế quan và chỉ sử dụng trong khu phi thuế quan; hàng hóa chuyển từ khu phi  thuế quan này\r\nsang khu phi thuế quan khác",
     },
     {
-      "question": "Các doanh nghiệp thường trình bày số dư tiền vượt quá số thực tế để che giấu tình hình tài chính thực hoặc sự thất thoát tài sản.",
-      "answer": "Hiện hữu"
+        question: "Ai KHÔNG phải là người nộp thuế xuất khẩu - nhập khẩu",
+        answer: "Người mua hàng hóa NK- XK",
     },
     {
-      "question": "Trong trường hợp doanh nghiệp cố tình không ghi nhận đầy đủ các khoản tiền thu được để che giấu doanh thu thì khi đó kiểm toán viên chú ý đến mục tiêu nào:",
-      "answer": "Đầy đủ"
+        question: "Ai chịu thuế nhập khẩux",
+        answer: "Người tiêu dùng hóa nhập khẩu",
     },
     {
-      "question": "Khi thực hiện kiểm toán các doanh nghiệp lớn, kiểm toán viên thường hay sử dụng công cụ nào để mô tả cơ cấu kiểm soát nội bộ đối với khoản mục tiền:",
-      "answer": "Lưu đồ chứng từ"
+        question:
+            "Công ty lương thực miền Bắc xuất khẩu 1000 tần gạo sang Trung Quốc, giá thanh toán tại cửa khẩu Tân Thanh là 410 USD/tấn. Chi phí vận chuyển từ kho đến cửa khẩu là 50.000 đ/tấn. Xác định thuế xuất khẩu, biết rằng tỷ giá 1USD = 22.500\r\nVNĐ. Thuế suất thuế XK gạo: 2%. Thuế xuất khẩu công ty phải Nộp\r\n(410x22.500)x1000x2%",
+        answer: "184.500.000 đồng",
     },
     {
-      "question": "Khi thực hiện kiểm toán các doanh nghiệp lớn, kiểm toán viên thường hay sử dụng công cụ nào để mô tả cơ cấu kiểm soát nội bộ đối với khoản mục tiền:",
-      "answer": "Lưu đồ chứng từ"
+        question:
+            "Công ty cà phê Trung Nguyên xuất khẩu lô hàng gồm 5 container cà phê hộp sang Hàn Quốc. Hai bên thanh toán theo giá mua tại cảng Pusan, Hàn Quốc. Chi phí vận chuyển quốc tế là 500USD/container. Chi phí bảo hiểm cho cả lô hàng hóa là 1700 USD. Tổng giá trị hợp đồng là 25.000 USD. Hãy xác định thuế XK của lô hàng trên. Thuế suất thuế XK: 2%. Tỷ giá tính thuế 23.000 đ/usd. Thuế XK công ty Trung Nguyên phải nộp",
+        answer: "25.000 usd x 2% x 23.000 đ/usd",
     },
     {
-      "question": "Khi thiết kế và thực hiện các thử nghiệm kiểm soát nếu như việc thử nghiệm về tổng cộng và chuyển sổ cho thấy có rất nhiều sai sót thì kiểm toán viên phải:",
-      "answer": "Tăng phạm vi kiểm toán"
+        question:
+            "Công ty ô tô Trường Hải NK 100 chiếc ô tô 4 chỗ ngồi giá hợp đồng theo giá FOB là 10.000 USD/ SP, phí vận chuyển vào bảo hiểm quốc tế là 2.000 USD/SP. Tỷ giá tính thuế là 22.800đ/USD. Hãy xác định thuế NK của lô hàng trên? Thuế suất thuế NK ô tô 70%\r\n(10.000+2.000)x22.800= 273.600.000\r\n100 x 273.600.000x70%= 19.152.000.000",
+        answer: "19.152.000.000 đồng",
     },
     {
-      "question": "Thiết kế và thực hiện các thử nghiệm kiểm soát trong quá trình kiểm toán tiền sẽ không bao gồm vấn đề nào sau đây:",
-      "answer": "Đánh giá lại rủi ro kiểm soát và thiết kế lại các thử nghiệm cơ bản"
+        question: "Đối tượng miễn thuế nhập khẩu",
+        answer: "Miễn thuế đối với hàng hóa nhập khẩu để gia công, sản phẩm gia\r\ncông xuất khẩu",
     },
     {
-      "question": "Khi so sánh các bút toán ghi vào nhật ký hàng ngày với tiền gửi ngân hàng, kiểm toán viên có thể phát hiện loại gian lận nào:",
-      "answer": "Gối đầu"
+        question: "Đối tượng miễn thuế nhập khẩu",
+        answer: "Miễn thuế đối với hàng hóa nhập khẩu để sản xuất hàng hóa xuất\r\nkhẩu",
     },
     {
-      "question": "Việc chọn ra một số tài khoản trên nhật ký chi tiền và đối chiếu ngược trở về với các chứng từ gốc như đơn đặt hàng, báo cáo nhận hàng, hóa đơn, séc giúp cho kiểm toán viên có cơ hội kiểm tra các thủ tục kiểm:",
-      "answer": "Chi tiền"
+        question:
+            "Công ty cổ phần Long Thành nhận xuất khẩu uỷ thác 3.000 sản phẩm A theo Điều kiện CIF là 15 USD/sản phẩm, chi phí vận chuyển và bảo hiểm quốc tế là 2 USD/sản phẩm. Tỷ giá tính thuế 1 USD = 22.500 VND. Thuế suất thuế xuất khẩu của sản\r\nphẩm là 2%. Xác định thuế xuất khẩu Công ty Long Thành phải nộp?\r\n3000x(15-2) x 2% x 22.500",
+        answer: "17.550.000 đồng.",
     },
     {
-      "question": "là những thông tin, tài liệu được sử dụng làm cơ sở để các kiểm toán viên đưa ra ý kiến về những thông tin kế toán được trình bày trên báo cáo tài chính của doanh nghiệp.",
-      "answer": "Bằng chứng"
+        question:
+            "Công ty cổ phần Thiên Trang mua 100 máy vi tính của một doanh nghiệp chế xuất có giá trị 1 tỷ đồng, thuế suất thuế nhập khẩu là 10%. Thuế nhập khẩu công ty Thiên Trang phải nộp là:\r\n1 tỷ x 10%= 100 triệu",
+        answer: "100.000.000 đồng.",
     },
     {
-      "question": "là ý kiến do kiểm toán viên đưa ra để nhận xét về sự trung thực và tính hợp lý của những thông tin kế toán đã được kiểm tra.",
-      "answer": "Báo cáo"
+        question:
+            "Công ty cổ phần Thuần Châu bán cho một doanh nghiệp khu chế xuất một lô hàng có trị giá 200 triệu đồng. Biết rằng thuế suất thuế xuất khẩu đối với mặt hàng trên là 1% thuế suất khẩu công ty Thuần Châu phải nộp là:\r\n200trieu x 1%",
+        answer: "2.000.000 đồng.",
     },
     {
-      "question": "là những thông tin phản ánh tổng quát về tình hình hoạt động sản xuất kinh doanh của doanh nghiệp được lập và trình bày trên các báo cáo có liên quan như: báo cáo tài chính, báo cáo thuế, báo cáo quản trị và báo cáo khác.",
-      "answer": "Thông tin kế toán"
+        question:
+            "Công ty cổ phần Trường An nhận uỷ thác nhập khẩu một lô\r\nhàng tiêu dùng, giá CIF Hải Phòng là 55.000 USD. Hoa hồng \tuỷ\r\nthác là 2% trên giá nhập\t. Thuế suất thuế giá trị gia tăng là \t\r\n10%. Tỷ giá tính thuế 22.500 VND/USD. Thuế giá trị gia tăn mà doanh nghiệp phải kê khai, nộp ở khâu nhập khẩu là:\tg",
+        answer: "225,42 triệu đồng.",
     },
     {
-      "question": "Điều nào sau đây không phải là lý do chính của việc kiểm toán báo cáo tài chính:",
-      "answer": "Do sự xung đột lợi ích giữa nhà quản lý của đơn vị được kiểm toán với kiểm toán viên độc lập."
+        question:
+            "Công ty Hoa Sen nhập khẩu một dây chuyền sản xuất, tổng giá trị của dây chuyền là 125.000 USD, trong đó 25.000 USD là chi phí lắp đặt chạy thử và đào tạo nhân viên vận hành tại Việt Nam. Thuế suất thuế nhập khẩu của dây chuyền là 10%. Tỷ giá tính thuế 1 USD = 22.500 VND. Thuế nhập khẩu phải nộp là:\r\n(125.000 - 25.000) x 10% x 22.500",
+        answer: "225.000.000 đồng",
     },
     {
-      "question": "Lý do chính của kiểm toán báo cáo tài chính là:",
-      "answer": "Cung cấp cho người sử dụng một sự đảm bảo hợp lý của tính trung thực và hợp lý của báo cáo tài chính."
+        question:
+            "Công ty Hưng Long xuất khẩu 40.000 kg sản phẩm A, giá bán tại kho công ty là 50.000 đồng/kg, chi phí vận chuyển từ kho đến cảng xuất khẩu do bên mua chịu là 5.000 đồng/kg, thuế suất thuế xuất khẩu của sản phẩm A là 3%. Thuế xuất khẩu phải nộp là:\r\n40.000 x (50.000+5.000) x 3%",
+        answer: "66.000.000 đồng.",
     },
     {
-      "question": "Nếu các rủi ro kiểm soát được đánh giá là đáng kể hay tối đa thì kiểm toán viên cần phải:",
-      "answer": "Mở rộng phạm vi thực hiện thử nghiệm chi tiết các khoản mục"
+        question:
+            "Công ty Hưng Long xuất khẩu 40.000 kg sản phẩm A, giá bán tại kho công ty là 50.000 đồng/kg, chi phí vận chuyển từ kho đến cảng xuất khẩu do bên mua chịu là 5.000 đồng/kg, thuế suất\r\nthuế xuất khẩu của sản phẩm A là 3%. Số lượng hàng hóa tính thuế xuất khẩu là",
+        answer: "40.000 kg",
     },
     {
-      "question": "Trong quá trình thực hiện kiểm toán, để kiểm tra số dư của tài khoản tiền gửi ngân hàng, kiểm toán viên sử dụng thư xác nhận.",
-      "answer": "Kiểm toán viên"
+        question:
+            "Công ty Hưng Long xuất khẩu 40.000 kg sản phẩm A, giá bán tại kho công ty là 50.000 đồng/kg, chi phí vận chuyển từ kho đến cảng xuất khẩu do bên mua chịu là 5.000 đồng/kg, thuế suất\r\nthuế xuất khẩu của sản phẩm A là 3%. Giá tính thuế xuất khẩu tính trên 1 kg là",
+        answer: "55.000 đồng",
     },
     {
-      "question": "Tiền là một khoản mục rất nhạy cảm của doanh nghiệp nên việc gian lận và ................",
-      "answer": "Biển thủ"
+        question: "Giá tính thuế tiêu thụ đặc biệt đối với hàng gia công là:",
+        answer: "giá tính thuế của hàng hóa bán ra của cơ sở giao gia công hoặc giá\r\nbán của sản phẩm cùng loại hoặc tương đương tại cùng thời điểm bán hàng.",
     },
     {
-      "question": "Đặc điểm của khoản mục tiền trong doanh nghiệp là ................",
-      "answer": "Rủi ro tiềm tàng"
+        question: "Giá tính thuế tiêu thụ đặc biệt đối với hàng bán trả góp, trả chậm là:",
+        answer: "giá tính thuế tiêu thụ đặc biệt của hàng bán trả ngay một lần.",
     },
     {
-      "question": "Theo bạn, trong quá trình tác nghiệp, kiểm toán viên thường phát hiện những sai sót nào phát sinh liên quan đến khoản mục tiền.",
-      "answer": "Ghi nhận các khoản thu tiền không có thật"
+        question: "Giá tính thuế tiêu thụ đặc biệt đối với dịch vụ kinh doanh gôn là:",
+        answer: "doanh thu từ bán thẻ hội viên, bán vé chơi gôn, các khoản phí chơi gôn và tiền ký quỹ chưa có thuế giá trị gia tăng/(1 + Thuế suất thuế tiêu\r\nthụ đặc biệt).",
     },
     {
-      "question": "các nghiệp vụ kinh tế phát sinh liên quan đến việc thu tiền bán hàng là sai sót được kiểm toán viên phát hiện khi kiểm toán khoản mục tiền.",
-      "answer": "Sổ kế toán"
+        question: "Giá tính thuế đối với kinh doanh vũ trường là:",
+        answer: "tổng doanh thu chưa có thuế giá trị gia tăng/(1+ Thuế suất thuế tiêu\r\nthụ đặc biệt).",
     },
     {
-      "question": "Việc ghi chép sai niên độ kế toán, sai số tiền, sai đối tượng là sai sót phát sinh liên quan đến hoạt động nào sau đây của khoản mục tiền?",
-      "answer": "Hoạt động thu chi tiền nói chung của doanh nghiệp"
+        question: "Giá tính thuế đối với kinh doanh massage là:",
+        answer: "tổng doanh thu chưa có thuế giá trị gia tăng/(1+ Thuế suất thuế tiêu\r\nthụ đặc biệt).",
     },
     {
-      "question": "Trì hoãn việc ghi nhận các khoản mục tiền phát sinh trong quá trình hoạt động sản xuất kinh doanh của doanh nghiệp là hành vi nào sau đây?",
-      "answer": "Gian lận"
+        question: "Giá tính thuế tiêu thụ đặc biệt đối với hàng hóa thuộc diện chịu thuế tiêu\r\nthụ đặc biệt sản xuất bán ra trong nước được xác định bằng:",
+        answer: "giá chưa có thuế giá trị gia tăng/(1+ thuế suất tiêu thụ đặc biệt).",
     },
     {
-      "question": "Theo bạn, yếu tố nào sau đây cho thấy các thủ tục kiểm soát nội bộ về hoạt động chi tiền của doanh nghiệp đã bị vô hiệu hóa?",
-      "answer": "Chi trả cho các khoản chi phí không có thật"
+        question: "Giá tính thuế tiêu thụ đặc biệt đối với hàng hóa thuộc diện chịu thuế tiêu\r\nthụ đặc biệt do doanh nghiệp sản xuất bán ra trong nước là:",
+        answer: "giá chưa có thuế tiêu thụ đặc biệt, chưa có thuế giá trị gia tăng.",
     },
     {
-      "question": "Việc xóa sổ nợ phải thu để chiếm dụng tiền của doanh nghiệp là gian lận thường được phát hiện ra khi kiểm toán hoạt động nào sau đây?",
-      "answer": "Hoạt động thu tiền"
+        question: "Giá tính thuế tiêu thụ đặc biệt đối với hàng hóa nhập khẩu thuộc diện chịu thuế tiêu thụ đặc biệt được xác định bằng:",
+        answer: "giá tính thuế nhập khẩu + thuế nhập khẩu.",
     },
     {
-      "question": "Ghi chép thiếu sót hay trùng lắp các nghiệp vụ chi tiền, chi không đúng mục đích hay nhu cầu, chi không kịp thời là những sai sót được các kiểm toán viên ................",
-      "answer": "Phát hiện"
+        question: "Hàng hóa nào sau đây thuộc đối tượng KHÔNG chịu thuế tiêu thụ đặc",
+        answer: "Điều hoà nhiệt độ có công suất 12.000 BTU.",
     },
     {
-      "question": "Số liệu thực tế bị sai lệch với sổ sách hay báo cáo được kiểm toán viên phát hiện khi kiểm toán về ................",
-      "answer": "Số dư"
+        question: "Ai là người nộp thuế TTĐB",
+        answer: "Nhà sản xuất hàng hóa chịu thuế TTĐB bán ra hoặc cung cấp dịch vụ\r\nchịu thuế TTĐB trong nước.",
     },
     {
-      "question": "Cụm từ \"Bị mất cắp, chiếm dụng, tham ô\" là ................",
-      "answer": "Rủi ro"
+        question: "Thuế tiêu thu đặc biệt là",
+        answer: "Thuế tiêu thụ đặc biệt là sắc thuế thuộc loại thuế gián thu đánh\r\nvào một số hàng hóa, dịch vụ có tính chất đặc biệt nằm trong danh mục do Nhà nước qui định nhằm điều tiết sản xuất và tiêu dùng",
     },
     {
-      "question": "Theo bạn thì đâu không phải là cơ sở dẫn liệu để làm nền trong hoạt động kiểm toán khoản mục tiền.",
-      "answer": "Cơ sở tiền"
+        question: "Đâu KHÔNG phải là đặc điểm của thuế TTĐB",
+        answer: "Thu trong quá trình luân chuẩn hàng hóa từ khâu sản xuất, lưu thông,\r\ntiêu dùng",
     },
     {
-      "question": "Các sai sót được kiểm toán viên phát hiện liên quan đến công tác kiểm kê quỹ của doanh nghiệp là không kiểm kê quỹ thường xuyên, không lập biên bản kiểm kê hoặc ................",
-      "answer": "Không có thành phần độc lập"
+        question: "Đâu KHÔNG phải là vai trò thuế TTĐB",
+        answer: "Là thuế gián thu",
     },
     {
-      "question": "Biên bản kiểm kê mang tính hình thức hay số liệu tiền bị chênh lệch nhưng không xử lý kịp thời là những yếu tố đề cập đến việc sai sót khi kiểm toán khoản mục ................",
-      "answer": "Tiền mặt"
+        question: "Đối tượng KHÔNG chịu thuế TTĐB",
+        answer: "Hàng hóa do cơ sở sản xuất, gia công trực tiếp xuất khẩu hoặc bán, ủy\r\nthác cho cơ sở kinh doanh khác để xuất khẩu",
     },
     {
-      "question": "Từ nào còn thiếu trong phát biểu về hoạt động kiểm toán tiền sau: \"Có những nghiệp vụ ................",
-      "answer": "Thu chi"
+        question: "Đối tượng KHÔNG chịu thuế TTĐB",
+        answer: "Hàng hóa NK là hàng viện trợ nhân đạo, viện trợ không hoàn lại, quà\r\ntặng, quà biếu",
     },
     {
-      "question": "Tài liệu nào được cho là không cần thiết phải nghiên cứu đối với kiểm toán viên trong quá trình kiểm toán khoản mục tiền?",
-      "answer": "Bảng tổng hợp nhập xuất tồn kho"
+        question: "Đối tượng KHÔNG chịu thuế TTĐB",
+        answer: "Hàng hóa nhập khẩu từ nước ngoài vào khu phi thuế quan, hàng hóa từ\r\nnội địa bán vào khu phi thuế quan và chỉ sử dụng trong khu phi thuế quan, hàng hóa được mua bán giữa các khu phi thuế quan với nhau",
     },
     {
-      "question": "Chứng từ nào được cho là cần thiết đối với kiểm toán viên khi thực hiện kiểm toán khoản mục tiền của doanh nghiệp?",
-      "answer": "Biên bản kiểm kê tiền mặt"
+        question: "Đối tượng KHÔNG chịu thuế TTĐB",
+        answer: "Tàu bay, du thuyền sử dụng cho mục đích kinh doanh vận chuyển hàng\r\nhóa, hành khách, kinh doanh du lịch và tàu bay sử dụng cho mục đích an\r\nninh, quốc phòng",
     },
     {
-      "question": "Khi kiểm toán viên kiểm tra xem việc lập và trình bày khoản mục tiền trên báo cáo tài chính của doanh nghiệp có phù hợp với chuẩn mực và chế độ kế toán Việt Nam hiện hành hay không là nhằm đảm bảo cơ sở dẫn liệu nào sau đây?",
-      "answer": "Đánh giá"
+        question: "Đối tượng KHÔNG chịu thuế TTĐB",
+        answer: "Điều hoà nhiệt độ có công suất từ 90.000 BTU trở xuống, theo thiết kế\r\ncủa nhà sản xuất chỉ để lắp trênphương tiện vận tải, bao gồm ô tô, toa xe lửa, tàu, thuyền, tàu bay",
     },
     {
-      "question": "Cơ sở dẫn liệu hiện hữu yêu cầu kiểm toán viên phải làm gì đối với khoản mục tiền được trình bày trên báo cáo tài chính của doanh nghiệp trong quá trình tác nghiệp?",
-      "answer": "Kiểm tra tính có thật của khoản mục tiền trong thực tế"
+        question: "Người nộp thuế TTĐB",
+        answer: "Tổ chức, cá nhân sản xuất, nhập khẩu hàng hóa chịu thuế tiêu thụ đặc\r\nbiệt;",
     },
     {
-      "question": "Quyền là một trong những cơ sở dẫn liệu đề cập đến vấn đề nào của khoản mục tiền khi kiểm toán viên tác nghiệp?",
-      "answer": "Tiền có thuộc sở hữu của doanh nghiệp hay không"
+        question: "Người nộp thuế TTĐB",
+        answer: "Tổ chức, cá nhân kinh doanh dịch vụ chịu thuế tiêu thụ đặc biệt",
     },
     {
-      "question": "Theo bạn, để kiểm tra các dòng tiền phát sinh và cấu thành nên chỉ tiêu tiền trên bảng cân đối kế toán, kiểm toán viên sẽ dựa vào đâu?",
-      "answer": "Báo cáo lưu chuyển tiền tệ"
+        question: "Người nộp thuế TTĐB",
+        answer: "Tổ chức, cá nhân mua hàng chịu thuế tiêu thụ đặc biệt để xuất khẩu\r\nnhưng không xuất khẩu",
     },
     {
-      "question": "Từ nào còn thiếu trong phát biểu sau đây: \"Tiền là tài sản vô cùng ................",
-      "answer": "Quan trọng"
+        question: "Công ty thuốc lá Thăng Long sản xuất thuốc lá điếu, bán cho công ty Thương Mại Hà Nội để phân phối cho người tiêu dùng.\r\nCông ty nào phải nộp thuế tiêu thụ đặc biệt?",
+        answer: "Công ty thuốc là Thăng Long",
     },
     {
-      "question": "Kiểm toán viên nghiên cứu hoạt động kiểm soát nội bộ về khoản mục tiền nhằm phát hiện ra những sai sót liên quan đến khâu thu tiền, chi tiền và ...............",
-      "answer": "Số dư tiền"
+        question:
+            "Trong tháng 1/20XX, Công ty TNHH ô tô Trường Hải, Nhập khẩu Một xe\r\nô tô Mercedes-Benz C 200; dung tích xi lanh 1497 (cc) giá CIF:\r\n10.000 USD; thuế suất thuế nhập khẩu của mẫu xe này là 70%; thuế suất thuế TTĐB là 45%; giả sử tỷ giá để tính thuế nhập khẩu tại thời điểm nhập\r\nkhẩu là 23.400 VND/USD. Giá tính thuế Nhập khẩu công ty phải nộp",
+        answer: "234.000.000 đồng",
     },
     {
-      "question": "Đâu không phải là sai sót mà các kiểm toán viên thường phát hiện ra khi thực hiện kiểm tra các nghiệp vụ có liên quan đến tiền mặt của một doanh nghiệp.",
-      "answer": "Không đối chiếu thường xuyên giữa sổ kế toán với sổ phụ ngân hàng"
+        question:
+            "Trong tháng 1/20XX, Công ty TNHH ô tô Trường Hải, Nhập khẩu\r\nMột xe\t\r\nô tô Mercedes-Benz C 200; giá CIF: 10.000 USD; thuế suất thuế nhập khẩu của mẫu xe này là 70%; thuế suất thuế TTĐB là 45%; giả\r\nsử tỷ giá để tính thuế nhập khẩu tại thời điểm nhập khẩu là 23.400 VND/USD.\r\nThuế Nhập khẩu công ty phải nộp",
+        answer: "234.000.000 đồng",
     },
     {
-      "question": "Sai sót nào liên quan đến tiền gửi ngân hàng của doanh nghiệp thường được các kiểm toán viên phát hiện trong quá trình tác nghiệp.",
-      "answer": "Có nhiều tài khoản ở nhiều ngân hàng khác nhau, nhiều tài khoản không sử dụng nhưng không tất toán trong năm"
+        question:
+            "Trong tháng 1/20XX, Công ty TNHH ô tô Trường Hải, Nhập khẩu Một xe\r\nô tô Mercedes-Benz C 200; dung tích xi lanh 1497 (cc) giá CIF:\r\n10.000 USD; thuế suất thuế nhập khẩu của mẫu xe này là 70%; thuế suất thuế TTĐB là 45%; giả sử tỷ giá để tính thuế nhập khẩu tại thời điểm nhập\r\nkhẩu là 23.400 VND/USD. Giá tính thuế TTĐB xe ô tô",
+        answer: "397.800.000 đồng",
     },
     {
-      "question": "Các đặc điểm sau đây \r\n- Khoản mục đầu tiên trên bảng cân đối kế toán\r\n-  Có ảnh hưởng đến nhiều khoản mục quan trọng\r\n-  Có khả năng bị biển thủ cao \r\nThuộc đối tượng kế toán nào dưới đây?",
-      "answer": "Tiền và tương đương tiền"
+        question:
+            "Trong tháng 1/20XX, Công ty TNHH ô tô Trường Hải, Nhập khẩu Một xe\r\nô tô Mercedes-Benz C 200; dung tích xi lanh 1497 (cc) giá CIF:\r\n10.000 USD; thuế suất thuế nhập khẩu của mẫu xe này là 70%; thuế suất thuế TTĐB là 45%; giả sử tỷ giá để tính thuế nhập khẩu tại thời điểm nhập\r\nkhẩu là 23.400 VND/USD. Thuế TTĐB xe ô tô phải nộp",
+        answer: "179.010.000 đồng",
     },
     {
-      "question": "Tỷ giá giao dịch thực tế áp dụng khi đánh giá lại số dư tiền mặt bằng ngoại tệ là………..của ngân hàng thương mại nơi doanh nghiệp thường xuyên có giao dịch tại thời điểm lập Báo cáo tài chính.",
-      "answer": "Tỷ giá mua ngoại tệ"
+        question:
+            "Trong tháng 1/20XX, Công ty TNHH ô tô Trường Hải, Nhập khẩu Một xe\r\nô tô Mercedes-Benz C 200 và bán cho khách hàng, giá bán chưa có thuế GTGT là: 7,9 tỷ đồng. Thuế suất thuế TTĐB là 45%; Giá tính thuế TTĐB\r\nkhi bán xe ô tô là",
+        answer: "7,9/ (1+45%) tỷ",
     },
     {
-      "question": "Đơn vị rút tiền gởi ngân hàng bằng ngoại tệ để tạm ứng cho cán bộ đi công tác nước ngoài: quy đổi ra đồng Việt Nam theo tỷ giá nào để ghi Có TK 112?",
-      "answer": "Tỷ giá ghi sổ bình quân gia quyền"
+        question:
+            "Trong tháng 1/20XX, Công ty TNHH ô tô Trường Hải, Nhập khẩu Một xe\r\nô tô Mercedes-Benz C 200 và bán cho khách hàng, giá bán chưa có thuế GTGT là: 7,9 tỷ đồng. Thuế suất thuế TTĐB là 45%; Giá tính  thuế TTĐB\r\nkhi bán xe ô tô là",
+        answer: "7,9/ (1+45%) tỷ",
     },
     {
-      "question": "Cán bộ đi công tác nộp lại tiền tạm ứng không chi tiêu hết bằng ngoại tệ: quy đổi ra đồng Việt Nam theo tỷ giá nào để ghi Nợ TK 111?",
-      "answer": "Tỷ giá giao dịch thực tế"
+        question:
+            "Nhập khẩu 1 xe Mercedes-Benz C 200 Exclusive, giá FOB: 10.000 USD;\r\nphí bảo hiểm + vận tải biển: 2.000 USD; thuế suất thuế nhập khẩu của mẫu xe này là 70%; thuế suất thuế TTĐB là 45%; giả sử tỷ giá để tính thuế nhập khẩu tại thời điểm nhập khẩu là 23.400 VND/USD. Giá tính\r\nthuế Nhập khẩu",
+        answer: "12.000 usd",
     },
     {
-      "question": "Để kiểm tra sự thống nhất giữa số liệu tổng hợp trên báo cáo tài chính với các số liệu chi tiết của các tài khoản cấu thành, kiểm toán viên thực hiện:",
-      "answer": "Phân tích bảng kê chi tiết của tài khoản tiền và đối chiếu với số dư trên sổ cái"
+        question:
+            "Nhập khẩu 1 xe Mercedes-Benz C 200 Exclusive, giá FOB: 10.000 USD;\r\nphí bảo hiểm + vận tải biển: 2.000 USD; thuế suất thuế nhập khẩu của mẫu xe này là 70%; thuế suất thuế TTĐB là 45%; giả sử tỷ giá để tính thuế nhập khẩu tại thời điểm nhập khẩu là 23.400 VND/USD.\r\nThuế nhập\r\nkhẩu công ty phải nộp",
+        answer: "196.560.000 đồng",
     },
     {
-      "question": "Tiền mặt tồn quỹ có thể là một khoản mục không trọng yếu tuy nhiên kiểm toán viên cần thiết phải xem xét việc kiểm kê quỹ tiền mặt vì:",
-      "answer": "Đây là khoản có rất nhiều khả năng gian lận"
+        question: "Doanh nghiệp sản xuất rượu đóng chai, bán rượu cho doanh nghiệp trong khu công nghiệp",
+        answer: "Tính thuế TTĐB theo giá bán chưa có thuế TTĐB và chưa có thuế\r\nGTGT",
     },
     {
-      "question": "Số dư cuối kỳ của tài khoản tiền phải là …………..",
-      "answer": "Hiệu số"
+        question: "Doanh nghiệp sản xuất sản phẩm chịu thế TTĐB, sản phẩm này dùng để\r\ntiêu dùng nội bộ thì doanh nghiệp",
+        answer: "Tính thuế TTĐB theo giá tính thuế TTĐB của sản phẩm bán ra cùng loại,\r\ncùng thời điểm",
     },
     {
-      "question": "Khi tiến hành kiểm kê lượng tiền mặt tồn quỹ của doanh nghiệp, kiểm toán viên sẽ giữ lại chứng từ gì để đối chiếu với sổ chi tiết và tổng hợp của tài khoản tiền mặt:",
-      "answer": "Biên bản kiểm kê"
+        question: "Doanh nghiệp sản xuất sản phẩm chịu thế TTĐB, sản phẩm này dùng để\r\ntrao đổi",
+        answer: "Tính thuế TTĐB theo giá tính thuế TTĐB của sản phẩm bán ra cùng loại,\r\ncùng thời điểm",
     },
     {
-      "question": "Kiểm toán viên căn cứ vào đâu để có thể đối chiếu số dư của tài khoản tiền gửi ngân hàng có xảy ra sự chênh lệch hay không:",
-      "answer": "Sổ phụ"
+        question: "Hàng hóa nhập khẩu thuộc diện chịu thuế TTĐB được giảm thuế nhập",
+        answer: "Giá tính thuế NK+ Thuế NK chưa giảm",
     },
     {
-      "question": "Hoạt động nào sau đây không thuộc vào hoạt động thử nghiệm chi tiết của kiểm toán viên khi thực hiện kiểm toán về khoản mục tiền:",
-      "answer": "Tính toán tỷ lệ giữa tiền với tổng tài sản ngắn hạn"
+        question: "Doanh nghiệp A mua 1.000 chai rượu từ DN sản xuất B để xuất khẩu, tuy\r\nnhiên A chỉ xuất khẩu đươc 950 chai, 50 chai còn lại DN A bán trong nước.",
+        answer: "50 chai rượu bán trong nước chịu thuế TTĐB, DN A là người nộp thuế\r\nTTĐB",
     },
     {
-      "question": "Kiểm tra sổ sách phát hiện kế toán hạch toán Nợ 141/Có 111 số tiền 10.000.000đ để ghi nhận nghiệp vụ ký quỹ ngắn hạn.",
-      "answer": "Nợ 244 10.000.000 Có 141 10.000.000"
+        question:
+            "DN A sản xuất rượu, giá thành 1 chai rượu là 10.000 đ/chai, Giá bán 1 chai rượu chưa thuế GTGT là 18.000 đ/chai, thuế suất thuế TTĐB rượu là 30%, khi dùng rượu để trao đổi với DN B theo hợp đồng\r\ngiá trao đổi\r\nchưa thuế GTGT là 14.000 đ/chai. Giá tính thuế TTĐB đối với rượu là",
+        answer: "18.000 đ.chai",
     },
     {
-      "question": "Kiểm tra sổ sách phát hiện kế toán định khoản Nợ 331/Có 111 số tiền 20.000.000 để ghi nhận nghiệp vụ thanh toán tiền cho người bán.",
-      "answer": "Tăng tiền mặt và giảm tiền gửi ngân hàng 20.000.000đ"
+        question:
+            "DN A sản xuất rượu, giá thành 1 chai rượu là 10.000 đ/chai, Giá bán 1 chai rượu chưa thuế GTGT là 18.000 đ/chai, thuế suất thuế TTĐB rượu là 30%, khi dùng rượu để trao đổi với DN B theo hợp đồng\r\ngiá trao đổi\r\nchưa thuế GTGT là 14.000 đ/chai. DN A",
+        answer: "Tính thuế TTĐB= [18.000 : (1+30%)] x30%",
     },
     {
-      "question": "Đối chiếu số liệu của phiếu chứng kiến kiểm kê tiền mặt với số liệu sổ chi tiết quỹ tiền mặt, kiểm toán viên phát hiện số tiền hiện hữu trong két của doanh nghiệp bị thiếu đi 10.000.000đ.",
-      "answer": "Nợ 1381 10.000.000 Có 111 10.000.000"
+        question:
+            "DN A gia công thuốc là điếu cho DN B, giá gia công chưa thuế GTGT\r\n16.000 đ/cây. Giá bán thuốc lá chưa thuế GTGT 120.000 đ/cây, thuế suất thuế TTĐB 70%, khi DN A xuất trả thuốc lá điếu cho DN B thì",
+        answer: "DN A phải nộp thuế TTĐB",
     },
     {
-      "question": "Kiểm tra Giấy báo có số 00010 phát hiện nghiệp vụ khách trả trước 15.000.000đ tiền hàng cho đơn vị và được định khoản là Nợ 112/ Có 331 15.000.000đ.",
-      "answer": "Nợ 331 15.000.000 Có 131 15.000.000"
+        question:
+            "DN A gia công thuốc là điếu cho DN B, giá gia công chưa thuế GTGT\r\n16.000 đ/cây. Giá bán thuốc lá chưa thuế GTGT 120.000 đ/cây, thuế suất thuế TTĐB 70%, khi DN A xuất trả thuốc lá điếu cho DN B thì DN A\r\nphải nộp thuế TTĐB. Giá tính thuế TTĐB của DN A là",
+        answer: "120.000 đ/cây",
     },
     {
-      "question": "Kiểm tra UNC số 00010 phát hiện nghiệp vụ đơn vị đã ứng trước 10.000.000đ tiền hàng cho nhà cung cấp và được định khoản là Nợ 138/ Có 111 số tiền 10.000.000đ.",
-      "answer": "Nợ 331 10.000.000 Có 138 10.000.000"
+        question:
+            "Doanh nghiệp Toàn Thắng nhập khẩu rượu đã nộp thuế nhập khẩu\r\ntriệu đồng, thuế tiêu thụ đặc biệt 242,5 triệu đồng. Doanh nghiệp đã sử\r\ndụng số rượu này sản xuất được 60.000 chai rượu 30 độ, thuế suất tiêu thụ đặc biệt 45%, rồi tiêu thụ trong nước 12.000 chai với giá bán chưa có thuế giá trị gia tăng là 125.000 đồng/chai; Xuất khẩu 40.000 chai, giá FOB 8 USD/chai. Tỷ giá tính thuế 22.500 VND/USD. Thuế tiêu\r\nthụ đặc\r\nbiệt được khấu trừ là:",
+        answer: "48.500.000 đồng.",
     },
     {
-      "question": "Phần cổ tức được hưởng là 50.000.000 đồng từ Công ty TNHH Thương mại & Dịch vụ Hoàng Long chi trả đã được kế toán doanh nghiệp ghi nhận vào chỉ tiêu lợi nhuận của đơn vị bằng bút toán Nợ 111/Có 421 với số tiền là 50.000.000 đồng.",
-      "answer": "Nợ 421 50.000.000 Có 515 50.000.000"
+        question:
+            "Doanh nghiệp Toàn Thắng nhập khẩu rượu đã nộp thuế nhập khẩu 120 triệu đồng, thuế tiêu thụ đặc biệt 242,5 triệu đồng. Doanh nghiệp đã\r\nsử dụng số rượu này sản xuất được 60.000 chai rượu 30 độ, thuế suất tiêu thụ đặc biệt 45%, rồi tiêu thụ trong nước 12.000 chai với giá bán chưa có thuế giá trị gia tăng là 125.000 đồng/chai; Xuất khẩu 40.000 chai, giá\r\nFOB 8 USD/chai. Tỷ giá 22.500 đồng/USD. Thuế tiêu thụ đặc biệt\r\ncuối kỳ phải nộp cho cơ quan thuế là:",
+        answer: "255.350.574 đồng.",
     },
     {
-      "question": "Kiểm tra sổ sách phát hiện doanh nghiệp chưa ghi nhận bút toán bán hàng thu tiền mặt với lô hàng inox số lượng 10 sản phẩm, giá chưa bao gồm thuế GTGT 10% là 5.000.000 đồng.",
-      "answer": "Nợ 111 5.500.000 Có 511 5.000.000 Có 3331 5.000.000"
+        question:
+            "Doanh nghiệp Toàn Thắng nhập khẩu rượu đã nộp thuế nhập khẩu 120 triệu đồng, thuế tiêu thụ đặc biệt 242,5 triệu đồng. Doanh nghiệp đã\r\nsử dụng số rượu này sản xuất được 60.000 chai rượu 30 độ, thuế suất thuế tiêu thụ đặc biệt là 45%, doanh nghiệp tiêu thụ trong nước\r\n12.000 chai với giá bán chưa có thuế giá trị gia tăng là 125.000 đồng/chai. Xuất khẩu 40.000 chai, giá FOB 8 USD/chai. Tỷ giá tính thuế 22.500\r\nVND/USD. Thuế tiêu thụ đặc biệt của hàng bán trong nước là:",
+        answer: "465.517.241 đồng.",
     },
     {
-      "question": "Nghiệp vụ mua nguyên vật liệu phụ để phục vụ cho công việc sản xuất tranh sơn mài với giá mua chưa thuế GTGT là 80.000.000 đồng, thuế GTGT trực tiếp 10% là 8.000.000 đồng, tiền hàng đã thanh toán và được định khoản như sau: Nợ 152/Có 111 số tiền 88.000.000 đồng.",
-      "answer": "Nợ 111 88.000.000 Có 112 88.000.000"
+        question:
+            "Công ty TNHH Tuấn Thành sản xuất thuốc lá bán cho công ty xuất nhập\r\nkhẩu INTIMEX 500 cây thuốc lá để xuất khẩu với giá bán chưa có thuế giá trị gia tăng là 105.000 đồng/cây. Công ty INTIMEX xuất khẩu 400 cây với giá FOB Hải Phòng là 8.5 USD/cây, số còn lại bán trong nước với giá chưa có thuế giá trị gia tăng là 125.000 đồng/cây. Thuế suất thuế xuất khẩu của thuốc là là 1%. Thuế suất thuế tiêu thụ đặc biệt của thuốc lá là 65%. Tỷ giá 22.500 đồng/USD. Thuế tiêu thụ đặc biệt mà chủ thể có\r\ntrách nhiệm phải nộp là:",
+        answer: "4.924.242 đồng.",
     },
     {
-      "question": "Căn cứ vào bảng thanh toán bảo hiểm xã hội, kế toán định khoản Nợ 3383/Có 111 số tiền 1.960.000 đồng để phản ánh nghiệp vụ tiền bảo hiểm xã hội phải trả cho nhân viên.",
-      "answer": "Nợ 334 1.960.000 Có 3383 1.960.000"
+        question:
+            "Công ty TNHH Tuấn Thành sản xuất thuốc lá bán cho công ty xuất nhập\r\nkhẩu INTIMEX 500 cây thuốc lá để xuất khẩu với theo hợp đồng đã ký với nước ngoài, giá bán chưa có thuế giá trị gia tăng là 105.000 đồng/cây. Công ty INTIMEX xuất khẩu 400 cây với giá FOB Hải Phòng là\r\n8.5 USD/cây, số còn lại bán trong nước với giá chưa có thuế giá trị gia tăng là 125.000 đồng/cây. Thuế suất thuế xuất khẩu của thuốc là là 1%. Tỷ giá 22.500 đồng/USD. Thuế suất thuế tiêu thụ đặc biệt của thuốc lá\r\nlà 65%. Chủ thể phải nộp thuế tiêu thụ đặc biệt là:",
+        answer: "công ty INTIMEX.",
     },
     {
-      "question": "Kiểm tra sổ sách phát hiện rằng khi ứng trước tiền lương đợt 1 cho nhân viên A, kế toán đã hạch toán Nợ 141/Có 111 số tiền là 5.000.000 đồng.",
-      "answer": "Nợ 334 5.000.000 Có 141 5.000.000"
+        question:
+            "Công ty TNHH sản xuất ô tô Thanh Thảo bán xe ô tô 16 chỗ chỗ theo hai\r\nphương thức: trả ngay giá chưa có thuế giá trị gia tăng là 320 triệu đồng/xe, trả góp 1 năm là 360 triệu đồng/xe (bao gồm cả thuế giá trị gia tăng). Trong tháng 9/N doanh nghiệp bán được 50 xe theo phương thức trả ngay và 25 xe theo phương thức trả góp. Thuế suất thuế tiêu thụ đặc biệt đối với ô tô 16 chỗ là 30%. Thuế tiêu thụ đặc biệt mà công\r\nty phải nộp của tháng 9 là:",
+        answer: "5.538.461.538 đồng.",
     },
     {
-      "question": "là các giấy báo Có, giấy báo Nợ  hoặc bản sao kê của ngân hàng kèm theo các chứng từ gốc (Ủy nhiệm chi, ủy nhiệm thu, séc chuyển khoản, séc bảo chi)",
-      "answer": "Tài khoản 112"
+        question:
+            "Công ty TNHH Tuấn Cường mua 1000 cây thuốc lá điếu của công ty thuốc lá Thăng Long với giá chưa thuế giá trị gia tăng là\r\n105.000 đồng/cây, và bán ra với giá chưa thuế giá trị gia tăng là\r\n135.000 đồng/cây, thuế suất thuế tiêu thụ đặc biệt của thuốc là trên là 65%.\r\nThuế tiêu thụ đặc biệt Công ty TNHH Tuấn Cường phải nộp là:",
+        answer: "Không phải nộp thuế TTĐB",
     },
     {
-      "question": "Phát biểu nào sau đây là đúng?",
-      "answer": "Trọng yếu là khái niệm căn bản được sử dụng trong kiểm toán nhưng lại khó áp dụng trong thực tế."
+        question:
+            "Công ty TNHH Thế Kỷ Mới kinh doanh vũ trường tháng 9/N đạt doanh số\r\n(chưa có thuế giá trị gia tăng 10%) là 3.456.756.000 đồng, trong đó doanh số vé vào cửa là 12.456.000 đồng, doanh số bán rượu là 2.345.980.000 đồng, còn lại là doanh số bán các mặt hàng khác Thuế suất thuế tiêu thụ đặc biệt của vũ trường là 40%. Thuế tiêu thụ đặc\r\nbiệt mà công ty phải nộp là:",
+        answer: "987.644.571 đồng.",
     },
     {
-      "question": "Tại thời điểm lập Báo cáo tài chính theo quy định của pháp luật, doanh nghiệp đã quên việc đánh giá lại số dư ngoại tệ và vàng tiền tệ.",
-      "answer": "Tỷ giá giao dịch thực tế"
+        question:
+            "Công ty TNHH Tân Thành Phát kinh doanh trò chơi điện tử có thưởng,\r\ntháng 9/N đạt doanh số bán hàng (chưa bao gồm thuế giá trị gia tăng 10%) là 654.680.000 đồng. Công ty đã trả thưởng cho khách hàng là 123.470.000 đồng. Thuế suất thuế tiêu thụ đặc biệt của kinh doanh trò chơi điện tử có thưởng là 30%. Thuế tiêu thụ đặc biệt mà công ty phải\r\nnộp là:",
+        answer: "122.586.923 đồng.",
     },
     {
-      "question": "Mục đích của việc thực hiện kiểm toán khoản mục nợ phải thu của khách hàng là:",
-      "answer": "Xác minh và bày tỏ ý kiến về tính hợp lý của khoản mục nợ phải thu"
+        question:
+            "Công ty TNHH Đại Quang Nam kinh doanh dịch vụ massage, tháng 9/N\r\ncó tổng doanh số bán hàng (chưa bao gồm thuế giá trị gia tăng 10%) là 345.900.000 đồng, trong đó doanh số dịch vụ massage là 236.000.000 đồng, dịch vụ ăn uống đi kèm là 109.900.000 đồng. Thuế suất thuế tiêu thụ đặc biệt của kinh doanh massage là 30%, thuế tiêu thụ đặc biệt mà\r\ncông ty phải nộp là bao nhiêu?",
+        answer: "79.823.077 đồng.",
     },
     {
-      "question": "Vấn đề nào sau đây sẽ không thuộc về mục tiêu của một cuộc kiểm toán đối với khoản mục nợ phải thu khách hàng:",
-      "answer": "Khấu hao tài sản cố định"
+        question:
+            "Công ty thương mại Thiên Phúc nhập khẩu 1.500 chai rượu, Giá CIF Hải\r\nPhòng là 13 USD/chai. Trong quá trình vận chuyển, xếp dỡ (hàng còn nằm trong khu vực hải quan quản lý) vỡ 20 chai. Thuế suất thuế nhập khẩu rượu: 150%, thuế suất thuế tiêu thụ đặc biệt của rượu là 45%. Tỷ giá tính thuế 22.500 VND/USD. Thuế tiêu thụ đặc",
+        answer: "488.215.000 đồng.",
     },
     {
-      "question": "Để đáp ứng mục tiêu phát sinh của doanh thu bán chịu, kiểm toán viên cần phải chọn mẫu kiểm tra từ:",
-      "answer": "Sổ chi tiết các khoản phải thu"
+        question: "Chủ thể nào sau đây KHÔNG thuộc đối tượng nộp thuế giá trị gia tăng?",
+        answer: "Nông dân sản xuất lúa gạo.",
     },
     {
-      "question": "Nội dung phương pháp tìm hiểu hệ thống kiểm soát nội bộ không bao gồm nội dung nào trong các nội dung dưới đây:",
-      "answer": "Xúc tiến ký hợp đồng kiểm toán"
+        question: "Có mấy phương pháp tính thuế giá trị gia tăng",
+        answer: "2 phương pháp",
     },
     {
-      "question": "Khi kiểm tra khoản dự phòng nợ phải thu khó đòi, kiểm toán viên thường xem xét thời gian đến hạn của các khoản phải thu.",
-      "answer": "Đánh giá"
+        question: "Tính trên phần giá trị tăng thêm của hàng hóa dịch vụ phát sinh",
+        answer: "Tính trên phần giá trị tăng thêm của hàng hóa dịch vụ phát sinh\r\ntrong quá trình từ sản xuất, lưu thông đến tiêu dùng",
     },
     {
-      "question": "Các khoản phải thu khách hàng phát sinh do:",
-      "answer": "Khách hàng mua vật tư, hàng hóa của doanh nghiệp nhưng chưa thanh toán"
+        question: "Vai trò thuế GTGT",
+        answer: "Tạo nguồn thu cho NSNN",
     },
     {
-      "question": "Những người nằm trong ủy ban kiểm soát của một doanh nghiệp là:",
-      "answer": "Thành viên Hội đồng quản trị"
+        question: "Đối tượng chịu thuế GTGT",
+        answer: "Hàng hóa, dịch vụ dùng cho sản xuất, kinh doanh và tiêu dùng ở\r\nViệt Nam",
     },
     {
-      "question": "Số dư bên Có của tài khoản 131 phản ánh:",
-      "answer": "Số tiền khách hàng ứng trước doanh nghiệp"
+        question: "Người nộp thuế GTGT",
+        answer: "Các tổ chức, cá nhân sản xuất, kinh doanh hàng hóa, dịch vụ\r\nchịu thuế giá trị gia tăng",
     },
     {
-      "question": "Doanh nghiệp tiến hành lập dự phòng phải thu khó đòi vào lúc:",
-      "answer": "Cuối niên độ kế toán, trước khi lập báo cáo tài chính"
+        question: "Người nộp thuế GTGT",
+        answer: "Các tổ chức, cá nhân sản xuất, kinh doanh hàng hóa, dịch vụ\r\nchịu thuế giá trị gia tăng",
     },
     {
-      "question": "Mục đích của việc tiến hành thử nghiệm kiểm soát là:",
-      "answer": "Thu thập bằng chứng về sự hữu hiệu của quy chế, thủ tục kiểm soát để giảm bớt các thử nghiệm cơ bản trên số dư và nghiệp vụ"
+        question: "Trường hợp nào không phải kê khai nộp thuế",
+        answer: "Thu hộ",
     },
     {
-      "question": "Doanh nghiệp lập dự phòng phải thu khó đòi khi:",
-      "answer": "Các bằng chứng và căn cứ thuyết phục, rõ ràng về những khoản thu khó đòi"
+        question: "Trường hợp nào không phải kê khai nộp thuế",
+        answer: "Ông A là cá nhân không kinh doanh bán xe 4 chỗ ngồi cho ông B với giá 600 triệu",
     },
     {
-      "question": "Để thu thập bằng chứng về độ tin cậy của kiểm soát nội bộ, kiểm toán viên thường không sử dụng thủ tục nào dưới đây:",
-      "answer": "Kiểm tra chi tiết"
+        question: "Đối tượng không chịu thuế GTGT",
+        answer: "Người kinh doanh có doanh thu hàng năm từ 100 triệu đồng trở\r\nxuống",
     },
     {
-      "question": "Doanh nghiệp lập dự phòng phải thu khó đòi bổ sung trong trường hợp:",
-      "answer": "Số cần trích lập của niên độ này > số đã trích lập của niên độ trước"
+        question: "Thời điểm tính thuế GTGT đói với hàng hóa",
+        answer: "Thời điểm chuyển giao quyền sở hữu, quyền sử dụng hàng hóa cho người mua",
     },
     {
-      "question": "Thủ tục kiểm soát nào sau đây nhằm đảm bảo hợp lý nhất rằng mọi nghiệp vụ bán chịu trong kỳ của đơn vị được ghi nhận:",
-      "answer": "Các chứng từ gửi hàng, hóa đơn bán hàng được đánh số liệu liên tục trước khi sử dụng"
+        question: "Thời điểm tính thuế GTGT đối với dịch vụ",
+        answer: "Thời điểm hoàn thành việc cung ứng dịch vụ hoặc thời điểm lập\r\nhóa đơn cung cứng dịch vụ",
     },
     {
-      "question": "Khi kiểm tra khoản dự phòng phải thu khó đòi, kiểm toán viên thường xem xét thời gian đến hạn phải thu.",
-      "answer": "Đánh giá"
+        question: "Thời điểm tính thuế GTGT đối với hàng hóa nhập khẩu",
+        answer: "Thời điểm đăng ký tờ khai hải quan",
     },
     {
-      "question": "Kiểm soát nội bộ nợ phải thu khách hàng được xem là hữu hiệu khi nhân viên kế toán giữ sổ chi tiết các khoản phải thu không được kiêm nhiệm việc:",
-      "answer": "Xóa sổ nợ phải thu khách hàng"
+        question:
+            "Ngày 30/8 Công ty A đặt hàng công ty S một thiết bị lọc nước. Ngày 31/8 thiết bị được giao đến công ty A. Ngày 3/9 công ty S chuyển giao quyền sở hữu cho công ty A. Ngày 6/9 công ty A thanh toán cho công ty S. Hỏi thời điểm tính thuế GTGT tại\r\ncông ty S",
+        answer: "Ngày 3/9",
     },
     {
-      "question": "Kiểm toán viên chọn mẫu để kiểm tra việc ghi chép các nghiệp vụ bán hàng từ các chứng từ gửi hàng lần theo đến các hóa đơn bán hàng và đến sổ kế toán.",
-      "answer": "Chính xác, phát sinh"
+        question:
+            "Ngày 14/6 Công ty G ký hợp đồng cung cấp dịch vụ lắp đặt Internet và dịch vụ Internet cho công ty A.\r\nNgày 15/6 thu tiền lắp đặt : 3 triệu;\r\nngày 20/6 hoàn thành việc lắp đặt Internet và thu trước tiền cước dịch vụ Internet 1 năm là 60 triệu. 21/6 công ty A bắt đầu sử dụng Internet\r\nThời điểm tính thuế GTGT với dịch vụ lắp đặt Internet là ngày",
+        answer: "Ngày 15/6",
     },
     {
-      "question": "Khi doanh nghiệp cho khách hàng tin cậy của mình mượn vốn bằng tiền gửi ngân hàng trong ngắn hạn (không tính lãi), kế toán ghi:",
-      "answer": "Nợ 1388 / Có 112"
+        question: "Ngày 15/6",
+        answer: "Ngày 14/6 Công ty G ký hợp đồng cung cấp dịch vụ lắp đặt Internet và dịch vụ Internet cho công ty A.\r\nNgày 15/6 thu tiền lắp đặt : 3 triệu;\r\nngày 20/6 hoàn thành việc lắp đặt Internet và thu trước tiền cước dịch vụ Internet 1 năm là 60 triệu\r\n21/6 công ty A bắt đầu sử dụng Internet\r\nThời điểm tính thuế GTGT với dịch vụ Internet là ngày",
     },
     {
-      "question": "Nợ phải thu của khách hàng là một khoản mục có mối quan hệ mật thiết với khoản mục nào sau đây:",
-      "answer": "Doanh thu"
+        question:
+            "Ngày 14/6 Công ty G ký hợp đồng cung cấp dịch vụ lắp đặt Internet và dịch vụ Internet cho công ty A.\r\nNgày 15/6 thu tiền lắp đặt : 3 triệu;\r\nngày 20/6 hoàn thành việc lắp đặt Internet và thu trước tiền cước dịch vụ Internet 1 năm là 60 triệu\r\n21/6 công ty A bắt đầu sử dụng Internet\r\nThời điểm tính thuế GTGT với dịch vụ Internet là ngày",
+        answer: "Ngày 20/6",
     },
     {
-      "question": "Khoản mục nợ phải thu được trình bày theo giá trị thuần có thể thực hiện.",
-      "answer": "Có nhiều khả năng sai sót và khó kiểm tra"
+        question: "Công thức tính Thuế giá trị gia tăng theo phương pháp tính trực\r\ntiếp áp dụng với các tổ chức mua, bán, chế tác vàng bạc, đá quý",
+        answer: "Thuế GTGT = Giá trị gia tăng x Thuế suất thuế GTGT",
     },
     {
-      "question": "Sự khác biệt giữa dự phòng phải thu khó đòi theo kế toán và theo quy định của thuế sẽ được phản ánh vào:",
-      "answer": "Thuế thu nhập doanh nghiệp hoãn lại"
+        question: "Công thức tính Thuế giá trị gia tăng theo phương pháp tính trực tiếp áp dụng với Hộ các nhân kinh doanh",
+        answer: "Thuế GTGT = Doanh thu x tỷ lệ %",
     },
     {
-      "question": "Tổng trị giá của nguyên vật liệu thuê ngoài gia công đã hoàn thành là 44.000.000 đồng, doanh nghiệp đã nhập lại kho.",
-      "answer": "Nợ 152 44.000.000 Có 154 44.000.000"
+        question: "Tỷ lệ % để tính thuế GTGT trên doanh thu áp dụng các đơn vị tính thuế GTGT theo phương pháp trực tiếp đối với hoạt động\r\nPhân phối hàng hóa",
+        answer: "là 1%",
     },
     {
-      "question": "Kiểm kê phát hiện thiếu nguyên liệu trị giá 3.200.000đ, quyết định xử lý nêu bắt bồi thường thủ kho 50% trừ vào lương nhưng chưa trừ và nghiệp vụ: Nợ 1381/ Có 152 vẫn còn nguyên.",
-      "answer": "Nợ 1388 1.600.000 Có 1381 1.600.000"
+        question: "Tỷ lệ % để tính thuế GTGT trên doanh thu áp dụng các đơn vị\r\ntính thuế GTGT theo phương pháp trực tiếp đối với hoạt động Dịch vụ, xây dựng không bao thầu nguyên vật liệu",
+        answer: "Là 5%",
     },
     {
-      "question": "Xuất nguyên liệu thuê ngoài gia công chế biến, trị giá xuất nguyên liệu là 50.000.000đ nhưng trên sổ sách không thấy kế toán phản ánh.",
-      "answer": "Nợ 154 50.000.000 Có 152 50.000.000"
+        question:
+            "Tỷ lệ % để tính thuế GTGT trên doanh thu áp dụng các đơn vị tính thuế GTGT theo phương pháp trực tiếp đối với Hoạt động Sản xuất, vận tải, dịch vụ có gắn với hàng hóa, xây dựng có bao\r\nthầu nguyên vật liệu",
+        answer: "Là 3%",
     },
     {
-      "question": "Kiểm tra sổ sách phát hiện phiếu xuất kho số 103 thể hiện nội dung xuất 50 sản phẩm A để bán cho khách hàng M với khoản tiền chưa thu bằng gấp đôi so với giá vốn của lô hàng là 10.000.000 đồng.",
-      "answer": "Nợ 632 5.000.000 Có 155 5.000.000"
+        question: "Tỷ lệ % để tính thuế GTGT trên doanh thu áp dụng các đơn vị\r\ntính thuế GTGT theo phương pháp trực tiếp đối với Hoạt động kinh doanh khác",
+        answer: "Là 2%",
     },
     {
-      "question": "Kiểm tra hóa đơn kiêm vận chuyển nội bộ số 000001 có nội dung xuất kho lô hàng hóa có giá bán gồm thuế GTGT 10% là 110.000.000 đồng để gửi bán tại đại lý N.",
-      "answer": "Nợ 157 10.000.000 Có 156 10.000.000"
+        question:
+            "Công ty A kê khai, nộp thuế GTGT theo phương pháp trực tiếp. Trong tháng 12/20xx có doanh thu từ hoạt động tư vấn thành lập\r\ndoanh nghiệp 10 tỷ. Thuế suất thuế GTGT áp dụng hoạt động Dịch vụ là 5%. Số thuế GTGT công ty phải nộp trong tháng 12?",
+        answer: "0,5 tỷ",
     },
     {
-      "question": "Tìm hiểu về hệ thống kiểm soát nội bộ liên quan đến hàng tồn kho là bước thứ bao nhiêu trong quy trình kiểm toán hàng tồn kho:",
-      "answer": "Bước thứ 1"
+        question:
+            "Công ty X kinh doanh vàng bạc đá quý, tháng 2 công ty mua 1 cây vàng SJC giá 50 triệu. Sau đó bán ra giá 60 triệu. Số thuế\r\nGTGT công ty X nộp trong tháng 2 là. Thuế suất thuế GTGT với vàng bạc 10%",
+        answer: "1 triệu",
     },
     {
-      "question": "Các yêu cầu và thủ tục về kiểm kê hàng tồn kho được trình bày một cách rõ ràng và chi tiết trong chuẩn mực kiểm toán Việt Nam (VSA) số bao nhiêu:",
-      "answer": "VSA 501"
+        question: "Công thức tính thuế GTGT phải nộp theo phương pháp khấu trừ",
+        answer: "Số thuế GTGT phải nộp = Thuế GTGT đầu ra - Thuế GTGT đầu vào được khấu trừ",
     },
     {
-      "question": "Đối với các doanh nghiệp áp dụng phương pháp kiểm kê thường xuyên, kiểm toán viên chọn mẫu …………… để kiểm tra việc đánh giá hàng tồn kho:",
-      "answer": "Sổ chi tiết"
+        question: "Công thức tính thuế GTGT đầu ra",
+        answer: "Thuế GTGT = Giá bán chưa có thuế GTGT x thuế suất thuế\r\nGTGT",
     },
     {
-      "question": "Kiểm toán viên thực hiện kiểm tra sự hợp lý tổng thể để phát hiện những biến động bất thường là bước nào trong quy trinh kiểm toán hàng tồn kho:",
-      "answer": "Thủ tục phân tích"
+        question: "Giá tính thuế GTGT đối với hàng hóa, dịch vụ do cơ sở sản xuất, kinh doanh bán ra",
+        answer: "Là giá bán chưa có thuế GTGT",
     },
     {
-      "question": "Nội dung nào không thuộc vào mục tiêu nghiên cứu của kiểm toán hàng tồn kho:",
-      "answer": "Kiểm soát nội bộ đối với nợ phải thu"
+        question: "Giá tính thuế GTGT đối với hàng hóa, dịch vụ chịu thuế TTĐB",
+        answer: "Là giá bán đã có thuế TTĐB nhưng chưa có thuế GTGT",
     },
     {
-      "question": "Nội dung nào không thuộc vào yêu cầu về việc lập và trình bày nợ phải thu:",
-      "answer": "Tiến hành việc xiết nợ phải thu"
+        question: "Giá tính thuế GTGT đối với hàng hóa nhập khẩu",
+        answer: "Là giá nhập tại cửa khẩu nhập đầu tiên cộng với thuế nhập khẩu\r\n(nếu có), cộng (+) thuế tiêu thụ đặc biệt (nếu có) (+) thuế bảo vệ môi trường (nếu có).",
     },
     {
-      "question": "Theo Chuẩn mực kế toán Việt Nam 02 ( VAS 02) thì hàng tồn kho là tài sản:",
-      "answer": "Được giữ để bán trong kỳ sản xuất kinh doanh bình thường"
+        question: "Giá tính thuế GTGT đối với Đối với hàng hóa, dịch vụ dùng để\r\ntrao đổi, tiêu dùng nội bộ, biếu, tặng cho",
+        answer: "Là giá tính thuế giá trị gia tăng của hàng hóa, dịch vụ cùng loại\r\nhoặc tương đương tại thời điểm phát sinh các hoạt động này.",
     },
     {
-      "question": "Phát biểu nào dưới đây không được trình bày trong Chuẩn mực kế toán Việt Nam 02:",
-      "answer": "Cả 3 câu a, b và c là đáp án đúng"
+        question: "Giá tính thuế GTGT đối với Đối với hàng hóa bán theo phương\r\nthức trả góp, trả chậm",
+        answer: "Là giá bán bao gồm lãi trả chậm, trả góp",
     },
     {
-      "question": "gốc",
-      "answer": "Giá gốc"
+        question:
+            "Công ty bán ô tô, giá bán trả góp chưa bao gồm thuế GTGT là 800 triệu. Trong đó giá bán xe là 700 triệu, lãi trả góp là 100\r\ntriêu. Thuế suất thuế GTGT ô tô 10%. Thuế GTGT phát sinh khi bán 1 chiếc xe là?",
+        answer: "70 triệu",
     },
     {
-      "question": "Trong trường hợp nếu giá trị thuần có thể thực hiện của hàng tồn kho thấp hơn giá gốc thì phải tính theo:",
-      "answer": "Giá trị thuận có thể thực hiện"
+        question: "Giá tính thuế GTGT Đối với gia công hàng hóa",
+        answer: "Là giá gia công, chưa có thuế giá trị gia tăng",
     },
     {
-      "question": "Hàng tồn kho được trình bày ở đâu trên hệ thống báo cáo tài chính của đơn vị:",
-      "answer": "Bảng cân đối tài khoản"
+        question: "Giá tính thuế GTGT Đối với hoạt động cho thuê tài sản là",
+        answer: "Số tiền cho thuê chưa có thuế giá trị gia tăng",
     },
     {
-      "question": "Nội dung nào cần phải được công bố trên bản thuyết minh báo cáo tài chính của đơn vị về hàng tồn kho:",
-      "answer": "Chính sách kế toán đã được ban hành và áp dụng đối với hàng tồn kho"
+        question: "Giá tính thuế GTGT Đối với hoạt động đại lý, môi giới mua bán hàng hóa và dịch vụ hưởng hoa hồng",
+        answer: "Là tiền hoa hồng thu được từ các hoạt động này, chưa có thuế\r\ngiá trị gia tăng",
     },
     {
-      "question": "Vấn đề nào liên quan đến hàng tồn kho cần thiết phải được kiểm soát:",
-      "answer": "Tất cả các đáp án trên"
+        question:
+            "Giá tính thuế GTGT Đối với hàng hóa, dịch vụ được sử dụng\r\nloại chứng từ thanh toán ghi giá thanh toán là giá đã có thuế giá trị gia tăng thì giá tính thuế được xác định theo công thức:",
+        answer: "Giá đã có thuế GTGT/(1+ Thuế suất thuế GTGT)",
     },
     {
-      "question": "Vấn đề nào không cần thiết phải được kiểm soát trong kế toán hàng tồn kho:",
-      "answer": "Khấu hao"
+        question: "Đối với hàng hóa dịch vụ dùng để khuyến mãi theo chương trình\r\nkhuyến mãi được thực hiện theo quy định của pháp luật về thương mại. Giá tính thuế GTGT",
+        answer: "Bằng 0",
     },
     {
-      "question": "Mua hàng không đúng chủng loại là rủi ro phát sinh liên quan đến hoạt động kiểm soát:",
-      "answer": "Hàng tồn kho"
+        question: "Đâu KHÔNG phải là mức thuế suất thuế GTGT",
+        answer: "15%",
     },
     {
-      "question": "Rủi ro nào phát sinh không liên quan đến khâu mua hàng:",
-      "answer": "Mua hàng được hưởng chính sách ưu đãi"
+        question:
+            "Công ty Lavie sản xuất nước đóng chai bán với giá chưa thuế GTGT 4.000 đ/chai. Trong tháng 10/20XX công ty xuất 100 chai nước phục vụ họp khách hàng; 100 chai phục vụ kỳ nghỉ\r\nmát hàng năm của công ty. Thuế suất thuế GTGT nước đóng chai 10%; Trong tháng 10 công ty tính thuế GTGT đối với",
+        answer: "200 chai nước",
     },
     {
-      "question": "Phát biểu nào là đúng khi nói về rủi ro liên quan đến hoạt động nhận hàng:",
-      "answer": "Nhận hàng không đúng chủng loại"
+        question: "Điều kiện để khấu trừ thuế GTGT đầu vào",
+        answer: "Cả 2 điều kiện trên",
     },
     {
-      "question": "Nhận hàng",
-      "answer": "Nhận hàng"
+        question:
+            "Tháng 9/N,\t công ty A tập hợp được Thuế giá trị gia tăng đầu\r\nvào trên các hóa đơn, chứng từ mua nguyên liệu, hàng hóa đầu vào của quá trình sản xuất gồm có 2 hóa đơn:\r\n•\tHóa đơn 1: Giá chưa thuế 15 triệu đồng, thuế giá trị gia tăng 1,5 triệu đồng.\r\n•\tHóa đơn 2: Giá chưa thuế 20 triệu đồng, thuế giá trị gia tăng 2triệu đồng. Thanh toán qua ngân hàng.\r\nXác định thuế giá trị gia tăng được khấu trừ của công ty trong tháng",
+        answer: "3,5 triệu",
     },
     {
-      "question": "Nhận hàng kém chất lượng là rủi ro thuộc về hoạt động:",
-      "answer": "Nhận hàng"
+        question:
+            "Tháng 9/N, công ty A tập hợp được Thuế giá trị gia tăng đầu vào trên các hóa đơn, chứng từ mua nguyên liệu, hàng hóa đầu vào của quá trình sản xuất có hóa đơn mua hàng hóa: Giá chưa thuế 30 triệu đồng; thuế giá trị gia tăng 3 triệu đồng. Thanh toán\r\n½ bằng tiền mặt; ½ tiền gửi ngân hàng.\r\nXác định thuế giá trị gia tăng được khấu trừ của các hóa đơn nêu trên",
+        answer: "1,5 triệu",
     },
     {
-      "question": "Thanh toán tiền cho hàng không đúng số lượng, chất lượng và chủng loại là rủi ro thuộc về hoạt động:",
-      "answer": "Thanh toán"
+        question:
+            "Công ty A tháng 9/N, có tài liệu sau:\r\nMua ô tô hiệu Lexus ES 350 giá 3.260.000.000 VNĐ tạo tài sản cố định phục vụ hoạt động quản lý của công ty. Biết thuế suất thuế GTGT đối với ô tô là 10%.\r\nTính số thuế VAT được khấu trừ đầu vào của công ty?",
+        answer: "160 triệu",
     },
     {
-      "question": "Rủi ro nào không liên quan đến khâu thanh toán:",
-      "answer": "Thanh toán tiền chiết khấu"
+        question:
+            "160 triệu\r\nTrong tháng 1/20XX, Công ty TNHH ô tô Trường Hải, Nhập khẩu 1 Mercedes-Maybach S 450, dung tích xi lanh 2996 (cc), giá CIF: 75.000 USD; trong đó Phí bảo hiểm và vận tải biển là\r\n5.000 USD; thuế suất thuế nhập khẩu của mẫu xe này là 70%; thuế suất thuế TTĐB là 50%; tỷ giá để tính thuế nhập khẩu tại thời điểm nhập khẩu là 23.400 VND/USD. Giá tính thuế Nhập\r\nkhẩu xe ô tô",
+        answer: "75.000 usd x 23.400",
     },
     {
-      "question": "Rủi ro phát sinh liên quan đến khâu bảo quản là:",
-      "answer": "Tất cả các đáp án trên"
+        question:
+            "Trong tháng 1/20XX, Công ty TNHH ô tô Trường Hải, Nhập khẩu 1 Mercedes-Maybach S 450, dung tích xi lanh 2996 (cc), giá CIF: 75.000 USD; trong đó Phí bảo hiểm và vận tải biển là\r\n5.000 USD; thuế suất thuế nhập khẩu của mẫu xe này là 70%;\r\nthuế suất thuế TTĐB là 50%; tỷ giá để tính thuế nhập khẩu tại thời điểm nhập khẩu là 23.400 VND/USD. Thuế NK ô tô là",
+        answer: "75.000 usd x 70% x 23.400",
     },
     {
-      "question": "Hàng hóa bị lỗi thời là rủi ro thuộc về hoạt động:",
-      "answer": "Bảo quản"
+        question:
+            "Trong tháng 1/20XX, Công ty TNHH ô tô Trường Hải, Nhập khẩu 1 Mercedes-Maybach S 450, dung tích xi lanh 2996 (cc), giá CIF: 75.000 USD; trong đó Phí bảo hiểm và vận tải biển là\r\n5.000 USD; thuế suất thuế nhập khẩu của mẫu xe này là 70%; thuế suất thuế TTĐB là 50%; tỷ giá để tính thuế nhập khẩu tại thời điểm nhập khẩu là 23.400 VND/USD. Giá tính thuế TTĐB\r\nô tô",
+        answer: "(75.000 + 75.000 x 70%)x 23.400",
     },
     {
-      "question": "Nguyên liệu, vật liệu, sản phẩm dở dang và thành phẩm bị thất thoát thuộc về:",
-      "answer": "Rủi ro sản xuất"
+        question:
+            "Trong tháng 1/20XX, Công ty TNHH ô tô Trường Hải, Nhập khẩu 1 Mercedes-Maybach S 450, dung tích xi lanh 2996 (cc), giá CIF: 75.000 USD; trong đó Phí bảo hiểm và vận tải biển là\r\n5.000 USD; thuế suất thuế nhập khẩu của mẫu xe này là 70%;\r\nthuế suất thuế TTĐB là 50%; tỷ giá để tính thuế nhập khẩu tại thời điểm nhập khẩu là 23.400 VND/USD. Thuế TTĐB ô tô là",
+        answer: "(75.000 + 75.000 x 70%)x 50% x 23.400",
     },
     {
-      "question": "Rủi ro nào không liên quan đến hoạt động sản xuất",
-      "answer": "Nguyên liệu, vật liệu, sản phẩm dở dang và thành phẩm tồn kho"
+        question:
+            "Trong tháng 1/20XX, Công ty TNHH ô tô Trường Hải, Nhập khẩu 1 Mercedes-Maybach S 450, dung tích xi lanh 2996 (cc), giá CIF: 75.000 USD; trong đó Phí bảo hiểm và vận tải biển là\r\n5.000 USD; thuế suất thuế nhập khẩu của mẫu xe này là 70%; thuế suất thuế TTĐB là 50%; tỷ giá để tính thuế nhập khẩu tại thời điểm nhập khẩu là 23.400 VND/USD. Giá tính thuế GTGT\r\nhàng nhập khẩu",
+        answer: "4.475.250.000 đồng",
     },
     {
-      "question": "Hàng tồn kho bị khai khống trong kiểm kê là phát biểu thuộc về",
-      "answer": "Hiện hữu và quyền"
+        question:
+            "Trong tháng 1/20XX, Công ty TNHH ô tô Trường Hải, Nhập khẩu 1 Mercedes-Maybach S 450, dung tích xi lanh 2996 (cc), giá CIF: 75.000 USD; thuế suất thuế nhập khẩu của mẫu xe này là 70%; thuế suất thuế TTĐB là 50%; giả sử tỷ giá để tính thuế nhập khẩu tại thời điểm nhập khẩu là 23.400 VND/USD. Công ty đã giao xe cho KH, giá bán ĐÃ có thuế GTGT ghi trên hóa đơn của nhà nhập khẩu là 7.369.000.000 đồng.Thuế GTGT phải\r\nnộp khi nhập khẩu hàng hóa",
+        answer: "Trong tháng 1/20XX, Công ty TNHH ô tô Trường Hải, Nhập khẩu 1 Mercedes-Maybach S 450, dung tích xi lanh 2996 (cc), giá CIF: 75.000 USD; thuế suất thuế nhập khẩu của mẫu xe này là 70%; thuế suất thuế TTĐB là 50%; giả sử tỷ giá để tính thuế nhập khẩu tại thời điểm nhập khẩu là 23.400 VND/USD. Công ty đã giao xe cho KH, giá bán ĐÃ có thuế GTGT ghi trên hóa đơn của nhà nhập khẩu là 7.369.000.000 đồng.Thuế GTGT phải\r\nnộp khi nhập khẩu hàng hóa",
     },
     {
-      "question": "Phát biểu nào không thuộc vào hiện hữu và quyền trong kiểm toán hàng tồn kho:",
-      "answer": "Hàng tồn kho phát sinh khi định khoản"
+        question:
+            "Trong tháng 1/20XX, Công ty TNHH ô tô Trường Hải, Nhập khẩu 1 Mercedes-Maybach S 450, dung tích xi lanh 2996 (cc), giá CIF: 75.000 USD; thuế suất thuế nhập khẩu của mẫu xe này là 70%; thuế suất thuế TTĐB là 50%; giả sử tỷ giá để tính thuế nhập khẩu tại thời điểm nhập khẩu là 23.400 VND/USD. Công ty đã giao xe cho KH, giá bán ĐÃ có thuế GTGT ghi trên hóa đơn của nhà nhập khẩu là 7.369.000.000. Giá tính thuế GTGT\r\nbán xe",
+        answer: "7.369.000.0000/(1+10%) đồng",
     },
     {
-      "question": "Hàng tồn kho thuộc ……………… người khác là phát biểu thuộc vào hiện hữu và quyền.",
-      "answer": "Quyền sở hữu"
+        question:
+            "Trong tháng 1/20XX, Công ty TNHH ô tô Trường Hải, Nhập khẩu 1 Mercedes-Maybach S 450, dung tích xi lanh 2996 (cc), giá CIF: 75.000 USD; thuế suất thuế nhập khẩu của mẫu xe này là 70%; thuế suất thuế TTĐB là 50%; giả sử tỷ giá để tính thuế nhập khẩu tại thời điểm nhập khẩu là 23.400 VND/USD. Công ty đã giao xe cho KH, giá bán ĐÃ có thuế GTGT ghi trên hóa\r\nđơn của nhà nhập khẩu là 7.369.000.000. Thuế GTGT đầu ra",
+        answer: "7.369.000.0000*10%/(1+10%) đồng",
     },
     {
-      "question": "Hiện hữu và quyền trong kiểm toán hàng tồn kho cho biết:",
-      "answer": "Hàng tồn kho trên BCTC hiện hữu trong thực tế và thuộc quyền sở hữu của đơn vị"
+        question:
+            "Cơ sở kinh doanh sản xuất hai loại mặt hàng là xe đạp và xe lăn. Thuế giá trị gia tăng đầu vào của nguyên vật liệu sản xuất hai mặt hàng là 60 triệu đồng. Cơ sở sản xuất không hạch toán riêng nguyên vật liệu sản xuất từng mặt hàng. Biết rằng doanh thu trong kỳ tính thuế của xe đạp là 600 triệu đồng, của xe lăn là\r\n900 triệu đồng. Tính thuế giá trị gia tăng khấu trừ trong kỳ (thuế suất thuế giá trị gia tăng là 10%)?",
+        answer: "24 triệu đồng.",
     },
     {
-      "question": "Phát biểu nào sau đây thuộc về hiện hữu và quyền :",
-      "answer": "Hàng tồn kho đã chuyển giao quyền sở hữu"
+        question:
+            "Cơ sở kinh doanh nộp thuế giá trị gia tăng theo phương pháp khấu trừ bán hàng hóa xuất hóa đơn giá trị gia tăng chỉ ghi giá thanh toán, không ghi giá chưa có thuế và thuế giá trị gia tăng\r\nthì giá tính thuế giá trị gia tăng đầu ra là:",
+        answer: "giá thanh toán ghi trên hóa đơn giá trị gia tăng.",
     },
     {
-      "question": "Trong kiểm toán hàng tồn kho thì đầy đủ có nghĩa là:",
-      "answer": "Hàng tồn kho của đơn vị đã được khai báo đầy đủ chưa"
+        question:
+            "Công ty A hoạt động kinh doanh thương mại nội địa, trong tháng 9 công ty có số thuế giá trị gia tăng đầu vào chưa được khấu trừ của riêng tháng 8 chuyển sang là 15 triệu, thuế giá trị gia tăng đầu vào tập hợp được trong tháng là 195 triệu. Tháng 7 doanh nghiệp đã nộp 25 triệu tiền thuế giá trị gia tăng. Số thuế\r\ngiá trị gia tăng được hoàn tháng 9 là:",
+        answer: "Không đủ đk",
     },
     {
-      "question": "Phát biểu nào thuộc về khái niệm đầy đủ trong kiểm toán hàng tồn kho:",
-      "answer": "Hàng đang đi đường bị bỏ sót"
+        question:
+            "Công ty A là đại lý cho công ty B, trong tháng đã bán được lượng hàng hóa theo giá chưa thuế giá trị gia tăng mà công ty B\r\nquy định là 750 triệu đồng, hoa hồng phí 10% trên giá chưa thuế giá trị gia tăng. Doanh thu của công ty A là bao nhiêu?",
+        answer: "75.000.000 đồng.",
     },
     {
-      "question": "Hàng tồn kho có được tính toán và cộng dồn chính xác không là phát biểu thuộc về:",
-      "answer": "Ghi chép chính xác"
+        question:
+            "Công ty A là đại lý phân phối bán đúng giá hưởng hoa hồng sản phẩm dầu nhờn. Trong tháng 9 có doanh số tiêu thụ là 660 triệu đồng (đã bao gồm thuế giá trị gia tăng 10%). Hoa hồng đại lý chưa có thuế giá trị gia tăng được hưởng là 15% tính trên giá\r\nthanh toán. Giá tính thuế giá trị gia tăng của Công ty A là bao nhiêu?",
+        answer: "99 triệu đồng.",
     },
     {
-      "question": "Phát biểu nào thuộc về ghi chép chính xác trong kiểm toán hàng tồn kho:",
-      "answer": "Số liệu hàng tồn kho tổng hợp có sai lệch với chi tiết"
+        question:
+            "Công ty A nhập khẩu 200 lít rượu 450 để sản xuất 3000 sản phẩm A, giá nhập khẩu 20 USD/1ít (thuế suất thuế nhập khẩu 90%, thuế suất thuế tiêu thụ đặc biệt của rượu là 65%). Bán 1000 sản phẩm A trong nước với giá chưa thuế giá trị gia tăng là\r\n450.000 đồng/sản phẩm.Tỷ giá tính thuế 22.500 VND/USD.\r\nThuế giá trị gia tăng đầu vào được khấu trừ là:",
+        answer: "28.215.000 đồng.",
     },
     {
-      "question": "Hàng tồn kho được đánh giá theo giá thấp hơn giữa giá gốc và giá trị thuần có thể thực hiện là phát biểu thuộc về:",
-      "answer": "Đánh giá"
+        question:
+            "Công ty A nộp thuế giá trị gia tăng theo phương pháp khấu trừ thuế, trong năm đã xuất khẩu 10.000 sản phẩm X với giá CIF là 15 USD/sản phẩm, chi phí vận chuyển và bảo hiểm quốc tế của cả lô hàng là 5000 USD, sản phẩm X chịu thuế suất thuế giá trị gia tăng 10%, tỷ giá tính thuế 22.500 VND/USD. Thuế suất thuế xuất khẩu là 4%. Doanh thu của 10.000 sản phẩm trên là bao\r\nnhiêu?",
+        answer: "3.375.000.000 đồng.",
     },
     {
-      "question": "Phát biểu nào không thuộc vào yếu tố đánh giá trong kiểm toán hàng tồn kho:",
-      "answer": "Áp dụng phương pháp đánh giá không liên tục"
+        question:
+            "Công ty TNHH Thanh Thảo sản xuất mũ bảo hiểm trong tháng 9 có tình hình sau: Thuế giá trị gia tăng chưa được khấu trừ tháng trước chuyển sang 45 triệu đồng. Thuế giá trị gia tăng ghi trên hóa đơn mua hàng phát sinh tháng 120 triệu đồng, trong đó số hàng hóa chưa xuất dùng trong tháng có số thuế giá trị gia tăng 20 triệu đồng. Tổng số thuế giá trị gia tăng đầu vào được khấu\r\ntrừ trong tháng của doanh nghiệp này là:",
+        answer: "165 triệu đồng.",
     },
     {
-      "question": "Hàng tồn kho có tuân thủ chuẩn mực và chế độ hiện hành không là phát biểu thuộc về:",
-      "answer": "Tuân thủ quy định hiện hành"
+        question:
+            "Công ty TNHH Tân Cương sử dụng 20 sản phẩm để làm quà khuyến mại cho khách hàng. Giá thành sản xuất là 1,2 triệu đồng/sản phẩm. Giá bán chưa có thuế giá trị gia tăng là 1,5 triệu đồng/sản phẩm. Khách hàng mua 5 sản phẩm được tặng 1 sản phẩm. Công ty có đăng ký chương trình khuyến mại với Sở\r\nCông thương. Doanh thu của hàng dùng là quà khuyến mại là:",
+        answer: "0 triệu đồng",
     },
     {
-      "question": "Phát biểu nào được cho là không đúng với tuân thủ quy định hiện hành trong kiểm toán hàng tồn kho:",
-      "answer": "Hàng tồn kho chưa thuộc quyền sở hữu"
+        question: "Thuế TNDN là",
+        answer: "là sắc thuế thuộc loại thuế thu nhập đánh vào thu nhập chịu thuế của các doanh nghiệp trong một kỳ kinh doanh nhất định.",
     },
     {
-      "question": "Phát biểu nào là đúng với tuân thủ quy định hiện hành trong kiểm toán hàng tồn kho:",
-      "answer": "Phân biệt không đúng hàng tồn kho và các tài sản khác"
+        question: "Đâu KHÔNG phải là đặc điểm của thuế TNDN",
+        answer: "Là sắc thuế gián thu",
     },
     {
-      "question": "Nội dung nào không được nghiên cứu trong kiểm toán hàng tồn kho :",
-      "answer": "Thẩm định giá trị thực của hàng tồn kho"
+        question: "Cách tính thuế TNDN phải nộp",
+        answer: "Thuế TNDN phải nộp trong kỳ = (Thu nhập tính thuế trong kỳ - phần trích\r\nquỹ KH &CN) x thuế suất thuế TNDN",
     },
     {
-      "question": "Kiểm soát nội bộ đối với hàng tồn kho là kiểm soát các vấn đề nào:",
-      "answer": "Tất cả các đáp án trên"
+        question: "Thu nhập tính thuế bằng",
+        answer: "Thu nhập chịu thuế- Thu nhập được miễn thuế - Các khoản lỗ được kết chuyển",
     },
     {
-      "question": "Kiểm soát nội bộ đối với hàng tồn kho sẽ không kiểm soát các vấn đề nào:",
-      "answer": "Giao hàng"
+        question: "Thu nhập chịu thuế trong kỳ tính thuế bằng",
+        answer: "Doanh thu tính thu nhập chịu thuế trong kỳ - Chi phí được trừ trong kỳ + Thu nhập chịu thuế khác trong kỳ",
     },
     {
-      "question": "Hàng tồn kho được ghi nhận ở đâu của hệ thống báo cáo tài chính trong đơn vị:",
-      "answer": "Bảng cân đối kế toán"
+        question: "Doanh thu tính thu nhập chịu thuế",
+        answer: "Là toàn bộ tiền bán hàng hóa, tiền cung ứng dịch vụ, bao gồm cả các khoản\r\ntrợ giá, phụ thu, phụ trội mà cơ sở kinh doanh được hưởng",
     },
     {
-      "question": "Những chính sách kế toán về hàng tồn kho được trình bày và công bố trên báo cáo nào của hệ thống báo cáo tài chính:",
-      "answer": "Bản thuyết minh báo cáo tài chính"
+        question: "Thời điểm xác định doanh thu đối với hoạt động mua bán hàng hóa",
+        answer: "là thời điểm chuyển giao quyền sở hữu, quyền sử dụng hàng hóa cho người mua",
     },
     {
-      "question": "Khoảng cách giữa mong đợi của người sử dụng những thông tin về hàng tồn kho so với chuẩn mực hợp lý là gì:",
-      "answer": "Sự kỳ vọng không hợp lý"
+        question: "Thời điểm xác định doanh thu đối với Hoạt động cung ứng dịch vụ",
+        answer: "là thời điểm hoàn thành việc cung ứng dịch vụ hoặc hoàn thành từng phần việc\r\ncung ứng dịch vụ cho người mua",
     },
     {
-      "question": "……………… chính là một trong những bằng chứng làm cơ sở để kiểm toán viên đưa ra các ý kiến về những thông tin kế toán hàng tồn kho của doanh nghiệp",
-      "answer": "Phiếu nhập kho"
+        question: "Nếu cơ sở kinh doanh nộp thuế giá trị gia tăng theo phương pháp khấu trừ thì doanh thu",
+        answer: "Không bao gồm thuế GTGT",
     },
     {
-      "question": "Hoạt động kiểm toán sẽ mang lại cho những đối tượng sử dụng thông tin các lợi ích nào đối với khoản mục hàng tồn kho:",
-      "answer": "Giảm thiểu rủi ro về mặt thông tin và các quyết định đầu tư"
+        question: "Nếu cơ sở kinh doanh nộp thuế giá trị gia tăng theo phương pháp trực tiếp thì doanh thu",
+        answer: "Bao gồm thuế GTGT",
     },
     {
-      "question": "Việc sửa đổi, giả mạo chứng từ phiếu xuất kho và không ghi ghép các nghiệp vụ kinh tế phát sinh có liên quan là ……………… ảnh hưởng đến kiểm toán hàng tồn kho:",
-      "answer": "Gian lận"
+        question:
+            "Doanh nghiệp A là đối tượng nộp thuế GTGT theo phương pháp khấu trừ. Hóa đơn GTGT gồm các chỉ tiêu sau:\r\n§ Giá bán: 100.000.000 đồng.\r\n§ Thuế GTGT (10%): 10.000.000 đồng.\r\n§ Tổng giá thanh toán: 110.000.000 đồng.\r\n§ Doanh thu để tính thu nhập chịu thuế là",
+        answer: "100.000.000 đồng",
     },
     {
-      "question": "Yếu tố nào sau đây không làm ảnh hưởng đến khả năng gian lận và sai sót đến số liệu hàng tồn kho:",
-      "answer": "Hệ thống kiểm soát nội bộ về hàng tồn kho thật sự ổn định"
+        question:
+            "Doanh nghiệp B là đối tượng nộp thuế GTGT theo phương pháp trực tiếp trên GTGT. Hóa đơn bán hàng chỉ ghi giá bán là 110.000.000 đồng (giá đã có thuế\r\nGTGT). Doanh thu để tính thu nhập chịu thuế là",
+        answer: "110.000.000 đồng",
     },
     {
-      "question": "Mức trích lập dự phòng với khoản nợ phải thu khó đòi quá hạn từ 01 năm đến dưới 02 năm là bao nhiêu %?",
-      "answer": "50%"
+        question: "Doanh thu để tính thu nhập chịu thuế đối với hàng hóa, dịch vụ bán theo phương thức trả góp, trả chậm",
+        answer: "là tiền bán hàng trả một lần, không bao gồm lãi trả góp, trả chậm",
     },
     {
-      "question": "Mức trích lập dự phòng với khoản nợ phải thu khó đòi quá hạn từ 02 năm đến dưới 03 năm là bao nhiêu %?",
-      "answer": "70%"
+        question:
+            "Doanh thu để tính thu nhập chịu thuế đĐối với hàng hóa, dịch vụ dùng để trao đổi, biếu tặng, cho, tiêu dùng nội bộ (không bao gồm hàng hóa, dịch vụ sử\r\ndụng để tiếp tục quá trình sản xuất, kinh doanh của doanh nghiệp",
+        answer: "Là giá bán của sản phẩm, hàng hóa, dịch vụ cùng loại hoặc tương đương;",
     },
     {
-      "question": "Mức trích lập dự phòng đối với khoản nợ phải thu khó đòi đã quá hạn từ 03 năm sẽ là bao nhiêu %?",
-      "answer": "100%"
+        question: "Doanh thu để tính thu nhập chịu thuế Đối với hàng hóa bán qua đại lý, ký gửi đúng giá hưởng hoa hồng: Doanh nghiệp giao hàng",
+        answer: "Là số tiền bán hàng hóa",
     },
     {
-      "question": "Nợ phải thu thể hiện trên bảng CĐKT theo giá trị của hóa đơn gốc trừ đi khoản dự phòng …………… ước tính đến thời điểm ngày 31/12:",
-      "answer": "Phải thu khó đòi"
+        question: "Doanh thu để tính thu nhập chịu thuế Đối với hàng hóa bán qua đại lý, ký gửi đúng giá hưởng hoa hồng: Doanh nghiệp làm đại lý, ký gửi",
+        answer: "Là hoa hồng được hưởng",
     },
     {
-      "question": "Kiểm tra Hóa đơn (VAT) số 00001 có nội dung số tiền phải thu bao gồm thuế GTGT 10% là 550.000.000đ.",
-      "answer": "Nợ 511 50.000.000 Có 3331 50.000.000"
+        question: "Doanh thu để tính thu nhập chịu thuế Đối với hoạt động cho thuê tài sản",
+        answer: "số tiền thuê trả từng kỳ",
     },
     {
-      "question": "Nhầm lẫn về việc giao hàng và điều kiện giao hàng là một trong những ……………...",
-      "answer": "Rủi ro"
+        question: "Doanh thu tính thu nhập chịu thuế Đối với hoạt động tín dụng, cho thuê tài chính",
+        answer: "là tiền lãi cho vay, doanh thu về cho thuê tài chính phải thu trong kỳ.",
     },
     {
-      "question": "Việc thu hồi nợ diễn biến chậm chạp là rủi ro phát sinh liên quan đến khâu nào sau đây:",
-      "answer": "Bán chịu"
+        question: "Doanh thu tính thu nhập chịu thuế Đối với\thoạt động vận tải",
+        answer: "tải là toàn bộ doanh thu vận chuyển hành khách, hàng hóa, hành lý.",
     },
     {
-      "question": "Không đòi được nợ từ ……………… là rủi ro phát sinh liên quan đến hoạt động bán chịu.",
-      "answer": "Khách hàng"
+        question: "Doanh thu tính thu nhập chịu thuế Đối với hoạt động xây dựng, lắp đặt",
+        answer: "đặt là giá trị công trình, hạng mục công trình hoặc khối lượng công trình\r\nnghiệm thu",
     },
     {
-      "question": "Xét duyệt sai chính sách bán chịu cho khách hàng là rủi ro xảy ra liên quan đến hoạt động nào sau đây:",
-      "answer": "Bán chịu"
+        question: "Doanh thu tính thu nhập chịu thuế Đối với hoạt động kinh doanh trò chơi có thưởng",
+        answer: "là số tiền thu từ hoạt động này trừ số tiền đã trả thưởng cho khách hàng.",
     },
     {
-      "question": "Phát biểu nào sau đây không thuộc vào những rủi ro phát sinh liên quan đến hoạt động bán hàng:",
-      "answer": "Việc thu hồi nợ diễn ra chậm chạp"
+        question:
+            "Công ty A chuyên kinh doanh máy khoan nhồi bê tông. Công ty ký hợp đồng với công ty B là đơn vị thi công với điều khoản hai bên cùng khai thác máy khoan, doanh thu thu được sẽ chia theo tỷ lệ: Công ty A: 70%, công ty B: 30%. Mọi chi phí khách hàng, sửa chữa, vận hành công ty A sẽ chịu.Mọi chi phí giao dịch để thực hiện hợp đồng công ty B chịu. Tháng 9 doanh\r\nthu của việc sử dụng máy là 100 triệu. doanh thu tính thu nhập chịu thuế của công ty A là",
+        answer: "70 triệu",
     },
     {
-      "question": "Phát biểu nào sau đây không thuộc vào những rủi ro phát sinh liên quan đến hoạt động bán chịu:",
-      "answer": "Bán hàng không đúng đối tượng"
+        question: "Đâu KHÔNG phải là điều kiện xác định các khoản chi phí được trừ:",
+        answer: "Khoản chi thanh toán tiền lương cho nhân viên",
     },
     {
-      "question": "Mất cân đối tài chính dẫn đến việc mất khả năng thanh khoản là rủi ro phát sinh liến quan đến hoạt động nào:",
-      "answer": "Bán chịu"
+        question: "Các trường hợp nào sau đây KHÔNG được tính vào chi phí được trừ khi xác định thu nhập chịu thuế thu nhập doanh nghiệp?",
+        answer: "Tiền phạt vi phạm hành chính về thuế, vi phạm luật giao thông.",
     },
     {
-      "question": "Rủi ro nào sau đây là một trong những rủi ro liên quan đến hoạt động giao hàng:",
-      "answer": "Giao hàng không đúng chủng loại, số lượng"
+        question: "Các trường hợp nào sau đây KHÔNG được tính vào chi phí được trừ khi xác định thu nhập chịu thuế thu nhập doanh nghiệp?",
+        answer: "Chi ủng hộ Đoàn thanh niên cắm trại nhân ngày thành lập đoàn 26/3.",
     },
     {
-      "question": "Thất thoát ……………… trong quá trình thực hiện việc giao nhận hàng hóa là một trong những rủi ro liên quan đến hoạt động giao hàng:",
-      "answer": "Hàng hóa"
+        question: "Các trường hợp nào sau đây KHÔNG được tính vào chi phí được trừ khi xác định thu nhập chịu thuế thu nhập doanh nghiệp?",
+        answer: "Đóng bảo hiểm nhân thọ cho lãnh đạo doanh nghiệp.",
     },
     {
-      "question": "Giao hàng không đúng chủng loại, số lượng, địa chỉ giao nhận là một trong những rủi ro liên quan đến hoạt động:",
-      "answer": "Giao hàng"
+        question: "Thuế thu nhập doanh nghiệp là loại thuế:",
+        answer: "thuế trực thu đánh trên thu nhập có được của các cơ sở kinh doanh.",
     },
     {
-      "question": "Trong hoạt động kiểm toán nợ phải thu thì khái niệm hiện hữu và quyền có nghĩa là:",
-      "answer": "Nợ phải thu trên BCTC hiện hữu trong thực tế và thuộc quyền sở hữu của đơn vị"
+        question: "Thuế suất thuế thu nhập doanh nghiệp áp dụng đối với hầu hết cơ sở sản xuất kinh doanh là:",
+        answer: "20%",
     },
     {
-      "question": "Vấn đề nợ phải thu có bị khai khống do doanh thu bán hàng hay không thuộc về:",
-      "answer": "Hiện hữu và quyền"
+        question: "Khoản chi phí nào KHÔNG được tính vào chi phí được trừ khi tính thuế thu nhập doanh nghiệp?",
+        answer: "Lãi tiền vay để bổ sung vốn",
     },
     {
-      "question": "Vấn đề nào sau đây không được đề cập đến khi nói về tính hiện hữu và quyền khi nghiên cứu kiểm toán nợ phải thu:",
-      "answer": "Nợ phải thu khó đòi"
+        question: "Khoản nào sau đây được xem là chi phí được trừ khi xác định thu nhập chịu thuế thu nhập doanh nghiệp?",
+        answer: "b.\tChi trợ cấp thôi việc cho người lao động theo đúng quy định hiện hành.",
     },
     {
-      "question": "Rủi ro phát sinh liên quan đến khâu xử lý nợ phải thu khó đòi là:",
-      "answer": "Xóa sổ nợ khó đòi để che giấu các gian lận"
+        question: "Khoản nào sau đây KHÔNG tính vào thu nhập khác khi tính thu nhập chịu thuế thu nhập doanh nghiệp?",
+        answer: "a.\tKhách hàng thanh toán tiền hàng.",
     },
     {
-      "question": "Nợ phải thu bị nhân viên tham ô, ……………… là một trong những vấn đề được đề cập đến khi nghiên cứu về tính hiện hữu và quyền:",
-      "answer": "Biển thủ"
+        question: "Thời hạn doanh nghiệp được chuyển lỗ là:",
+        answer: "3\tnăm 5 năm",
     },
     {
-      "question": "Bỏ sót không lập hóa đơn tài chính khi bán hàng là rủi ro liên quan đến khâu:",
-      "answer": "Lập hóa đơn"
+        question: "Đối tượng nào KHÔNG thuộc diện chịu thuế thu nhập doanh nghiệp?",
+        answer: "d.\tHộ kinh doanh cá thể.",
     },
     {
-      "question": "Rủi ro nào sau đây không thuộc vào hoạt động lập hóa đơn:",
-      "answer": "Gian lận bằng cách chuyển hàng qua người nhận hàng"
+        question: "Đối tượng nào sau đây KHÔNG thuộc diện nộp thuế thu nhập doanh nghiệp?",
+        answer: "d.\tHộ gia đình, cá nhân nông dân sản xuất hàng hóa lớn có thu nhập cao từ sản phẩm trồng trọt, chăn nuôi, nuôi trồng thủy sản.",
     },
     {
-      "question": "Thuật ngữ đầy đủ trong kiểm toán nợ phải thu có nghĩa là:",
-      "answer": "Nợ phải thu của đơn vị đã được khai báo đầy đủ chưa"
+        question: "Đối tượng nào thuộc diện nộp thuế thu nhập doanh nghiệp?",
+        answer: "d.\tCá nhân nông dân là chủ doanh nghiệp tư nhân kinh doanh sản phẩm nông nghiệp.",
     },
     {
-      "question": "Doanh thu bán hàng và cung cấp dịch vụ có bị bỏ sót hay không là yếu tố thuộc về:",
-      "answer": "Đầy đủ"
+        question:
+            "Doanh nghiệp tư nhân A nộp thuế giá trị gia tăng theo phương pháp trực tiếp trên giá trị gia tăng, hóa đơn bán hàng ghi giá bán là 1.320.000 đồng. Thuế suất thuế giá trị gia tăng các mặt hàng doanh nghiệp kinh doanh đều là 10%. Doanh thu để tính thu nhập chịu thuế thu nhập doanh nghiệp là bao nhiêu?",
+        answer: "d.\t1.320.000 đồng.",
     },
     {
-      "question": "Phát biểu nào sau đây là đúng khi nói về tính đầy đủ trong kiểm toán nợ phải thu:",
-      "answer": "Doanh thu bán hàng và cung cấp dịch vụ có bị trì hoãn không"
+        question:
+            "Doanh nghiệp A nhận ủy thác nhập khẩu một lô hàng theo giá CIF là 100.000 USD, tương đương 1,75 tỷ đồng. Hoa hồng ủy thác được hưởng là 4% tính trên giá trị lô hàng. Doanh thu chịu thuế thu nhập doanh nghiệp là bao nhiêu?",
+        answer: "70 triệu đồng.",
     },
     {
-      "question": "Thuật ngữ ghi chép chính xác trong kiểm toán nợ phải thu có nghĩa là:",
-      "answer": "Nợ phải trả được tính toán và cộng dồn chính xác không"
+        question:
+            "Công ty bán ô tô, giá bán trả góp chưa bao gồm thuế GTGT là 800 triệu.\r\nTrong đó giá bán xe là 700 triệu, lãi trả góp là 100 triêu. Thuế suất thuế GTGT ô tô 10%. Doanh thu phát sinh khi bán 1 chiếc xe là?",
+        answer: "700 triệu",
     },
     {
-      "question": "Phát biểu nào sau đây là đúng khi nói về vấn đề ghi nhận chính xác trong kiểm toán khoản mục nợ phải thu:",
-      "answer": "Số liệu công nợ phải thu tổng hợp sai lệch so với chi tiết"
+        question:
+            "Công ty A kinh doanh áo sơ mi; trong kỳ phát sinh nghiệp vụ\r\n•\tBán 100 chiếc áo, giá bán 200.000 đ/cái.\r\n•\tDùng cho nhân viên làm đồng phục : 50 cái Doanh thu để tính thu nhập chịu thuế trong kỳ là",
+        answer: "30 triêu",
     },
     {
-      "question": "Số liệu công nợ phải thu được ghi nhận trên báo cáo tài chính có khớp với thực tế không là phát biểu thuộc về:",
-      "answer": "Ghi chép chính xác"
+        question:
+            "Công ty X tính thuế GTGT theo phương pháp khấu trừ, trong kỳ có nghiệp vụ\r\n-\tBán 1.000 cây thuốc lá giá bán Đã thuế GTGT 22.000 đ/cây. Thuế giá trị gia tăng 10%\r\n-\tGia công thuốc lá điếu cho công ty Nam Hà là 10.000 bao đơn giá gia công\r\nĐã thuế GTGT 5.500 đ/bao, đã xong và đã giao hàng cho công ty Nam Hà. Doanh thu tính thu nhập chịu thuế trong kỳ của công ty",
+        answer: "70 triệu",
     },
     {
-      "question": "Vấn đề cần quan tâm khi nói về việc nợ phải thu được đánh giá theo giá trị thuần có thể được thực hiện là:",
-      "answer": "Không lập dự phòng thích hợp"
+        question:
+            "Công ty X tính thuế GTGT theo phương pháp trực tiếp, trong kỳ có nghiệp vụ\r\n-\tBán 1.000 cây thuốc lá giá bán Đã thuế GTGT 22.000 đ/cây. Thuế giá trị gia tăng 10%\r\n-\tGia công thuốc lá điếu cho công ty Nam Hà là 10.000 bao đơn giá gia công Đã thuế GTGT 5.500 đ/bao, đã xong và đã giao hàng cho công ty Nam Hà.\r\nDoanh thu tính thu nhập chịu thuế trong kỳ của công ty",
+        answer: "77 triệu",
     },
     {
-      "question": "Nếu việc xác nhận khoản mục nợ phải thu của khách hàng có thể tiến hành được thì kiểm toán viên sẽ làm gì?",
-      "answer": "Gửi thư xác nhận nợ phải thu"
+        question:
+            "T6.20XX S Ký hợp đồng lắp đặt ADSL và đăng ký dịch vụ Internet mức 5tr/t, thời han 1 năm\r\n-\t15/6 Thu trước tiền lắp đặt 3 triệu\r\n-\t20/6 Hoàn tất việc lắp đặt và thu tiền sử dụng dịch vụ 1 năm: 60 triệu\r\n21/6 A bắt đầu sử dụng dịch vụ. Doanh thu của công ty S thu được trong tháng 6 là",
+        answer: "63 triệu",
     },
     {
-      "question": "Trường hợp không có thủ tục để thay thế khi tiến hành việc xác nhận khoản mục nợ phải thu khách hàng, kiểm toán viên sẽ:",
-      "answer": "Đưa vào giới hạn phạm vi kiểm toán"
+        question:
+            "Tại một doanh nghiệp trong kỳ tính thuế Quý 1/20XX có các số liệu sau: (Đơn vị: trđ)\r\n-\tDoanh thu: 2.000;\r\n-\tTổng chi phí phát sinh trong kỳ: 1.640 (trong đó có 40 triệu là chi tiền phạt do vi phạm hợp đồng)\r\n-\tThu lãi tiền gửi: 220; Thu khoản nợ2k3h/1ó5đòi đã xoá nay đòi được 100; Chi phí được trừ trong Quý 1/20xx của công ty là",
+        answer: "1.640",
     },
     {
-      "question": "Cơ sở dẫn liệu đầy đủ trong hoạt động kiểm toán nợ phải thu có nghĩa là:",
-      "answer": "Nợ phải thu của đơn vị đã được khai báo đầy đủ chưa"
+        question:
+            "Tại một doanh nghiệp trong kỳ tính thuế Quý 1/20XX có các số liệu sau: (Đơn vị: trđ)\r\n-\tDoanh thu: 2.000;\r\n-\tTổng chi phí phát sinh trong kỳ: 1.640 (trong đó có 40 triệu là chi tiền phạt do vi phạm hợp đồng)\r\n-\tThu lãi tiền gửi: 220; Thu khoản nợ khó đòi đã xoá nay đòi được 100; Thu nhập chịu thuế khác",
+        answer: "320",
     },
     {
-      "question": "Khi không thực hiện được việc xác nhận nợ phải thu khách hàng thì báo cáo mà kiểm toán viên phát hành sẽ là:",
-      "answer": "Báo cáo kiểm toán ngoại trừ"
+        question:
+            "Tại một doanh nghiệp trong kỳ tính thuế Quý 1/20XX có các số liệu sau: (Đơn vị: trđ)\r\n-\tDoanh thu: 2.000;\r\n-\tTổng chi phí phát sinh trong kỳ: 1.640 (trong đó có 40 triệu là chi tiền phạt do vi phạm hợp đồng)\r\n-\tThu lãi tiền gửi: 220; Thu khoản nợ khó đòi đã xoá nay đòi được 100;\r\nThu nhập chịu thuế trong kỳ",
+        answer: "680",
     },
     {
-      "question": "Phát biểu nào sau đây được cho là đúng khi nói về tính đầy đủ trong hoạt động kiểm toán đối với khoản mục nợ phải thu của khách hàng?",
-      "answer": "Doanh thu bán chịu hàng hóa và cung cấp dịch vụ có bị trì hoãn không"
+        question:
+            "Tại một doanh nghiệp trong kỳ tính thuế Quý 1/20XX có các số liệu sau: (Đơn vị: trđ)\r\n-\tDoanh thu: 2.000;\r\n-\tTổng chi phí phát sinh trong kỳ: 1.640 (trong đó có 40 triệu là chi tiền phạt do vi phạm hợp đồng)\r\n-\tThu lãi tiền gửi: 220; Thu khoản nợ khó đòi đã xoá nay đòi được 100; Thuế TNDN phải nộp trong quý là",
+        answer: "136",
     },
     {
-      "question": "Cơ sở dẫn liệu ghi chép chính xác trong hoạt động kiểm toán khoản mục nợ phải thu khách hàng có nghĩa là:",
-      "answer": "Nợ phải trả được tính toán và cộng dồn chính xác không"
+        question:
+            "Tại một doanh nghiệp trong kỳ tính thuế Quý 1/20XX có các số liệu sau: (Đơn vị: trđ)\r\n-\tDoanh thu: 2.000;\r\n-\tTổng chi phí phát sinh trong kỳ: 1.640 (trong đó có 40 triệu là chi tiền phạt do nộp chậm tiền thuế)\r\n-\tThu lãi tiền gửi: 220; Thu khoản nợ khó đòi đã xoá nay đòi được 100; Chi phí được trừ trong Quý 1/20xx của công ty là",
+        answer: "1.600",
     },
     {
-      "question": "Thư xác nhận công nợ phải thu khách hàng dạng nào chỉ đòi hỏi sự phản hồi khi không đồng ý với thông tin yêu cầu xác nhận?",
-      "answer": "Dạng đóng"
+        question:
+            "Tại một doanh nghiệp trong kỳ tính thuế Quý 1/20XX có các số liệu sau: (Đơn vị: trđ)\r\n-\tDoanh thu: 2.000;\r\n-\tTổng chi phí phát sinh trong kỳ: 1.640 (trong đó có 40 triệu là chi tiền phạt do nộp chậm tiền thuế)\r\n-\tThu lãi tiền gửi: 220; Thu khoản nợ2k5h/1ó5đòi đã xoá nay đòi được 100;\r\nThu nhập chịu thuế trong Quý 1/20xx của công ty là",
+        answer: "720",
     },
     {
-      "question": "Kiểm tra sổ sách về số dư nợ phải thu, doanh nghiệp có một khoản nợ thật sự không thể thu hồi được, doanh nghiệp chưa lập dự phòng và đã tiến hành xóa nợ khoản nợ phải thu khó đòi này với bút toán như sau: Nợ 2293/ Có 131.",
-      "answer": "Nợ 642/ Có 2293"
+        question:
+            "Tại một doanh nghiệp trong kỳ tính thuế Quý 1/20XX có các số liệu sau: (Đơn vị: trđ)\r\n-\tDoanh thu: 2.000;\r\n-\tTổng chi phí phát sinh trong kỳ: 1.640 (trong đó có 40 triệu là chi tiền phạt do nộp chậm tiền thuế)\r\n-\tThu lãi tiền gửi: 220; Thu khoản nợ khó đòi đã xoá nay đòi được 100; Thuế TNDN phải nộp trong Quý 1/20xx của công ty là",
+        answer: "144",
     },
     {
-      "question": "Kiểm tra sổ sách về số dư nợ phải thu, doanh nghiệp có một khoản nợ thật sự không thể thu hồi được, doanh nghiệp đã lập dự phòng theo quy định và đã tiến hành xóa nợ khoản nợ phải thu khó đòi này với bút toán như sau: Nợ 642/ Có 131.",
-      "answer": "Nợ 2293/ Có 642"
+        question:
+            "Doanh nghiệp A xuất khẩu lô hàng có trị giá FOB 40.000 USD. Chi phí vận chuyển và bảo hiểm quốc tế của lô hàng là 2.000 USD, chi phí này do doanh nghiệp A thanh toán bên nhập khẩu sẽ hoàn trả cùng tiền hàng, thuế suất thuế\r\nxuất khẩu 2%. Tỷ giá tính thuế 22.500 VND/USD. Doanh thu của lô hàng xuất\r\nkhẩu trên là bao nhiêu?",
+        answer: "945.000.000 đồng.",
     },
     {
-      "question": "Đối với khoản nợ phải thu quá hạn thanh toán dưới 6 tháng, kiểm toán viên sẽ yêu cầu mức trích lập dự phòng nào dưới đây là hợp lý:",
-      "answer": "Chưa đủ thời gian để trích lập dự phòng"
+        question:
+            "Trong năm N, Công ty A bán lượng hàng hóa có trị giá vốn là 2.500 triệu đồng, giá bán chưa có thuế giá trị gia tăng là 2.800 triệu đồng. Việc thu nợ đến\r\n31/12 đạt 95%, phần còn lại 5% chắc chắn không thu hồi được do khách hàng bị bão lũ mất khả năng thanh toán. Doanh thu tính thu nhập cá của năm N là:",
+        answer: "2.800 triệu đồng.",
     },
     {
-      "question": "Điền vào chỗ trống\r\nSau khi lập dự phòng cho từng khoản nợ phải thu khó đòi, doanh nghiệp tổng hợp toàn bộ khoản dự phòng các khoản nợ vào bảng kê chi tiết để làm căn cứ hạch toán vào……………",
-      "answer": "Chi phí quản lý doanh nghiệp"
+        question:
+            "Một doanh nghiệp trong năm tính thuế có doanh thu bán hàng: 150.000 triệu đồng (trong đó có doanh thu hàng xuất khẩu 80.000 triệu đồng); Chính phủ thưởng do có doanh thu xuất khẩu cao 500 triệu đồng. Thu khách hàng hủy hợp đồng 100 triệu đồng. Xác định doanh thu để tính thu nhập chịu thuế thu\r\nnhập doanh nghiệp?",
+        answer: "150.500 triệu đồng.",
     },
     {
-      "question": "Kiểm tra sổ sách kế toán hạch toán bút toán Nợ 112/Có 511 cho nghiệp vụ nợ phải thu khó đòi đã được xử lý xóa nợ, sau đó thu hồi lại được bằng tiền gởi ngân hàng.",
-      "answer": "Nợ 511/ Có 711"
+        question:
+            "Một doanh nghiệp trong năm tính thuế có doanh thu bán hàng: 150.000 triệu đồng (trong đó có doanh thu hàng xuất khẩu 80.000 triệu đồng); Chính phủ thưởng do có doanh thu xuất khẩu cao 500 triệu đồng. Thu khách hàng hủy\r\nhợp đồng 100 triệu đồng. Xác định thu nhập khác để tính thu nhập chịu thuế\r\nthu nhập doanh nghiệp?",
+        answer: "100 trđ",
     },
     {
-      "question": "Tuân thủ quy định hiện hành trong kiểm toán nợ phải thu có nghĩa là:",
-      "answer": "Nợ phải thu có tuân thủ với chuẩn mực và chế độ hiện hành"
+        question: "Khoản chi có hóa đơn, chứng từ hợp pháp nào sau đây là khoản chi phí KHÔNG được trừ khi tính thuế TNDN",
+        answer: "Khoản tiền phạt do vi phạm hành chính",
     },
     {
-      "question": "Phát biểu nào không thuộc về tuân thủ quy định hiện hành trong kiểm toán nợ phải thu:",
-      "answer": "Việc tiến hành cấn trừ công nợ đã xảy ra những sai sót"
+        question: "Khoản chi c\tó hóa đơn, chứng từ hợp pháp nào sau đây là khoản chi phí\r\nKHÔNG được trừ khi\ttính thuế TNDN",
+        answer: "Phần chi trả lãi tiền vay vốn sản xuất kinh doanh của ngân hàng thương mại\r\nvượt quá 150% mức lãi suất cơ bản do Ngân hàng nhà nước Việt Nam công\r\n\r\nbố tại thời điểm vay",
     },
     {
-      "question": "Công bố về chính sách kế toán không đúng, không đủ là phát biểu thuộc về:",
-      "answer": "Tuân thủ quy định hiện hành"
+        question: "Thuế TNDN phải nộp trong kỳ được tính bằng",
+        answer: "Thu nhập tính thuế nhân với thuế suất",
     },
     {
-      "question": "Phát biểu nào thuộc về tuân thủ quy định hiện hành trong kiểm toán nợ phải thu:",
-      "answer": "Nợ phải thu có bị thế chấp không"
+        question: "Theo Quy định thì các khoản chi ủng hộ, tài trợ của doanh nghiệp cho các hoạt động phòng, chống dịch Covid-19 sẽ:",
+        answer: "Tính vào chi phí được trừ khi xác định thu nhập chịu thuế TNDN",
     },
     {
-      "question": "Nghiên cứu kiểm toán nợ phải thu khách hàng là nhằm tìm hiểu về các vấn đề như:",
-      "answer": "Tất cả các đáp án nêu trên"
+        question: "Công ty chi trả khoản tiền lương cho người lao động nghỉ trong thời gian giãn cách xã hội do ảnh hưởng dịch Covid-19 thì:",
+        answer: "Tính vào chi phí được trừ khi xác định thu nhập chịu thuế TNDN",
     },
     {
-      "question": "Nghiên cứu hoạt động kiểm toán đối với khoản mục nợ phải thu sẽ giúp hệ thống hóa được những kiến thức về:",
-      "answer": "Tất cả các đáp án trên"
+        question: "Theo Quy định hiện tại thì tổng số thuế TNDN đã tạm nộp của mấy quý đầu năm tính thuế không được thấp hơn 75% số thuế TNDN phải nộp theo quyết toán năm.",
+        answer: "3",
     },
     {
-      "question": "Từ nào còn thiếu trong phát biểu sau đây: \"Thời điểm gửi ...............",
-      "answer": "Thư xác nhận"
+        question:
+            "Ba người bạn A, B và C nhận được 3 học bổng: A nhận được học bổng của một trường đại học ở nước ngoài, B nhận được học bổng của tổ chức DAAD theo chương trình hỗ trợ sinh viên Việt Nam, C nhận được học bổng của tập đoàn nước ngoài tại Việt Nam do bốc thăm khuyến mại của tổ chức đó. Học bổng chịu thuế thu nhập cá nhân là:",
+        answer: "các khoản học bổng không chịu thuế thu nhập cá nhân.",
     },
     {
-      "question": "Số liệu công nợ phải thu khách hàng được ghi nhận trên báo cáo tài chính có khớp đúng với thực tế hay không là phát biểu thuộc về cơ sở dẫn liệu nào?",
-      "answer": "Ghi chép chính xác"
+        question: "Cá nhân cư trú là người có mặt tại Việt Nam từ bao nhiêu ngày trở lên tính\r\ntrong một năm dương lịch hoặc trong 12 tháng liên tục kể từ ngày đầu tiên có mặt tại Việt Nam?",
+        answer: "183 ngày.",
     },
     {
-      "question": "Kiểm toán viên không nên dựa vào yếu tố nào sau đây trong việc lựa chọn đối tượng để gửi thư xác nhận đối với khoản mục nợ phải thu khách hàng.",
-      "answer": "Không lập dự phòng thích hợp"
+        question: "Các khoản thu nhập nào sau đây KHÔNG phải chịu thuế thu nhập cá nhân?",
+        answer: "Thu nhập của chủ doanh nghiệp tư nhân từ kết quả hoạt động kinh doanh.",
     },
     {
-      "question": "Tuân thủ quy định hiện hành trong hoạt động kiểm toán khoản mục nợ phải thu khách hàng có nghĩa là:",
-      "answer": "Nợ phải thu có tuân thủ với chuẩn mực và chế độ hiện hành"
+        question: "Đối tượng nào sau đây KHÔNG được tính giảm trừ gia cảnh người nộp thuế?",
+        answer: "Mẹ ruột ngoài tuổi lao động có lương hưu 1.200.000 đồng/tháng.",
     },
     {
-      "question": "Phát biểu nào không thuộc về cơ sở dẫn liệu tuân thủ quy định hiện hành trong hoạt động kiểm toán nợ phải thu khách hàng?",
-      "answer": "Việc tiến hành cấn trừ công nợ đã xảy ra những sai sót"
+        question: "Mẹ ruột ngoài tuổi lao động có lương hưu 1.200.000 đồng/tháng.",
+        answer: "Đối tượng nộp thuế thu nhập cá nhân ở nước ta là:",
     },
     {
-      "question": "Trong chuẩn mực kiểm toán Việt Nam (VSA) thì thư xác nhận công nợ phải thu khách hàng có bao nhiêu dạng?",
-      "answer": "4 dạng"
+        question: "Đối tượng nộp thuế thu nhập cá nhân ở nước ta là:",
+        answer: "cá nhân người Việt Nam, cá nhân nước ngoài cư trú có thu nhập chịu thuế và cá nhân nước ngoài không cư trú có thu nhập chịu thuế phát sinh tại Việt Nam.",
     },
     {
-      "question": "Ghi rõ số công nợ phải thu khách hàng và yêu cầu khách hàng xác nhận là đúng hoặc bằng bao nhiêu là yêu cầu của thư xác nhận dạng nào sau đây?",
-      "answer": "Thư xác nhận nợ phải thu dạng A"
+        question: "Trợ cấp nào sau đây tính vào thu nhập chịu thuế thu nhập cá nhân?",
+        answer: "Trợ cấp tiền ăn giữa ca doanh nghiệp trả người lao động vượt mức quy định của",
     },
     {
-      "question": "Thủ tục nào dưới đây thường ít được kiểm toán viên chú trọng khi tiến hành kiểm toán hàng tồn kho:",
-      "answer": "Điều tra xem liệu đơn vị có khai báo đầy đủ tất cả hàng tồn kho thuộc quyền sở hữu của mình"
+        question: "Thuế thu nhập cá nhân KHÔNG được xét miễn giảm trong trường hợp nào?",
+        answer: "Đối tượng nộp thuế bị trộm cắp tài sản ảnh hưởng đến khả năng nộp thuế",
     },
     {
-      "question": "Trong những biểu hiện dưới đây thì biểu hiện nào không phải là biểu hiện của sai sót trong quá trình xử lý các nghiệp vụ về hàng tồn kho:",
-      "answer": "Giấu giếm, xuyên tạc tài liệu, số liệu"
+        question: "Thuế thu nhập cá nhân là gì?",
+        answer: "Là loại thuế trực thu đánh trên thu nhập chịu thuế của các cá nhân",
     },
     {
-      "question": "Thủ tục nào dưới đây nhằm thoả mãn mục tiêu đánh giá đối với kiểm toán hàng tồn kho:",
-      "answer": "Xem xét liệu đơn vị có hàng tồn kho chậm luân chuyển, bị lỗi thời, ..."
+        question: "Thu nhập nào sau đây là thu nhập được miễn thuế thu nhập cá nhân?",
+        answer: "Thu nhập từ nhận thừa kế, quà tặng bằng tiền giữa: Vợ với chồng; cha mẹ đẻ với con đẻ; cha mẹ nuôi với con nuôi; cha mẹ chồng với con dâu; cha mẹ vợ với con rể; ông bà ngoại với cháu ngoại; anh chị em ruột với nhau.",
     },
     {
-      "question": "Trong các hành vi sau đây thì hành vi nào không thuộc hành vi gian lận của người kế toán phụ trách mảng hàng tồn kho:",
-      "answer": "Bỏ sót, ghi trùng nghiệp vụ kinh tế phát sinh"
+        question: "Thu nhập nào sau đây là thu nhập chịu thuế thu nhập cá nhân?",
+        answer: "Thu nhập từ tiền thưởng tết.",
     },
     {
-      "question": "Rủi ro phát hiện là gì?",
-      "answer": "Khả năng có sai lệch trọng yếu trong số dư hoặc nghiệp vụ mà các thử nghiệm cơ bản của kiểm toán viên không phát hiện được"
+        question: "Thu nhập nào sau đây KHÔNG phải là thu nhập chịu thuế thu nhập cá nhân?",
+        answer: "Thu nhập từ quà tặng trong lễ cưới.",
     },
     {
-      "question": "Rủi ro kiểm soát là gì?",
-      "answer": "Khả năng có sai lệch trọng yếu trong số dư hoặc nghiệp vụ mà hệ thống kiểm soát nội bộ không phát hiện và ngăn chặn được"
+        question:
+            "Ông A cùng ông B và ông C kinh doanh dưới hình thức nhóm cá nhân kinh\r\ndoanh trong năm tính thuế có mức lợi nhuận (sau khi trừ chi phí) là 100 triệu đồng. Ông A được chia theo tỷ lệ 40%. Tuy nhiên do để có tiền kinh doanh ông A vay của ngân hàng và phải trả lãi 12%/năm. Thu nhập chịu thuế của\r\nông A là:",
+        answer: "35,2 triệu đồng",
     },
     {
-      "question": "Rủi ro kiểm toán là gì?",
-      "answer": "Khả năng kiểm toán viên đưa ra các nhận xét không thích hợp về báo cáo tài chính trong khi báo cáo tài chính có sai lệch trọng yếu"
+        question:
+            "Ông A nhượng bán cho ông B một xe ô tô 7 chỗ ngồi với giá 260 triệu đồng,\r\nchiếc xe này ông A mua với giá 350 triệu cách đây 1 năm. Để bán xe ông A đã bỏ 5 triệu để bảo dưỡng. Ông A có mức thu nhập chịu thuế thu nhập cá nhân là:",
+        answer: "thu nhập của ông A từ nhượng bán xe ô tô không chịu thuế thu nhập cá nhân.",
     },
     {
-      "question": "Rủi ro tiềm tàng là gì?",
-      "answer": "Khả năng có sai lệnh trọng yếu trong các số dư hoặc nghiệp vụ mà chưa xét đến các quy chế kiểm soát nội bộ liên quan"
+        question:
+            "Ông Mạnh nhận được quà tặng là một căn hộ chung cư từ ông nội, căn hộ có giá thị trường là 1,2 tỷ đồng, trước đây ông nội đã mua với giá 500 triệu. Theo khung giá nhà nước quy định, căn hộ trên có giá trị là 350 triệu. Biết rằng thuế suất thuế thu nhập cá nhân đối với thu nhập từ nhận quà tặng là 10%.\r\nXác định thuế thu nhập cá nhân mà ông Mạnh phải nộp?",
+        answer: "Không chịu thuế thu nhập cá nhân.",
     },
     {
-      "question": "Kiểm toán viên có thể gặp phải rủi ro do không phát hiện được các sai sót trọng yếu trên báo cáo tài chính của đơn vị.",
-      "answer": "Thử nghiệm cơ bản"
+        question:
+            "Ông Minh được cô ruột cho một căn hộ chung cư cũ có giá trị thị trường 700 triệu đồng, theo khung giá nhà nước 210 triệu đồng. Trước đây cô đã mua căn hộ trên là 400 triệu đồng. Biết rằng thuế suất thuế thu nhập cá nhân đối với thu nhập từ nhận quà tặng là 10%. Xác định thuế thu nhập cá nhân mà Ông M phải nộp?",
+        answer: "21.000.00 đồng",
     },
     {
-      "question": "Khi mức độ rủi ro phát hiện giảm xuống thì kiểm toán viên cần thiết phải :",
-      "answer": "Tăng thử nghiệm cơ bản"
+        question:
+            "Ông Tuấn cho Công ty A vay 200 triệu đồng, với lãi suất là 10%/năm. Năm N ông nhận được 20 triệu đồng tiền lãi. Thu nhập từ tiền lương của ông Tuấn bình quân trong năm là 3,5 triệu đồng/tháng (sau khi đã trừ các khoản đóng góp bắt buộc). Ông Tuấn không đăng ký người phụ thuộc. Số thuế thu nhập cá nhân mà ông Tuấn phải nộp là:",
+        answer: "1.000.000 đồng.",
     },
     {
-      "question": "Phân tích số vòng quay hàng tồn kho rất hữu ích khi kiểm toán hàng tồn kho vì sẽ giúp kiểm toán viên phát hiện:",
-      "answer": "Hàng hoá bị lỗi thời, chậm luân chuyển"
+        question:
+            "Ông Tuấn có 3 người con A, B, C với độ tuổi lần lượt là 15, 17 và 21 tuổi. A\r\n\tsư được\r\nđang theo học cấp 3,\tB đang là học sinh lớp 11 hàng tháng có làm gia\t\r\n600.000 đồng/tháng,\tC đang là sinh viên hệ cao đẳng. Theo quy định hiện\r\nhành, ông Tuấn có thể kê khai:",
+        answer: "cả 3 người con là đối tượng phụ thuộc.",
     },
     {
-      "question": "Công tác kiểm toán đối với khoản mục hàng tồn kho là rất phức tạp và liên quan đến những vấn đề gì sau đây:",
-      "answer": "Hiện vật và giá trị hàng tồn kho"
+        question: "Các khoản thu nhập chịu thuế TNCN thu nhập từ kinh doanh- Đối với các\r\nnhân kinh doanh nộp thuế theo phương pháp khoán",
+        answer: "Doanh thu tính thuế là doanh thu bao gồm thuế (trường hợp thuộc diện chịu thuế) của toàn bộ tiền bán hàng, tiền gia công, tiền hoa hồng, tiền cung ứng dịch vụ phát sinh trong kỳ tính thuế từ các hoạt động sản xuất, kinh doanh hàng hóa, dịch vụ.",
     },
     {
-      "question": "Khi đánh giá rủi ro kiểm soát đạt mức tối đa, kiểm toán viên sẽ không thực hiện thủ tục kiểm toán nào sau đây?",
-      "answer": "Thử nghiệm kiểm soát"
+        question: "Các khoản thu nhập chịu thuế TNCN thu nhập từ kinh doanh- Đối với các\r\nnhân kinh doanh nộp thuế theo phương pháp khoán",
+        answer: "Doanh thu tính thuế là doanh thu bao gồm thuế (trường hợp thuộc diện chịu thuế) của toàn bộ tiền bán hàng, tiền gia công, tiền hoa hồng, tiền cung ứng dịch vụ phát sinh trong kỳ tính thuế từ các hoạt động sản xuất, kinh doanh hàng hóa, dịch vụ.",
     },
     {
-      "question": "Kiểm tra xem việc ghi chép số liệu trên sổ nhật ký bán hàng có căn cứ vào các chứng từ thích hợp không, đó chính là thí dụ của:",
-      "answer": "Thử nghiệm kiểm soát"
+        question: "Các khoản thu nhập chịu thuế TNCN thu nhập từ kinh doanh- Đối với cá\r\nnhân cho thuê tài sản:",
+        answer: "Doanh thu tính thuế thu nhập cá nhân đối với hoạt động cho thuê tài sản là doanh thu bao gồm thuế (trường hợp thuộc diện chịu thuế) của số tiền bên thuê trả từng\t kỳ theo hợp đồng thuê và các khoản thu khác bao gồm khoản tiền phạt, bồi thường mà bên cho thuê nhận được theo thỏa thuận tại hợp đồng thu",
     },
     {
-      "question": "Nhận diện các bên liên quan là một khâu trong ...............",
-      "answer": "Thu thập thông tin cơ sở"
+        question: "Các khoản thu nhập chịu thuế TNCN thu nhập từ kinh doanh- Đối với cá\r\nnhân trực tiếp ký hợp đồng làm đại lý xổ số, đại lý bảo hiểm, bán hàng đa cấp:",
+        answer: "Doanh thu tính thuế là doanh thu bao gồm thuế (trường hợp thuộc diện chịu thuế) của tổng số tiền hoa hồng, các khoản thưởng dưới mọi hình thức, các khoản hỗ trợ và các khoản thu khác mà cá nhân nhận được từ công ty xổ số kiến thiết, doanh nghiệp bảo hiểm, doanh nghiệp bán hàng đa cấp.",
     },
     {
-      "question": "Trong quá trình thu thập thông tin về các nghĩa vụ pháp lý của khách hàng thì tài liệu nào được coi là quan trọng nhất trong một cuộc kiểm toán báo cáo tài chính?",
-      "answer": "Các báo cáo tài chính, báo cáo kiểm toán, kết luận của thanh tra hay kiểm tra của năm hiện hành hay trong vài năm trước"
+        question: "Ông A có căn hộ cho thuê theo hợp đồng bên thuê phải trả số tiền hàng tháng\r\nlà",
+        answer: "Xác định thu nhập từ kinh doanh của ông A",
     },
     {
-      "question": "Khi thu thập thông tin cơ sở, kiểm toán viên phải ..............",
-      "answer": "Tìm hiểu ngành nghề hoạt động kinh doanh của khách hàng"
+        question:
+            "Chị B kinh doanh vải trên chợ Đồng Xuân. Doanh thu của cửa hàng chị B hàng tháng là 30.000.000 đồng. Chị B thuộc nhóm nộp thuế theo phương pháp khóan. Xác định thu nhập từ kinh doanh của chị B?",
+        answer: "30.000.000 đồng",
     },
     {
-      "question": "Trong một cuộc kiểm toán hàng tồn kho, phương pháp quan trọng mà các kiểm toán viên sử dụng để phát hiện ra những gian lận, sai sót trọng yếu là:",
-      "answer": "Kiểm tra chi tiết số dư hàng tồn kho"
+        question: "Các khoản thu nhập được trừ khi xác định thuế thu nhập cá nhân:",
+        answer: "Phụ cấp đối với người có công với cách mạng",
     },
     {
-      "question": "Kiểm toán viên khi kiểm toán báo cáo tài chính sẽ chấp nhận giá trị của hàng tồn kho được ghi nhận vào các báo cáo theo giá nào:",
-      "answer": "Giá gốc"
+        question: "Khoản Trợ cấp nào KHÔNG được trừ khi xác định thu nhập cá nhân",
+        answer: "Trợ cấp tiền tham gia bảo hiểm nhân thọ cho nhân viên",
     },
     {
-      "question": "Kiểm toán viên không thường hay sử dụng thủ tục nào để có thể phát hiện được hàng tồn kho chậm luân chuyển:",
-      "answer": "Xây dựng quy chế kiểm kê hàng tồn kho"
+        question:
+            "Ông Nguyễn Văn A kê khai trong tháng 9 có các khoản thu nhập sau:\r\n•\tTiền lương theo hệ số: 3,56\r\n•\tPhụ cấp chức vụ: 0,4\t\r\n•\tTiền thưởng tháng: 1.000.000 đồng\r\n•\tTiền lễ 2/9: 5.000.000 đồng\r\nBiết lương tối thiểu là 1.490.000 đồng.",
+        answer: "5.900.400 đồng",
     },
     {
-      "question": "Mục tiêu của cơ sở dẫn liệu đánh giá là để ................",
-      "answer": "Phát hiện"
+        question:
+            "Ông Nguyễn Văn A kê khai trong tháng 9 có các khoản thu nhập sau:\r\n•\tTiền lương theo hệ số: 3,56\r\n•\tPhụ cấp chức vụ: 0,4\r\n* Phụ cấp thu hút vùng kinh tế mới: 0,15\r\n•\tTiền thưởng tháng: 1.000.000 đồng\r\n•\tTiền lễ 2/9: 5.000.000 đồng\r\nBiết lương tối thiểu là 1.490.000 đồng.\r\nXác định thu nhập chịu thuế",
+        answer: "Ông Nguyễn Văn A kê khai trong tháng 9 có các khoản thu nhập sau:\r\nTiền lương theo hệ số: 3,56\r\nPhụ cấp chức vụ: 0,4\r\n* Phụ cấp thu hút vùng kinh tế mới: 0,15\r\nTiền thưởng tháng: 1.000.000 đồng\r\nTiền lễ 2/9: 5.000.000 đồng\r\nBiết lương tối thiểu là 1.490.000 đồng.\r\nXác định thu nhập chịu thuế",
     },
     {
-      "question": "Thủ tục kiểm toán nào dưới đây không thể thay thế thủ tục chứng kiến kiểm kê vào ngày kết thúc niên độ:",
-      "answer": "Thu thập thư giải trình của nhà quản lý về sự hiện hữu, chất lượng và giá trị của hàng tồn kho cuối kỳ"
+        question:
+            "Ông Nguyễn Văn A kê khai trong tháng 9 có các khoản thu nhập sau:\r\nTiền lương theo hệ số: 3,56\r\nPhụ cấp chức vụ: 0,4\r\n* Phụ cấp thu hút vùng kinh tế mới: 0,15\r\nTiền thưởng tháng: 1.000.000 đồng\r\nTiền lễ 2/9: 5.000.000 đồng\r\nBiết lương tối thiểu là 1.490.000 đồng.\r\nXác định thu nhập chịu thuế",
+        answer: "11.900.400 đồng",
     },
     {
-      "question": "Khi rủi ro tiềm tàng và rủi ro kiểm soát được đánh giá là thấp thì:",
-      "answer": "Rủi ro phát hiện sẽ cao"
+        question: "Anh A nhận được giải thưởng bốc thăm trúng thưởng của công ty × 1 chiếc xe\r\nmáy có giá trị 25 triệu.Thu nhập tính thuế",
+        answer: "15 triệu",
     },
     {
-      "question": "Đâu là yếu tố cấu thành nên sự gian lận thường xảy ra đối với khoản mục hàng tồn kho:",
-      "answer": "Các chứng từ không được đánh số trước và liên tục"
+        question: "Anh A nhận được giải thưởng bốc thăm trúng thưởng của công ty × 1 chiếc xe\r\nmáy có giá trị 25 triệu. Mức thuế suất thuế TNCN là",
+        answer: "10%",
     },
     {
-      "question": "Hoạt động được tiến hành nhằm kiểm tra và xác nhận tính chính xác của thông tin kế toán liên quan đến các tài khoản 15* được gọi là:",
-      "answer": "Kiểm toán hàng tồn kho"
+        question: "Anh A nhận được giải thưởng bốc thăm trúng thưởng của công ty × 1 chiếc xe\r\nmáy có giá trị 25 triệu. Thuế TNCN anh A phải nộp",
+        answer: "2,5 triệu",
     },
     {
-      "question": "Dấu hiệu nào không mách bảo với kiểm toán viên rằng tại doanh nghiệp có xảy ra những hành vi không tuân thủ pháp luật và các quy định về hàng tồn kho:",
-      "answer": "Doanh nghiệp sử dụng phương pháp tính giá bình quân gia quyền"
+        question: "Công thức tính thuế TNCN đối với cá nhân cư trú có thu nhập từ hoạt động",
+        answer: "Doanh thu tính thuế TNCN x Tỷ lệ thuế TNCN",
     },
     {
-      "question": "Để ngăn chặn gian lận, giảm thiểu sai sót, khuyến khích hiệu quả hoạt động và nhằm đạt được sự tuân thủ các chính sách và quy trình về hàng tồn kho mà doanh nghiệp đã thiết lập, không gì tốt hơn là phải tổ chức thiết kế:",
-      "answer": "Hệ thống kiểm soát nội bộ"
+        question: "Công thức tính thuế TNCN đối với cá nhân cư trú có thu nhập từ đầu tư vốn",
+        answer: "Thu nhập từ đầu tư vốn x 5%",
     },
     {
-      "question": "Kiểm soát nội bộ về hàng tồn kho có thể được xem như là một quy trình do …………… thiết lập nhằm thực hiện thành công mục tiêu kiểm soát mà đơn vị đề ra:",
-      "answer": "Ban giám đốc công ty"
+        question: "Công thức tính thuế TNCN đối với cá nhân cư trú có thu nhập từ chuyển",
+        answer: "Giá trị chuyển nhượng x 0,1%",
     },
     {
-      "question": "Kiểm toán viên chấp nhận các số liệu hàng tồn kho được trình bày trên báo cáo tài chính của đơn vị khi chúng không ……………:",
-      "answer": "Sai sót trọng yếu"
+        question: "Công thức tính thuế TNCN đối với cá nhân cư trú có thu nhập từ chuyển",
+        answer: "Giá trị chuyển nhượng x 0,1%",
     },
     {
-      "question": "Kiểm toán viên khi tác nghiệp cần tuân thủ yếu tố trọng yếu có nghĩa là phải đảm bảo ................",
-      "answer": "Hợp lý"
+        question: "Công thức tính thuế TNCN đối với cá nhân cư trú có thu nhập từ chuyển",
+        answer: "Giá trị chuyển nhượng x 2%",
     },
     {
-      "question": "Khi thiết kế chương trình kiểm toán, các kiểm toán viên không cần quan tâm đến cơ sở dẫn liệu nào sau đây?",
-      "answer": "Liên đới"
+        question: "Công thức tính thuế TNCN đối với cá nhân cư trú có thu nhập từ bản quyền",
+        answer: "Thu nhập tính thuế x 5%",
     },
     {
-      "question": "Đảm bảo hợp lý trong việc chấp hành chính sách, quy trình, quy định của doanh nghiệp và pháp luật của nhà nước là mục tiêu nào của kiểm soát nội bộ về hàng tồn kho:",
-      "answer": "Tuân thủ"
+        question: "Công thức tính thuế TNCN đối với cá\r\nquyền thương mại",
+        answer: "Thu nhập tính thuế x 5%",
     },
     {
-      "question": "Một trong những cách mà các kiểm toán viên áp dụng để kiểm tra doanh nghiệp về vấn đề ghi chép chính xác là:",
-      "answer": "Yêu cầu đơn vị cung cấp số dư hoặc phát sinh chi tiết"
+        question: "Công\r\nthưở\tthức tính thuế TNCN đối với cá nhân cư trú có thu\r\nng",
+        answer: "Thu nhập tính thuế x 10%",
     },
     {
-      "question": "Kiểm toán viên phải chứng minh rằng báo cáo tài chính được trình bày và công bố phù hợp với yêu cầu của chế độ và chuẩn mực kế toán hiện hành.",
-      "answer": "Trình bày và công bố"
+        question: "Công thức tính thuế TNCN đối với cá nhân cư trú c\r\nquà tặng",
+        answer: "Thu nhập tính thuế x 10%",
     },
     {
-      "question": "ra việc trình bày không phù hợp hoặc công bố sai, thiếu thông tin là yêu cầu của cơ sở dẫn liệu trình bày và công bố.",
-      "answer": "Phát hiện"
+        question: "Công thức tính thuế TNCN đối với cá nhân cư trú c\r\nquà tặng",
+        answer: "Thu nhập tính thuế x 10%",
     },
     {
-      "question": "Nhằm mục đích tìm thấy sự không thống nhất giữa các số liệu trong sổ tổng hợp với sổ chi tiết là yêu cầu của cơ sở dẫn liệu .............",
-      "answer": "Ghi chép chính xác"
+        question: "C\r\nti\tông thức tính thuế TNCN đối với cá nhân KHÔNG cư trú có thu nhập từ\r\nền lương, tiền công",
+        answer: "Thu nhập tính thuế x 20%",
     },
     {
-      "question": "Hoạt động của hệ thống kiểm soát nội bộ về khoản mục hàng tồn kho là nhằm mục đích:",
-      "answer": "Giúp sử dụng hiệu quả những nguồn lực của doanh nghiệp trong quá trình hoạt động SXKD"
+        question:
+            "Ông John là chuyên gia được mời sang tư vấn kỹ thuật cho công ty cổ phần\r\nX. Lương hàng tháng của ông John là 3.500 USD. Công ty thuê một căn hộ 5 triệu/tháng và 1 xe ô tô 15 triệu/tháng để phục vụ chuyên gia. Thời gian ông John làm việc từ T4/N đến hết tháng T8/N. Trong thời gian này ông có tham gia nói chuyện theo đề tài cho một trung tâm, mức thù lao được hưởng là 500 USD/lần. Biết tỷ giá 1 USD = 22.000 VNĐ. Ông John là cá nhân",
+        answer: "Không cư trú",
     },
     {
-      "question": "Việc thiết kế các thủ tục kiểm soát hàng tồn kho sao cho mọi công việc đều có ít nhất từ 2 người kiểm tra và đối chiếu là nguyên tắc nào trong kiểm soát nội bộ:",
-      "answer": "Nguyên tắc bốn mắt"
+        question:
+            "Ông John là chuyên gia được mời sang tư vấn kỹ thuật cho công ty cổ phần\r\nX. Lương hàng tháng của ông John là 3.500 USD. Công ty thuê một căn hộ 5 triệu/tháng và 1 xe ô tô 15 triệu/tháng để phục vụ chuyên gia. Thời gian ông John làm việc từ T4/N đến hết tháng T8/N. Trong thời gian này ông có tham gia nói chuyện theo đề tài cho một trung tâm, mức thù lao được hưởng là 500 USD/lần. Biết tỷ giá 1 USD = 22.000 VNĐ. Tổng thu nhập tính thuế TNCN của ông John là",
+        answer: "108 triệu",
     },
     {
-      "question": "Nhận diện những vấn đề làm cho mục tiêu kiểm soát về hàng tồn kho của đơn vị có thể sẽ không đạt được là thành phần nào của kiểm soát nội bộ:",
-      "answer": "Đánh giá rủi ro"
+        question:
+            "Ông John là chuyên gia được mời sang tư vấn kỹ thuật cho công ty cổ phần\r\nX. Lương hàng tháng của ông John là 3.500 USD (Trong đó đã bao gồm tiền công ty thuê một căn hộ 5 triệu/tháng và 1 xe ô tô 15 triệu/tháng để phục vụ chuyên gia). Thời gian ông John làm việc từ T4/N đến hết tháng T8/N. Trong thời gian này ông có tham gia nói chuyện theo đề tài cho một trung tâm, mức thù lao được hưởng là 500 USD/lần. Biết tỷ giá 1 USD =\r\n22.000 VNĐ. Tổng thu nhập tính thuế TNCN của ông John là",
+        answer: "88 triệu",
     },
     {
-      "question": "Khoản mục hàng tồn kho có mối quan hệ mật thiết với khoản mục nào trong các khoản mục được liệt kê dưới đây:",
-      "answer": "Giá vốn"
+        question:
+            "Ông John là chuyên gia được mời sang tư vấn kỹ thuật cho công ty cổ phần\r\nX. Lương hàng tháng của ông John là 3.500 USD. Tiền công ty thuê một căn hộ 5 triệu/tháng và 1 xe ô tô 15 triệu/tháng để phục vụ chuyên gia. Thời gian ông John làm việc từ T4/N đến hết tháng T8/N. Biết tỷ giá 1 USD =\r\n22.000 VNĐ. Tổng thu nhập tính thuế TNCN của ông John là",
+        answer: "97 triệu",
     },
     {
-      "question": "Yêu cầu về việc lập và trình bày hàng tồn kho là một đề mục không nghiên cứu về hàng tồn kho trên khía cạnh nào sau đây:",
-      "answer": "Phân chia hàng tồn kho"
+        question:
+            "Ông John là chuyên gia được mời sang tư vấn kỹ thuật cho công ty cổ phần\r\nX. Lương hàng tháng của ông John là 3.500 USD. Công ty thuê một căn hộ 5 triệu/tháng và 1 xe ô tô 15 triệu/tháng để phục vụ chuyên gia. Thời gian ông John làm việc từ T4/N đến hết tháng T8/N. Trong thời gian này ông có tham gia nói chuyện theo đề tài cho một trung tâm, mức thù lao được hưởng là 500 USD/lần. Biết tỷ giá 1 USD = 22.000 VNĐ. Thuế TNCN ông John phải nộp là",
+        answer: "21,6 triệu",
     },
     {
-      "question": "Kiểm toán viên tính toán lại các số liệu về hàng tồn kho là thu thập bằng chứng bằng phương pháp:",
-      "answer": "Tính toán"
+        question:
+            "A là nhân viên Kế toán của công ty TNHH Nam Hà. Trong tháng 9/20xx Công ty chi tiền phụ cấp ăn trưa cho nhân viên A là750.000 đ/tháng. Tiền ăn giữa ca được tính vào thu nhập chịu thuế của A trong tháng 9 là",
+        answer: "20.000 đồng",
     },
     {
-      "question": "…………… là một bằng chứng kiểm toán làm cơ sở để các kiểm toán viên đưa ra ý kiến về khoản mục hàng tồn kho của doanh nghiệp:",
-      "answer": "Phiếu nhập kho"
+        question:
+            "A là nhân viên Kế toán của công ty TNHH Nam Hà. Trong năm 20XX, Công\r\nty chi tiền TRANG PHỤC cho nhân viên bằng tiền là 5.500.000 đ/người/năm. Tiền trang phục được tính vào thu nhập chịu thuế nhân viên\r\ncông ty trong năm XX là",
+        answer: "500.0000 đồng",
     },
     {
-      "question": "Hàng tồn kho tại các doanh nghiệp được ghi nhận theo chuẩn mực kế toán Việt Nam (VAS) số bao nhiêu:",
-      "answer": "VAS 02"
+        question:
+            "A là nhân viên Kế toán của công ty TNHH Nam Hà. Trong năm 20XX, Công ty đặt may TRANG PHỤC cho nhân viên bằng tiền tương ứng với số tiền là\r\n5.500.000 đ/người/năm. Tiền trang phục được tính vào thu nhập chịu thuế nhân viên công ty trong năm XX là",
+        answer: "Không tính vào thu nhập chịu thuế",
     },
     {
-      "question": "Trong doanh nghiệp thì hàng tồn kho là các …………….",
-      "answer": "Tài sản"
+        question: "Mức giảm trừ gia cảnh đối với cá nhân cư trú có thu nhập từ tiền lương tiền công hiện đang áp dụng đối với cá nhân người nộp thuế là",
+        answer: "4.400.000 đ/người/tháng",
     },
     {
-      "question": "Các chính sách kế toán đã được ban hành và áp dụng đối với hàng tồn kho phải được công bố trong thành phần nào của hệ thống báo cáo tài chính:",
-      "answer": "Bản thuyết minh báo cáo tài chính"
+        question: "Mức giảm trừ gia cảnh đối với cá nhân cư trú có thu nhập từ tiền lương tiền công\r\nhiện đang áp dụng đối với mỗi người phụ thuộc",
+        answer: "4.400.000 đ/người/tháng",
     },
     {
-      "question": "Kiểm toán viên thường không chú trọng đến vấn đề nào của khoản mục hàng tồn kho trong quá trình thực hiện kiểm toán:",
-      "answer": "Sử dụng và phân loại"
+        question: "Thuế TNCN áp dụng đối với thu nhập từ tiền lương tiền công áp dụng theo biểu\r\nthuế lũy tiến từng phần. Bậc 1 là",
+        answer: "Phần thu nhập tính thuế/tháng (triệu đồng) x 5%",
     },
     {
-      "question": "Vấn đề nào sau đây sẽ không phải là mục tiêu cần tìm hiểu của cuộc kiểm toán đối với khoản mục hàng tồn kho trên báo cáo tài chính:",
-      "answer": "Đơn vị để tính toán"
+        question: "Thuế TNCN áp dụng đối với thu nhập từ tiền lương tiền công áp dụng theo biểu\r\nthuế lũy tiến từng phần. Bậc 2 là",
+        answer: "Phần thu nhập tính thuế/tháng (triệu đồng) x 10%",
     },
     {
-      "question": "Khi tiến hành kiểm toán hàng tồn kho, kiểm toán viên không quan tâm đến thủ tục nào của hệ thống kiểm soát nội bộ tại đơn vị:",
-      "answer": "Kiểm soát hệ thống"
+        question: "Thuế TNCN áp dụng đối với thu nhập từ tiền lương tiền công áp dụng theo biểu\r\nthuế lũy tiến từng phần. Bậc 4 là",
+        answer: "Phần thu nhập tính thuế/tháng (triệu đồng) x 20%",
     },
     {
-      "question": "Thực hiện việc kiểm kê hàng hóa phát hiện trong kho thiếu một lô hàng trị giá 12.000.000đ nhưng trong biên bản kiểm kê không thể hiện.",
-      "answer": "Nợ 1381 12.000.000 Có 156 12.000.000"
+        question: "Thuế TNCN áp dụng đối với thu nhập từ tiền lương tiền công áp dụng theo biểu\r\nthuế lũy tiến từng phần. Bậc 4 là",
+        answer: "Phần thu nhập tính thuế/tháng (triệu đồng) x 20%",
     },
     {
-      "question": "Kiểm tra sổ sách phát hiện kế toán phản ánh Nợ 156/ Có 141 với số tiền là 50.000.000đ cho nghiệp vụ nhập kho hàng hóa trị giá 50.000.000đ, chưa bao gồm khoản thuế GTGT 10%, thanh toán bằng tiền tạm ứng của nhân viên B.",
-      "answer": "Nợ 133 5.000.000 Có 141 5.000.000"
+        question: "Thuế suất thuế TNCN áp dụng đối với thu nhập từ tiền lương tiền công áp dụng\r\ntheo biểu thuế lũy tiến từng phần. Phần thu nhập tính thuế/tháng (Triệu đồng) áp dụng với bậc 1 là",
+        answer: "Đến 5 triệu",
     },
     {
-      "question": "Các khoản chi phí khác phát sinh liên quan đến việc hàng hóa đã nhập kho là 2.200.000đ, bao gồm 10% thuế GTGT, chưa thanh toán tiền cho người cung cấp dịch vụ được kế toán hạch toán Nợ 632/ Có 331 với số tiền là 2.200.000đ.",
-      "answer": "Nợ 156 2.000.000 Nợ 133 200.000 Có 331 2.200.000"
+        question: "Thuế suất thuế TNCN áp dụng đối với thu nhập từ tiền lương tiền công áp dụng\r\ntheo biểu thuế lũy tiến từng phần. Phần thu nhập tính thuế/tháng (Triệu đồng) áp dụng với bậc 7 là",
+        answer: "Trên 80",
     },
     {
-      "question": "Kiểm tra sổ sách phát hiện kế toán hạch toán Nợ 131/ Có 515 với số tiền 14.000.000 đồng cho nghiệp vụ xuất bán lô sản phẩm theo phương thức trả góp, giá bán ngay là 140.000.000 đồng, giá bán trả góp là 154.000.000 đồng, tiền hàng chưa thu.",
-      "answer": "Nợ 131 14.000.000 Có 3387 14.000.000"
+        question: "Thuế suất thuế TNCN áp dụng đối với thu nhập từ tiền lương tiền công áp dụng\r\ntheo biểu thuế lũy tiến từng phần. Phần thu nhập tính thuế/tháng (Triệu đồng) áp dụng với bậc 2 là",
+        answer: "Trên 5 đến 10",
     },
-    {
-      "question": "Kiểm tra chứng từ phát hiện phiếu xuất kho số 100 với nội dung xuất 1.000kg vật liệu chính M để sản xuất sản phẩm A theo giá thực tế là 24.000.000 đồng.",
-      "answer": "Nợ 621 24.000.000 Có 152 24.000.000"
-    },
-    {
-      "question": "Kiểm tra chứng từ phát hiện phiếu xuất kho số 101 với nội dung xuất công cụ dụng cụ C để phục vụ cho phân xưởng sản xuất số lượng 60 cái, giá trị 4.800.000 đồng được phân bổ 12 tháng.",
-      "answer": "Nợ 627 400.000 Có 621 400.000"
-    },
-    {
-      "question": "Kiểm tra sổ sách phát hiện kế toán phản ánh 10.000.000đ tiền thuế GTGT đầu vào quá thời hạn kê khai bằng định khoản Nợ 156/ Có 133 số tiền 10.000.000đ.",
-      "answer": "Nợ 632 10.000.000 Có 156 10.000.000"
-    },
-    {
-      "question": "Kiểm tra sổ sách phát hiện kế toán định khoản: Nợ 621/ Có 1522 số tiền 7.500.000đ cho nghiệp vụ xuất kho nguyên vật liệu phụ để phục vụ cho phân xưởng sản xuất.",
-      "answer": "Nợ 627 7.500.000 Có 621 7.500.000"
-    },
-    {
-      "question": "Kiểm tra sổ sách phát hiện kế toán định khoản: Nợ 641/ Có 153 số tiền là 5.000.000đ cho nghiệp vụ xuất kho công cụ dụng cụ loại phân bổ 2 lần để phục vụ cho bộ phận bán hàng trị giá 5.000.000đ.",
-      "answer": "Nợ 153 2.500.000 Có 641 2.500.000"
-    },
-    {
-      "question": "Kiểm tra sổ sách phát hiện kế toán định khoản: Nợ 632/ Có 155 số tiền là 15.000.000đ cho nghiệp vụ xuất kho hàng hóa để bán chịu cho khách hàng, giá bán chưa thuế GTGT 10% là 20.000.000đ.",
-      "answer": "Nợ 155 15.000.000 Có 156 15.000.000"
-    },
-    {
-      "question": "Kiểm tra sổ sách phát hiện kế toán đã bỏ sót nghiệp vụ nhận lại nguyên liệu sau khi đem gia công bên ngoài.",
-      "answer": "Nợ 154 10.000.000 Nợ 133 1.000.000 Có 111 11.000.000"
-    },
-    {
-      "question": "Tổng trị giá của nguyên vật liệu thuê ngoài gia công đã hoàn thành là 44.000.000 đồng, doanh nghiệp đã nhập lại kho.",
-      "answer": "Nợ 152 44.000.000 Có 154 44.000.000"
-    },
-    {
-      "question": "Kiểm kê phát hiện thiếu nguyên liệu trị giá 3.200.000đ, quyết định xử lý nêu bắt bồi thường thủ kho 50% trừ vào lương nhưng chưa trừ và nghiệp vụ: Nợ 1381/ Có 152 vẫn còn nguyên.",
-      "answer": "Nợ 1388 1.600.000 Có 1381 1.600.000"
-    },
-    {
-      "question": "Xuất nguyên liệu thuê ngoài gia công chế biến, trị giá xuất nguyên liệu là 50.000.000đ nhưng trên sổ sách không thấy kế toán phản ánh.",
-      "answer": "Nợ 154 50.000.000 Có 152 50.000.000"
-    },
-    {
-      "question": "Kiểm tra sổ sách phát hiện phiếu xuất kho số 103 thể hiện nội dung xuất 50 sản phẩm A để bán cho khách hàng M với khoản tiền chưa thu bằng gấp đôi so với giá vốn của lô hàng là 10.000.000 đồng.",
-      "answer": "Nợ 632 5.000.000 Có 155 5.000.000"
-    },
-    {
-      "question": "Kiểm tra hóa đơn kiêm vận chuyển nội bộ số 000001 có nội dung xuất kho lô hàng hóa có giá bán gồm thuế GTGT 10% là 110.000.000 đồng để gửi bán tại đại lý N.",
-      "answer": "Nợ 157 10.000.000 Có 156 10.000.000"
-    },
-    {
-      "question": "Tìm hiểu về hệ thống kiểm soát nội bộ liên quan đến hàng tồn kho là bước thứ bao nhiêu trong quy trình kiểm toán hàng tồn kho:",
-      "answer": "Bước thứ 1"
-    },
-    {
-      "question": "Các yêu cầu và thủ tục về kiểm kê hàng tồn kho được trình bày một cách rõ ràng và chi tiết trong chuẩn mực kiểm toán Việt Nam (VSA) số bao nhiêu:",
-      "answer": "VSA 501"
-    },
-    {
-      "question": "Đối với các doanh nghiệp áp dụng phương pháp kiểm kê thường xuyên, kiểm toán viên chọn mẫu …………… để kiểm tra việc đánh giá hàng tồn kho:",
-      "answer": "Sổ chi tiết"
-    },
-    {
-      "question": "Kiểm toán viên thực hiện kiểm tra sự hợp lý tổng thể để phát hiện những biến động bất thường là bước nào trong quy trinh kiểm toán hàng tồn kho:",
-      "answer": "Thủ tục phân tích"
-    },
-    {
-      "question": "Nội dung nào không thuộc vào mục tiêu nghiên cứu của kiểm toán hàng tồn kho:",
-      "answer": "Kiểm soát nội bộ đối với nợ phải thu"
-    },
-    {
-      "question": "Nội dung nào không thuộc vào yêu cầu về việc lập và trình bày nợ phải thu:",
-      "answer": "Tiến hành việc thanh lý hàng tồn trong kho"
-    },
-    {
-      "question": "Theo Chuẩn mực kế toán Việt Nam 02 ( VAS 02) thì hàng tồn kho là tài sản:",
-      "answer": "Được giữa để bán trong kỳ sản xuất kinh doanh bình thường"
-    },
-    {
-      "question": "Phát biểu nào dưới đây không được trình bày trong Chuẩn mực kế toán Việt Nam 02:",
-      "answer": "Cả 3 câu a, b và c là đáp án đúng"
-    },
-    {
-      "question": "Theo Chuẩn mực kế toán Việt Nam 02 thì hàng tồn kho được tính theo :",
-      "answer": "Giá gốc"
-    },
-    {
-      "question": "Trong trường hợp nếu giá trị thuần có thể thực hiện của hàng tồn kho thấp hơn giá gốc thì phải tính theo:",
-      "answer": "Giá trị thuận có thể thực hiện"
-    },
-    {
-      "question": "Hàng tồn kho được trình bày ở đâu trên hệ thống báo cáo tài chính của đơn vị:",
-      "answer": "Bảng cân đối kế toán"
-    },
-    {
-      "question": "Nội dung nào cần phải được công bố trên bản thuyết minh báo cáo tài chính của đơn vị về hàng tồn kho:",
-      "answer": "Chính sách kế toán đã được ban hành và áp dụng đối với hàng tồn kho"
-    },
-    {
-      "question": "Vấn đề nào liên quan đến hàng tồn kho cần thiết phải được kiểm soát:",
-      "answer": "Nhận hàng"
-    },
-    {
-      "question": "Vấn đề nào không cần thiết phải được kiểm soát trong kế toán hàng tồn kho:",
-      "answer": "Khấu hao"
-    },
-    {
-      "question": "Mua hàng không đúng chủng loại là rủi ro phát sinh liên quan đến hoạt động kiểm soát:",
-      "answer": "Hàng tồn kho"
-    },
-    {
-      "question": "Rủi ro nào phát sinh không liên quan đến khâu mua hàng:",
-      "answer": "Mua hàng được hưởng chính sách ưu đãi"
-    },
-    {
-      "question": "Phát biểu nào là đúng khi nói về rủi ro liên quan đến hoạt động nhận hàng:",
-      "answer": "Nhận hàng không đúng chủng loại"
-    },
-    {
-      "question": "Nhận hàng kém chất lượng là rủi ro thuộc về hoạt động:",
-      "answer": "Nhận hàng"
-    },
-    {
-      "question": "Thanh toán tiền cho hàng không đúng số lượng, chất lượng và chủng loại là rủi ro thuộc về hoạt động:",
-      "answer": "Thanh toán"
-    },
-    {
-      "question": "Rủi ro nào không liên quan đến khâu thanh toán:",
-      "answer": "Thanh toán tiền chiết khấu"
-    },
-    {
-      "question": "Rủi ro phát sinh liên quan đến khâu bảo quản là:",
-      "answer": "Tất cả các đáp án trên"
-    },
-    {
-      "question": "Hàng hóa bị lỗi thời là rủi ro thuộc về hoạt động:",
-      "answer": "Bảo quản"
-    },
-    {
-      "question": "Nguyên liệu, vật liệu, sản phẩm dở dang và thành phẩm bị thất thoát thuộc về:",
-      "answer": "Rủi ro sản xuất"
-    },
-    {
-      "question": "Rủi ro nào không liên quan đến hoạt động sản xuất",
-      "answer": "Nguyên liệu, vật liệu, sản phẩm dở dang và thành phẩm tồn kho"
-    },
-    {
-      "question": "Hàng tồn kho bị khai khống trong kiểm kê là phát biểu thuộc về",
-      "answer": "Hiện hữu và quyền"
-    },
-    {
-      "question": "Phát biểu nào không thuộc vào hiện hữu và quyền trong kiểm toán hàng tồn kho:",
-      "answer": "Hàng tồn kho phát sinh khi định khoản"
-    },
-    {
-      "question": "Hàng tồn kho thuộc ……………… người khác là phát biểu thuộc vào hiện hữu và quyền.",
-      "answer": "Quyền sở hữu"
-    },
-    {
-      "question": "Hiện hữu và quyền trong kiểm toán hàng tồn kho cho biết:",
-      "answer": "Hàng tồn kho trên BCTC hiện hữu trong thực tế và thuộc quyền sở hữu của đơn vị"
-    },
-    {
-      "question": "Phát biểu nào sau đây thuộc về hiện hữu và quyền :",
-      "answer": "Hàng tồn kho đã chuyển giao quyền sở hữu"
-    },
-    {
-      "question": "Trong kiểm toán hàng tồn kho thì đầy đủ có nghĩa là:",
-      "answer": "Hàng tồn kho của đơn vị đã được khai báo đầy đủ chưa"
-    },
-    {
-      "question": "Phát biểu nào thuộc về khái niệm đầy đủ trong kiểm toán hàng tồn kho:",
-      "answer": "Hàng đang đi đường bị bỏ sót"
-    },
-    {
-      "question": "Hàng tồn kho có được tính toán và cộng dồn chính xác không là phát biểu thuộc về:",
-      "answer": "Ghi chép chính xác"
-    },
-    {
-      "question": "Phát biểu nào thuộc về ghi chép chính xác trong kiểm toán hàng tồn kho:",
-      "answer": "Số liệu hàng tồn kho tổng hợp có sai lệch với chi tiết"
-    },
-    {
-      "question": "Hàng tồn kho được đánh giá theo giá thấp hơn giữa giá gốc và giá trị thuần có thể thực hiện là phát biểu thuộc về:",
-      "answer": "Đánh giá"
-    },
-    {
-      "question": "Phát biểu nào không thuộc vào yếu tố đánh giá trong kiểm toán hàng tồn kho:",
-      "answer": "Áp dụng phương pháp đánh giá không liên tục"
-    },
-    {
-      "question": "Hàng tồn kho có tuân thủ chuẩn mực và chế độ hiện hành không là phát biểu thuộc về:",
-      "answer": "Tuân thủ quy định hiện hành"
-    },
-    {
-      "question": "Phát biểu nào được cho là không đúng với tuân thủ quy định hiện hành trong kiểm toán hàng tồn kho:",
-      "answer": "Hàng tồn kho chưa thuộc quyền sở hữu"
-    },
-    {
-      "question": "Phát biểu nào là đúng với tuân thủ quy định hiện hành trong kiểm toán hàng tồn kho:",
-      "answer": "Phân biệt không đúng hàng tồn kho và các tài sản khác"
-    },
-    {
-      "question": "Nội dung nào không được nghiên cứu trong kiểm toán hàng tồn kho :",
-      "answer": "Thẩm định giá trị thực của hàng tồn kho"
-    },
-    {
-      "question": "Kiểm soát nội bộ đối với hàng tồn kho là kiểm soát các vấn đề nào:",
-      "answer": "Tất cả các đáp án trên"
-    },
-    {
-      "question": "Kiểm soát nội bộ đối với hàng tồn kho sẽ không kiểm soát các vấn đề nào:",
-      "answer": "Giao hàng"
-    },
-    {
-      "question": "Hàng tồn kho được ghi nhận ở đâu của hệ thống báo cáo tài chính trong đơn vị:",
-      "answer": "Bảng cân đối kế toán"
-    },
-    {
-      "question": "Những chính sách kế toán về hàng tồn kho được trình bày và công bố trên báo cáo nào của hệ thống báo cáo tài chính:",
-      "answer": "Bản thuyết minh báo cáo tài chính"
-    },
-    {
-      "question": "Khoảng cách giữa mong đợi của người sử dụng những thông tin về hàng tồn kho so với chuẩn mực hợp lý là gì:",
-      "answer": "Sự kỳ vọng không hợp lý"
-    },
-    {
-      "question": "……………… chính là một trong những bằng chứng làm cơ sở để kiểm toán viên đưa ra các ý kiến về những thông tin kế toán hàng tồn kho của doanh nghiệp",
-      "answer": "Phiếu nhập kho"
-    },
-    {
-      "question": "Hoạt động kiểm toán sẽ mang lại cho những đối tượng sử dụng thông tin các lợi ích nào đối với khoản mục hàng tồn kho:",
-      "answer": "Giảm thiểu rủi ro về mặt thông tin và các quyết định đầu tư"
-    },
-    {
-      "question": "Việc sửa đổi, giả mạo chứng từ phiếu xuất kho và không ghi ghép các nghiệp vụ kinh tế phát sinh có liên quan là ……………… ảnh hưởng đến kiểm toán hàng tồn kho:",
-      "answer": "Gian lận"
-    },
-    {
-      "question": "Yếu tố nào sau đây không làm ảnh hưởng đến khả năng gian lận và sai sót đến số liệu hàng tồn kho:",
-      "answer": "Hệ thống kiểm soát nội bộ về hàng tồn kho thật sự ổn định"
-    },
-    {
-      "question": "Nếu bạn là kiểm toán viên đang tác nghiệp thì thủ tục nào sau đây không phải là điểm yếu kém trong kiểm soát nội bộ về tài sản cố định?",
-      "answer": "Khi nhượng bán và thanh lý tài sản cố định, doanh nghiệp lập hội đồng để giải quyết các vấn đề liên quan"
-    },
-    {
-      "question": "Để phát hiện những tài sản cố định đã thanh lý hoặc nhượng bán nhưng chưa ghi giảm, kiểm toán viên có thể sử dụng thủ tục kiểm toán nào sau đây?",
-      "answer": "Xem xét các nghiệp vụ thu tiền bất thường được ghi nhận vào thu nhập khác trong kỳ"
-    },
-    {
-      "question": "Khi kiểm toán tài sản cố định, kiểm toán viên thường kiểm tra đồng thời cả về chi phí sửa chữa lẫn bảo trì phát sinh trong kỳ.",
-      "answer": "Các khoản chi mua sắm tài sản cố định nhưng lại được hạch toán vào chi phí trong kỳ"
-    },
-    {
-      "question": "Việc khai khống chi phí khấu hao thuộc về hành vi gian lận liên quan đến ..............",
-      "answer": "Tài sản cố định và trích khấu hao tài sản cố định"
-    },
-    {
-      "question": "Việc thu thập bằng chứng nhằm giúp cho các kiểm toán viên ..............",
-      "answer": "Đạt được những dữ liệu và thông tin làm cơ sở pháp lý cho các ý kiến kiểm toán"
-    },
-    {
-      "question": "Dưới đây là các thủ tục kiểm soát được doanh nghiệp thiết lập, vì thế, kiểm toán viên trong quá trình tác nghiệp sẽ kiểm tra thủ tục nào để phát hiện ra tài sản cố định không sử dụng?",
-      "answer": "Định kỳ, quản đốc phân xưởng và các phòng ban báo cáo về tình hình sử dụng tài sản cố định"
-    },
-    {
-      "question": "Bằng chứng kiểm toán là thông tin, ................",
-      "answer": "Tài liệu kế toán"
-    },
-    {
-      "question": "Khi kiểm toán khoản mục chi phí khấu hao tài sản cố định thì thủ tục kiểm toán nào sau đây đáp ứng tốt nhất mục tiêu ghi chép chính xác?",
-      "answer": "Kiểm tra lại việc tính toán trên bảng tính khấu hao tài sản cố định và đối chiếu số liệu đã ghi trên sổ sách"
-    },
-    {
-      "question": "Tài sản cố định là khoản mục trọng yếu trên báo cáo tài chính của doanh nghiệp nhưng những ................",
-      "answer": "Rủi ro kiểm toán"
-    },
-    {
-      "question": "Đặc điểm của một cuộc kiểm toán tài sản cố định trong doanh nghiệp là:",
-      "answer": "Số lượng nghiệp vụ phát sinh ít"
-    },
-    {
-      "question": "Chính do đặc điểm của nghiệp vụ về tài sản cố định trong doanh nghiệp là dễ ................",
-      "answer": "Kiểm tra"
-    },
-    {
-      "question": "Độ tin cậy của các bằng chứng được tạo ra trong nội bộ doanh nghiệp sẽ ................",
-      "answer": "Tăng lên"
-    },
-    {
-      "question": "Mục đích của việc kiểm toán hoạt động khấu hao giá trị tài sản cố định vào chi phí là để kiểm tra về mức độ …………… bỏ ra ban đầu của doanh nghiệp được diễn ra như thế nào.",
-      "answer": "Hoàn vốn"
-    },
-    {
-      "question": "Bằng chứng kiểm toán do các kiểm toán viên trực tiếp thu thập đáng ................",
-      "answer": "Tin cậy hơn"
-    },
-    {
-      "question": "Bằng chứng kiểm toán dưới dạng ..............",
-      "answer": "Văn bản"
-    },
-    {
-      "question": "Bằng chứng kiểm toán là các chứng từ, ................",
-      "answer": "Tài liệu gốc"
-    },
-    {
-      "question": "Các kỹ thuật thu thập bằng chứng kiểm toán, bao gồm: Kiểm tra, quan sát, điều tra, tính toán lại, thực hiện lại, phân tích và ................",
-      "answer": "Xác nhận từ bên ngoài"
-    },
-    {
-      "question": "Nếu khả năng của mọi phần tử trong tổng thể được chọn vào mẫu là như nhau thì đó là cách chọn ...........",
-      "answer": "Ngẫu nhiên"
-    },
-    {
-      "question": "Các sai sót của doanh nghiệp về việc ghi nhận chi phí khấu hao tài sản cố định thường được kiểm toán viên phát hiện ra là:",
-      "answer": "Tài sản cố định đã hết khấu hao vẫn sử dụng"
-    },
-    {
-      "question": "Trong quá trình kiểm toán, kiểm toán viên có thể cần phải thu thập bằng chứng kiểm toán về sự hữu hiệu thực sự của hệ thống kiểm soát nội bộ.",
-      "answer": "Hiện hữu"
-    },
-    {
-      "question": "Kiểm toán về sự hao mòn của máy móc, thiết bị là sự kiểm tra mức độ …………… về giá trị của máy móc thiết bị do tham gia vào hoạt động sản xuất, kinh doanh.",
-      "answer": "Giảm dần"
-    },
-    {
-      "question": "Các phương pháp phân tích chủ yếu trong quá trình thu thập bằng chứng kiểm toán gồm có: Phân tích xu hướng, phân tích tỷ số và ................",
-      "answer": "Phân tích dự báo"
-    },
-    {
-      "question": "Khấu hao là việc tính và ................",
-      "answer": "Phân bổ"
-    },
-    {
-      "question": "Việc kiểm toán khoản chi phí sửa chữa, bảo trì của doanh nghiệp nhằm đảm bảo phát hiện ra những sai sót trong việc ................",
-      "answer": "Vốn hóa"
-    },
-    {
-      "question": "Khi xem xét đến tính đầy đủ của bằng chứng kiểm toán thì yếu tố nào sau đây sẽ ít được các kiểm toán viên quan tâm đến ...........",
-      "answer": "Mức độ hoàn thành kế hoạch"
-    },
-    {
-      "question": "Kiểm toán viên chứng kiến việc thực hiện kiểm kê kho nhằm thỏa mãn mục tiêu nào sau đây khi thu thập bằng chứng kiểm toán?",
-      "answer": "Hiện hữu"
-    },
-    {
-      "question": "Vấn đề nào thường gặp liên quan đến khấu hao tài sản cố định mà kiểm toán viên cần phải quan tâm trong một cuộc kiểm toán?",
-      "answer": "Chi phí khấu hao được ghi nhận cho những tài sản cố định đã hết thời gian sử dụng"
-    },
-    {
-      "question": "Theo bạn trong các bằng chứng dưới đây, bằng chứng kiểm toán nào có độ tin cậy thấp nhất?",
-      "answer": "Phiếu xuất nguyên vật liệu được đánh số trước"
-    },
-    {
-      "question": "Kiểm toán viên sử dụng kỹ thuật ...............",
-      "answer": "Phân tích dự báo"
-    },
-    {
-      "question": "Kỹ thuật nào sau đây ít được các kiểm toán viên sử dụng để thu thập bằng chứng về sự hữu hiệu thật sự của hệ thống kiểm soát nội bộ?",
-      "answer": "Xác nhận của bên thứ ba"
-    },
-    {
-      "question": "Chi phí phát sinh sau ghi nhận ban đầu được tính vào nguyên giá tài sản cố định là một trong những sai sót mà kiểm toán viên phát hiện khi kiểm tra nguyên giá ................",
-      "answer": "Tài sản cố định hữu hình"
-    },
-    {
-      "question": "Doanh nghiệp đang xây dựng kho chứa hàng hóa thì công trình xây dựng dở dang này là ................",
-      "answer": "Tài sản của doanh nghiệp"
-    },
-    {
-      "question": "Tư liệu của các chuyên gia hoạt động trong ngành là một trong những bằng chứng kiểm toán ................",
-      "answer": "Đặc biệt"
-    },
-    {
-      "question": "Thử nghiệm chi tiết về kiểm soát là 1 trong những phương pháp kiểm toán nào?",
-      "answer": "Phương pháp kiểm toán tuân thủ"
-    },
-    {
-      "question": "Hai tài sản cố định giống nhau nhưng mua ở hai thời điểm khác nhau nên giá của chúng cũng khác nhau.",
-      "answer": "Chi phí thực tế mà doanh nghiệp đã bỏ ra để có được tài sản"
-    },
-    {
-      "question": "Theo bạn, kỹ thuật nào không thuộc vào kỹ thuật của kiểm toán khi tiến hành kiểm toán các số liệu trên chứng từ?",
-      "answer": "Xác định mức độ ảnh hưởng của từng nhân tố"
-    },
-    {
-      "question": "Trong chuẩn mực kiểm toán quốc tế thì cụm từ \"Trend Analysis\" được hiểu là:",
-      "answer": "Phân tích xu hướng"
-    },
-    {
-      "question": "Giá trị ban đầu của tài sản cố định được gọi là ................",
-      "answer": "Nguyên giá"
-    },
-    {
-      "question": "Khi kiểm toán viên nghiên cứu về công tác tổ chức hệ thống sổ sách, chứng từ để quản lý tài sản cố định thì đó chính là việc tiềm hiểu về ................",
-      "answer": "Kiểm soát nội bộ"
-    },
-    {
-      "question": "Kiểm toán tính hiện hữu và quyền về tài sản cố định được quy định trong Chuẩn mực kế toán Việt Nam là đề cập đến điều gì?",
-      "answer": "Tài sản cố định là có thật và thuộc quyền sở hữu của doanh nghiệp"
-    },
-    {
-      "question": "Kiểm toán tính đầy đủ của tài sản cố định được quy định trong Chuẩn mực kế toán Việt Nam là đề cập đến điều gì?",
-      "answer": "Tất cả tài sản cố định đều được ghi chép và báo cáo"
-    },
-    {
-      "question": "Phát biểu nào sau đây được cho là đúng khi nói về sai sót tiềm tàng trong hoạt động kiểm toán khoản mục tài sản cố định?",
-      "answer": "Các nghiệp vụ ghi giảm tài sản cố định không được phê chuẩn"
-    },
-    {
-      "question": "Hoạt động thử nghiệm cơ bản của các kiểm toán viên trong quy trình kiểm toán khoản mục tài sản cố định của doanh nghiệp là:",
-      "answer": "Quy trình phân tích, thử nghiệm chi tiết"
-    },
-    {
-      "question": "Một cuộc kiểm toán đối với khoản mục tài sản cố định trên hệ thống báo cáo tài chính của doanh nghiệp được thực hiện cho tài sản nào?",
-      "answer": "Tài sản cố định nói chung"
-    },
-    {
-      "question": "Khi thực hiện kiểm toán đối với khoản mục tài sản cố định thì các kiểm toán viên cần thiết phải nắm bắt tiêu chuẩn để nhận biết về tài sản cố định và tiêu chuẩn đó hiện nay được quy định là:",
-      "answer": "Chắc chắn thu được lợi ích kinh tế trong tương lai từ việc sử dụng tài sản đó, có thời gian sử dụng trên 1 năm trở lên, nguyên giá tài sản phải được xác định một cách tin cậy và có giá trị từ 30.000.000 đồng trở lên"
-    },
-    {
-      "question": "Kiểm toán khoản mục tài sản cố định đó là tiến hành kiểm tra về việc ghi chép, phản ánh số liệu có liên quan đến tài sản cố định hữu hình, tài sản cố định vô hình, tài sản cố định thuê tài chính và ................",
-      "answer": "Tài sản cố định thuê hoạt động"
-    },
-    {
-      "question": "Trong một cuộc kiểm toán về tài sản cố định hữu hình thì khoản mục chi phí nào sau đây sẽ không được các kiểm toán viên quan tâm đến?",
-      "answer": "Chi phí chiết khấu"
-    },
-    {
-      "question": "Lợi thế thương mại phát sinh trong quá trình sáp nhập doanh nghiệp là vấn đề được kiểm toán viên quan tâm khi thực hiện kiểm toán về loại tài sản nào?",
-      "answer": "Tài sản cố định vô hình"
-    },
-    {
-      "question": "Các kiểm toán viên thường quan tâm đến việc nhận diện các hợp đồng thuê tài chính khi thực hiện việc kiểm toán về tài sản?",
-      "answer": "Tài sản cố định thuê tài chính"
-    },
-    {
-      "question": "Vấn đề nào sau đây được các kiểm toán viên chấp nhận một khi doanh nghiệp không trình bày và công bố về các thông tin liên quan đến tài sản cố định?",
-      "answer": "Chi tiết các công trình xây dựng đã hoàn thành"
-    },
-    {
-      "question": "Thủ tục kiểm soát nào sau đây sẽ không được các kiểm toán viên quan tâm khi đánh giá hệ thống kiểm soát nội bộ đối với tài sản cố định?",
-      "answer": "Quy trình xét duyệt khoản kinh phí"
-    },
-    {
-      "question": "Tổ chức hệ thống chứng từ và sổ sách kế toán để quản lý tài sản cố định là một trong những vấn đề bắt buộc mà các kiểm toán viên phải tiếp cận khi nghiên cứu về vấn đề gì?",
-      "answer": "Kiểm soát nội bộ tài sản cố định"
-    },
-    {
-      "question": "Theo bạn, phát biểu nào sau đây được cho là đúng nhất khi nói về đặc điểm của cuộc kiểm toán về khoản mục tài sản cố định trên báo cáo tài chính của doanh nghiệp?",
-      "answer": "Số lượng nghiệp vụ kinh tế phát sinh ít và dễ dàng trong việc kiểm tra"
-    },
-    {
-      "question": "Ký hiệu \"K3\" trong bảng kế hoạch hoạt động của các kiểm toán viên cho biết về vấn đề gì sau đây?",
-      "answer": "Lập bảng tổng hợp tài sản cố định"
-    },
-    {
-      "question": "Việc phải đưa ra một chương trình cụ thể cho hoạt động kiểm toán tài sản cố định là yêu cầu bắt buộc phải thực hiện của bảng kế hoạch kiểm toán và được ký hiệu bởi .............",
-      "answer": "K2"
-    },
-    {
-      "question": "Trong bảng kế hoạch kiểm toán đối với khoản mục tài sản cố định thì ký hiệu “K1” được đề cập đến việc gì sau đây?",
-      "answer": "Lập biểu chỉ đạo kiểm toán"
-    },
-    {
-      "question": "Khi thực hiện kiểm toán về tài sản cố định, thao tác lập một bảng liệt kê chi tiết các tài sản cố định được mua sắm thêm trong kỳ được thể hiện bởi ............",
-      "answer": "Ký hiệu K4"
-    },
-    {
-      "question": "Khi thực hiện kiểm toán về tài sản cố định, việc lập bảng tính lại khấu hao để kiểm tra chi phí khấu hao ghi nhận trong năm được thể hiện bởi .............",
-      "answer": "Ký hiệu K6"
-    },
-    {
-      "question": "Trong bảng kế hoạch kiểm toán đối với khoản mục tài sản cố định thì ký hiệu “K5” được đề cập đến hoạt động nào sau đây?",
-      "answer": "Lập bảng liệt kê tài sản cố định giảm hay thanh lý, nhượng bán trong kỳ"
-    },
-    {
-      "question": "Trong bảng kế hoạch kiểm toán đối với khoản mục tài sản cố định thì ký hiệu \"K7\" được đề cập đến hoạt động nào sau đây?",
-      "answer": "Kiểm tra chi phí sửa chữa tài sản cố định"
-    },
-    {
-      "question": "Kiểm tra sổ sách phát hiện đơn vị đã thanh lý một tài sản cố định dùng cho việc bán hàng với nguyên giá là 240.000.000 đồng (đã khấu hao 220.000.000 đồng) vào tháng 02/20X3 nhưng đến tháng 12/20X3 vẫn chưa ghi giảm tài sản cố định.",
-      "answer": "Nợ 811 20.000.000 ,Nợ 214 220.000.000/ Có 211 240.000.000"
-    },
-    {
-      "question": "Kiểm tra sổ sách phát hiện tại đơn vị có một chiếc xe chuyên dùng cho bộ phận bán hàng với nguyên giá 2.000.000.000 đồng (đã khấu hao 1.600.000.000 đồng vào tháng 11/20X3) nhưng đến tháng 12/20X3 tiếp tục ghi vào chi phí khấu hao là 100.000.000 đồng.",
-      "answer": "Nợ 214 100.000.000/ Có 641 100.000.000"
-    },
-    {
-      "question": "Kiểm tra sổ sách phát hiện xe ô tô MAZDA, là xe thuộc chủ quyền cá nhân của Chủ tịch Hội đồng quản trị, được ghi nhầm vào tài sản cố định của công ty tại thời điểm ngày 01/09/20X3 như một khoản vốn góp với giá trị 360.000.000 đồng.",
-      "answer": "Nợ 411 360.000.000 /Có 211 360.000.000"
-    },
-    {
-      "question": "Kiểm tra sổ sách phát hiện xe ô tô MAZDA, là xe thuộc chủ quyền cá nhân của Chủ tịch Hội đồng quản trị và đã được ghi nhầm vào tài sản cố định của công ty tại thời điểm ngày 01/09/20X5 như khoản vốn góp với giá trị 360.000.000 đồng, thời hạn sử dụng 10 năm.",
-      "answer": "4.000.000"
-    },
-    {
-      "question": "Kiểm tra sổ sách phát hiện 01 nhà làm việc có giá trị đúng theo chứng từ là 420.000.000đ nhưng được ghi nhận là tài sản cố định ngày 01/07/20X3 trị giá 440.000.000đ.",
-      "answer": "Nợ 642 20.000.000 /Có 211 20.000.000"
-    },
-    {
-      "question": "Kiểm tra sổ sách phát hiện kế toán hạch toán Nợ 111 / Có 511 11.000.000 cho nghiệp vụ thanh lý tài sản cố định dùng cho việc bán hàng nguyên giá 120.000.000đ (đã khấu hao 100.000.000đ).",
-      "answer": "Nợ 111 11.000.000 /Có 711 10.000.000 ,Có 3331 1.000.000"
-    },
-    {
-      "question": "Công trình xây dựng Tổng kho trị giá 900.000.000đ đã hoàn thành và kết chuyển sang tài sản cố định tháng 02/20X3.",
-      "answer": "Nợ 211 60.000.000 /Có 635 60.000.000"
-    },
-    {
-      "question": "Công trình xây dựng Phân xưởng trị giá 1.000.000.000đ đã hoàn thành và kết chuyển sang tài sản cố định tháng 05/20X3.",
-      "answer": "Nợ 211 42.000.000 /Có 331 42.000.000"
-    },
-    {
-      "question": "Đơn vị không thuyết minh được cơ sở hợp lý khoản trích trước chi phí sửa chữa lớn tài sản cố định vào chi phí trong năm 20X5.",
-      "answer": "120.000.000"
-    },
-    {
-      "question": "Công ty Minh Ngọc vay ngân hàng để nhập khẩu máy móc thiết bị, giá mua bao gồm cả thuế nhập khẩu là 300 triệu, chi phí lãi vay từ thời điểm thanh toán đến thời điểm đưa TSCĐ vào trạng thái sẵn sàng sử dụng là (3 tháng) là 100 triệu đồng.",
-      "answer": "300 triệu"
-    },
-    {
-      "question": "Trong kiểm toán, bằng chứng có được mức độ tin cậy cao nhất đó chính là các chứng từ, tài liệu .............",
-      "answer": "Thu thập trực tiếp bằng các phương pháp giám sát, tính toán của các kiểm toán viên độc lập"
-    },
-    {
-      "question": "Gửi thư xác nhận của ngân hàng về số dư của tài khoản tiền gửi ngân hàng vào thời điểm khóa sổ là thủ tục kiểm toán nhằm thỏa mãn mục tiêu kiểm toán nào?",
-      "answer": "Hiện hữu và quyền sở hữu"
-    },
-    {
-      "question": "Trong quá trình thực hiện kiểm toán, thủ tục phân tích không cung cấp bằng chứng về .............",
-      "answer": "Sự chính xác trong số liệu kế toán"
-    },
-    {
-      "question": "Loại bằng chứng kiểm toán nào dưới đây không được thu thập từ thử nghiệm cơ bản của kiểm toán viên?",
-      "answer": "Kiểm tra sự xét duyệt đối với nghiệp vụ mua hàng"
-    },
-    {
-      "question": "Việc phát hiện ra các xu hướng biến động bất thường thông qua thủ tục phân tích sẽ giúp kiểm toán viên ...............",
-      "answer": "Mở rộng phạm vi thử nghiệm chi tiết"
-    },
-    {
-      "question": "Kiểm toán viên cần cân nhắc đến vấn đề nào sau đây khi xem xét đến yếu tố đầy đủ của bằng chứng kiểm toán?",
-      "answer": "Rủi ro tiềm tàng và rủi ro kiểm soát"
-    },
-    {
-      "question": "Thử nghiệm cơ bản là?",
-      "answer": "Việc thu thập bằng chứng về những sai lệch trọng yếu trong báo cáo tài chính"
-    },
-    {
-      "question": "Mức độ tin cậy của kỹ thuật phân tích trong kiểm toán phụ thuộc vào tính trọng yếu của các tài khoản, các thủ tục kiểm toán khác có cùng mục tiêu kiểm toán và ................",
-      "answer": "Đánh giá rủi ro tiềm tàng và rủi ro kiểm soát"
-    },
-    {
-      "question": "Việc thường xuyên thay đổi các chính sách kế toán của doanh nghiệp sẽ dẫn đến ..............",
-      "answer": "Vi phạm khái niệm nhất quán và ảnh hưởng đến việc thu thập bằng chứng kiểm toán"
-    },
-    {
-      "question": "Kiểm tra sổ sách phát hiện vào ngày 01/01/20X5, đơn vị đem tài sản cố định đi góp vốn liên doanh có giá trị sổ sách là 300.000.000đ, giá trị góp vốn là 350.000.000đ.",
-      "answer": "Nợ 211 50.000.000 \r\nCó 711 50.000.000"
-    },
-    {
-      "question": "Đối với tài sản cố định thì yêu cầu nào về mặt kế toán mà kiểm toán viên không cần thiết phải kiểm tra trong quá trình kiểm toán?",
-      "answer": "Lập dự phòng cho các tài sản cố định"
-    },
-    {
-      "question": "Trong một cuộc kiểm toán về tài sản cố định hữu hình thì đâu là sai sót không được kiểm toán viên phát hiện?",
-      "answer": "Chi phí vận chuyển hàng tồn kho"
-    },
-    {
-      "question": "Đối với tài sản cố định thuê tài chính thì các sai sót không được kiểm toán viên phát hiện trong quá trình tác nghiệp là:",
-      "answer": "Nhận trước tiền hàng"
-    },
-    {
-      "question": "Các vấn đề mà kiểm toán viên không thường tiếp cận trong quá trình tác nghiệp đối với tài sản cố định vô hình là:",
-      "answer": "Lập dự phòng"
-    },
-    {
-      "question": "Lựa chọn phương pháp, tỷ lệ khấu hao và ước tính giá trị thu hồi là các vấn đề thuộc về thủ tục kiểm toán nào?",
-      "answer": "Khấu hao tài sản cố định"
-    },
-    {
-      "question": "Theo bạn, nội dung nào sau đây không thuộc vào lĩnh vực nghiên cứu của hoạt động kiểm toán đối với tài sản cố định của doanh nghiệp?",
-      "answer": "Xác định giá trị thực của tài sản cố định"
-    },
-    {
-      "question": "Kiểm tra việc tính toán và ghi nhận vào sổ sách một cách hợp lý giá trị của các tài sản cố định phát sinh trong kỳ hoạt động là nhằm đáp ứng yêu cầu của cơ sở dẫn liệu nào sau đây?",
-      "answer": "Ghi chép chính xác"
-    },
-    {
-      "question": "Đánh giá là một cơ sở dẫn liệu trong ................",
-      "answer": "Hoạt động"
-    },
-    {
-      "question": "Trong quy trình kiểm toán khoản mục tài sản cố định, trước khi đánh giá sơ bộ rủi ro kiểm toán thì các kiểm toán viên phải thực hiện vấn đề gì sau đây?",
-      "answer": "Tìm hiểu hệ thống kiểm soát nội bộ"
-    },
-    {
-      "question": "Phân tích và kiểm tra một cách chi tiết các khoản chi phí phát sinh có liên quan đến việc sửa chữa tài sản cố định là một trong những hoạt động ................",
-      "answer": "Thử nghiệm chi tiết"
-    },
-    {
-      "question": "Một dây chuyền sản xuất doanh nghiệp đã đầu tư mua mới đưa vào sử dụng vào tháng 01/10/20X6  có nguyên giá 480.000.000đ, thời gian sử dụng 8 năm, đăng ký khấu hao theo phương pháp đường thẳng.",
-      "answer": "Nợ 627/ Có 214  15.000.000đ"
-    },
-    {
-      "question": "Doanh nghiệp mua trả chậm một tài sản cố định hữu hình, với giá mua trả ngay là 250.000.000đ, VAT 10%, giá mua trả chậm là 320.000.000.",
-      "answer": "Nợ 242/Có 635 45.000.000"
-    },
-    {
-      "question": "Doanh nghiệp mua trả chậm một tài sản cố định hữu hình, với giá mua trả ngay là 200.000.000đ, VAT 10%, giá mua trả chậm là 250.000.000.",
-      "answer": "Nợ 211  200.000.000\r\nNợ 133    20.000.000\r\nNợ 242   30.000.000\r\n  Có 331  250.000.000"
-    },
-    {
-      "question": "Doanh nghiệp mua trả chậm một tài sản cố định hữu hình, với giá mua trả ngay là 200.000.000đ, VAT 10%, giá mua trả chậm là 250.000.000.",
-      "answer": "Nợ 635/Có 242  9.000.000đ"
-    },
-    {
-      "question": "Kiểm tra sổ sách phát hiện doanh nghiệp định khoản Nợ 242/ Có 112 cho nghiệp vụ ký quỹ thuê tài sản.",
-      "answer": "Nợ 244/ Có 242"
-    },
-    {
-      "question": "Kiểm tra hồ sơ chuyển đổi mục đích sử dụng, phát hiện doanh nghiệp có nghiệp vụ chuyển nguyên giá bất động sản sở hữu (tài sản cố định hữu hình) thành bất động sản đầu tư nhưng chưa định khoản bút toán này.",
-      "answer": "Nợ 217/ Có 211"
-    },
-    {
-      "question": "Tại ngày 31/12, DN có 100 tấn sản phẩm A tồn kho, giá gốc của sản phẩm này (bao gồm các chi phí trực tiếp và chi phí sản xuất chế biến khác để hoàn thành sản phẩm) là 100.000 đồng.",
-      "answer": "70.000 đ/tấn"
-    },
-    {
-      "question": "Tại ngày 31/12, DN có 100 tấn sản phẩm A tồn kho, giá gốc của sản phẩm này (bao gồm các chi phí trực tiếp và chi phí sản xuất chế biến khác để hoàn thành sản phẩm) là 100.000 đồng.",
-      "answer": "3.000.000"
-    },
-    {
-      "question": "Công ty Thuận Hòa điều chuyển 1 TSCĐ chi nhánh X của mình.",
-      "answer": "65 triệu"
-    },
-    {
-      "question": "Kế toán có các chức năng",
-      "answer": "Thông tin và kiểm tra"
-    },
-    {
-      "question": "Để xác định đúng đắn kết quả kinh doanh của kỳ kế toán thì phải tuân thủ quy tắc",
-      "answer": "Phù hợp"
-    },
-    {
-      "question": "Trong các nôi dung sau đây, nội dung nào không thuộc kiểm toán tuân thủ",
-      "answer": "Kiểm tra kết quả hoạt động kinh doanh."
-    },
-    {
-      "question": "Khái niệm về gian lận biểu hiện là",
-      "answer": "áp dụng sai các nguyên tắc, phương pháp trong chế độ kế toán một cách có chủ ý."
-    },
-    {
-      "question": "Hạn chế nào trong các hạn chế dưới đây không thuộc những hạn chế có hữu của hệ thống kiểm soát nội bộ?",
-      "answer": "Khối lượng của các giao dịch, các thủ tục biện pháp kiểm soát."
-    },
-    {
-      "question": "Nội dung nào trong số các nội dung sau đây không thuộc nội dung nghiên cứu đánh giá hệ thống kế toán và hệ thống kiểm soát nội bộ",
-      "answer": "Kiểm tra đối chiếu chứng từ sổ sách kế toán."
-    },
-    {
-      "question": "Để đánh giá khả năng hoạt động liên tục của doanh nghiệp về mặt tài chính cần xem xét đến biểu hiện chủ yếu nào?",
-      "answer": "Tất cả các biểu hiện nói trên."
-    },
-    {
-      "question": "Hồ sơ nào trong các hồ sơ sau không thuộc hồ sơ lưu giữ của công ty kiểm toán?",
-      "answer": "Các báo cáo tài chính đã được kiểm toán"
-    },
-    {
-      "question": "Kiểm toán đánh giá tính hiệu lực, hiệu quả của đơn vị thuộc loại kiểm toán",
-      "answer": "Hoạt động."
-    },
-    {
-      "question": "Trong các nguyên tắc sau đây, nguyên tắc nào không phù hợp với nguyên tắc kiểm toán báo cáo tài chính",
-      "answer": "Tuân thủ nguyên tắc công khai, thống nhất."
-    },
-    {
-      "question": "Sau khi đã lập báo cáo kiểm toán, các kiểm toán viên công ty kiểm toán cần giải quyết các sự kiện nào có thể phát sinh?",
-      "answer": "Tất cả các sự kiện nói trên"
-    },
-    {
-      "question": "Chuẩn mực về lập kế hoạch kiểm toán thuộc:",
-      "answer": "o\tCác chuẩn mực điều tra."
-    },
-    {
-      "question": "Kiểm toán viên độc lập thuộc:",
-      "answer": "o\tKiểm toán độc lập."
-    },
-    {
-      "question": "Trong các sự kiện kinh tế phát sinh trong hoạt động của doanh nghiệp dưới đây, sự kiện nào không thuộc phạm vi nói trên?",
-      "answer": "o\tSự kiện kinh tế phát sinh trong mối quan hệ với nhà nước."
-    },
-    {
-      "question": "Các khoản chi trả tiền cho khách hàng về các tài sản, vật tư đã nhận:",
-      "answer": "o\tLà sự kiện kinh tế ngoại sinh có kéo theo sự trao đổi."
-    },
-    {
-      "question": "Trong các điều kiện sau đây, điều kiện nào không thuộc các điều kiện của cơ sở dẫn liệu?",
-      "answer": "o\tTheo ước tính."
-    },
-    {
-      "question": "Sự kiện kinh tế là gì?",
-      "answer": "o\tLà các sự phát sinh thực tế trong hoạt động sản xuất kinh doanh của doanh nghiệp"
-    },
-    {
-      "question": "Trong các hành vi sau đây, hành vi nào không thuộc hành vi gian lận?",
-      "answer": "o\tBỏ sót, ghi trùng."
-    }
-  ]
+];
 export default template;

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Modal } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
-import { message, Upload, Progress } from "antd";
+import { message, Upload } from "antd";
 import Swal from "sweetalert2";
 import { ref, uploadBytesResumable, getDownloadURL, getStorage } from "firebase/storage";
 
@@ -17,16 +17,17 @@ export default function SubjectOutline() {
     };
 
     const handleOk = () => {
+        setIsModalOpen(false);
         handleUpload();
-        setConfirmLoading(true);
     };
+
     const handleCancel = () => {
         setIsModalOpen(false);
     };
 
     const handleUpload = () => {
         fileList.forEach((file) => {
-            const storageRef = ref(storage, `decuong/${file.name + "-" + new Date().getTime()}`);
+            const storageRef = ref(storage, `decuong/${file.name}`);
             const uploadTask = uploadBytesResumable(storageRef, file);
 
             uploadTask.on(
@@ -34,10 +35,6 @@ export default function SubjectOutline() {
                 (snapshot) => {
                     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                     console.log(`Upload is ${progress}% done`);
-                    if (progress === 100) {
-                        setIsModalOpen(false);
-                        setConfirmLoading(false);
-                    }
                 },
                 (error) => {
                     console.error("Upload failed:", error);
@@ -84,7 +81,7 @@ export default function SubjectOutline() {
                             Upload File Đề cương
                         </Button>
                     </div>
-                    <Modal title="Upload File Đề cương ở đây" open={isModalOpen} onOk={handleOk} confirmLoading={confirmLoading} onCancel={handleCancel}>
+                    <Modal title="Upload File Đề cương ở đây" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
                         <Dragger {...props}>
                             <p className="ant-upload-drag-icon">
                                 <InboxOutlined />

@@ -6,6 +6,9 @@ import { Button, Popover, Alert, Space, Avatar, Badge } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { FiLogOut } from "react-icons/fi";
 import { IoMdNotificationsOutline } from "react-icons/io";
+import { IoHomeOutline } from "react-icons/io5";
+import { MdOutlineTopic } from "react-icons/md";
+import { RiQuestionAnswerLine } from "react-icons/ri";
 
 export default function Header() {
     const [isLogin, setIsLogin] = useState(false);
@@ -63,7 +66,7 @@ export default function Header() {
                 </Link>
                 <ul className="hidden md:flex">
                     <li>
-                        <NavLink to="/" className="block px-5 py-3">
+                        <NavLink to="/" className="block px-5 py-3 ">
                             Trang chủ
                         </NavLink>
                     </li>
@@ -81,12 +84,17 @@ export default function Header() {
                             </li>
                         </>
                     )}
+                    <li className="flex-1">
+                        <NavLink to="/tailieu" className="block px-5 py-3 ">
+                            Tài liệu
+                        </NavLink>
+                    </li>
                 </ul>
                 {!isLogin ? (
                     <div className="">
-                        <a href="/login">
+                        <Link to="/login">
                             <button className="bg-green-500">Đăng nhập</button>
-                        </a>
+                        </Link>
                     </div>
                 ) : (
                     <div className="flex gap-2 items-center">

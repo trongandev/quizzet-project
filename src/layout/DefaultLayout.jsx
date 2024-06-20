@@ -52,6 +52,11 @@ export default function DefaultLayout() {
                                 </li>
                             </>
                         )}
+                        <li className="flex-1">
+                            <NavLink to="/tailieu" className="flex items-center gap-2 h-full justify-center">
+                                <RiQuestionAnswerLine size={25} /> Tài liệu
+                            </NavLink>
+                        </li>
                     </ul>
                 </div>
             </div>
