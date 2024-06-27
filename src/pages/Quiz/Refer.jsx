@@ -20,7 +20,7 @@ export default function Refer() {
 
         fetchQuiz();
     }, []);
-
+    console.log(tool);
     return (
         <div className="">
             <div className="">

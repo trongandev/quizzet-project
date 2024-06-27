@@ -9,9 +9,27 @@ import { FaFacebook } from "react-icons/fa";
 import { getAuth, signInWithPopup, createUserWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, onAuthStateChanged } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
+import { addDoc, collection, getFirestore } from "firebase/firestore";
+import { format } from "date-fns";
 export default function Register() {
     const navigate = useNavigate();
     const [capVal, setCapVal] = useState(null);
+
+    const auth = getAuth();
+    const db = getFirestore();
+
+    const addUserToFirebase = async (profile) => {
+        const now = Date.now();
+        console.log(profile);
+        await addDoc(collection(db, "users"), {
+            displayName: profile.displayName || "",
+            uid: profile.uid,
+            email: profile.email,
+            emailVerified: profile.emailVerified,
+            photoURL: profile.photoURL || "",
+            create_at: format(now, "HH:mm:ss dd/MM/yyyy"),
+        });
+    };
 
     const handleCheckLogin = () => {
         onAuthStateChanged(auth, (user) => {
@@ -43,8 +61,7 @@ export default function Register() {
             const auth = getAuth();
             createUserWithEmailAndPassword(auth, values.email, values.password)
                 .then((userCredential) => {
-                    // Signed up
-                    const user = userCredential.user;
+                    addUserToFirebase(userCredential.user);
                     Swal.fire({
                         title: "Đăng ký thành công",
                         icon: "success",
@@ -64,8 +81,6 @@ export default function Register() {
                 });
         },
     });
-
-    const auth = getAuth();
 
     const handleLoginWithGoogle = async () => {
         const provider = new GoogleAuthProvider();

@@ -84,3 +84,7 @@ textarea::-webkit-scrollbar-thumb {
 ::-webkit-scrollbar-thumb {
     background: #ccc;
 }
+
+mark {
+    background-color: #ffe9e9;
+}

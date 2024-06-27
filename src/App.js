@@ -23,6 +23,8 @@ import Edit from "./pages/Quiz/Edit";
 import ResultTopic from "./pages/Quiz/ResultTopic";
 import NewPostTool from "./pages/Admin/NewPostTool";
 import SubjectOutline from "./pages/Quiz/SubjectOutline";
+import ProfileUID from "./pages/User/ProfileUID";
+import Chat from "./pages/User/Chat";
 function App() {
     return (
         <Routes>
@@ -42,7 +44,9 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/test" element={<Test />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/profile/:uid" element={<ProfileUID />} />
                 <Route path="/forget" element={<Forget />} />
+                <Route path="/chat/:id" element={<Chat />} />
                 <Route path="*" element={<PageNotFound />} />
             </Route>
             <Route path="/whatheo" element={<AdminLayout />}>

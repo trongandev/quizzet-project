@@ -1,100 +1,58 @@
-import React, { useState } from "react";
-import { Button, Modal } from "antd";
-import { InboxOutlined } from "@ant-design/icons";
-import { message, Upload, Progress } from "antd";
-import Swal from "sweetalert2";
-import { ref, uploadBytesResumable, getDownloadURL, getStorage } from "firebase/storage";
-
-const { Dragger } = Upload;
+import React, { useState, useRef, useEffect } from "react";
+import template from "../../data/template";
 
 export default function SubjectOutline() {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [confirmLoading, setConfirmLoading] = useState(false);
-    const [fileList, setFileList] = useState([]);
-    const storage = getStorage();
-    const showModal = () => {
-        setIsModalOpen(true);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [highlightedElements, setHighlightedElements] = useState([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [highlightedText, setHighlightedText] = useState(template);
+
+    const handleChange = (value) => {
+        setSearchTerm(value);
     };
 
-    const handleOk = () => {
-        handleUpload();
-        setConfirmLoading(true);
-    };
-    const handleCancel = () => {
-        setIsModalOpen(false);
+    const handleKeyDown = (event) => {
+        if (event.key === "Enter" && highlightedElements.length > 0) {
+            const nextIndex = (currentIndex + 1) % highlightedElements.length;
+            setCurrentIndex(nextIndex);
+            highlightedElements[nextIndex].scrollIntoView({ behavior: "smooth", block: "center" });
+        }
     };
 
-    const handleUpload = () => {
-        fileList.forEach((file) => {
-            const storageRef = ref(storage, `decuong/${file.name + "-" + new Date().getTime()}`);
-            const uploadTask = uploadBytesResumable(storageRef, file);
+    const getHighlightedText = (text, highlight) => {
+        if (highlight.length < 15) {
+            return text;
+        }
 
-            uploadTask.on(
-                "state_changed",
-                (snapshot) => {
-                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    console.log(`Upload is ${progress}% done`);
-                    if (progress === 100) {
-                        setIsModalOpen(false);
-                        setConfirmLoading(false);
-                    }
-                },
-                (error) => {
-                    console.error("Upload failed:", error);
-                    Swal.fire({
-                        title: "Lỗi",
-                        text: "Có lỗi xảy ra trong quá trình tải lên file",
-                        icon: "error",
-                    });
-                },
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                        console.log("File available at", downloadURL);
-                        Swal.fire({
-                            title: "Thành công",
-                            text: "File đã được tải lên thành công",
-                            icon: "success",
-                        });
-                    });
-                }
-            );
+        const escapedHighlight = highlight.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+        const parts = text.split(new RegExp(`(${escapedHighlight})`, "gi"));
+
+        const elements = [];
+        const formattedParts = parts.map((part, index) => {
+            if (part.toLowerCase() === highlight.toLowerCase()) {
+                const element = (
+                    <mark key={index} ref={(el) => elements.push(el)}>
+                        {part}
+                    </mark>
+                );
+                return element;
+            }
+            return part;
         });
-        setIsModalOpen(false);
+
+        setHighlightedElements(elements);
+        return formattedParts;
     };
 
-    const props = {
-        onRemove: (file) => {
-            setFileList(fileList.filter((item) => item !== file));
-        },
-        beforeUpload: (file) => {
-            setFileList([...fileList, file]);
-            return false;
-        },
-        fileList,
-    };
+    useEffect(() => {
+        setHighlightedText(getHighlightedText(template, searchTerm));
+    }, [searchTerm]);
 
     return (
         <div>
-            <div className="">
-                <div className="bg-white p-5 mt-2 flex flex-col">
-                    <h1 className="text-2xl text-gray-800 font-bold">Đề cương từ cộng đồng chúng tôi</h1>
-                    <p className="text-gray-500">Nếu bạn có đề cương và muốn chia sẻ</p>
-                    <div className="mt-2">
-                        <Button type="primary" onClick={showModal}>
-                            Upload File Đề cương
-                        </Button>
-                    </div>
-                    <Modal title="Upload File Đề cương ở đây" open={isModalOpen} onOk={handleOk} confirmLoading={confirmLoading} onCancel={handleCancel}>
-                        <Dragger {...props}>
-                            <p className="ant-upload-drag-icon">
-                                <InboxOutlined />
-                            </p>
-                            <p className="ant-upload-text">Nhấn vào hoặc kéo thả tệp vào vùng này</p>
-                            <p className="ant-upload-hint">Hỗ trợ các file tài liệu</p>
-                        </Dragger>
-                    </Modal>
-                </div>
-                <div className="bg-white p-5 mt-2 flex items-center justify-between flex-col md:flex-row gap-3 md:gap-0"></div>
+            <div className="relative">
+                <input className="fixed z-5" type="text" value={searchTerm} onChange={(e) => handleChange(e.target.value)} onKeyDown={handleKeyDown} />
+                <div className="result">{highlightedText}</div>
             </div>
         </div>
     );
