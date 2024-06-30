@@ -1,14 +1,14 @@
-import { Button } from "antd";
+import { Button, Modal, Input } from "antd";
 import React, { useEffect, useState } from "react";
 import { get_firebase } from "../../utils/request";
 import { addDoc, collection, deleteDoc, doc, getFirestore } from "firebase/firestore";
 import { CiTrash } from "react-icons/ci";
 import { IoAdd } from "react-icons/io5";
-import template from "../../data/template";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import sortArrayByTime from "../../helpers/sort";
+import TextArea from "antd/es/input/TextArea";
 export default function NewPostTool() {
     const [tool, setTool] = useState([]);
     const [isPost, setIsPost] = useState(false);
@@ -53,21 +53,45 @@ export default function NewPostTool() {
         });
     };
 
+    const [open, setOpen] = useState(false);
+    const [confirmLoading, setConfirmLoading] = useState(false);
+    const [data, setData] = useState({});
+
+    const showModal = () => {
+        setOpen(true);
+    };
+
+    const handleOk = () => {
+        setConfirmLoading(true);
+        handlePost();
+        // setTimeout(() => {
+        //     setOpen(false);
+        //     setConfirmLoading(false);
+        // }, 2000);
+    };
+
+    const handleCancel = () => {
+        setOpen(false);
+    };
+
+    const handleInput = (e) => {
+        setData({ ...data, [e.target.id]: e.target.value });
+    };
+
+    const handleChangeJSON = (e) => {
+        setData({ ...data, quest: JSON.parse(e.target.value) });
+    };
+
     const handlePost = async () => {
         const now = new Date();
-        const data = {
-            name: "ktnh",
-            title: "Kế toán ngân hàng",
-            image: "https://sachluat.com.vn/library/module_new/sach-ke-toan-ngan-hang--ly-thuyet-%E2%80%93-bai-tap-%E2%80%93-bai-giai-_s2174.png",
-            description: "Các đáp án, ôn tập về bộ môn Kế toán ngân hàng",
-            date: format(now, "HH:mm:ss dd/MM/yyyy"),
-        };
 
         try {
             await addDoc(collection(db, "tool"), {
                 ...data,
-                quest: template,
+                date: format(now, "HH:mm:ss dd/MM/yyyy"),
             });
+            setOpen(false);
+            setConfirmLoading(false);
         } catch (error) {
             Swal.fire({
                 title: "Có lỗi xảy ra",
@@ -82,17 +106,41 @@ export default function NewPostTool() {
             icon: "success",
         });
     };
-
-    console.log(tool);
     return (
         <div className="">
             <div className="">
                 <div className="flex justify-between items-center">
                     <h1 className="text-lg text-green-500 font-bold">Quản lí tool</h1>
-                    <Button onClick={handlePost} className="flex gap-1 items-center">
+                    <Button onClick={showModal} className="flex gap-1 items-center">
                         <IoAdd />
                         Thêm mới
                     </Button>
+                    <Modal title="Thêm bài mới" open={open} onOk={handleOk} confirmLoading={confirmLoading} onCancel={handleCancel}>
+                        <div className="">
+                            <div className="flex gap-3">
+                                <div className="form-group flex-1">
+                                    <label htmlFor="name">Slug Name</label>
+                                    <Input type="text" id="name" placeholder="Nhập slug bài (VD: kttt)" onChange={(e) => handleInput(e)} />
+                                </div>{" "}
+                                <div className="form-group flex-1">
+                                    <label htmlFor="title">Tên bài</label>
+                                    <Input type="text" id="title" placeholder="Nhập tiêu đề của bài" onChange={(e) => handleInput(e)} />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="image">Hình ảnh</label>
+                                <Input type="text" id="image" placeholder="Nhập URL hình ảnh" onChange={(e) => handleInput(e)} />
+                            </div>{" "}
+                            <div className="form-group">
+                                <label htmlFor="description">Mô tả</label>
+                                <Input type="text" id="description" placeholder="Nhập mô tả" value={`Các đáp án, ôn tập về bộ môn ` + data.title} disabled />
+                            </div>
+                            <div className="form-group">
+                                <label htmlFor="data">Data</label>
+                                <TextArea type="text" id="data" placeholder="Nhập Data" onChange={(e) => handleChangeJSON(e)} />
+                            </div>
+                        </div>
+                    </Modal>
                 </div>
 
                 <div className="relative overflow-x-auto mt-5">

@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link, NavLink, useNavigate, useParams } from "react-router-dom";
-import { collection, deleteDoc, doc, getDocs, getFirestore } from "firebase/firestore";
-import { getAuth, onAuthStateChanged, sendEmailVerification, updateProfile } from "firebase/auth";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { addDoc, collection, getDocs, getFirestore, query, serverTimestamp, where } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 import { UserOutlined } from "@ant-design/icons";
 import { MdOutlineVerified } from "react-icons/md";
 import Swal from "sweetalert2";
-import { Tooltip, Modal, Avatar, Input, Skeleton, Popover, Button } from "antd";
-import { IoMdSettings } from "react-icons/io";
-import { HiDotsHorizontal } from "react-icons/hi";
+import { Tooltip, Avatar, Button } from "antd";
 import { CiTimer } from "react-icons/ci";
-import { MdModeEdit } from "react-icons/md";
-import { FaTrash } from "react-icons/fa";
 import { FaEye } from "react-icons/fa";
 import sortArrayByTime from "../../helpers/sort";
 import { FaFacebookMessenger } from "react-icons/fa6";
@@ -41,7 +37,6 @@ export default function ProfileUID() {
 
         handleRenderUser();
     }, [auth, navigate]);
-    console.log(profile);
 
     useEffect(() => {
         if (profile) {
@@ -51,7 +46,6 @@ export default function ProfileUID() {
 
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
-                    console.log(data);
                     if (data.uid === profile.uid) {
                         filteredQuiz.push({
                             ...doc.data(),
@@ -70,6 +64,47 @@ export default function ProfileUID() {
     }, [profile, db]);
 
     console.log(profile);
+
+    const handleCreateRoomChat = async () => {
+        const currentUser = {
+            uid: auth.currentUser.uid,
+            displayName: auth.currentUser.displayName,
+            photoURL: auth.currentUser.photoURL,
+        };
+
+        const anotherUser = {
+            uid: profile.uid,
+            displayName: profile.displayName,
+            photoURL: profile.photoURL,
+        };
+
+        // Tạo truy vấn để tìm phòng trò chuyện giữa hai người dùng
+        const q = query(collection(db, "chat"), where("anotherUser.uid", "==", anotherUser.uid));
+        const querySnapshot = await getDocs(q);
+        console.log(querySnapshot.docs);
+
+        if (!querySnapshot.empty) {
+            // Phòng trò chuyện đã tồn tại, điều hướng tới phòng này
+            const existingRoom = querySnapshot.docs[0];
+            navigate(`/chat/room/${existingRoom.id}`);
+        } else {
+            // Phòng trò chuyện chưa tồn tại, tạo phòng mới
+            const newRoomRef = await addDoc(collection(db, "chat"), {
+                currentUser,
+                anotherUser,
+                date: serverTimestamp(),
+                chat: {
+                    avatar: profile.photoURL,
+                    uid_chat: profile.uid,
+                    message: "",
+                    create_at: serverTimestamp(),
+                },
+            });
+
+            // Điều hướng tới phòng trò chuyện mới
+            navigate(`/chat/room/${newRoomRef.id}`);
+        }
+    };
 
     return (
         <div>
@@ -96,12 +131,10 @@ export default function ProfileUID() {
                             </div>
                         </div>
                     </div>
-                    <Link to={`/chat/123`} className="mt-2 block">
-                        <Button className="w-[100px] flex gap-1 items-center">
-                            <FaFacebookMessenger />
-                            Nhắn tin
-                        </Button>
-                    </Link>
+                    <Button onClick={handleCreateRoomChat} className="w-[100px] flex gap-1 items-center mt-2">
+                        <FaFacebookMessenger />
+                        Nhắn tin
+                    </Button>
 
                     <hr className="my-5" />
                     <div className="">

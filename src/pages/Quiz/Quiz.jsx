@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { get, post } from "../../utils/request";
-import { getCookie } from "../../helpers/cookie";
 import Swal from "sweetalert2";
 import { addDoc, collection, doc, getDocs, getFirestore, updateDoc } from "firebase/firestore";
-import { Button, Modal } from "antd";
+import { Modal } from "antd";
 import { IoIosArrowUp } from "react-icons/io";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { format } from "date-fns";

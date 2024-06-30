@@ -1,11 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
-import template from "../../data/template";
 
 export default function SubjectOutline() {
     const [searchTerm, setSearchTerm] = useState("");
     const [highlightedElements, setHighlightedElements] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [highlightedText, setHighlightedText] = useState(template);
+    // const [highlightedText, setHighlightedText] = useState(template);
 
     const handleChange = (value) => {
         setSearchTerm(value);
@@ -44,15 +43,15 @@ export default function SubjectOutline() {
         return formattedParts;
     };
 
-    useEffect(() => {
-        setHighlightedText(getHighlightedText(template, searchTerm));
-    }, [searchTerm]);
+    // useEffect(() => {
+    //     setHighlightedText(getHighlightedText(template, searchTerm));
+    // }, [searchTerm]);
 
     return (
         <div>
             <div className="relative">
                 <input className="fixed z-5" type="text" value={searchTerm} onChange={(e) => handleChange(e.target.value)} onKeyDown={handleKeyDown} />
-                <div className="result">{highlightedText}</div>
+                {/* <div className="result">{highlightedText}</div> */}
             </div>
         </div>
     );

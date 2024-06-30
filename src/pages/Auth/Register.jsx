@@ -9,7 +9,7 @@ import { FaFacebook } from "react-icons/fa";
 import { getAuth, signInWithPopup, createUserWithEmailAndPassword, GoogleAuthProvider, FacebookAuthProvider, onAuthStateChanged } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
-import { addDoc, collection, getFirestore } from "firebase/firestore";
+import { addDoc, collection, getDocs, getFirestore, query, where } from "firebase/firestore";
 import { format } from "date-fns";
 export default function Register() {
     const navigate = useNavigate();
@@ -20,7 +20,16 @@ export default function Register() {
 
     const addUserToFirebase = async (profile) => {
         const now = Date.now();
-        console.log(profile);
+
+        const q = query(collection(db, "users"), where("uid", "==", profile.uid));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+            // UID đã tồn tại, không thêm người dùng mới
+            console.log("User already exists.");
+            return;
+        }
+
         await addDoc(collection(db, "users"), {
             displayName: profile.displayName || "",
             uid: profile.uid,
@@ -87,6 +96,7 @@ export default function Register() {
 
         signInWithPopup(auth, provider)
             .then((result) => {
+                addUserToFirebase(result.user);
                 navigate("/");
             })
             .catch((error) => {

@@ -8,8 +8,10 @@ import { checkLogin } from "../../actions/login";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook } from "react-icons/fa";
 import { createUserWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail, updatePassword } from "firebase/auth";
-import { auth } from "./firebase";
+import { auth, db } from "./firebase";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signInWithEmailAndPassword } from "firebase/auth";
+import { addDoc, collection, getDocs, query, where } from "firebase/firestore";
+import { format } from "date-fns";
 
 export default function Login() {
     const navigate = useNavigate();
@@ -27,6 +29,28 @@ export default function Login() {
         handleCheckLogin();
     }, []);
 
+    const addUserToFirebase = async (profile) => {
+        const now = Date.now();
+
+        const q = query(collection(db, "users"), where("uid", "==", profile.uid));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+            // UID đã tồn tại, không thêm người dùng mới
+            console.log("User already exists.");
+            return;
+        }
+
+        await addDoc(collection(db, "users"), {
+            displayName: profile.displayName || "",
+            uid: profile.uid,
+            email: profile.email,
+            emailVerified: profile.emailVerified,
+            photoURL: profile.photoURL || "",
+            create_at: format(now, "HH:mm:ss dd/MM/yyyy"),
+        });
+    };
+
     const handleLogin = async (e) => {
         e.preventDefault();
         var email = e.target.email.value;
@@ -37,7 +61,7 @@ export default function Login() {
             .then((userCredential) => {
                 // Signed in
                 const user = userCredential.user;
-                
+
                 Swal.fire({
                     title: "Đăng nhập thành công",
                     icon: "success",
@@ -61,6 +85,7 @@ export default function Login() {
         const auth = getAuth();
         signInWithPopup(auth, provider)
             .then((result) => {
+                addUserToFirebase(result.user);
                 Swal.fire({
                     title: "Đăng nhập thành công",
                     text: "Bạn sẽ tự chuyển hướng sau 1s",

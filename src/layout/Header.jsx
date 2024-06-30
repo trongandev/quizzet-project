@@ -2,13 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import Swal from "sweetalert2";
-import { Button, Popover, Alert, Space, Avatar, Badge } from "antd";
+import { Popover, Alert, Space, Avatar, Badge } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { FiLogOut } from "react-icons/fi";
 import { IoMdNotificationsOutline } from "react-icons/io";
-import { IoHomeOutline } from "react-icons/io5";
-import { MdOutlineTopic } from "react-icons/md";
-import { RiQuestionAnswerLine } from "react-icons/ri";
+import { RiMessengerLine } from "react-icons/ri";
 
 export default function Header() {
     const [isLogin, setIsLogin] = useState(false);
@@ -117,6 +115,11 @@ export default function Header() {
                                     <IoMdNotificationsOutline size={30} />
                                 </Badge>
                             </Popover>
+                            <Badge count={1} offset={[-5, 5]} size="small" className="text-white">
+                                <Link to={`/chat`}>
+                                    <RiMessengerLine size={26} />
+                                </Link>
+                            </Badge>
                             <Popover
                                 content={
                                     <>
