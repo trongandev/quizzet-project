@@ -6,7 +6,7 @@ import { Modal } from "antd";
 import { IoIosArrowUp } from "react-icons/io";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { format } from "date-fns";
-
+import { Helmet } from "react-helmet";
 export default function Quiz() {
     const [question, setQuestion] = useState([]);
     const [IdQuiz, setIdQuiz] = useState();
@@ -166,9 +166,16 @@ export default function Quiz() {
     const handleCancel = () => {
         setIsModalOpen(false);
     };
-
     return (
         <div className="">
+            <Helmet>
+                <title>{question?.content}</title>
+                <meta name="description" content={question?.content} />
+                <meta name="keywords" content={`${question?.title}, ${question?.content}`} />
+                <meta name="author" content={question?.author} />
+                <meta property="og:title" content={question?.content} />
+                <meta property="og:url" content={`https://www.trongan.site/quiz/${params.id}`} />
+            </Helmet>
             <div className="">
                 <h1 className="text-xl font-bold text-green-500">{question.title}</h1>
                 <p className="text-gray-600">{question.content}</p>
