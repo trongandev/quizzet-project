@@ -93,12 +93,7 @@ export default function ProfileUID() {
                 currentUser,
                 anotherUser,
                 date: serverTimestamp(),
-                chat: {
-                    avatar: profile.photoURL,
-                    uid_chat: profile.uid,
-                    message: "",
-                    create_at: serverTimestamp(),
-                },
+                chat: [],
             });
 
             // Điều hướng tới phòng trò chuyện mới

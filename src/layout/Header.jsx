@@ -56,6 +56,7 @@ export default function Header() {
     const handleOpenNoti = (newOpen) => {
         setOpenNoti(newOpen);
     };
+
     return (
         <header className="bg-orange-500 px-2 md:px-5 lg:px-10 text-white w-full">
             <div className="flex items-center justify-between px-5 py-1 md:px-0 md:py-0">
