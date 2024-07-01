@@ -18,9 +18,8 @@ export default function ChatLayout() {
 
         handleRenderUser();
     }, []);
-    console.log(data);
     return (
-        <div className="flex bg-white border-gray-200 border-[1px] rounded-lg shadow-sm">
+        <div className="flex bg-white border-gray-200 border-[1px] rounded-lg shadow-sm ">
             <div className=" h-[83vh] w-[25%]  py-2 border-r-[1px] ">
                 {loading ? (
                     <Chat user={data} />

@@ -8,11 +8,10 @@ import { BiSolidSend } from "react-icons/bi";
 import { MdEmojiEmotions } from "react-icons/md";
 import { FaCirclePlus } from "react-icons/fa6";
 import { useParams } from "react-router-dom";
-import { arrayUnion, doc, onSnapshot, serverTimestamp, updateDoc } from "firebase/firestore";
+import { arrayUnion, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { auth, db } from "../../pages/Auth/firebase";
-import { setIn } from "formik";
 import Swal from "sweetalert2";
-import { format, formatRelative, isToday } from "date-fns";
+import { format, isToday } from "date-fns";
 
 export default function ChatRoom() {
     const params = useParams();
@@ -20,7 +19,6 @@ export default function ChatRoom() {
     const [loading, setLoading] = useState(false);
     useEffect(() => {
         const chatRoom = onSnapshot(doc(db, "chat", params.id), (doc) => {
-            console.log("Current data: ", doc.data());
             setData(doc.data());
             setLoading(true);
         });

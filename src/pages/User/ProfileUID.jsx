@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { addDoc, collection, getDocs, getFirestore, query, serverTimestamp, where } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { UserOutlined } from "@ant-design/icons";
 import { MdOutlineVerified } from "react-icons/md";
 import Swal from "sweetalert2";
@@ -63,9 +63,20 @@ export default function ProfileUID() {
         }
     }, [profile, db]);
 
-    console.log(profile);
+    useEffect(() => {
+        if (auth.currentUser.uid === params.uid) {
+            navigate("/profile");
+        }
+    }, [params.uid]);
 
     const handleCreateRoomChat = async () => {
+        if (!auth.currentUser) {
+            Swal.fire({
+                title: "Vui lòng đăng nhập để sử dụng tính năng này",
+                icon: "error",
+            });
+            return;
+        }
         const currentUser = {
             uid: auth.currentUser.uid,
             displayName: auth.currentUser.displayName,
@@ -126,10 +137,14 @@ export default function ProfileUID() {
                             </div>
                         </div>
                     </div>
-                    <Button onClick={handleCreateRoomChat} className="w-[100px] flex gap-1 items-center mt-2">
-                        <FaFacebookMessenger />
-                        Nhắn tin
-                    </Button>
+                    {auth.currentUser.uid === profile.uid ? (
+                        ""
+                    ) : (
+                        <Button onClick={handleCreateRoomChat} className="w-[100px] flex gap-1 items-center mt-2">
+                            <FaFacebookMessenger />
+                            Nhắn tin
+                        </Button>
+                    )}
 
                     <hr className="my-5" />
                     <div className="">

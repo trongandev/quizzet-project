@@ -73,7 +73,6 @@ export default function Chat(props) {
             <div className="border-t-[1px] my-3 h-[530px] overflow-y-scroll">
                 {props.user?.map((item) => (
                     <Link key={item.id} to={`/chat/room/${item.id}`} className="flex gap-2 items-center hover:bg-gray-200 p-2 hover:cursor-pointer">
-                        
                         <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] relative">
                             <img
                                 src={auth.currentUser?.uid === item.currentUser?.uid ? item.anotherUser?.photoURL : item.currentUser?.photoURL}
