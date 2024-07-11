@@ -6,7 +6,7 @@ import Topic from "./pages/Quiz/Topic";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
 import AnsResult from "./pages/Quiz/AnsResult";
-import Post from "./pages/Quiz/Post";
+import PostText from "./pages/Quiz/PostText";
 import Tool from "./pages/Quiz/Tool";
 import Refer from "./pages/Quiz/Refer";
 import AdminLayout from "./layout/AdminLayout";
@@ -27,6 +27,9 @@ import ProfileUID from "./pages/User/ProfileUID";
 import Chat from "./pages/User/Chat";
 import ChatRoom from "./pages/User/ChatRoom";
 import ChatLayout from "./layout/ChatLayout";
+import PostChoose from "./pages/Quiz/PostGUI";
+import PostLayout from "./layout/PostLayout";
+import PostGUI from "./pages/Quiz/PostGUI";
 function App() {
     return (
         <Routes>
@@ -37,7 +40,10 @@ function App() {
                 <Route path="/topic/:id" element={<ResultTopic />} />
                 <Route path="/tool" element={<Tool />} />
                 <Route path="/tool/:id" element={<Refer />} />
-                <Route path="/post" element={<Post />} />
+                <Route path="/post" element={<PostLayout />}>
+                    <Route path="/post/gui" element={<PostGUI />} />
+                    <Route path="/post/text" element={<PostText />} />
+                </Route>
                 <Route path="/tailieu" element={<SubjectOutline />} />
                 <Route path="/edit/:id" element={<Edit />} />
                 <Route path="/history" element={<Historyy />} />

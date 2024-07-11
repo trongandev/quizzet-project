@@ -46,7 +46,7 @@ export default function Answer() {
                 </div>
             </div>
 
-            <div className="w-[1000px]">
+            <div className="md:w-[1000px] w-full">
                 {quiz.questions?.map((item, index) => (
                     <div className="bg-white p-5 mt-5 shadow-sm border-[1px]" key={item.id}>
                         <h1 className={` ${item.answer_correct === item.answer_choose ? "text-green-500 " : "text-red-500"}   mb-3 flex gap-2 items-center`}>

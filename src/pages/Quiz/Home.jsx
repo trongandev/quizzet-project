@@ -47,7 +47,7 @@ export default function Home() {
                     </p>
                 </div>
                 <div className="bg-white p-5 mt-2 text-red-500 flex justify-between flex-col md:flex-row gap-3 md:gap-0">
-                    <p>Dưới đây là một số quiz từ cộng đồng của chúng tôi</p>
+                    <p>Bạn có thể thêm bài quiz mới ở đây</p>
                     <a href="/post">
                         <button className="bg-green-500 text-white">Thêm bài mới</button>
                     </a>

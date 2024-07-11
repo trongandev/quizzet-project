@@ -11,6 +11,7 @@ export default function Quiz() {
     const [question, setQuestion] = useState([]);
     const [IdQuiz, setIdQuiz] = useState();
     const [selectedAnswers, setSelectedAnswers] = useState({});
+
     const [saveAns, setSaveAns] = useState({});
     const params = useParams();
 
@@ -224,18 +225,15 @@ export default function Quiz() {
                     </div>
                 </div>
                 <div className="hidden md:block">
-                    <div className="fixed md:w-1/4 p-5 right-5 ">
+                    <div className="fixed md:w-1/4 p-5 right-5 top-[70px]">
                         <div className=" w-[240px] bg-gray-200 p-5">
-                            <div className="">
-                                <h1 className="text-lg font-bold text-green-500 text-center mb-3">Công cụ</h1>
-                            </div>
                             <h1 className="text-lg font-bold text-green-500 text-center mb-3">Danh sách câu hỏi</h1>
-                            <div className="grid grid-cols-4 gap-3">
+                            <div className="grid grid-cols-5 gap-2">
                                 {question.questions?.map((item, index) => (
                                     <a
                                         href={`#${item.id}`}
                                         key={index}
-                                        className={`flex items-center justify-center w-[50px] h-[50px] ${
+                                        className={`flex items-center justify-center w-full h-[45px] ${
                                             selectedAnswers[item.id] !== undefined ? "bg-green-500 text-green-100 font-bold" : "bg-red-500 text-red-100"
                                         }`}>
                                         <p>{index + 1}</p>
@@ -250,14 +248,14 @@ export default function Quiz() {
                         <IoIosArrowUp />
                     </div>
                     <Modal title="Danh sách câu hỏi" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                        <div className="p-2">
+                        <div className="">
                             <div className="grid grid-cols-5 gap-3">
                                 {question.questions?.map((item, index) => (
                                     <a
                                         href={`#${item.id}`}
                                         key={index}
                                         onClick={handleCancel}
-                                        className={`flex items-center justify-center w-full h-[58px] ${
+                                        className={`flex items-center justify-center w-full h-[55px] ${
                                             selectedAnswers[item.id] !== undefined ? "bg-green-500 text-green-100 font-bold" : "bg-red-500 text-red-100"
                                         }`}>
                                         <p>{index + 1}</p>

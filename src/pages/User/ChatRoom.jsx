@@ -1,4 +1,4 @@
-import { Button, Input, Spin } from "antd";
+import { Button, Input, Popover, Spin } from "antd";
 import React, { useEffect, useState } from "react";
 import { IoIosSettings } from "react-icons/io";
 import { IoIosCall } from "react-icons/io";
@@ -11,7 +11,8 @@ import { useParams } from "react-router-dom";
 import { arrayUnion, doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { auth, db } from "../../pages/Auth/firebase";
 import Swal from "sweetalert2";
-import { format, isToday } from "date-fns";
+import { format, isMonday, isToday } from "date-fns";
+import { is } from "date-fns/locale";
 
 export default function ChatRoom() {
     const params = useParams();
@@ -58,9 +59,30 @@ export default function ChatRoom() {
 
     const handleSendMess = (e) => {
         e.preventDefault();
+        if (input === "") return;
         addMessageToChatRoom(params.id, input);
         setInput("");
     };
+
+    const [open, setOpen] = useState(false);
+
+    const hide = () => {
+        setOpen(false);
+    };
+
+    const handleOpenChange = (newOpen) => {
+        setOpen(newOpen);
+    };
+
+    const [emoji, setEmoji] = useState({});
+
+    useEffect(() => {
+        fetch("https://emoji-api.com/emojis?access_key=bf409e3ed3d59cc01d12b7f1a9512896fe36f4f1")
+            .then((res) => res.json())
+            .then((data) => {
+                setEmoji(data);
+            });
+    }, []);
 
     return (
         <div className=" w-[75%] ">
@@ -122,9 +144,37 @@ export default function ChatRoom() {
                                 </Button>
                                 <div className="border-[1px] w-full flex overflow-hidden">
                                     <Input placeholder="Aa" className="rounded-none border-none focus:border-none" value={input} onChange={(e) => setInput(e.target.value)}></Input>
-                                    <Button className="rounded-none border-none">
-                                        <MdEmojiEmotions color="#ff9838" size={22} />
-                                    </Button>
+                                    <Popover
+                                        content={
+                                            <div>
+                                                <div className="">
+                                                    <Input placeholder="Search"></Input>
+                                                </div>
+                                                <div className="grid grid-cols-5 gap-1 w-[300px] overflow-y-scroll h-[300px] mt-2">
+                                                    {emoji && emoji.length > 0 ? ( // Check if emoji exists and has elements
+                                                        <div className="grid grid-cols-5 gap-1 w-[300px] overflow-y-scroll h-[300px] mt-2">
+                                                            {emoji.map((item, index) => (
+                                                                <div className="flex items-center justify-center hover:bg-gray-200 cursor-pointer" key={index}>
+                                                                    <h1 className="text-xl" onClick={(e) => setInput(input + item.character)}>
+                                                                        {item.character}
+                                                                    </h1>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    ) : (
+                                                        <p>Lỗi không hiển thị được emoji</p> // Display a message if no data
+                                                    )}
+                                                </div>
+                                            </div>
+                                        }
+                                        title="Chọn icon"
+                                        trigger="click"
+                                        open={open}
+                                        onOpenChange={handleOpenChange}>
+                                        <Button className="rounded-none border-none">
+                                            <MdEmojiEmotions color="#ff9838" size={22} />
+                                        </Button>
+                                    </Popover>
                                 </div>
                                 <Button className="rounded-none text-orange-700" onClick={(e) => handleSendMess(e)}>
                                     <BiSolidSend size={20} />

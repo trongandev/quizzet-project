@@ -5,19 +5,33 @@ import { Outlet, useParams } from "react-router-dom";
 import { auth, db } from "../pages/Auth/firebase";
 import { get_firebase } from "../utils/request";
 import { Spin } from "antd";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 export default function ChatLayout() {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
     useEffect(() => {
         const handleRenderUser = async () => {
-            const querySnapshot = await get_firebase(db, "chat");
-            setData(querySnapshot);
-            setLoading(true);
+            const querySnapshot = await getDocs(collection(db, "chat"));
+            const filteredQuiz = [];
+
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                console.log(data);
+                if (data.currentUser.uid === auth.currentUser.uid) {
+                    filteredQuiz.push({
+                        ...doc.data(),
+                        id: doc.id,
+                    });
+                }
+            });
+
+            setData(filteredQuiz);
         };
 
         handleRenderUser();
     }, []);
+    console.log(data);
     return (
         <div className="flex bg-white border-gray-200 border-[1px] rounded-lg shadow-sm ">
             <div className=" h-[83vh] w-[25%]  py-2 border-r-[1px] ">
