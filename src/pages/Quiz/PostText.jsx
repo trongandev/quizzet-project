@@ -147,7 +147,7 @@ export default function PostText() {
         setDefaultValue(value);
         for (let i = 0; i < questArray.length; i++) {
             if (questArray[i].trim().endsWith("?") || questArray[i].trim().endsWith(":")) {
-                const question = questArray[i].trim();
+                const question = questArray[i].trim().replace(/Câu \d+[:.]/g, "");
                 const answers = [
                     questArray[i + 1] ? questArray[i + 1].trim().replace(regex, "") : "",
                     questArray[i + 2] ? questArray[i + 2].trim().replace(regex, "") : "",
