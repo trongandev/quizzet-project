@@ -139,7 +139,7 @@ export default function PostText() {
             content: e.target.value,
         });
     };
-
+    var regex = /^(A|a|B|b|C|c|D|d)\.\s+/;
     const handleQuest = (e) => {
         const value = e.target.value.trim();
         const questArray = value.split("\n");
@@ -149,10 +149,10 @@ export default function PostText() {
             if (questArray[i].trim().endsWith("?") || questArray[i].trim().endsWith(":")) {
                 const question = questArray[i].trim();
                 const answers = [
-                    questArray[i + 1] ? questArray[i + 1].trim().replace("A. ", "") : "",
-                    questArray[i + 2] ? questArray[i + 2].trim().replace("B. ", "") : "",
-                    questArray[i + 3] ? questArray[i + 3].trim().replace("C. ", "") : "",
-                    questArray[i + 4] ? questArray[i + 4].trim().replace("D. ", "") : "",
+                    questArray[i + 1] ? questArray[i + 1].trim().replace(regex, "") : "",
+                    questArray[i + 2] ? questArray[i + 2].trim().replace(regex, "") : "",
+                    questArray[i + 3] ? questArray[i + 3].trim().replace(regex, "") : "",
+                    questArray[i + 4] ? questArray[i + 4].trim().replace(regex, "") : "",
                 ];
                 const correct = questArray[i + 5] ? parseInt(questArray[i + 5].trim(), 10) - 1 : 0;
 
