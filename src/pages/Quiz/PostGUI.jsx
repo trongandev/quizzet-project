@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Swal from "sweetalert2";
-import { Button, Form, Modal, Popover, Select, Input } from "antd";
+import { Button, Modal, Popover, Select, Input, Divider, Tour } from "antd";
 import { addDoc, collection, getFirestore } from "firebase/firestore";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { Link, useNavigate } from "react-router-dom";
@@ -11,12 +11,14 @@ import { FaRegEdit } from "react-icons/fa";
 import { MdContentPaste } from "react-icons/md";
 import { subjectOption } from "../../helpers/subject";
 import { MdEdit } from "react-icons/md";
+import { db } from "../Auth/firebase";
 
 export default function PostGUI() {
     const [quiz, setQuiz] = useState({
         title: "",
         content: "",
-        img: "",
+        img: "https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg",
+        subject: "CNTT",
     });
     const [quest, setQuest] = useState([
         {
@@ -68,49 +70,37 @@ export default function PostGUI() {
         setIsModalOpen(false);
     };
 
-    const onFinish = (values) => {
-        const now = new Date();
-        const db = getFirestore();
-        const pushData = async () => {
-            try {
-                await addDoc(collection(db, "quiz"), {
-                    title: values.title,
-                    uid: user.uid,
-                    subject: values.subject,
-                    author: user.displayName,
-                    email: user.email,
-                    verify: user.emailVerified,
-                    image_author: user.photoURL,
-                    content: values.content,
-                    img: values.image,
-                    noa: 0, //số lần làm bài number of attemps
-                    date: format(now, "HH:mm:ss dd/MM/yyyy"),
-                    status: false,
-                    questions: quest,
-                    default: defaultValue,
-                });
+    const pushData = async () => {
+        try {
+            await addDoc(collection(db, "quiz"), {
+                ...quiz,
+                uid: user.uid,
+                author: user.displayName,
+                email: user.email,
+                verify: user.emailVerified,
+                image_author: user.photoURL,
+                noa: 0, //số lần làm bài number of attemps
+                date: format(new Date(), "HH:mm:ss dd/MM/yyyy"),
+                status: false,
+                questions: quest,
+                default: defaultValue,
+            });
 
-                Swal.fire({
-                    icon: "success",
-                    title: "Thêm bài viết thành công",
-                    text: "Bài viết của bạn sẽ được kiểm duyệt trước khi hiển thị",
-                    didClose: () => {
-                        navigate("/");
-                    },
-                });
-            } catch (e) {
-                Swal.fire({
-                    icon: "error",
-                    title: "Thêm không thành công",
-                    text: "Mã lỗi\n" + e.code,
-                });
-            }
-        };
-        pushData();
-    };
-
-    const onFinishFailed = (errorInfo) => {
-        console.log("Failed:", errorInfo);
+            Swal.fire({
+                icon: "success",
+                title: "Thêm bài viết thành công",
+                text: "Bài viết của bạn sẽ được kiểm duyệt trước khi hiển thị",
+                didClose: () => {
+                    navigate("/");
+                },
+            });
+        } catch (e) {
+            Swal.fire({
+                icon: "error",
+                title: "Thêm không thành công",
+                text: "Mã lỗi\n" + e.code,
+            });
+        }
     };
 
     function handlePost(e) {
@@ -118,15 +108,21 @@ export default function PostGUI() {
         const title = quiz.title;
         const content = quiz.content;
         const image = quiz.img;
+        const subject = quiz.subject;
 
-        if (title === "" || image === "" || content === "") {
+        if (title === "" || image === "" || content === "" || subject === "") {
             Swal.fire({
                 icon: "error",
                 title: "Oops...",
-                text: "Vui lòng điền đầy đủ thông tin ở phần tiêu đề, nội dung, đường dẫn hình ảnh",
+                text: "Bấm vào nút sửa để điền thêm thông tin",
+                didClose() {
+                    window.scrollTo(0, 0);
+                },
             });
             return;
         }
+
+        pushData();
     }
 
     const handleImage = (e) => {
@@ -160,13 +156,32 @@ export default function PostGUI() {
         setOpen(newOpen);
     };
 
-    const handleAddQuest = () => {
-        setQuest([...quest, { id: quest.length + 1, question: "", answers: [" ", " ", " ", " "], correct: 0 }]);
+    const [modalAddQuest, setModalAddQuest] = useState(false);
+    const [isUpdate, setIsUpdate] = useState(false);
+
+    const showModalAddQuest = () => {
+        setModalAddQuest(true);
+    };
+
+    const handleOkAddQuest = () => {
+        setModalAddQuest(false);
+        if (isUpdate) {
+            const index = quest.findIndex((item) => item.id === questAddEdit.id);
+            quest[index] = questAddEdit;
+            setIsUpdate(false);
+        } else {
+            setQuest([...quest, questAddEdit]);
+        }
+        handleClearField();
+    };
+
+    const handleCancelAddQuest = () => {
+        setModalAddQuest(false);
+        setIsUpdate(false);
     };
 
     const handleDelete = (index) => () => {
-        console.log("a");
-        // setQuest(quest.filter((item, i) => i !== index));
+        setQuest(quest.filter((item, i) => i !== index));
     };
 
     const handlePaste = () => {
@@ -178,6 +193,28 @@ export default function PostGUI() {
         });
     };
 
+    const handleUpdateQuest = (id) => {
+        const questIndex = quest.findIndex((item) => item.id === id);
+        setQuestAddEdit(quest[questIndex]);
+        setModalAddQuest(true);
+        setIsUpdate(true);
+    };
+
+    const [questAddEdit, setQuestAddEdit] = useState({ id: Math.random(), question: "", answers: ["", "", "", ""], correct: 0 });
+    const updateAnswer = (index, value) => {
+        const newAnswers = [...questAddEdit.answers];
+        newAnswers[index] = value;
+        setQuestAddEdit({ ...questAddEdit, answers: newAnswers });
+        console.log(quest);
+    };
+
+    const handleClearField = () => {
+        setQuestAddEdit({
+            id: Math.random(),
+            question: "",
+            answers: ["", "", "", ""],
+        });
+    };
     return (
         <div className="flex items-center justify-center gap-5 flex-col md:flex-row">
             <div className="w-full md:w-[1000px]  overflow-y-auto frm-post">
@@ -193,9 +230,10 @@ export default function PostGUI() {
                         <h1 className="text-md text-green-500 font-bold line-clamp-1 h-[24px]">{quiz.title || "Chưa có tiêu đề?"}</h1>
                         <p className="text-gray-500 line-clamp-1 text-sm h-[20px]">{quiz.content || "Chưa có nội dung"}</p>
                     </div>
-                    <div className="text-orange-500 cursor-pointer hover:text-red-500" onClick={showModal}>
+                    <Button className="text-orange-500 cursor-pointer hover:text-red-500 flex items-center gap-1" onClick={showModal}>
                         <FaRegEdit size={20} />
-                    </div>
+                        Bấm vào để sửa
+                    </Button>
                     <Modal title="Thêm hình ảnh" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
                         <p className="text-gray-500 text-[12px]">* Nhập tiêu đề xong bấm tìm hình ảnh</p>
                         <div className="mt-b flex items-center justify-between gap-1">
@@ -229,6 +267,7 @@ export default function PostGUI() {
                             filterOption={(input, option) => (option?.label ?? "").includes(input)}
                             filterSort={(optionA, optionB) => (optionA?.label ?? "").toLowerCase().localeCompare((optionB?.label ?? "").toLowerCase())}
                             options={subjectOption}
+                            value={quiz.subject}
                         />
                     </Modal>
                 </div>
@@ -240,11 +279,12 @@ export default function PostGUI() {
                                     Câu {index + 1}: {item.question}
                                 </h1>
                                 <div className="flex items-center gap-1">
-                                    <MdEdit />
-
-                                    <div className="cursor-pointer hover:text-red-500" onClick={() => handleDelete(index)}>
+                                    <Button onClick={() => handleUpdateQuest(item.id)}>
+                                        <MdEdit />
+                                    </Button>
+                                    <Button className="cursor-pointer hover:text-red-500" onClick={handleDelete(index)}>
                                         <IoIosClose size={25} />
-                                    </div>
+                                    </Button>
                                 </div>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -274,12 +314,33 @@ export default function PostGUI() {
                 </div>
                 <div className="mt-5">
                     <div className="flex justify-between items-center">
-                        <Button className="flex gap-1 items-center" onClick={handleAddQuest}>
+                        <Button className="flex gap-1 items-center" onClick={showModalAddQuest}>
                             <CiCirclePlus size={20} />
                             Thêm câu hỏi
                         </Button>
                         <Button onClick={handlePost}>Đăng bài</Button>
                     </div>
+                    <Modal
+                        title="Thêm câu hỏi"
+                        open={modalAddQuest}
+                        onOk={handleOkAddQuest}
+                        onCancel={handleCancelAddQuest}
+                        footer={[
+                            <Button key="back" onClick={handleClearField}>
+                                Xoá
+                            </Button>,
+                            <Button key="submit" type="primary" onClick={handleOkAddQuest}>
+                                Thêm câu hỏi
+                            </Button>,
+                        ]}>
+                        <Input placeholder="Nhập câu hỏi?" name="quest" value={questAddEdit.question} onChange={(e) => setQuestAddEdit({ ...questAddEdit, question: e.target.value })}></Input>
+                        <div className="flex flex-col gap-3 mt-5">
+                            <Input placeholder="Đáp án A?" name="ans1" value={questAddEdit.answers[0]} onChange={(e) => updateAnswer(0, e.target.value)}></Input>
+                            <Input placeholder="Đáp án B?" name="ans2" value={questAddEdit.answers[1]} onChange={(e) => updateAnswer(1, e.target.value)}></Input>
+                            <Input placeholder="Đáp án C?" name="ans3" value={questAddEdit.answers[2]} onChange={(e) => updateAnswer(2, e.target.value)}></Input>
+                            <Input placeholder="Đáp án D?" name="ans4" value={questAddEdit.answers[3]} onChange={(e) => updateAnswer(3, e.target.value)}></Input>
+                        </div>
+                    </Modal>
                 </div>
             </div>
         </div>

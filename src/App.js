@@ -40,10 +40,9 @@ function App() {
                 <Route path="/topic/:id" element={<ResultTopic />} />
                 <Route path="/tool" element={<Tool />} />
                 <Route path="/tool/:id" element={<Refer />} />
-                <Route path="/post" element={<PostLayout />}>
-                    <Route path="/post/gui" element={<PostGUI />} />
-                    <Route path="/post/text" element={<PostText />} />
-                </Route>
+                <Route path="/post" element={<PostLayout />} />
+                <Route path="/post/gui" element={<PostGUI />} />
+                <Route path="/post/text" element={<PostText />} />
                 <Route path="/tailieu" element={<SubjectOutline />} />
                 <Route path="/edit/:id" element={<Edit />} />
                 <Route path="/history" element={<Historyy />} />

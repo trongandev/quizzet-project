@@ -33,12 +33,11 @@ export default function Tool() {
                                 <img src={item.image} alt="" className="h-[150px] w-full object-cover" />
                                 <div className="p-3">
                                     <h1 className="text-lg text-green-500 font-bold h-[56px]">{item.title}</h1>
-                                    <p className="text-gray-500 line-clamp-2 h-[48px] my-1">{item.description}</p>
                                     <div className="text-right flex items-center justify-between ">
                                         <p className="">
                                             Tổng câu hỏi: <label className="text-red-500 font-bold">{item.quest?.length}</label>{" "}
                                         </p>
-                                        <button className="bg-green-500 text-white">Xem ngay</button>
+                                        <button className="bg-green-800 text-white">Xem ngay</button>
                                     </div>
                                 </div>
                             </div>

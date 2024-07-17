@@ -13,7 +13,6 @@ export default function PostLayout() {
                     <Button>Thêm bằng chữ</Button>
                 </Link>
             </div>
-            <Outlet></Outlet>
         </div>
     );
 }
