@@ -23,7 +23,7 @@ export default function Answer() {
 
     return (
         <div>
-            <div className="flex justify-between">
+            <div className="flex justify-between flex-col md:flex-row gap-5 md:gap-0">
                 <div className="">
                     <h1 className="text-xl font-bold text-green-500">Bài quiz về chủ đê: {quiz.title}</h1>
                     <p className="text-gray-600" key={quiz.id}>
@@ -33,7 +33,7 @@ export default function Answer() {
                         Tổng số câu: {quiz.score}/{quiz.questions?.length} câu
                     </p>
                 </div>
-                <div className="flex gap-5 text-center">
+                <div className="flex gap-5 text-center justify-center">
                     <div className="">
                         <Progress type="circle" percent={quiz.questions?.length - quiz.score} status="exception" />
                         <p className="text-gray-600 mt-1">Câu sai: {quiz.questions?.length - quiz.score}</p>

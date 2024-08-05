@@ -8,6 +8,7 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { UserOutlined } from "@ant-design/icons";
 import { parse, format } from "date-fns";
 import sortArrayByTime from "../../helpers/sort";
+import { Link } from "react-router-dom";
 
 export default function History() {
     const [history, setHistory] = useState([]);
@@ -112,9 +113,6 @@ export default function History() {
                             <th scope="col" className="px-6 py-3">
                                 Số câu đúng
                             </th>
-                            <th scope="col" className="px-6 py-3">
-                                #
-                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -125,19 +123,21 @@ export default function History() {
                                         {index + 1}
                                     </th>
                                     <td className="px-6 py-4">
-                                        {item.image ? (
-                                            <div className="w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden">
-                                                <img src={item.image} alt="" className="object-cover h-full" />
-                                            </div>
-                                        ) : (
-                                            <Avatar className="w-[40px] h-[40px] md:w-[35px] md:h-[35px]" icon={<UserOutlined />} />
-                                        )}{" "}
-                                        <p>{item.username || item.email}</p>
+                                        <Link to={`/profile/${item.uid}`}>
+                                            {item.image ? (
+                                                <div className="w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden">
+                                                    <img src={item.image} alt="" className="object-cover h-full" />
+                                                </div>
+                                            ) : (
+                                                <Avatar className="w-[40px] h-[40px] md:w-[35px] md:h-[35px]" icon={<UserOutlined />} />
+                                            )}{" "}
+                                            <p>{item.username || item.email}</p>
+                                        </Link>
                                     </td>
                                     <td className="px-6 py-4 hover:text-red-500 hover:underline">
-                                        <a target="_blank" href={`/answer/${item.id}`} rel="noreferrer">
+                                        <Link target="_blank" to={`/answer/${item.id}`} rel="noreferrer">
                                             {item.title}
-                                        </a>
+                                        </Link>
                                     </td>
                                     <td className="px-6 py-4">{item.content}</td>
 
@@ -146,34 +146,6 @@ export default function History() {
                                         <p>
                                             {item.score}/{item.questions?.length}
                                         </p>
-                                    </td>
-                                    <td className="px-6 py-4 ">
-                                        <Popover
-                                            content={
-                                                <>
-                                                    <div className="">
-                                                        <div className="flex items-center gap-2 mb-3">
-                                                            <p>{item.status ? "Duyệt bài viết" : "Chưa duyệt"}</p>
-                                                            <Switch checked={item.status} onClick={() => handleChangeStatus(item.id, item.status)} />
-                                                        </div>
-                                                        <div className="flex items-center gap-2">
-                                                            <p>Xoá bài viết</p>
-                                                            <Button>
-                                                                <FaRegTrashAlt size={20} onClick={() => handleRemove(item.id)} />
-                                                            </Button>
-                                                        </div>
-                                                    </div>
-                                                </>
-                                            }
-                                            title="Tính năng"
-                                            placement="topLeft"
-                                            trigger="click"
-                                            open={open === item.id}
-                                            onOpenChange={(newOpen) => handleOpenChange(newOpen, item.id)}>
-                                            <Button className="w-[30px] h-[30px] bg-gray-300 p-2 rounded-full">
-                                                <HiDotsHorizontal />
-                                            </Button>
-                                        </Popover>
                                     </td>
                                 </tr>
                             ))}

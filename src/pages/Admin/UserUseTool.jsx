@@ -1,24 +1,26 @@
-import { Button, Modal, Input } from "antd";
+import { Button, Modal, Input, Switch } from "antd";
 import React, { useEffect, useState } from "react";
 import { get_firebase } from "../../utils/request";
 import { addDoc, collection, deleteDoc, doc, getFirestore } from "firebase/firestore";
 import { CiTrash } from "react-icons/ci";
 import { IoAdd } from "react-icons/io5";
 import Swal from "sweetalert2";
-import { Link } from "react-router-dom";
 import { format } from "date-fns";
 import sortArrayByTime from "../../helpers/sort";
 import TextArea from "antd/es/input/TextArea";
-export default function NewPostTool() {
+import { MdEdit } from "react-icons/md";
+
+export default function UserUseTool() {
     const [tool, setTool] = useState([]);
     const [isPost, setIsPost] = useState(false);
 
     const db = getFirestore();
     useEffect(() => {
         const fetchTool = async () => {
-            const fetchTopic = await get_firebase(db, "tool");
-            const result = sortArrayByTime(fetchTopic);
+            const sort = await get_firebase(db, "user-tool");
+            const result = sortArrayByTime(sort);
             setTool(result);
+            console.log(result);
         };
         fetchTool();
         setIsPost(false);
@@ -26,7 +28,7 @@ export default function NewPostTool() {
 
     const removeDoc = async (id) => {
         try {
-            await deleteDoc(doc(db, "tool", id));
+            await deleteDoc(doc(db, "user-tool", id));
             setTool(tool.filter((item) => item.id !== id));
         } catch (error) {
             Swal.fire({
@@ -64,10 +66,6 @@ export default function NewPostTool() {
     const handleOk = () => {
         setConfirmLoading(true);
         handlePost();
-        // setTimeout(() => {
-        //     setOpen(false);
-        //     setConfirmLoading(false);
-        // }, 2000);
     };
 
     const handleCancel = () => {
@@ -83,12 +81,10 @@ export default function NewPostTool() {
     };
 
     const handlePost = async () => {
-        const now = new Date();
-
         try {
-            await addDoc(collection(db, "tool"), {
+            await addDoc(collection(db, "user-tool"), {
                 ...data,
-                date: format(now, "HH:mm:ss dd/MM/yyyy"),
+                isLocked: false,
             });
             setOpen(false);
             setConfirmLoading(false);
@@ -100,7 +96,7 @@ export default function NewPostTool() {
             });
         }
         setIsPost(true);
-
+        setData({});
         Swal.fire({
             title: "Thêm thành công",
             icon: "success",
@@ -117,27 +113,13 @@ export default function NewPostTool() {
                     </Button>
                     <Modal title="Thêm bài mới" open={open} onOk={handleOk} confirmLoading={confirmLoading} onCancel={handleCancel}>
                         <div className="">
-                            <div className="flex gap-3">
-                                <div className="form-group flex-1">
-                                    <label htmlFor="name">Slug Name</label>
-                                    <Input type="text" id="name" placeholder="Nhập slug bài (VD: kttt)" onChange={(e) => handleInput(e)} />
-                                </div>{" "}
-                                <div className="form-group flex-1">
-                                    <label htmlFor="title">Tên bài</label>
-                                    <Input type="text" id="title" placeholder="Nhập tiêu đề của bài" onChange={(e) => handleInput(e)} />
-                                </div>
-                            </div>
                             <div className="form-group">
-                                <label htmlFor="image">Hình ảnh</label>
-                                <Input type="text" id="image" placeholder="Nhập URL hình ảnh" onChange={(e) => handleInput(e)} />
+                                <label htmlFor="username">Tên đăng nhập</label>
+                                <Input type="text" id="username" placeholder="Nhập username" value={data.username} onChange={(e) => handleInput(e)} />
                             </div>{" "}
                             <div className="form-group">
-                                <label htmlFor="description">Mô tả</label>
-                                <Input type="text" id="description" placeholder="Nhập mô tả" value={`Các đáp án, ôn tập về bộ môn ` + data.title} disabled />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="data">Data</label>
-                                <TextArea type="text" id="data" placeholder="Nhập Data" onChange={(e) => handleChangeJSON(e)} />
+                                <label htmlFor="password">Mật khẩu</label>
+                                <Input type="text" id="password" placeholder="Nhập mật khẩu" value={data.password} onChange={(e) => handleInput(e)} />
                             </div>
                         </div>
                     </Modal>
@@ -151,17 +133,17 @@ export default function NewPostTool() {
                                     STT
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Hình ảnh
+                                    Tên đăng nhập
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Slug bài
+                                    Mật khẩu
                                 </th>
                                 <th scope="col" className="px-6 py-3">
-                                    Tên bài
+                                    Trạng thái
                                 </th>
 
                                 <th scope="col" className="px-6 py-3">
-                                    Ngày tạo
+                                    Ngày kích hoạt
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     #
@@ -174,15 +156,14 @@ export default function NewPostTool() {
                                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                         {index + 1}
                                     </th>
+
+                                    <td className="px-6 py-4">{item.username}</td>
+                                    <td className="px-6 py-4">{item.password}</td>
                                     <td className="px-6 py-4">
-                                        <img src={item.image} alt="" className="w-[150px] h-[100px] object-cover" />
-                                    </td>
-                                    <td className="px-6 py-4">{item.name}</td>
-                                    <td className="px-6 py-4">
-                                        <Link to={`/tool/${item.name}`}>{item.title}</Link>
+                                        <Switch checked={item.isLocked} />
                                     </td>
 
-                                    <td className="px-6 py-4">{item.date}</td>
+                                    <td className="px-6 py-4">{item.date || "Chưa kích hoạt"}</td>
                                     <td className="px-6 py-4">
                                         <Button onClick={() => handleDelete(item.id)}>
                                             <CiTrash />

@@ -30,6 +30,7 @@ import ChatLayout from "./layout/ChatLayout";
 import PostChoose from "./pages/Quiz/PostGUI";
 import PostLayout from "./layout/PostLayout";
 import PostGUI from "./pages/Quiz/PostGUI";
+import UserUseTool from "./pages/Admin/UserUseTool";
 function App() {
     return (
         <Routes>
@@ -64,6 +65,7 @@ function App() {
                 <Route path="/whatheo/topic" element={<TopicManager />} />
                 <Route path="/whatheo/history" element={<History />} />
                 <Route path="/whatheo/tool" element={<NewPostTool />} />
+                <Route path="/whatheo/user-use-tool" element={<UserUseTool />} />
             </Route>
         </Routes>
     );
