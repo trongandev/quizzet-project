@@ -1,14 +1,11 @@
 import { Button, Modal, Input, Switch } from "antd";
 import React, { useEffect, useState } from "react";
 import { get_firebase } from "../../utils/request";
-import { addDoc, collection, deleteDoc, doc, getFirestore } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getFirestore, updateDoc } from "firebase/firestore";
 import { CiTrash } from "react-icons/ci";
 import { IoAdd } from "react-icons/io5";
 import Swal from "sweetalert2";
-import { format } from "date-fns";
 import sortArrayByTime from "../../helpers/sort";
-import TextArea from "antd/es/input/TextArea";
-import { MdEdit } from "react-icons/md";
 
 export default function UserUseTool() {
     const [tool, setTool] = useState([]);
@@ -76,10 +73,6 @@ export default function UserUseTool() {
         setData({ ...data, [e.target.id]: e.target.value });
     };
 
-    const handleChangeJSON = (e) => {
-        setData({ ...data, quest: JSON.parse(e.target.value) });
-    };
-
     const handlePost = async () => {
         try {
             await addDoc(collection(db, "user-tool"), {
@@ -101,6 +94,29 @@ export default function UserUseTool() {
             title: "Thêm thành công",
             icon: "success",
         });
+    };
+
+    const handleChangeStatus = async (id, isLocked) => {
+        const newTool = tool.map((item) => {
+            if (item.id === id) {
+                item.isLocked = !item.isLocked;
+            }
+            return item;
+        });
+        setTool(newTool);
+        const quizDocRef = doc(db, "user-tool", id);
+
+        try {
+            await updateDoc(quizDocRef, {
+                isLocked: !isLocked,
+            });
+        } catch (error) {
+            Swal.fire({
+                title: "Có lỗi xảy ra",
+                text: error.message,
+                icon: "error",
+            });
+        }
     };
     return (
         <div className="">
@@ -160,7 +176,8 @@ export default function UserUseTool() {
                                     <td className="px-6 py-4">{item.username}</td>
                                     <td className="px-6 py-4">{item.password}</td>
                                     <td className="px-6 py-4">
-                                        <Switch checked={item.isLocked} />
+                                        {item.isLocked ? <p className="text-red-500 font-bold">Locked</p> : <p className="text-green-500 font-bold">Active</p>}
+                                        <Switch checked={item.isLocked} onClick={() => handleChangeStatus(item.id, item.isLocked)} />
                                     </td>
 
                                     <td className="px-6 py-4">{item.date || "Chưa kích hoạt"}</td>
