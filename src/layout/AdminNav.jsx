@@ -6,6 +6,7 @@ import { MdOutlineTopic } from "react-icons/md";
 import { MdHistory } from "react-icons/md";
 import { FaTools } from "react-icons/fa";
 import { VscBeaker } from "react-icons/vsc";
+import { BsClockHistory } from "react-icons/bs";
 
 export default function AdminNav() {
     return (
@@ -47,6 +48,12 @@ export default function AdminNav() {
                     <NavLink to="/whatheo/user-use-tool" className="p-3 flex items-center gap-2">
                         <VscBeaker />
                         Users Use Tool
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/whatheo/history-tool" className="p-3 flex items-center gap-2">
+                        <BsClockHistory />
+                        History Tool
                     </NavLink>
                 </li>
             </ul>
