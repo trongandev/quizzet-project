@@ -15,9 +15,8 @@ export default function UserUseTool() {
     useEffect(() => {
         const fetchTool = async () => {
             const sort = await get_firebase(db, "user-tool");
-            const result = sortArrayByTime(sort);
-            setTool(result);
-            console.log(result);
+            setTool(sort);
+            console.log(sort);
         };
         fetchTool();
         setIsPost(false);
