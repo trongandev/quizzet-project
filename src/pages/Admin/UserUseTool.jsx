@@ -117,6 +117,16 @@ export default function UserUseTool() {
             });
         }
     };
+
+    const handleRandomPassword = () => {
+        const randomLetterAndPassword = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+        let randomPassword = "";
+        for (let i = 0; i < 12; i++) {
+            randomPassword += randomLetterAndPassword.charAt(Math.floor(Math.random() * randomLetterAndPassword.length));
+        }
+        setData({ ...data, password: randomPassword });
+    };
+
     return (
         <div className="">
             <div className="">
@@ -127,7 +137,7 @@ export default function UserUseTool() {
                         Thêm mới
                     </Button>
                     <Modal title="Thêm bài mới" open={open} onOk={handleOk} confirmLoading={confirmLoading} onCancel={handleCancel}>
-                        <div className="">
+                        <div className="space-y-2">
                             <div className="form-group">
                                 <label htmlFor="username">Tên đăng nhập</label>
                                 <Input type="text" id="username" placeholder="Nhập username" value={data.username} onChange={(e) => handleInput(e)} />
@@ -136,6 +146,7 @@ export default function UserUseTool() {
                                 <label htmlFor="password">Mật khẩu</label>
                                 <Input type="text" id="password" placeholder="Nhập mật khẩu" value={data.password} onChange={(e) => handleInput(e)} />
                             </div>
+                            <Button onClick={handleRandomPassword}>Random password</Button>
                         </div>
                     </Modal>
                 </div>
