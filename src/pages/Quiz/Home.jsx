@@ -10,6 +10,8 @@ import sortArrayByTime from "../../helpers/sort";
 import Tool from "./Tool";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
+import { format, formatDistance, parse } from "date-fns";
+import { vi } from "date-fns/locale";
 
 export default function Home() {
     const [quiz, setQuiz] = useState([]);
@@ -36,7 +38,9 @@ export default function Home() {
         fetchBook();
     }, []);
 
-    console.log(quiz);
+    const handleCompareDate = (date) => {
+        return formatDistance(parse(date, "HH:mm:ss dd/MM/yyyy", new Date()), new Date(), { locale: vi, addSuffix: true });
+    };
     return (
         <div className=" ">
             <div className="">
@@ -83,7 +87,7 @@ export default function Home() {
                                                     )}
                                                 </div>
                                                 <p className="text-gray-400 text-[10px] flex gap-1 items-center">
-                                                    <CiTimer color="#1f2937" /> {item.date}
+                                                    <CiTimer color="#1f2937" /> {handleCompareDate(item.date)}
                                                 </p>
                                             </div>
                                         </Link>

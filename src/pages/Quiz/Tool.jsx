@@ -5,6 +5,9 @@ import { get_firebase } from "../../utils/request";
 import sortArrayByTime from "../../helpers/sort";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Spin } from "antd";
+import { format, formatDistance, parse } from "date-fns";
+import { vi } from "date-fns/locale";
+
 export default function Tool() {
     const [data, setdata] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -19,6 +22,9 @@ export default function Tool() {
         };
         fetchTool();
     }, []);
+    const handleCompareDate = (date) => {
+        return formatDistance(parse(date, "HH:mm:ss dd/MM/yyyy", new Date()), new Date(), { locale: vi, addSuffix: true });
+    };
     return (
         <div className="">
             {isLoading ? (
@@ -40,7 +46,7 @@ export default function Tool() {
                                 </div>
                             </div>
                             <div className="absolute top-0 left-0">
-                                <p className="text-green-500 bg-green-200 p-2 rounded-lg text-sm font-bold">{item.date}</p>
+                                <p className="text-green-500 bg-green-200 p-2 rounded-lg text-sm font-bold">{handleCompareDate(item.date)}</p>
                             </div>
                         </NavLink>
                     ))}
