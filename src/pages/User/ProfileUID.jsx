@@ -90,7 +90,7 @@ export default function ProfileUID() {
         };
 
         // Tạo truy vấn để tìm phòng trò chuyện giữa hai người dùng
-        const q = query(collection(db, "chat"), where("anotherUser.uid", "==", anotherUser.uid));
+        const q = query(collection(db, "room"), where("anotherUser.uid", "==", anotherUser.uid));
         const querySnapshot = await getDocs(q);
         console.log(querySnapshot.docs);
 
@@ -100,7 +100,7 @@ export default function ProfileUID() {
             navigate(`/chat/room/${existingRoom.id}`);
         } else {
             // Phòng trò chuyện chưa tồn tại, tạo phòng mới
-            const newRoomRef = await addDoc(collection(db, "chat"), {
+            const newRoomRef = await addDoc(collection(db, "room"), {
                 currentUser,
                 anotherUser,
                 date: serverTimestamp(),

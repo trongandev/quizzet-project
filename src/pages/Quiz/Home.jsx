@@ -37,6 +37,7 @@ export default function Home() {
         };
         fetchBook();
     }, []);
+    console.log(quiz);
 
     const handleCompareDate = (date) => {
         return formatDistance(parse(date, "HH:mm:ss dd/MM/yyyy", new Date()), new Date(), { locale: vi, addSuffix: true });

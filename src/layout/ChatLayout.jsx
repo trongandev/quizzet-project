@@ -12,7 +12,7 @@ export default function ChatLayout() {
     const [loading, setLoading] = useState(false);
     useEffect(() => {
         const handleRenderUser = async () => {
-            const querySnapshot = await getDocs(collection(db, "chat"));
+            const querySnapshot = await getDocs(collection(db, "room"));
             const filteredQuiz = [];
 
             querySnapshot.forEach((doc) => {
@@ -24,6 +24,7 @@ export default function ChatLayout() {
                         id: doc.id,
                     });
                 }
+                setLoading(true);
             });
 
             setData(filteredQuiz);
