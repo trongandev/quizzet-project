@@ -106,6 +106,7 @@ export default function NewPostTool() {
             icon: "success",
         });
     };
+    console.log(tool);
     return (
         <div className="">
             <div className="">

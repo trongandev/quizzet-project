@@ -21,6 +21,8 @@ export default function TopicManager() {
         fetchBook();
     }, []);
 
+    console.log(topic);
+
     const handleChangeStatus = async (id, status) => {
         const newTopic = topic.map((item) => {
             if (item.id === id) {
