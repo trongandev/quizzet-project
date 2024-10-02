@@ -68,6 +68,9 @@ export default function HistoryTool() {
                                 STT
                             </th>
                             <th scope="col" className="px-6 py-3">
+                                Tên Môn
+                            </th>
+                            <th scope="col" className="px-6 py-3">
                                 Tên user
                             </th>
                             <th scope="col" className="px-6 py-3">
@@ -95,6 +98,9 @@ export default function HistoryTool() {
                                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                         {index + 1}
                                     </th>
+                                    <td className="px-6 py-4">
+                                        <p>{item.subject}</p>
+                                    </td>
                                     <td className="px-6 py-4">
                                         <p>{item.username}</p>
                                     </td>
