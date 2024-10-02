@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { CiTimer } from "react-icons/ci";
-import { Avatar, Tooltip } from "antd";
+import { Tooltip } from "antd";
 import { MdOutlineVerified } from "react-icons/md";
-import { UserOutlined } from "@ant-design/icons";
-import Tool from "./Tool";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
@@ -13,45 +11,54 @@ import { get_api } from "../../services/fetchapi";
 import { jwtDecode } from "jwt-decode";
 import { setNewUser } from "../../reducers/userSlice";
 import handleCompareDate from "../../utils/compareData";
+import { useQuery } from "@tanstack/react-query";
+
+const fetchProfile = async (userId) => {
+    const response = await get_api("/profile/" + userId);
+    return response.user;
+};
+
+// Function to fetch quiz data
+const fetchQuiz = async () => {
+    const response = await get_api("/quiz");
+    return response.quiz;
+};
+
+// Function to fetch tool data
+const fetchTool = async () => {
+    const response = await get_api("/admin/suboutline");
+    return response;
+};
 
 export default function Home() {
-    const [quiz, setQuiz] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
     const dispatch = useDispatch();
     const token = Cookies.get("token");
+
+    const decoded = token ? jwtDecode(token) : null;
+    const userId = decoded?.user?.id;
+
+    const { data: profileData, isLoading: profileLoading } = useQuery({
+        queryKey: ["profile", userId],
+        queryFn: () => fetchProfile(userId),
+        enabled: !!userId,
+    });
+
+    const { data: quizData, isLoading: quizLoading } = useQuery({
+        queryKey: ["quiz"],
+        queryFn: fetchQuiz,
+    });
+
+    const { data: toolData, isLoading: toolLoading } = useQuery({
+        queryKey: ["tool"],
+        queryFn: fetchTool,
+    });
+
     useEffect(() => {
-        const fetchProfileAndQuiz = async () => {
-            try {
-                const decoded = token ? jwtDecode(token) : null;
-                const userId = decoded?.user?.id;
-
-                // Tạo các promise cho cả hai API
-                const profilePromise = userId ? get_api("/profile/" + userId) : Promise.resolve(null);
-                const quizPromise = get_api("/quiz");
-
-                // Thực hiện song song các lệnh gọi API
-                const [profileResponse, quizResponse] = await Promise.all([profilePromise, quizPromise]);
-
-                // Cập nhật state và dispatch kết quả từ profile API
-                if (profileResponse) {
-                    dispatch(setNewUser(profileResponse.user));
-                }
-
-                // Cập nhật state với kết quả từ quiz API
-                setQuiz(quizResponse.quiz);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            } finally {
-                // Kết thúc loading
-                setIsLoading(false);
-            }
-        };
-
-        // Chỉ gọi fetch khi có token
-        if (token !== undefined) {
-            fetchProfileAndQuiz();
+        if (profileData) {
+            dispatch(setNewUser(profileData));
         }
-    }, [dispatch, token]);
+    }, [profileData, dispatch]);
+
     return (
         <div className=" ">
             <div className="">
@@ -67,14 +74,14 @@ export default function Home() {
                         <button className="bg-green-500 text-white">Thêm bài mới</button>
                     </Link>
                 </div>
-                {isLoading ? (
+                {quizLoading ? (
                     <div className="h-[400px] flex items-center justify-center w-full bg-white p-5 mt-2">
                         <Spin indicator={<LoadingOutlined spin />} size="large" />
                     </div>
                 ) : (
                     <div className="bg-white p-5 mt-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {quiz &&
-                            quiz?.map((item) => (
+                        {quizData &&
+                            quizData?.map((item) => (
                                 <div key={item._id}>
                                     <div className=" shadow-md border-2 rounded-lg overflow-hidden">
                                         <Link to={`/quiz/${item.slug}`} className="block w-full h-[150px] overflow-hidden">
@@ -124,7 +131,34 @@ export default function Home() {
                     </a>
                 </div>
                 <div className="bg-white ">
-                    <Tool />
+                    <div className="">
+                        {toolLoading ? (
+                            <div className="h-[400px] flex items-center justify-center w-full">
+                                <Spin indicator={<LoadingOutlined spin />} size="large" />
+                            </div>
+                        ) : (
+                            <div className="bg-white px-2 py-5 mt-2 grid grid-cols-2 xl:grid-cols-5 lg:grid-cols-3 gap-4">
+                                {toolData &&
+                                    toolData.map((item, index) => (
+                                        <NavLink to={`/decuong/${item.slug}`} className="relative" key={index}>
+                                            <div className=" shadow-md border-2 rounded-lg overflow-hidden group">
+                                                <img src={item.image} alt="" className="h-[150px] w-full object-cover" />
+                                                <div className="p-3">
+                                                    <h1 className="text-[15px] text-green-500 font-bold h-[48px] line-clamp-2">{item.title}</h1>
+                                                    <p className="text-[13px] mb-2">
+                                                        Tổng câu hỏi: <label className="text-red-500 font-bold">{item.lenght}</label>{" "}
+                                                    </p>
+                                                    <button className="bg-green-600 text-white">Xem ngay</button>
+                                                </div>
+                                            </div>
+                                            <div className="absolute top-0 left-0">
+                                                <p className="text-green-500 bg-green-200 p-2 rounded-lg text-sm font-bold">{handleCompareDate(item.date)}</p>
+                                            </div>
+                                        </NavLink>
+                                    ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

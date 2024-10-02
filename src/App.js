@@ -7,7 +7,6 @@ import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
 import AnsResult from "./pages/Quiz/AnsResult";
 import PostText from "./pages/Quiz/PostText";
-import Tool from "./pages/Quiz/Tool";
 import Refer from "./pages/Quiz/Refer";
 import AdminLayout from "./layout/AdminLayout";
 import Admin from "./pages/Admin/Admin";
@@ -24,10 +23,8 @@ import ResultTopic from "./pages/Quiz/ResultTopic";
 import NewPostTool from "./pages/Admin/NewPostTool";
 import SubjectOutline from "./pages/Quiz/SubjectOutline";
 import ProfileUID from "./pages/User/ProfileUID";
-import Chat from "./pages/User/Chat";
 import ChatRoom from "./pages/User/ChatRoom";
 import ChatLayout from "./layout/ChatLayout";
-import PostChoose from "./pages/Quiz/PostGUI";
 import PostLayout from "./layout/PostLayout";
 import PostGUI from "./pages/Quiz/PostGUI";
 import UserUseTool from "./pages/Admin/UserUseTool";
@@ -41,7 +38,6 @@ function App() {
                 <Route path="/quiz/:id" element={<Quiz />} />
                 <Route path="/chude" element={<Topic />} />
                 <Route path="/chude/:id" element={<ResultTopic />} />
-                <Route path="/decuong" element={<Tool />} />
                 <Route path="/decuong/:id" element={<Refer />} />
                 <Route path="/post" element={<PostLayout />} />
                 <Route path="/post/gui" element={<PostGUI />} />

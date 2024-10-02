@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { UserOutlined } from "@ant-design/icons";
 import { MdOutlineVerified } from "react-icons/md";
 import Swal from "sweetalert2";
-import { Tooltip, Modal, Avatar, Input, Skeleton, Popover, Button } from "antd";
+import { Tooltip, Modal, Input, Popover, Button } from "antd";
 import { IoMdSettings } from "react-icons/io";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { CiTimer } from "react-icons/ci";
@@ -16,9 +15,13 @@ import Cookies from "js-cookie";
 import { setNewUser } from "../../reducers/userSlice";
 import { jwtDecode } from "jwt-decode";
 import handleCompareDate from "../../utils/compareData";
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+
 export default function Profile() {
     const [profile, setProfile] = useState({});
     const [quiz, setQuiz] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [valueOtp, setValueOtp] = useState("");
 
     const navigate = useNavigate();
@@ -41,6 +44,7 @@ export default function Profile() {
             dispatch(setNewUser(response.user));
             setProfile(response.user);
             setQuiz(response.quiz);
+            setLoading(true);
         };
 
         if (token !== undefined) {
@@ -271,8 +275,13 @@ export default function Profile() {
             <hr className="my-5" />
             <div className="">
                 <h1 className="text-lg font-bold text-green-500">Bài đăng của bạn</h1>
+                {!loading && (
+                    <div className="h-[400px] flex items-center justify-center w-full">
+                        <Spin indicator={<LoadingOutlined spin />} size="large" />
+                    </div>
+                )}
                 <div className="bg-white p-5 mt-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {quiz && quiz?.length === 0 ? (
+                    {loading && quiz && quiz?.length === 0 ? (
                         <div>
                             <p>Bạn chưa đăng bài nào</p>
                             <NavLink to="/post">
@@ -282,6 +291,7 @@ export default function Profile() {
                     ) : (
                         ""
                     )}
+
                     {quiz &&
                         quiz?.map((item) => (
                             <div key={item.id} className="relative">
