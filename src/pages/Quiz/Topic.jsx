@@ -98,7 +98,7 @@ export default function Topic() {
         <div>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 {topic.map((item) => (
-                    <Link to={`/topic/${item.value}`} className="bg-white shadow-md rounded-lg overflow-hidden" key={item.value}>
+                    <Link to={`/chude/${item.value}`} className="bg-white shadow-md rounded-lg overflow-hidden" key={item.value}>
                         <img src={item.image} alt="" className="h-[150px] w-full object-cover" />
                         <div className="p-2">
                             <h1 className="text-lg font-bold text-green-700">{item.desc}</h1>

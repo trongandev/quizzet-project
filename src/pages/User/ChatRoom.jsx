@@ -8,8 +8,6 @@ import { BiSolidSend } from "react-icons/bi";
 import { MdEmojiEmotions } from "react-icons/md";
 import { FaCirclePlus } from "react-icons/fa6";
 import { useParams } from "react-router-dom";
-import { arrayUnion, doc, onSnapshot, updateDoc } from "firebase/firestore";
-import { auth, db } from "../../pages/Auth/firebase";
 import Swal from "sweetalert2";
 import { format, isMonday, isToday } from "date-fns";
 import { is } from "date-fns/locale";
@@ -18,34 +16,34 @@ export default function ChatRoom() {
     const params = useParams();
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(false);
-    useEffect(() => {
-        const chatRoom = onSnapshot(doc(db, "chat", params.id), (doc) => {
-            setData(doc.data());
-            setLoading(true);
-        });
-    }, []);
+    // useEffect(() => {
+    //     const chatRoom = onSnapshot(doc(db, "chat", params.id), (doc) => {
+    //         setData(doc.data());
+    //         setLoading(true);
+    //     });
+    // }, []);
 
     const [input, setInput] = useState("");
 
-    const addMessageToChatRoom = async (roomId, message) => {
-        try {
-            const roomRef = doc(db, "chat", roomId);
-            await updateDoc(roomRef, {
-                chat: arrayUnion({
-                    message: message,
-                    image: auth.currentUser.photoURL,
-                    create_at: format(new Date(), " HH:mm:ss yyyy-MM-dd"),
-                    sender: auth.currentUser.uid,
-                }),
-            });
-        } catch (error) {
-            Swal.fire({
-                title: "Lỗi",
-                text: "Có lỗi trong quá trình gửi tin nhắn\n" + error.message,
-                icon: "error",
-            });
-        }
-    };
+    // const addMessageToChatRoom = async (roomId, message) => {
+    //     try {
+    //         const roomRef = doc(db, "chat", roomId);
+    //         await updateDoc(roomRef, {
+    //             chat: arrayUnion({
+    //                 message: message,
+    //                 image: auth.currentUser.photoURL,
+    //                 create_at: format(new Date(), " HH:mm:ss yyyy-MM-dd"),
+    //                 sender: auth.currentUser.uid,
+    //             }),
+    //         });
+    //     } catch (error) {
+    //         Swal.fire({
+    //             title: "Lỗi",
+    //             text: "Có lỗi trong quá trình gửi tin nhắn\n" + error.message,
+    //             icon: "error",
+    //         });
+    //     }
+    // };
 
     const formatDate = (date) => {
         const formattedTime = format(date, " hh:mma"); // Định dạng thời gian thành 'hh:mma'
@@ -57,12 +55,12 @@ export default function ChatRoom() {
         }
     };
 
-    const handleSendMess = (e) => {
-        e.preventDefault();
-        if (input === "") return;
-        addMessageToChatRoom(params.id, input);
-        setInput("");
-    };
+    // const handleSendMess = (e) => {
+    //     e.preventDefault();
+    //     if (input === "") return;
+    //     addMessageToChatRoom(params.id, input);
+    //     setInput("");
+    // };
 
     const [open, setOpen] = useState(false);
 
@@ -83,7 +81,7 @@ export default function ChatRoom() {
                 setEmoji(data);
             });
     }, []);
-
+    const [auth, setAuth] = useState({});
     return (
         <div className=" w-[75%] ">
             {loading ? (
@@ -138,7 +136,7 @@ export default function ChatRoom() {
                             </div>
                         </div>
                         <div className="sticky bottom-0 w-full p-2">
-                            <form className="flex items-center " onSubmit={handleSendMess}>
+                            <form className="flex items-center ">
                                 <Button className="rounded-none text-orange-700">
                                     <FaCirclePlus size={20} />
                                 </Button>
@@ -176,9 +174,9 @@ export default function ChatRoom() {
                                         </Button>
                                     </Popover>
                                 </div>
-                                <Button className="rounded-none text-orange-700" onClick={(e) => handleSendMess(e)}>
+                                {/* <Button className="rounded-none text-orange-700" onClick={(e) => handleSendMess(e)}>
                                     <BiSolidSend size={20} />
-                                </Button>
+                                </Button> */}
                             </form>
                         </div>
                     </div>

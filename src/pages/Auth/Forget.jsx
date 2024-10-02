@@ -3,7 +3,7 @@ import Swal from "sweetalert2";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { getAuth, sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
+import { post_api } from "../../services/fetchapi";
 
 export default function Forget() {
     const navigate = useNavigate();
@@ -16,24 +16,30 @@ export default function Forget() {
             email: Yup.string().email("Email không hợp lệ").required("Vui lòng nhập email"),
         }),
         onSubmit: (values) => {
-            const auth = getAuth();
-            sendPasswordResetEmail(auth, values.email)
-                .then(() => {
-                    Swal.fire({
-                        title: "Gửi yêu cầu thành công",
-                        text: "Vui lòng kiểm tra email của bạn để đặt lại mật khẩu",
-                        icon: "success",
-                    });
-                })
-                .catch((error) => {
-                    Swal.fire({
-                        title: "Gặp lỗi tron quá trình đặt lại mật khẩu",
-                        text: "Mã lỗi\n" + error.code + "\n" + error.message,
-                        icon: "success",
-                    });
-                });
+            fetchForget(values.email);
         },
     });
+
+    const fetchForget = async (email) => {
+        const req = await post_api("/auth/forget", { email: email }, "POST");
+        const data = await req.json();
+        if (req.ok) {
+            Swal.fire({
+                title: "Thành công",
+                text: data.message,
+                icon: "success",
+                willClose: () => {
+                    navigate("/login");
+                },
+            });
+        } else {
+            Swal.fire({
+                title: "Có lỗi xảy ra",
+                text: data.message,
+                icon: "error",
+            });
+        }
+    };
 
     return (
         <div className="flex justify-center flex-col items-center">

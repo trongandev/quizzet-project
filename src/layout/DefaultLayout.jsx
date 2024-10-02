@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import { NavLink, Outlet } from "react-router-dom";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { IoHomeOutline } from "react-icons/io5";
 import { MdOutlineTopic } from "react-icons/md";
 import { GoHistory } from "react-icons/go";
@@ -11,19 +10,16 @@ import { FiFilePlus } from "react-icons/fi";
 export default function DefaultLayout() {
     const [isLogin, setIsLogin] = useState(false);
 
-    const auth = getAuth();
-
-    const handleCheckLogin = () => {
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setIsLogin(true);
-            }
-        });
-    };
-
-    useEffect(() => {
-        handleCheckLogin();
-    }, []);
+    // useEffect(() => {
+    //     const handleCheckLogin = () => {
+    //         onAuthStateChanged(auth, (user) => {
+    //             if (user) {
+    //                 setIsLogin(true);
+    //             }
+    //         });
+    //     };
+    //     handleCheckLogin();
+    // }, []);
 
     return (
         <>

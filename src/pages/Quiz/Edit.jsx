@@ -1,17 +1,15 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { Button, Modal, Popover, Select, Input, Divider, Tour } from "antd";
-import { addDoc, collection, doc, getDocs, getFirestore, updateDoc } from "firebase/firestore";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { Button, Modal, Popover, Select, Input } from "antd";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { format } from "date-fns";
 import { CiCirclePlus } from "react-icons/ci";
 import { IoIosClose } from "react-icons/io";
 import { FaRegEdit } from "react-icons/fa";
 import { MdContentPaste } from "react-icons/md";
 import { subjectOption } from "../../helpers/subject";
 import { MdEdit } from "react-icons/md";
-import { db, auth } from "../Auth/firebase";
+import Cookies from "js-cookie";
+import { get_api, post_api } from "../../services/fetchapi";
 
 export default function Edit() {
     const params = useParams();
@@ -19,77 +17,30 @@ export default function Edit() {
     const [quest, setQuest] = useState([]);
 
     const navigate = useNavigate();
-    useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setUser(user);
-            } else {
-                Swal.fire({
-                    title: "Bạn chưa đăng nhập",
-                    text: "Vui lòng đăng nhập để tiếp tục",
-                    icon: "warning",
-                    didClose: () => {
-                        navigate("/login");
-                    },
-                });
-            }
+    const token = Cookies.get("token");
+    if (token === undefined) {
+        Swal.fire({
+            title: "Bạn chưa đăng nhập",
+            text: "Vui lòng đăng nhập xem lại lịch sử làm bài",
+            icon: "warning",
+            didClose: () => {
+                navigate("/login");
+            },
         });
-    }, []);
+    }
 
     useEffect(() => {
-        const fetchQuiz = async () => {
-            const querySnapshot = await getDocs(collection(db, "quiz"));
-            const filteredQuiz = [];
-
-            querySnapshot.forEach((doc) => {
-                const data = doc;
-                if (data.id === params.id) {
-                    filteredQuiz.push({
-                        id: doc.id,
-                        data: doc.data(),
-                    });
-                }
-            });
-
-            setQuiz({
-                title: filteredQuiz[0].data?.title,
-                content: filteredQuiz[0].data?.content,
-                img: filteredQuiz[0].data?.img,
-                subject: filteredQuiz[0].data?.subject,
-            });
-
-            setQuest(filteredQuiz[0].data.questions);
-            setDefaultValue(filteredQuiz[0].data.default);
+        const fetchAPI = async () => {
+            const req = await get_api(`/quiz/${params.id}`);
+            setQuiz(req.quiz);
+            setQuest(req.quiz.questions.data_quiz);
         };
-
-        fetchQuiz();
-    }, [params.id, navigate]);
-
-    const [user, setUser] = useState();
-    const auth = getAuth();
+        fetchAPI();
+    }, []);
 
     const handleSelect = (questionId, answerIndex) => {
         setQuest((prevQuest) => prevQuest.map((q) => (q.id === questionId ? { ...q, correct: answerIndex } : q)));
     };
-
-    useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setUser(user);
-            } else {
-                Swal.fire({
-                    title: "Bạn chưa đăng nhập",
-                    text: "Vui lòng đăng nhập để tiếp tục",
-                    icon: "warning",
-                    didClose: () => {
-                        navigate("/login");
-                    },
-                });
-            }
-        });
-    }, []);
-
-    const [defaultValue, setDefaultValue] = useState("");
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -106,34 +57,29 @@ export default function Edit() {
     };
 
     const updateData = async () => {
-        const quizDocRef = doc(db, "quiz", params.id);
-        try {
-            await updateDoc(quizDocRef, {
-                ...quiz,
-                uid: user.uid,
-                author: user.displayName,
-                email: user.email,
-                verify: user.emailVerified,
-                image_author: user.photoURL,
-                noa: 0, //số lần làm bài number of attemps
-                date: format(new Date(), "HH:mm:ss dd/MM/yyyy"),
-                status: false,
-                questions: quest,
-                default: defaultValue,
-            });
-
+        const update = {
+            title: quiz.title,
+            content: quiz.content,
+            img: quiz.img,
+            subject: quiz.subject,
+            status: false,
+            questions: quest,
+        };
+        const req = await post_api(`/quiz/${quiz._id}`, update, "PATCH");
+        const data = req.json();
+        if (req.ok) {
             Swal.fire({
                 icon: "success",
-                title: "Cập nhật thành công",
-                didClose: () => {
-                    navigate("/");
+                title: data.message,
+                text: "Bài vết của bạn sẽ kiểm duyệt trước khi hiển thị",
+                didClose() {
+                    navigate("/profile");
                 },
             });
-        } catch (error) {
+        } else {
             Swal.fire({
                 icon: "error",
-                title: "Cập nhật không thành công",
-                text: "Mã lỗi\n" + error.code,
+                title: data.message,
             });
         }
     };
@@ -251,6 +197,13 @@ export default function Edit() {
         });
     };
 
+    const onChange = (value) => {
+        setQuiz({
+            ...quiz,
+            subject: value,
+        });
+    };
+
     return (
         <div className="flex items-center justify-center gap-5 flex-col md:flex-row">
             <div className="w-full md:w-[1000px]  overflow-y-auto frm-post">
@@ -304,6 +257,7 @@ export default function Edit() {
                             filterSort={(optionA, optionB) => (optionA?.label ?? "").toLowerCase().localeCompare((optionB?.label ?? "").toLowerCase())}
                             options={subjectOption}
                             value={quiz?.subject}
+                            onChange={onChange}
                         />
                     </Modal>
                 </div>
@@ -366,7 +320,7 @@ export default function Edit() {
                                 Xoá
                             </Button>,
                             <Button key="submit" type="primary" onClick={handleOkAddQuest}>
-                                Thêm câu hỏi
+                                Thêm/Cập nhật
                             </Button>,
                         ]}>
                         <Input placeholder="Nhập câu hỏi?" name="quest" value={questAddEdit.question} onChange={(e) => setQuestAddEdit({ ...questAddEdit, question: e.target.value })}></Input>

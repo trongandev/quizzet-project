@@ -32,22 +32,23 @@ import PostLayout from "./layout/PostLayout";
 import PostGUI from "./pages/Quiz/PostGUI";
 import UserUseTool from "./pages/Admin/UserUseTool";
 import HistoryTool from "./pages/Admin/HistoryTool";
+import ChangePassword from "./pages/Auth/ChangePassword";
 function App() {
     return (
         <Routes>
             <Route path="/" element={<DefaultLayout />}>
                 <Route path="/" element={<Home />} />
                 <Route path="/quiz/:id" element={<Quiz />} />
-                <Route path="/topic" element={<Topic />} />
-                <Route path="/topic/:id" element={<ResultTopic />} />
-                <Route path="/tool" element={<Tool />} />
-                <Route path="/tool/:id" element={<Refer />} />
+                <Route path="/chude" element={<Topic />} />
+                <Route path="/chude/:id" element={<ResultTopic />} />
+                <Route path="/decuong" element={<Tool />} />
+                <Route path="/decuong/:id" element={<Refer />} />
                 <Route path="/post" element={<PostLayout />} />
                 <Route path="/post/gui" element={<PostGUI />} />
                 <Route path="/post/text" element={<PostText />} />
                 <Route path="/tailieu" element={<SubjectOutline />} />
                 <Route path="/edit/:id" element={<Edit />} />
-                <Route path="/history" element={<Historyy />} />
+                <Route path="/lichsu" element={<Historyy />} />
                 <Route path="/answer/:id" element={<AnsResult />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
@@ -55,6 +56,7 @@ function App() {
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/profile/:uid" element={<ProfileUID />} />
                 <Route path="/forget" element={<Forget />} />
+                <Route path="/change-password" element={<ChangePassword />} />
                 <Route path="/chat" element={<ChatLayout />}>
                     <Route path="/chat/room/:id" element={<ChatRoom />} />
                 </Route>

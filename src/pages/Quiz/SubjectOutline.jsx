@@ -3,7 +3,6 @@ import { Button, Modal } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import { message, Upload } from "antd";
 import Swal from "sweetalert2";
-import { ref, uploadBytesResumable, getDownloadURL, getStorage, listAll } from "firebase/storage";
 
 const { Dragger } = Upload;
 
@@ -11,53 +10,52 @@ export default function SubjectOutline() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [fileList, setFileList] = useState([]);
-    const storage = getStorage();
     const showModal = () => {
         setIsModalOpen(true);
     };
 
     const handleOk = () => {
         setIsModalOpen(false);
-        handleUpload();
+        // handleUpload();
     };
 
     const handleCancel = () => {
         setIsModalOpen(false);
     };
 
-    const handleUpload = () => {
-        fileList.forEach((file) => {
-            const storageRef = ref(storage, `decuong/${file.name}`);
-            const uploadTask = uploadBytesResumable(storageRef, file);
+    // const handleUpload = () => {
+    //     fileList.forEach((file) => {
+    //         const storageRef = ref(storage, `decuong/${file.name}`);
+    //         const uploadTask = uploadBytesResumable(storageRef, file);
 
-            uploadTask.on(
-                "state_changed",
-                (snapshot) => {
-                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    console.log(`Upload is ${progress}% done`);
-                },
-                (error) => {
-                    console.error("Upload failed:", error);
-                    Swal.fire({
-                        title: "Lỗi",
-                        text: "Có lỗi xảy ra trong quá trình tải lên file",
-                        icon: "error",
-                    });
-                },
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                        console.log("File available at", downloadURL);
-                        Swal.fire({
-                            title: "Thành công",
-                            text: "File đã được tải lên thành công",
-                            icon: "success",
-                        });
-                    });
-                }
-            );
-        });
-        setIsModalOpen(false);
-    };
+    //         uploadTask.on(
+    //             "state_changed",
+    //             (snapshot) => {
+    //                 const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    //                 console.log(`Upload is ${progress}% done`);
+    //             },
+    //             (error) => {
+    //                 console.error("Upload failed:", error);
+    //                 Swal.fire({
+    //                     title: "Lỗi",
+    //                     text: "Có lỗi xảy ra trong quá trình tải lên file",
+    //                     icon: "error",
+    //                 });
+    //             },
+    //             () => {
+    //                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+    //                     console.log("File available at", downloadURL);
+    //                     Swal.fire({
+    //                         title: "Thành công",
+    //                         text: "File đã được tải lên thành công",
+    //                         icon: "success",
+    //                     });
+    //                 });
+    //             }
+    //         );
+    //     });
+    //     setIsModalOpen(false);
+    // };
 
     const props = {
         onRemove: (file) => {

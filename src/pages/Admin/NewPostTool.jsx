@@ -1,39 +1,38 @@
-import { Button, Modal, Input } from "antd";
+import { Button, Modal, Input, message, Spin } from "antd";
 import React, { useEffect, useState } from "react";
-import { get_firebase } from "../../utils/request";
-import { addDoc, collection, deleteDoc, doc, getFirestore } from "firebase/firestore";
 import { CiTrash } from "react-icons/ci";
 import { IoAdd } from "react-icons/io5";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
-import { format } from "date-fns";
-import sortArrayByTime from "../../helpers/sort";
 import TextArea from "antd/es/input/TextArea";
+import { get_api, post_api } from "../../services/fetchapi";
+import handleCompareDate from "../../utils/compareData";
+import { MdContentPaste } from "react-icons/md";
+import { FiSearch } from "react-icons/fi";
+import { LoadingOutlined } from "@ant-design/icons";
+
 export default function NewPostTool() {
     const [tool, setTool] = useState([]);
-    const [isPost, setIsPost] = useState(false);
+    const [loading, setLoading] = useState(false);
 
-    const db = getFirestore();
     useEffect(() => {
         const fetchTool = async () => {
-            const fetchTopic = await get_firebase(db, "tool");
-            const result = sortArrayByTime(fetchTopic);
-            setTool(result);
+            setLoading(true);
+            const req = await get_api("/admin/suboutline");
+
+            setTool(req);
         };
         fetchTool();
-        setIsPost(false);
-    }, [isPost]);
+    }, []);
 
     const removeDoc = async (id) => {
-        try {
-            await deleteDoc(doc(db, "tool", id));
-            setTool(tool.filter((item) => item.id !== id));
-        } catch (error) {
-            Swal.fire({
-                title: "Có lỗi xảy ra",
-                text: error.message,
-                icon: "error",
-            });
+        const req = await post_api(`/admin/suboutline`, { id: id }, "DELETE");
+        const data = await req.json();
+        if (req.ok) {
+            setTool(tool.filter((item) => item._id !== id));
+            log("success", "Xoá thành công!");
+        } else {
+            log("error", data.message);
         }
     };
 
@@ -64,10 +63,6 @@ export default function NewPostTool() {
     const handleOk = () => {
         setConfirmLoading(true);
         handlePost();
-        // setTimeout(() => {
-        //     setOpen(false);
-        //     setConfirmLoading(false);
-        // }, 2000);
     };
 
     const handleCancel = () => {
@@ -83,62 +78,82 @@ export default function NewPostTool() {
     };
 
     const handlePost = async () => {
-        const now = new Date();
-
-        try {
-            await addDoc(collection(db, "tool"), {
-                ...data,
-                date: format(now, "HH:mm:ss dd/MM/yyyy"),
-            });
+        const newData = { ...data, date: new Date().toISOString() };
+        const req = await post_api("/admin/suboutline", newData, "POST");
+        const res = await req.json();
+        if (req.ok) {
             setOpen(false);
             setConfirmLoading(false);
-        } catch (error) {
-            Swal.fire({
-                title: "Có lỗi xảy ra",
-                text: error.message,
-                icon: "error",
-            });
+            setTool([...tool, newData]);
+            setData({});
+            log("success", "Thêm thành công!");
+        } else {
+            log("error", res.message);
         }
-        setIsPost(true);
+        setConfirmLoading(false);
+    };
 
-        Swal.fire({
-            title: "Thêm thành công",
-            icon: "success",
+    const handlePaste = () => {
+        navigator.clipboard.readText().then((text) => {
+            console.log(text);
+            setData({
+                ...data,
+                image: text,
+            });
         });
     };
-    console.log(tool);
+    const [messageApi, contextHolder] = message.useMessage();
+
+    const log = (method, text) => {
+        if (method === "success") {
+            messageApi.success(text);
+        } else if (method === "error") {
+            messageApi.error(text);
+        } else if (method === "warning") {
+            messageApi.warning(text);
+        } else if (method === "loading") {
+            messageApi.loading(text);
+        } else {
+            messageApi.info(text);
+        }
+    };
     return (
         <div className="">
+            {contextHolder}
             <div className="">
                 <div className="flex justify-between items-center">
                     <h1 className="text-lg text-green-500 font-bold">Quản lí tool</h1>
-                    <Button onClick={showModal} className="flex gap-1 items-center">
+                    <Button onClick={() => handlePost()} className="flex gap-1 items-center">
                         <IoAdd />
                         Thêm mới
                     </Button>
                     <Modal title="Thêm bài mới" open={open} onOk={handleOk} confirmLoading={confirmLoading} onCancel={handleCancel}>
-                        <div className="">
-                            <div className="flex gap-3">
-                                <div className="form-group flex-1">
-                                    <label htmlFor="name">Slug Name</label>
-                                    <Input type="text" id="name" placeholder="Nhập slug bài (VD: kttt)" onChange={(e) => handleInput(e)} />
-                                </div>{" "}
-                                <div className="form-group flex-1">
+                        <div className="space-y-3">
+                            <div className="form-group  flex-1">
+                                <div className="">
                                     <label htmlFor="title">Tên bài</label>
-                                    <Input type="text" id="title" placeholder="Nhập tiêu đề của bài" onChange={(e) => handleInput(e)} />
+                                    <div className="flex gap-1">
+                                        <Input type="text" id="title" placeholder="Nhập tiêu đề của bài" autoFocus tabIndex="1" onChange={(e) => handleInput(e)} value={data.title} />
+                                        <Link to={`https://www.google.com/search?q=${data.title}&udm=2`} target="_black">
+                                            <Button>
+                                                <FiSearch />
+                                            </Button>
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
                             <div className="form-group">
                                 <label htmlFor="image">Hình ảnh</label>
-                                <Input type="text" id="image" placeholder="Nhập URL hình ảnh" onChange={(e) => handleInput(e)} />
+                                <div className="flex gap-1">
+                                    <Button onClick={handlePaste}>
+                                        <MdContentPaste />
+                                    </Button>
+                                    <Input type="text" id="image" placeholder="Nhập URL hình ảnh" tabIndex="2" onChange={(e) => handleInput(e)} value={data.image} />
+                                </div>
                             </div>{" "}
                             <div className="form-group">
-                                <label htmlFor="description">Mô tả</label>
-                                <Input type="text" id="description" placeholder="Nhập mô tả" value={`Các đáp án, ôn tập về bộ môn ` + data.title} disabled />
-                            </div>
-                            <div className="form-group">
                                 <label htmlFor="data">Data</label>
-                                <TextArea type="text" id="data" placeholder="Nhập Data" onChange={(e) => handleChangeJSON(e)} />
+                                <TextArea type="text" id="quest" placeholder="Nhập Data" tabIndex="3" onChange={(e) => handleChangeJSON(e)} value={data.quest} />
                             </div>
                         </div>
                     </Modal>
@@ -170,29 +185,36 @@ export default function NewPostTool() {
                             </tr>
                         </thead>
                         <tbody>
-                            {tool.map((item, index) => (
-                                <tr className="bg-white border-b " key={index}>
-                                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                        {index + 1}
-                                    </th>
-                                    <td className="px-6 py-4">
-                                        <img src={item.image} alt="" className="w-[150px] h-[100px] object-cover" />
-                                    </td>
-                                    <td className="px-6 py-4">{item.name}</td>
-                                    <td className="px-6 py-4">
-                                        <Link to={`/tool/${item.name}`}>{item.title}</Link>
-                                    </td>
+                            {loading &&
+                                tool &&
+                                tool.map((item, index) => (
+                                    <tr className="bg-white border-b " key={index}>
+                                        <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                                            {index + 1}
+                                        </th>
+                                        <td className="px-6 py-4">
+                                            <img src={item.image} alt="" className="w-[150px] h-[100px] object-cover" />
+                                        </td>
+                                        <td className="px-6 py-4">{item.slug}</td>
+                                        <td className="px-6 py-4">
+                                            <Link to={`/decuong/${item.slug}`}>{item.title}</Link>
+                                        </td>
 
-                                    <td className="px-6 py-4">{item.date}</td>
-                                    <td className="px-6 py-4">
-                                        <Button onClick={() => handleDelete(item.id)}>
-                                            <CiTrash />
-                                        </Button>
-                                    </td>
-                                </tr>
-                            ))}
+                                        <td className="px-6 py-4">{handleCompareDate(item?.date)}</td>
+                                        <td className="px-6 py-4">
+                                            <Button onClick={() => handleDelete(item._id)}>
+                                                <CiTrash />
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                ))}
                         </tbody>
                     </table>
+                    {!loading && (
+                        <div className="w-full h-[500px] flex items-center justify-center">
+                            <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

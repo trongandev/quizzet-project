@@ -2,32 +2,27 @@ import React, { useEffect, useState } from "react";
 import Chat from "../pages/User/Chat";
 import ChatRoom from "../pages/User/ChatRoom";
 import { Outlet, useParams } from "react-router-dom";
-import { auth, db } from "../pages/Auth/firebase";
-import { get_firebase } from "../utils/request";
 import { Spin } from "antd";
-import { collection, getDocs, query, where } from "firebase/firestore";
 
 export default function ChatLayout() {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
     useEffect(() => {
         const handleRenderUser = async () => {
-            const querySnapshot = await getDocs(collection(db, "room"));
-            const filteredQuiz = [];
-
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                console.log(data);
-                if (data.currentUser.uid === auth.currentUser.uid) {
-                    filteredQuiz.push({
-                        ...doc.data(),
-                        id: doc.id,
-                    });
-                }
-                setLoading(true);
-            });
-
-            setData(filteredQuiz);
+            // const querySnapshot = await getDocs(collection(db, "room"));
+            // const filteredQuiz = [];
+            // querySnapshot.forEach((doc) => {
+            //     const data = doc.data();
+            //     console.log(data);
+            //     if (data.currentUser.uid === auth.currentUser.uid) {
+            //         filteredQuiz.push({
+            //             ...doc.data(),
+            //             id: doc.id,
+            //         });
+            //     }
+            //     setLoading(true);
+            // });
+            // setData(filteredQuiz);
         };
 
         handleRenderUser();

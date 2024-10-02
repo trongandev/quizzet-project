@@ -1,61 +1,59 @@
 import React, { useEffect, useState } from "react";
-import { get, get_firebase, patch } from "../../utils/request";
-import { Switch, Button, Popover } from "antd";
-import { deleteDoc, doc, getFirestore, updateDoc } from "firebase/firestore";
+import { Switch, Button, Popover, message, Spin } from "antd";
 import Swal from "sweetalert2";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { FaRegTrashAlt } from "react-icons/fa";
-import sortArrayByTime from "../../helpers/sort";
+import { get_api, post_api } from "../../services/fetchapi";
+import handleCompareDate from "../../utils/compareData";
+import { LoadingOutlined } from "@ant-design/icons";
 
 export default function TopicManager() {
     const [topic, setTopic] = useState([]);
-
-    const db = getFirestore();
+    const [loading, setLoading] = useState(false);
+    const [loadingSwitch, setLoadingSwitch] = useState(false);
 
     useEffect(() => {
-        const fetchBook = async () => {
-            const fetchTopic = await get_firebase(db, "quiz");
-            const result = sortArrayByTime(fetchTopic);
-            setTopic(result);
+        const fetchAPI = async () => {
+            const req = await get_api("/quiz/admin");
+            if (req.ok) {
+                log("success", "Fetch chủ đề thành công!");
+                setTopic(req.quiz);
+                setLoading(true);
+            } else {
+                log("error", req.message);
+            }
         };
-        fetchBook();
+        fetchAPI();
     }, []);
 
-    console.log(topic);
-
     const handleChangeStatus = async (id, status) => {
-        const newTopic = topic.map((item) => {
-            if (item.id === id) {
-                item.status = !item.status;
-            }
-            return item;
-        });
-        setTopic(newTopic);
-        const quizDocRef = doc(db, "quiz", id);
+        setLoadingSwitch(true);
+        const req = await post_api(`/quiz/${id}`, { status: !status }, "PATCH");
+        const data = await req.json();
+        if (req.ok) {
+            setLoadingSwitch(false);
 
-        try {
-            await updateDoc(quizDocRef, {
-                status: !status,
+            const newTopic = topic.map((item) => {
+                if (item._id === id) {
+                    item.status = !item.status;
+                }
+                return item;
             });
-        } catch (error) {
-            Swal.fire({
-                title: "Có lỗi xảy ra",
-                text: error.message,
-                icon: "error",
-            });
+            setTopic(newTopic);
+            log("success", data.message);
+        } else {
+            log("error", data.message);
         }
     };
 
     const removeDoc = async (id) => {
-        try {
-            await deleteDoc(doc(db, "quiz", id));
-            setTopic(topic.filter((item) => item.id !== id));
-        } catch (error) {
-            Swal.fire({
-                title: "Có lỗi xảy ra",
-                text: error.message,
-                icon: "error",
-            });
+        const req = await post_api(`/quiz`, { _id: id }, "DELETE");
+        const data = await req.json();
+        if (req.ok) {
+            setTopic(topic.filter((item) => item._id !== id));
+            log("success", "Xoá thành công!");
+        } else {
+            log("success", data.message);
         }
     };
 
@@ -76,16 +74,37 @@ export default function TopicManager() {
     };
 
     const [open, setOpen] = useState(false);
-    const hide = () => {
-        setOpen(false);
-    };
+    const [confirmLoading, setConfirmLoading] = useState(false);
+    const [messageApi, contextHolder] = message.useMessage();
+
     const handleOpenChange = (newOpen, id) => {
         setOpen(newOpen ? id : false);
     };
 
+    const log = (method, text) => {
+        if (method === "success") {
+            messageApi.success(text);
+        } else if (method === "error") {
+            messageApi.error(text);
+        } else if (method === "warning") {
+            messageApi.warning(text);
+        } else if (method === "loading") {
+            messageApi.loading(text);
+        } else {
+            messageApi.info(text);
+        }
+    };
+
+    const showModal = () => {
+        setOpen(true);
+    };
+
     return (
         <div>
-            <h1 className="text-lg text-green-500 font-bold">Quản lí tài khoản người dùng</h1>
+            {contextHolder}
+            <div className="flex justify-between items-center">
+                <h1 className="text-lg text-green-500 font-bold">Quản lí bài đămg</h1>
+            </div>
 
             <div className="relative overflow-x-auto mt-5">
                 <table className="w-full text-sm text-left rtl:text-right ">
@@ -116,7 +135,8 @@ export default function TopicManager() {
                         </tr>
                     </thead>
                     <tbody>
-                        {topic &&
+                        {loading &&
+                            topic &&
                             topic.map((item, index) => (
                                 <tr className="bg-white border-b hover:bg-gray-100 hover:cursor-pointer" key={index}>
                                     <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
@@ -126,13 +146,13 @@ export default function TopicManager() {
                                         <img src={item.img} className="w-[150px] object-cover h-[80px]" alt="" />
                                     </td>
                                     <td className="px-6 py-4 hover:text-red-500 hover:underline">
-                                        <a target="_blank" href={`/quiz/${item.id}`} rel="noreferrer">
+                                        <a target="_blank" href={`/quiz/${item.slug}`} rel="noreferrer">
                                             {item.title}
                                         </a>
                                     </td>
                                     <td className="px-6 py-4 w-[150px]">{item.content}</td>
 
-                                    <td className="px-6 py-4">{item.date}</td>
+                                    <td className="px-6 py-4">{handleCompareDate(item.date)}</td>
                                     <td className="px-6 py-4">
                                         {item.status ? (
                                             <div className="bg-green-200 text-green-500 rounded-full text-center px-1">Duyệt</div>
@@ -147,11 +167,11 @@ export default function TopicManager() {
                                                     <div className="">
                                                         <div className="flex items-center gap-2 mb-3">
                                                             <p>{item.status ? "Duyệt bài viết" : "Chưa duyệt"}</p>
-                                                            <Switch checked={item.status} onClick={() => handleChangeStatus(item.id, item.status)} />
+                                                            <Switch loading={loadingSwitch} checked={item.status} onClick={() => handleChangeStatus(item._id, item.status)} />
                                                         </div>
                                                         <div className="flex items-center gap-2">
                                                             <p>Xoá bài viết</p>
-                                                            <Button onClick={() => handleRemove(item.id)}>
+                                                            <Button onClick={() => handleRemove(item._id)}>
                                                                 <FaRegTrashAlt size={20} />
                                                             </Button>
                                                         </div>
@@ -161,8 +181,8 @@ export default function TopicManager() {
                                             title="Tính năng"
                                             placement="topLeft"
                                             trigger="click"
-                                            open={open === item.id}
-                                            onOpenChange={(newOpen) => handleOpenChange(newOpen, item.id)}>
+                                            open={open === item._id}
+                                            onOpenChange={(newOpen) => handleOpenChange(newOpen, item._id)}>
                                             <Button className="w-[30px] h-[30px] bg-gray-300 p-2 rounded-full">
                                                 <HiDotsHorizontal />
                                             </Button>
@@ -172,6 +192,11 @@ export default function TopicManager() {
                             ))}
                     </tbody>
                 </table>
+                {!loading && (
+                    <div className="w-full h-[500px] flex items-center justify-center">
+                        <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />
+                    </div>
+                )}
             </div>
         </div>
     );

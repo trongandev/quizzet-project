@@ -1,49 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import Swal from "sweetalert2";
 import { Popover, Alert, Space, Avatar, Badge } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { FiLogOut } from "react-icons/fi";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { RiMessengerLine } from "react-icons/ri";
-
+import { jwtDecode } from "jwt-decode";
+import Cookies from "js-cookie";
+import { useSelector } from "react-redux";
 export default function Header() {
-    const [isLogin, setIsLogin] = useState(false);
-    const [user, setUser] = useState({});
     const [open, setOpen] = useState(false);
     const [openNoti, setOpenNoti] = useState(false);
-    const auth = getAuth();
 
     const navigate = useNavigate();
-    const handleLogout = () => {
-        signOut(auth)
-            .then(() => {
-                setIsLogin(false);
-                navigate("/");
-            })
-            .catch((error) => {
-                Swal.fire({
-                    title: "Gặp lỗi trong quá trình đăng xuất",
-                    text: "Mã lỗi\n" + error.code + "\n" + error.message,
-                    icon: "error",
-                });
-            });
-    };
-
-    const handleCheckLogin = () => {
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                console.log(user);
-                setIsLogin(true);
-                setUser(user);
-            }
-        });
-    };
-
-    useEffect(() => {
-        handleCheckLogin();
-    }, []);
 
     const hide = () => {
         setOpen(false);
@@ -55,6 +25,14 @@ export default function Header() {
 
     const handleOpenNoti = (newOpen) => {
         setOpenNoti(newOpen);
+    };
+
+    const token = Cookies.get("token");
+    const user = useSelector((state) => state.user);
+
+    const handleLogout = () => {
+        Cookies.remove("token");
+        window.location.reload();
     };
 
     return (
@@ -69,15 +47,15 @@ export default function Header() {
                             Trang chủ
                         </NavLink>
                     </li>
-                    {isLogin && (
+                    {token && (
                         <>
                             <li>
-                                <NavLink to="/topic" className="block px-5 py-3 ">
+                                <NavLink to="/chude" className="block px-5 py-3 ">
                                     Chủ đề
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink to="/history" className="block px-5 py-3 ">
+                                <NavLink to="/lichsu" className="block px-5 py-3 ">
                                     Lịch sử
                                 </NavLink>
                             </li>
@@ -89,7 +67,7 @@ export default function Header() {
                         </NavLink>
                     </li>
                 </ul>
-                {!isLogin ? (
+                {!token ? (
                     <div className="">
                         <Link to="/login">
                             <button className="bg-green-500">Đăng nhập</button>
@@ -134,13 +112,13 @@ export default function Header() {
                                         </div>
                                     </>
                                 }
-                                title={user.email}
+                                title={user?.email}
                                 trigger="click"
                                 open={open}
                                 onOpenChange={handleOpenChange}>
-                                {user.photoURL ? (
+                                {user.profilePicture ? (
                                     <div className="w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden">
-                                        <img src={user.photoURL} alt="" className="object-cover h-full" />
+                                        <img src={user.profilePicture} alt="" className="object-cover h-full" />
                                     </div>
                                 ) : (
                                     <Avatar className="w-[40px] h-[40px] md:w-[35px] md:h-[35px]" icon={<UserOutlined />} />

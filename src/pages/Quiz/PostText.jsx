@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { Button, Form, Modal, Popover, Select, Input } from "antd";
-import { addDoc, collection, getFirestore } from "firebase/firestore";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { subjectOption } from "../../helpers/subject";
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
+import { useSelector } from "react-redux";
+import { post_api } from "../../services/fetchapi";
 
 export default function PostText() {
     const [quiz, setQuiz] = useState({
@@ -22,24 +24,22 @@ export default function PostText() {
         },
     ]);
 
-    const [user, setUser] = useState();
-    const auth = getAuth();
+    const user = useSelector((state) => state.user);
+
     const navigate = useNavigate();
     useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setUser(user);
-            } else {
-                Swal.fire({
-                    title: "Bạn chưa đăng nhập",
-                    text: "Vui lòng đăng nhập để tiếp tục",
-                    icon: "warning",
-                    didClose: () => {
-                        navigate("/login");
-                    },
-                });
-            }
-        });
+        const token = Cookies.get("token");
+
+        if (token === undefined) {
+            Swal.fire({
+                title: "Bạn chưa đăng nhập",
+                text: "Vui lòng đăng nhập để tiếp tục",
+                icon: "warning",
+                didClose: () => {
+                    navigate("/login");
+                },
+            });
+        }
     }, []);
 
     const [defaultValue, setDefaultValue] = useState("");
@@ -59,27 +59,21 @@ export default function PostText() {
     };
 
     const onFinish = (values) => {
-        const now = new Date();
-        const db = getFirestore();
         const pushData = async () => {
-            try {
-                await addDoc(collection(db, "quiz"), {
-                    title: values.title,
-                    uid: user.uid,
-                    subject: values.subject,
-                    author: user.displayName,
-                    email: user.email,
-                    verify: user.emailVerified,
-                    image_author: user.photoURL,
-                    content: values.content,
-                    img: values.image,
-                    noa: 0, //số lần làm bài number of attemps
-                    date: format(now, "HH:mm:ss dd/MM/yyyy"),
-                    status: false,
-                    questions: quest,
-                    default: defaultValue,
-                });
-
+            const newQuiz = {
+                title: values.title,
+                uid: user._id,
+                subject: values.subject,
+                content: values.content,
+                img: values.image,
+                noa: 0, //số lần làm bài number of attemps
+                status: false,
+                questions: quest,
+                default: defaultValue,
+            };
+            const req = await post_api("/quiz", newQuiz, "POST");
+            const data = await req.json();
+            if (req.ok) {
                 Swal.fire({
                     icon: "success",
                     title: "Thêm bài viết thành công",
@@ -88,11 +82,11 @@ export default function PostText() {
                         navigate("/");
                     },
                 });
-            } catch (e) {
+            } else {
                 Swal.fire({
                     icon: "error",
-                    title: "Thêm không thành công",
-                    text: "Mã lỗi\n" + e.code,
+                    title: "Lỗi",
+                    text: data.message,
                 });
             }
         };
@@ -179,10 +173,17 @@ export default function PostText() {
         setOpen(newOpen);
     };
 
+    const onChange = (value) => {
+        setQuiz({
+            ...quiz,
+            subject: value,
+        });
+    };
+
     return (
         <div className="flex items-center justify-center gap-5 flex-col md:flex-row">
             <div className="w-full h-[500px] md:h-auto md:w-[700px] bg-white p-2 md:p-5">
-                <Form onFinish={onFinish} onFinishFailed={onFinishFailed} autoComplete="off" layout="vertical" className="frm-post my-3 overflow-y-scroll h-[600px]">
+                <Form onFinishFailed={onFinishFailed} onFinish={onFinish} autoComplete="off" layout="vertical" className="frm-post my-3 overflow-y-scroll h-[600px]">
                     <h1 className="text-2xl font-bold text-green-500 text-center mb-5">Thêm bài quiz mới</h1>
                     <div className="flex gap-3">
                         <div className="flex-1">
@@ -216,6 +217,8 @@ export default function PostText() {
                                     filterOption={(input, option) => (option?.label ?? "").includes(input)}
                                     filterSort={(optionA, optionB) => (optionA?.label ?? "").toLowerCase().localeCompare((optionB?.label ?? "").toLowerCase())}
                                     options={subjectOption}
+                                    value={quiz.subject}
+                                    onChange={onChange}
                                 />
                             </Form.Item>
                         </div>

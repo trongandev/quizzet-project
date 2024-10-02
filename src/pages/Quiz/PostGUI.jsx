@@ -1,20 +1,20 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { Button, Modal, Popover, Select, Input, Divider, Tour } from "antd";
-import { addDoc, collection, getFirestore } from "firebase/firestore";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { Button, Modal, Popover, Select, Input } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import { format } from "date-fns";
 import { CiCirclePlus } from "react-icons/ci";
 import { IoIosClose } from "react-icons/io";
 import { FaRegEdit } from "react-icons/fa";
 import { MdContentPaste } from "react-icons/md";
 import { subjectOption } from "../../helpers/subject";
 import { MdEdit } from "react-icons/md";
-import { db } from "../Auth/firebase";
+import { useSelector } from "react-redux";
+import Cookies from "js-cookie";
+import { post_api } from "../../services/fetchapi";
 
 export default function PostGUI() {
     const [quiz, setQuiz] = useState({
+        slug: "",
         title: "",
         content: "",
         img: "https://t4.ftcdn.net/jpg/04/73/25/49/360_F_473254957_bxG9yf4ly7OBO5I0O5KABlN930GwaMQz.jpg",
@@ -29,30 +29,27 @@ export default function PostGUI() {
         },
     ]);
 
-    const [user, setUser] = useState();
-    const auth = getAuth();
+    const user = useSelector((state) => state.user);
+
     const navigate = useNavigate();
+    useEffect(() => {
+        const token = Cookies.get("token");
+
+        if (token === undefined) {
+            Swal.fire({
+                title: "Bạn chưa đăng nhập",
+                text: "Vui lòng đăng nhập để tiếp tục",
+                icon: "warning",
+                didClose: () => {
+                    navigate("/login");
+                },
+            });
+        }
+    }, []);
 
     const handleSelect = (questionId, answerIndex) => {
         setQuest((prevQuest) => prevQuest.map((q) => (q.id === questionId ? { ...q, correct: answerIndex } : q)));
     };
-
-    useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setUser(user);
-            } else {
-                Swal.fire({
-                    title: "Bạn chưa đăng nhập",
-                    text: "Vui lòng đăng nhập để tiếp tục",
-                    icon: "warning",
-                    didClose: () => {
-                        navigate("/login");
-                    },
-                });
-            }
-        });
-    }, []);
 
     const [defaultValue, setDefaultValue] = useState("");
 
@@ -71,21 +68,21 @@ export default function PostGUI() {
     };
 
     const pushData = async () => {
-        try {
-            await addDoc(collection(db, "quiz"), {
-                ...quiz,
-                uid: user.uid,
-                author: user.displayName,
-                email: user.email,
-                verify: user.emailVerified,
-                image_author: user.photoURL,
-                noa: 0, //số lần làm bài number of attemps
-                date: format(new Date(), "HH:mm:ss dd/MM/yyyy"),
-                status: false,
-                questions: quest,
-                default: defaultValue,
-            });
-
+        const newQuiz = {
+            ...quiz,
+            uid: user._id,
+            author: user.displayName,
+            email: user.email,
+            verify: user.emailVerified,
+            image_author: user.profilePicture,
+            noa: 0, //số lần làm bài number of attemps
+            status: false,
+            questions: quest,
+            default: defaultValue,
+        };
+        const req = await post_api("/quiz", newQuiz, "POST");
+        const data = await req.json();
+        if (req.ok) {
             Swal.fire({
                 icon: "success",
                 title: "Thêm bài viết thành công",
@@ -94,11 +91,11 @@ export default function PostGUI() {
                     navigate("/");
                 },
             });
-        } catch (e) {
+        } else {
             Swal.fire({
                 icon: "error",
-                title: "Thêm không thành công",
-                text: "Mã lỗi\n" + e.code,
+                title: "Lỗi",
+                text: data.message,
             });
         }
     };
@@ -121,7 +118,6 @@ export default function PostGUI() {
             });
             return;
         }
-
         pushData();
     }
 
@@ -215,6 +211,12 @@ export default function PostGUI() {
             answers: ["", "", "", ""],
         });
     };
+    const onChange = (value) => {
+        setQuiz({
+            ...quiz,
+            subject: value,
+        });
+    };
     return (
         <div className="flex items-center justify-center gap-5 flex-col md:flex-row">
             <div className="w-full md:w-[1000px]  overflow-y-auto frm-post">
@@ -262,12 +264,13 @@ export default function PostGUI() {
                         <Select
                             className="w-full mt-3 rounded-none"
                             showSearch
-                            placeholder="Tìm kiếm nghành học - môn học..."
+                            placeholder="Tìm kiếm nghành học - môn học saa..."
                             optionFilterProp="children"
                             filterOption={(input, option) => (option?.label ?? "").includes(input)}
                             filterSort={(optionA, optionB) => (optionA?.label ?? "").toLowerCase().localeCompare((optionB?.label ?? "").toLowerCase())}
                             options={subjectOption}
                             value={quiz.subject}
+                            onChange={onChange}
                         />
                     </Modal>
                 </div>
