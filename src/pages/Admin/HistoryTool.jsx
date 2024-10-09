@@ -3,6 +3,7 @@ import { Button, Modal } from "antd";
 import { FaRegEye } from "react-icons/fa";
 import { get_api } from "../../services/fetchapi";
 import handleCompareDate from "../../utils/compareData";
+import { Link } from "react-router-dom";
 
 export default function HistoryTool() {
     const [history, setHistory] = useState([]);
@@ -99,7 +100,7 @@ export default function HistoryTool() {
                                         {index + 1}
                                     </th>
                                     <td className="px-6 py-4">
-                                        <p>{item.subject}</p>
+                                        <Link to={`/decuong/${item.subject}`}>{item.subject}</Link>
                                     </td>
                                     <td className="px-6 py-4">
                                         <p>{item.username}</p>
