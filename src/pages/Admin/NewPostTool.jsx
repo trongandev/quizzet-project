@@ -123,7 +123,7 @@ export default function NewPostTool() {
             <div className="">
                 <div className="flex justify-between items-center">
                     <h1 className="text-lg text-green-500 font-bold">Quản lí tool</h1>
-                    <Button onClick={() => handlePost()} className="flex gap-1 items-center">
+                    <Button onClick={showModal} className="flex gap-1 items-center">
                         <IoAdd />
                         Thêm mới
                     </Button>
