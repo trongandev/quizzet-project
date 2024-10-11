@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { getCookie } from "../../helpers/cookie";
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import sortArrayByTime from "../../helpers/sort";
 import { IoIosTimer } from "react-icons/io";
 import Cookies from "js-cookie";
 import { get_api } from "../../services/fetchapi";
@@ -35,7 +33,6 @@ export default function History() {
         queryKey: ["history"],
         queryFn: fetchHistory,
     });
-    console.log(historyData);
 
     return (
         <>

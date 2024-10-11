@@ -51,7 +51,7 @@ export default function Profile() {
             const decoded = jwtDecode(token);
             fetchAPI(decoded.user.id);
         }
-    }, []);
+    }, [dispatch, token]);
 
     const [open, setOpen] = useState(false);
     const [openProfile, setOpenProfile] = useState(false);
@@ -98,7 +98,6 @@ export default function Profile() {
     };
 
     const handleSendMail = async () => {
-        console.log("send mail");
         const req = await get_api("/profile/sendmail");
         if (req.ok) {
             Swal.fire({
@@ -146,21 +145,13 @@ export default function Profile() {
     const handleCancelProfile = () => {
         setOpenProfile(false);
     };
-    const showModalProfile = () => {
-        setOpenProfile(true);
-    };
-
     const handleInputChange = (e) => {
         const { id, value } = e.target;
         setProfile({ ...profile, [id]: value });
-        console.log(profile);
     };
 
     const [openTopic, setOpenTopic] = useState(false);
 
-    const hideTopic = () => {
-        setOpenTopic(false);
-    };
     const handleOpenTopic = (newOpen, id) => {
         setOpenTopic(newOpen ? id : false);
     };

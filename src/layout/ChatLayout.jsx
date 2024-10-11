@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Chat from "../pages/User/Chat";
-import ChatRoom from "../pages/User/ChatRoom";
-import { Outlet, useParams } from "react-router-dom";
+// import ChatRoom from "../pages/User/ChatRoom";
+import { Outlet } from "react-router-dom";
 import { Spin } from "antd";
 
 export default function ChatLayout() {
@@ -27,7 +27,6 @@ export default function ChatLayout() {
 
         handleRenderUser();
     }, []);
-    console.log(data);
     return (
         <div className="flex bg-white border-gray-200 border-[1px] rounded-lg shadow-sm ">
             <div className=" h-[83vh] w-[25%]  py-2 border-r-[1px] ">

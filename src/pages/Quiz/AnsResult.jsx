@@ -11,11 +11,11 @@ export default function Answer() {
     useEffect(() => {
         const fetchAPI = async () => {
             const req = await get_api("/history/" + params.id);
-            setQuiz(req.history[0]);
+            setQuiz(req.history);
             setLoading(true);
         };
         fetchAPI();
-    }, []);
+    }, [params.id]);
 
     return (
         <>

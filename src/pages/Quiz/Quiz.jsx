@@ -3,7 +3,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Modal, Spin } from "antd";
 import { IoIosArrowUp } from "react-icons/io";
-import { format } from "date-fns";
 import { Helmet } from "react-helmet";
 import { get_api, post_api } from "../../services/fetchapi";
 import Cookies from "js-cookie";
@@ -14,7 +13,6 @@ export default function Quiz() {
     const [quiz, setQuiz] = useState([]);
     const [selectedAnswers, setSelectedAnswers] = useState({});
     const [loading, setLoading] = useState(false);
-    const [saveAns, setSaveAns] = useState({});
     const params = useParams();
     const navigate = useNavigate();
     useEffect(() => {
@@ -36,7 +34,7 @@ export default function Quiz() {
             }
         };
         fetchBook();
-    }, []);
+    }, [params.id]);
 
     const token = Cookies.get("token");
     if (token === undefined) {
@@ -133,7 +131,6 @@ export default function Quiz() {
     const handleCancel = () => {
         setIsModalOpen(false);
     };
-    console.log(quiz);
     return (
         <>
             {loading ? (

@@ -6,7 +6,6 @@ import Swal from "sweetalert2";
 import { get_api, post_api } from "../../services/fetchapi";
 import handleCompareDate from "../../utils/compareData";
 import { FaRegEye } from "react-icons/fa";
-import { set } from "date-fns";
 
 export default function UserUseTool() {
     const [tool, setTool] = useState([]);
@@ -20,8 +19,6 @@ export default function UserUseTool() {
         };
         fetchTool();
     }, [loading]);
-
-    console.log(tool);
 
     const removeDoc = async (id) => {
         const req = await post_api(`/tool/user`, { id: id }, "DELETE");

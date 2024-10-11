@@ -95,7 +95,6 @@ export default function NewPostTool() {
 
     const handlePaste = () => {
         navigator.clipboard.readText().then((text) => {
-            console.log(text);
             setData({
                 ...data,
                 image: text,

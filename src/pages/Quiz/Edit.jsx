@@ -186,7 +186,6 @@ export default function Edit() {
         const newAnswers = [...questAddEdit.answers];
         newAnswers[index] = value;
         setQuestAddEdit({ ...questAddEdit, answers: newAnswers });
-        console.log(quest);
     };
 
     const handleClearField = () => {

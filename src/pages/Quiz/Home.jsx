@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { CiTimer } from "react-icons/ci";
 import { Tooltip } from "antd";
@@ -54,6 +54,8 @@ export default function Home() {
     });
 
     useEffect(() => {
+        document.title = "Quiz - Trang chủ";
+
         if (profileData) {
             dispatch(setNewUser(profileData));
         }

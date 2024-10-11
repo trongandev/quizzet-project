@@ -2,10 +2,8 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { Button, Form, Modal, Popover, Select, Input } from "antd";
 import { useNavigate } from "react-router-dom";
-import { format } from "date-fns";
 import { subjectOption } from "../../helpers/subject";
 import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode";
 import { useSelector } from "react-redux";
 import { post_api } from "../../services/fetchapi";
 
@@ -93,25 +91,23 @@ export default function PostText() {
         pushData();
     };
 
-    const onFinishFailed = (errorInfo) => {
-        console.log("Failed:", errorInfo);
-    };
+    const onFinishFailed = (errorInfo) => {};
 
-    function handlePost(e) {
-        e.preventDefault();
-        const title = quiz.title;
-        const content = quiz.content;
-        const image = quiz.img;
+    // function handlePost(e) {
+    //     e.preventDefault();
+    //     const title = quiz.title;
+    //     const content = quiz.content;
+    //     const image = quiz.img;
 
-        if (title === "" || image === "" || content === "") {
-            Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Vui lòng điền đầy đủ thông tin ở phần tiêu đề, nội dung, đường dẫn hình ảnh",
-            });
-            return;
-        }
-    }
+    //     if (title === "" || image === "" || content === "") {
+    //         Swal.fire({
+    //             icon: "error",
+    //             title: "Oops...",
+    //             text: "Vui lòng điền đầy đủ thông tin ở phần tiêu đề, nội dung, đường dẫn hình ảnh",
+    //         });
+    //         return;
+    //     }
+    // }
 
     const handleImage = (e) => {
         setQuiz({
@@ -164,10 +160,6 @@ export default function PostText() {
     };
 
     const [open, setOpen] = useState(false);
-
-    const hide = () => {
-        setOpen(false);
-    };
 
     const handleOpenChange = (newOpen) => {
         setOpen(newOpen);

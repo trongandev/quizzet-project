@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
-import { Button } from "antd";
+import { Spin } from "antd";
 import { get_api } from "../../services/fetchapi";
 import { useQuery } from "@tanstack/react-query";
+import { Helmet } from "react-helmet";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const fetchSO = async (slug) => {
     const req = await get_api(`/admin/so/${slug}`);
@@ -11,18 +13,21 @@ const fetchSO = async (slug) => {
 
 export default function Refer() {
     const params = useParams();
-    const [tool, setTool] = useState([]);
 
     const { data: SOData, isLoading: SOLoading } = useQuery({
         queryKey: ["SO" + params.id],
         queryFn: () => fetchSO(params.id),
     });
 
-    useEffect(() => {
-        document.title = "Quiz - " + SOData?.title;
-    }, []);
     return (
         <div className="">
+            <Helmet>
+                <title>{SOData?.title}</title>
+                <meta name="description" content={SOData?.content} />
+                <meta name="keywords" content={`${SOData?.title}, ${SOData?.content}`} />
+                <meta property="og:title" content={SOData?.content} />
+                <meta property="og:url" content={`https://www.trongan.site/decuong/${SOData?.slug}`} />
+            </Helmet>
             <div className="">
                 <h1 className="text-2xl ">
                     Bộ đề môn: <label className="text-green-500 font-bold ">{SOData?.title}</label>{" "}
@@ -43,6 +48,11 @@ export default function Refer() {
                         </div>
                     ))}
             </div>
+            {SOLoading && (
+                <div className="h-[400px] flex items-center justify-center w-full bg-white p-5 mt-2">
+                    <Spin indicator={<LoadingOutlined spin />} size="large" />
+                </div>
+            )}
         </div>
     );
 }

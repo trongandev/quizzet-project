@@ -28,7 +28,6 @@ export default function HistoryTool() {
     useEffect(() => {
         const fetchBook = async () => {
             const fetchTopic = await get_api("/tool/history");
-            console.log(fetchTopic);
             setHistory(fetchTopic);
         };
         fetchBook();

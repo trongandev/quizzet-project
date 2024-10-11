@@ -201,7 +201,6 @@ export default function PostGUI() {
         const newAnswers = [...questAddEdit.answers];
         newAnswers[index] = value;
         setQuestAddEdit({ ...questAddEdit, answers: newAnswers });
-        console.log(quest);
     };
 
     const handleClearField = () => {

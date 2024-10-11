@@ -1,9 +1,8 @@
-import { Avatar, Button, Tooltip } from "antd";
+import { Button, Tooltip } from "antd";
 import React, { useEffect, useState } from "react";
 import { CiTimer } from "react-icons/ci";
 import { MdOutlineVerified } from "react-icons/md";
 import { Link, NavLink, useParams } from "react-router-dom";
-import { UserOutlined } from "@ant-design/icons";
 import { get_api } from "../../services/fetchapi";
 import handleCompareDate from "../../utils/compareData";
 
@@ -18,9 +17,7 @@ export default function ResultTopic() {
             setTopic(req.quiz);
         };
         fetchAPI();
-    }, []);
-
-    console.log(topic);
+    }, [params.id]);
 
     return (
         <div>

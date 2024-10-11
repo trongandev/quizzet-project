@@ -1,18 +1,18 @@
-import { Avatar, Button, Input, Modal } from "antd";
-import React, { useEffect, useState } from "react";
+import { Button, Input, Modal } from "antd";
+import React, { useState } from "react";
 import { IoIosSettings } from "react-icons/io";
-import { UserOutlined } from "@ant-design/icons";
-import { IoIosCall } from "react-icons/io";
-import { IoVideocam } from "react-icons/io5";
-import { IoIosInformationCircle } from "react-icons/io";
-import { BiSolidSend } from "react-icons/bi";
-import { MdEmojiEmotions } from "react-icons/md";
+// import { UserOutlined } from "@ant-design/icons";
+// import { IoIosCall } from "react-icons/io";
+// import { IoVideocam } from "react-icons/io5";
+// import { IoIosInformationCircle } from "react-icons/io";
+// import { BiSolidSend } from "react-icons/bi";
+// import { MdEmojiEmotions } from "react-icons/md";
 import { FaCirclePlus } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 export default function Chat(props) {
-    const [profile, setProfile] = useState(null);
-    const [user, setUser] = useState({});
+    // const [profile, setProfile] = useState(null);
+    // const [user, setUser] = useState({});
 
     // useEffect(() => {
     //     // Lắng nghe sự thay đổi trạng thái xác thực và cập nhật profile
@@ -41,8 +41,6 @@ export default function Chat(props) {
     //     };
     //     fetchUser();
     // }, [profile]);
-
-    console.log(user);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
