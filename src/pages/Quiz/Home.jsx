@@ -5,18 +5,9 @@ import { Tooltip } from "antd";
 import { MdOutlineVerified } from "react-icons/md";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import { useDispatch } from "react-redux";
-import Cookies from "js-cookie";
 import { get_api } from "../../services/fetchapi";
-import { jwtDecode } from "jwt-decode";
-import { setNewUser } from "../../reducers/userSlice";
 import handleCompareDate from "../../utils/compareData";
 import { useQuery } from "@tanstack/react-query";
-
-const fetchProfile = async (userId) => {
-    const response = await get_api("/profile/" + userId);
-    return response.user;
-};
 
 // Function to fetch quiz data
 const fetchQuiz = async () => {
@@ -31,18 +22,6 @@ const fetchTool = async () => {
 };
 
 export default function Home() {
-    const dispatch = useDispatch();
-    const token = Cookies.get("token");
-
-    const decoded = token ? jwtDecode(token) : null;
-    const userId = decoded?.user?.id;
-
-    const { data: profileData, isLoading: profileLoading } = useQuery({
-        queryKey: ["profile", userId],
-        queryFn: () => fetchProfile(userId),
-        enabled: !!userId,
-    });
-
     const { data: quizData, isLoading: quizLoading } = useQuery({
         queryKey: ["quiz"],
         queryFn: fetchQuiz,
@@ -55,11 +34,7 @@ export default function Home() {
 
     useEffect(() => {
         document.title = "Quiz - Trang chủ";
-
-        if (profileData) {
-            dispatch(setNewUser(profileData));
-        }
-    }, [profileData, dispatch]);
+    }, []);
 
     return (
         <div className=" ">

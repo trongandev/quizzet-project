@@ -1,5 +1,5 @@
 import { Button, Input, Popover, Spin } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { IoIosSettings } from "react-icons/io";
 import { IoIosCall } from "react-icons/io";
 import { IoVideocam } from "react-icons/io5";
@@ -13,18 +13,38 @@ import { get_api } from "../../services/fetchapi";
 import handleCompareDate from "../../utils/compareData";
 import { useSelector } from "react-redux";
 import io from "socket.io-client";
+import { useQuery } from "@tanstack/react-query";
 const socket = io(`${process.env.REACT_APP_API_SOCKET}`);
+
+const fetchEmoji = async () => {
+    const req = await fetch("https://emoji-api.com/emojis?access_key=bf409e3ed3d59cc01d12b7f1a9512896fe36f4f1");
+    const res = await req.json();
+
+    return res;
+};
+
 export default function ChatRoom() {
     const params = useParams();
     const [data, setData] = useState({});
+    const [dataEmoji, setDataEmoji] = useState({});
     const [loading, setLoading] = useState(false);
+    const [searchEmoji, setSearchEmoji] = useState(false);
+    const user = useSelector((state) => state.user);
+    const lastMessageRef = useRef(null);
+    const { data: emojiData, isLoading: emojiLoading } = useQuery({
+        queryKey: ["emoji"],
+        queryFn: fetchEmoji,
+    });
+
     useEffect(() => {
         const fetchAPI = async () => {
             const req = await get_api(`/chat/${params.id}`);
             setData(req);
             setLoading(true);
+            setDataEmoji(emojiData);
         };
         fetchAPI();
+        fetchEmoji();
     }, [params.id]);
 
     const [input, setInput] = useState("");
@@ -49,6 +69,12 @@ export default function ChatRoom() {
         socket.emit("sendMessage", { chatRoomId: params.id, message, userId: user.id, token });
     };
 
+    useEffect(() => {
+        if (lastMessageRef.current) {
+            lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }, [data.messages]);
+
     const handleSendMess = (e) => {
         e.preventDefault();
         if (input === "") return;
@@ -66,16 +92,11 @@ export default function ChatRoom() {
         setOpen(newOpen);
     };
 
-    const [emoji, setEmoji] = useState({});
-
-    useEffect(() => {
-        fetch("https://emoji-api.com/emojis?access_key=bf409e3ed3d59cc01d12b7f1a9512896fe36f4f1")
-            .then((res) => res.json())
-            .then((data) => {
-                setEmoji(data);
-            });
-    }, []);
-    const user = useSelector((state) => state.user);
+    const handleSearchEmoji = (e) => {
+        setSearchEmoji(e.target.value);
+        const filteredData = emojiData.filter((item) => item.unicodeName.includes(e.target.value));
+        setDataEmoji(filteredData);
+    };
 
     return (
         <div className=" w-[75%] ">
@@ -106,7 +127,7 @@ export default function ChatRoom() {
                         <div className="p-3 h-[530px] overflow-y-scroll ">
                             <div className="">
                                 {data.messages?.map((item, index) => (
-                                    <div className="" key={index}>
+                                    <div className="" key={index} ref={index === data.messages.length - 1 ? lastMessageRef : null}>
                                         {item.sender === user._id ? (
                                             <div className="flex gap-3 items-center mb-3 justify-end">
                                                 <p className="text-[10px] text-gray-500">{handleCompareDate(item.created_at)}</p>
@@ -145,12 +166,12 @@ export default function ChatRoom() {
                                         content={
                                             <div>
                                                 <div className="">
-                                                    <Input placeholder="Search"></Input>
+                                                    <Input placeholder="Search" value={searchEmoji} onChange={(e) => handleSearchEmoji(e)}></Input>
                                                 </div>
-                                                <div className="grid grid-cols-5 gap-1 w-[300px] overflow-y-scroll h-[300px] mt-2">
-                                                    {emoji && emoji.length > 0 ? ( // Check if emoji exists and has elements
+                                                <div className="grid grid-cols-5 gap-1 w-[300px]  mt-2">
+                                                    {dataEmoji && dataEmoji.length > 0 ? ( // Check if emoji exists and has elements
                                                         <div className="grid grid-cols-5 gap-1 w-[300px] overflow-y-scroll h-[300px] mt-2">
-                                                            {emoji.map((item, index) => (
+                                                            {dataEmoji.map((item, index) => (
                                                                 <div className="flex items-center justify-center hover:bg-gray-200 cursor-pointer" key={index}>
                                                                     <h1 className="text-xl" onClick={(e) => setInput(input + item.character)}>
                                                                         {item.character}

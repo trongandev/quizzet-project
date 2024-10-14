@@ -36,7 +36,7 @@ export default function Login() {
             const res = await post_api("/auth/login", values, "POST");
             const data = await res.json();
             if (res.ok) {
-                Cookies.set("token", data.token, { expires: 120 });
+                Cookies.set("token", data.token, { expires: 1 });
                 navigate("/");
             } else {
                 Swal.fire({

@@ -8,7 +8,16 @@ import { IoMdNotificationsOutline } from "react-icons/io";
 import { RiMessengerLine } from "react-icons/ri";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { get_api } from "../services/fetchapi";
+import { useQuery } from "@tanstack/react-query";
+import { setNewUser } from "../reducers/userSlice";
+
+const fetchProfile = async (userId) => {
+    const response = await get_api("/profile/" + userId);
+    return response.user;
+};
+
 export default function Header() {
     const [open, setOpen] = useState(false);
     const [openNoti, setOpenNoti] = useState(false);
@@ -34,6 +43,23 @@ export default function Header() {
         Cookies.remove("token");
         window.location.reload();
     };
+
+    const dispatch = useDispatch();
+
+    const decoded = token ? jwtDecode(token) : null;
+    const userId = decoded?.user?.id;
+
+    const { data: profileData, isLoading: profileLoading } = useQuery({
+        queryKey: ["profile", userId],
+        queryFn: () => fetchProfile(userId),
+        enabled: !!userId,
+    });
+
+    useEffect(() => {
+        if (profileData) {
+            dispatch(setNewUser(profileData));
+        }
+    }, [profileData, dispatch]);
 
     return (
         <header className="bg-orange-500 px-2 md:px-5 lg:px-10 text-white w-full">

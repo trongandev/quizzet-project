@@ -1,4 +1,4 @@
-import { Button, Input, Modal } from "antd";
+import { Button, Input, Modal, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { IoIosSettings } from "react-icons/io";
 // import { UserOutlined } from "@ant-design/icons";
@@ -13,7 +13,8 @@ import { get_api, post_api } from "../../services/fetchapi";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
-
+import Cookies from "js-cookie";
+import Swal from "sweetalert2";
 function useDebounce(value, duration = 300) {
     const [debounceValue, setDebounceValue] = useState(value);
     useEffect(() => {
@@ -27,20 +28,42 @@ function useDebounce(value, duration = 300) {
     return debounceValue;
 }
 
-export default function Chat(props) {
+export default function Chat() {
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState(null);
     const [input, setInput] = useState(null);
     const debouncedSearchTerm = useDebounce(input, 300);
+
     useEffect(() => {
-        setProfile(props.chat);
-    }, [props]);
+        const handleRenderUser = async () => {
+            setLoading(true);
+            const req = await get_api("/chat");
+            if (req.ok) {
+                setProfile(req.chats);
+            }
+            setLoading(false);
+        };
+        const token = Cookies.get("token");
+        if (token === undefined) {
+            Swal.fire({
+                title: "Bạn chưa đăng nhập",
+                text: "Vui lòng đăng nhập để nhắn tin",
+                icon: "warning",
+                didClose: () => {
+                    navigate("/login");
+                },
+            });
+        } else {
+            handleRenderUser();
+        }
+    }, []);
 
     useEffect(() => {
         const fetchAPI = async () => {
             const req = await get_api(`/profile/findbyname/${input}`);
-            setSearch(req);
+            if (req.ok) setSearch(req.users);
+            else message.error(req.message);
             setLoading(false);
         };
         if (debouncedSearchTerm) {
@@ -106,7 +129,7 @@ export default function Chat(props) {
             </div>
             <div className="border-t-[1px] my-3 h-[530px] overflow-y-scroll">
                 {profile &&
-                    profile.map((item) => (
+                    profile?.map((item) => (
                         <Link key={item.id} to={`/chat/room/${item._id}`} className="flex gap-2 items-center hover:bg-gray-200 p-2 hover:cursor-pointer">
                             <div className="w-[40px] h-[40px] md:w-[50px] md:h-[50px] relative">
                                 <img
@@ -131,7 +154,7 @@ export default function Chat(props) {
                     <div className="">
                         <Input value={input} autoFocus placeholder="Tìm kiếm bạn bè mới của bạn..." onChange={(e) => handleChangeInput(e)}></Input>
                     </div>
-                    <div className="py-3">
+                    <div className="py-3 flex flex-col gap-3">
                         {!loading &&
                             search &&
                             search.map((item) => (
@@ -142,7 +165,9 @@ export default function Chat(props) {
                                                 <img src={item.profilePicture} className="w-full h-full rounded-full object-cover" alt="" />
                                                 <div className="absolute w-3 h-3 bg-green-400 rounded-full bottom-0 right-1"></div>
                                             </div>
-                                            <h1 className="">{item.displayName}</h1>
+                                            <Link to={`/profile/${item._id}`}>
+                                                <h1 className="hover:underline hover:cursor-pointer">{item.displayName}</h1>
+                                            </Link>
                                         </div>
                                     </label>
                                     <div className="">
