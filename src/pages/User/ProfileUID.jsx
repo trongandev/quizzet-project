@@ -6,15 +6,16 @@ import Swal from "sweetalert2";
 import { Tooltip, Avatar, Button } from "antd";
 import { CiTimer } from "react-icons/ci";
 import { FaEye } from "react-icons/fa";
-import { get_api } from "../../services/fetchapi";
+import { get_api, post_api } from "../../services/fetchapi";
 import handleCompareDate from "../../utils/compareData";
+import { FaFacebookMessenger } from "react-icons/fa6";
+import { useSelector } from "react-redux";
 
 export default function ProfileUID() {
     const [profile, setProfile] = useState({});
     const [quiz, setQuiz] = useState([]);
 
     const params = useParams();
-
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -26,55 +27,32 @@ export default function ProfileUID() {
 
         fetchAPI();
     }, []);
+    const user = useSelector((state) => state.user);
 
-    // useEffect(() => {
-    //     if (auth.currentUser.uid === params.uid) {
-    //         navigate("/profile");
-    //     }
-    // }, [params.uid]);
-
-    // const handleCreateRoomChat = async () => {
-    //     if (!auth.currentUser) {
-    //         Swal.fire({
-    //             title: "Vui lòng đăng nhập để sử dụng tính năng này",
-    //             icon: "error",
-    //         });
-    //         return;
-    //     }
-    //     const currentUser = {
-    //         uid: auth.currentUser.uid,
-    //         displayName: auth.currentUser.displayName,
-    //         photoURL: auth.currentUser.photoURL,
-    //     };
-
-    //     const anotherUser = {
-    //         uid: profile.uid,
-    //         displayName: profile.displayName,
-    //         photoURL: profile.photoURL,
-    //     };
-
-    //     // Tạo truy vấn để tìm phòng trò chuyện giữa hai người dùng
-    //     const q = query(collection(db, "room"), where("anotherUser.uid", "==", anotherUser.uid));
-    //     const querySnapshot = await getDocs(q);
-    //     console.log(querySnapshot.docs);
-
-    //     if (!querySnapshot.empty) {
-    //         // Phòng trò chuyện đã tồn tại, điều hướng tới phòng này
-    //         const existingRoom = querySnapshot.docs[0];
-    //         navigate(`/chat/room/${existingRoom.id}`);
-    //     } else {
-    //         // Phòng trò chuyện chưa tồn tại, tạo phòng mới
-    //         const newRoomRef = await addDoc(collection(db, "room"), {
-    //             currentUser,
-    //             anotherUser,
-    //             date: serverTimestamp(),
-    //             chat: [],
-    //         });
-
-    //         // Điều hướng tới phòng trò chuyện mới
-    //         navigate(`/chat/room/${newRoomRef.id}`);
-    //     }
-    // };
+    const handleCreateAndCheckRoomChat = async (id_another_user) => {
+        const req = await get_api(`/chat/check/${id_another_user}`);
+        if (req.ok && req.exists) {
+            // Phòng chat đã tồn tại, điều hướng đến phòng chat
+            navigate(`/chat/room/${req.chatId}`);
+        } else if (req.ok && !req.exists) {
+            // Phòng chat chưa tồn tại, tạo mới
+            const createReq = await post_api(
+                "/chat/create-chat",
+                {
+                    participants: [user._id, id_another_user],
+                },
+                "POST"
+            );
+            const reqData = await createReq.json();
+            if (reqData.ok) {
+                navigate(`/chat/room/${reqData.chat}`);
+            } else {
+                console.log(reqData.message);
+            }
+        } else {
+            console.log(req.message);
+        }
+    };
 
     return (
         <div>
@@ -97,14 +75,10 @@ export default function ProfileUID() {
                             </div>
                         </div>
                     </div>
-                    {/* {auth.currentUser.uid === profile.uid ? (
-                        ""
-                    ) : (
-                        <Button onClick={handleCreateRoomChat} className="w-[100px] flex gap-1 items-center mt-2">
-                            <FaFacebookMessenger />
-                            Nhắn tin
-                        </Button>
-                    )} */}
+                    <Button onClick={() => handleCreateAndCheckRoomChat(params.uid)} className="w-[100px] flex gap-1 items-center mt-2">
+                        <FaFacebookMessenger />
+                        Nhắn tin
+                    </Button>
 
                     <hr className="my-5" />
                     <div className="">

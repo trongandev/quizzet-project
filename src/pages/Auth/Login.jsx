@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Swal from "sweetalert2";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
@@ -7,10 +7,15 @@ import { post_api } from "../../services/fetchapi";
 import Cookies from "js-cookie";
 import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
 import { FcGoogle } from "react-icons/fc";
-import axios from "axios";
 
 export default function Login() {
     const navigate = useNavigate();
+    const token = Cookies.get("token");
+    useEffect(() => {
+        if (token) {
+            navigate("/");
+        }
+    });
 
     const formik = useFormik({
         initialValues: {

@@ -8,59 +8,53 @@ import { BiSolidSend } from "react-icons/bi";
 import { MdEmojiEmotions } from "react-icons/md";
 import { FaCirclePlus } from "react-icons/fa6";
 import { useParams } from "react-router-dom";
-import Swal from "sweetalert2";
-import { format, isMonday, isToday } from "date-fns";
-import { is } from "date-fns/locale";
-
+import Cookies from "js-cookie";
+import { get_api } from "../../services/fetchapi";
+import handleCompareDate from "../../utils/compareData";
+import { useSelector } from "react-redux";
+import io from "socket.io-client";
+const socket = io("http://localhost:4000");
 export default function ChatRoom() {
     const params = useParams();
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(false);
-    // useEffect(() => {
-    //     const chatRoom = onSnapshot(doc(db, "chat", params.id), (doc) => {
-    //         setData(doc.data());
-    //         setLoading(true);
-    //     });
-    // }, []);
+    useEffect(() => {
+        const fetchAPI = async () => {
+            const req = await get_api(`/chat/${params.id}`);
+            setData(req);
+            setLoading(true);
+        };
+        fetchAPI();
+    }, [params.id]);
 
     const [input, setInput] = useState("");
 
-    // const addMessageToChatRoom = async (roomId, message) => {
-    //     try {
-    //         const roomRef = doc(db, "chat", roomId);
-    //         await updateDoc(roomRef, {
-    //             chat: arrayUnion({
-    //                 message: message,
-    //                 image: auth.currentUser.photoURL,
-    //                 create_at: format(new Date(), " HH:mm:ss yyyy-MM-dd"),
-    //                 sender: auth.currentUser.uid,
-    //             }),
-    //         });
-    //     } catch (error) {
-    //         Swal.fire({
-    //             title: "Lỗi",
-    //             text: "Có lỗi trong quá trình gửi tin nhắn\n" + error.message,
-    //             icon: "error",
-    //         });
-    //     }
-    // };
+    useEffect(() => {
+        socket.emit("joinRoom", params.id);
 
-    const formatDate = (date) => {
-        const formattedTime = format(date, " hh:mma"); // Định dạng thời gian thành 'hh:mma'
-        if (isToday(date)) {
-            return `Today at ${formattedTime}`;
-        } else {
-            // Định dạng khác nếu không phải hôm nay, ví dụ: 'MM/dd/yyyy at hh:mma'
-            return format(date, "MM/dd/yyyy at hh:mma");
-        }
+        socket.on("message", (data) => {
+            setData((prevData) => ({
+                ...prevData,
+                messages: [...prevData.messages, data.newMessage],
+            }));
+        });
+
+        return () => {
+            socket.emit("leaveRoom", params.id);
+            socket.off();
+        };
+    }, [params.id]);
+    const token = Cookies.get("token");
+    const addMessageToChatRoom = async (message) => {
+        socket.emit("sendMessage", { chatRoomId: params.id, message, userId: user.id, token });
     };
 
-    // const handleSendMess = (e) => {
-    //     e.preventDefault();
-    //     if (input === "") return;
-    //     addMessageToChatRoom(params.id, input);
-    //     setInput("");
-    // };
+    const handleSendMess = (e) => {
+        e.preventDefault();
+        if (input === "") return;
+        addMessageToChatRoom(input);
+        setInput("");
+    };
 
     const [open, setOpen] = useState(false);
 
@@ -81,7 +75,8 @@ export default function ChatRoom() {
                 setEmoji(data);
             });
     }, []);
-    const [auth, setAuth] = useState({});
+    const user = useSelector((state) => state.user);
+
     return (
         <div className=" w-[75%] ">
             {loading ? (
@@ -90,14 +85,14 @@ export default function ChatRoom() {
                         <div className="flex gap-2 items-center p-2 ">
                             <div className="w-[40px] h-[40px] md:w-[40px] md:h-[40px] relative">
                                 <img
-                                    src={auth.currentUser?.uid === data.currentUser?.uid ? data.anotherUser?.photoURL : data.currentUser?.photoURL}
+                                    src={user._id === data.participants[1]._id ? data.participants[0].profilePicture : data.participants[1].profilePicture}
                                     className="w-full h-full rounded-full object-cover"
                                     alt=""
                                 />
                                 <div className="absolute w-3 h-3 bg-green-400 rounded-full bottom-0 right-1"></div>
                             </div>
                             <div className="">
-                                <h1 className="font-bold">{auth.currentUser?.uid === data.currentUser?.uid ? data.anotherUser?.displayName : data.currentUser?.displayName || "Chưa đặt tên"}</h1>
+                                <h1 className="font-bold">{user._id === data.participants[1]._id ? data.participants[0].displayName : data.participants[1].displayName}</h1>
                                 <p className="text-gray-500 text-sm">Đang hoạt động</p>
                             </div>
                         </div>
@@ -110,24 +105,28 @@ export default function ChatRoom() {
                     <div className="relative h-[90%]  ">
                         <div className="p-3 h-[530px] overflow-y-scroll ">
                             <div className="">
-                                {data.chat?.map((item, index) => (
-                                    <div className="" key={item.sender + index}>
-                                        {item.sender === auth.currentUser.uid ? (
+                                {data.messages?.map((item, index) => (
+                                    <div className="" key={index}>
+                                        {item.sender === user._id ? (
                                             <div className="flex gap-3 items-center mb-3 justify-end">
-                                                <p className="text-[10px] text-gray-500">{formatDate(item.create_at)}</p>
+                                                <p className="text-[10px] text-gray-500">{handleCompareDate(item.created_at)}</p>
 
                                                 <div className="flex gap-2 items-center">
-                                                    <h1 className="bg-gray-200 flex items-center px-6 py-1 rounded-l-full rounded-t-full text-right">{item.message}</h1>
+                                                    <h1 className="bg-gray-200 flex items-center px-6 py-1 rounded-l-full rounded-t-full text-right">{item.text}</h1>
                                                 </div>
                                             </div>
                                         ) : (
                                             <div className="flex gap-3 items-center mb-3">
                                                 <div className="w-[30px] h-[30px] overflow-hidden rounded-full">
-                                                    <img src={item.image} className="w-full h-full object-cover " alt="" />
+                                                    <img
+                                                        src={user._id === data.participants[1]._id ? data.participants[0].profilePicture : data.participants[1].profilePicture}
+                                                        className="w-full h-full object-cover "
+                                                        alt=""
+                                                    />
                                                 </div>
                                                 <div className="flex gap-2 items-center">
-                                                    <h1 className="bg-gray-200 flex items-center px-6 py-1 rounded-r-full rounded-t-full ">{item.message}</h1>
-                                                    <p className="text-[10px] text-gray-500 ">{formatDate(item.create_at)}</p>
+                                                    <h1 className="bg-gray-200 flex items-center px-6 py-1 rounded-r-full rounded-t-full ">{item.text}</h1>
+                                                    <p className="text-[10px] text-gray-500 ">{handleCompareDate(item.created_at)}</p>
                                                 </div>
                                             </div>
                                         )}
@@ -136,12 +135,12 @@ export default function ChatRoom() {
                             </div>
                         </div>
                         <div className="sticky bottom-0 w-full p-2">
-                            <form className="flex items-center ">
+                            <form className="flex items-center " onSubmit={handleSendMess}>
                                 <Button className="rounded-none text-orange-700">
                                     <FaCirclePlus size={20} />
                                 </Button>
                                 <div className="border-[1px] w-full flex overflow-hidden">
-                                    <Input placeholder="Aa" className="rounded-none border-none focus:border-none" value={input} onChange={(e) => setInput(e.target.value)}></Input>
+                                    <Input placeholder="Aa" autoFocus className="rounded-none border-none focus:border-none" value={input} onChange={(e) => setInput(e.target.value)}></Input>
                                     <Popover
                                         content={
                                             <div>
@@ -174,9 +173,9 @@ export default function ChatRoom() {
                                         </Button>
                                     </Popover>
                                 </div>
-                                {/* <Button className="rounded-none text-orange-700" onClick={(e) => handleSendMess(e)}>
+                                <button className="rounded-none text-orange-700" type="submit">
                                     <BiSolidSend size={20} />
-                                </Button> */}
+                                </button>
                             </form>
                         </div>
                     </div>
