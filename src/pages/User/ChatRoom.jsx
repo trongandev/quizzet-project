@@ -13,7 +13,7 @@ import { get_api } from "../../services/fetchapi";
 import handleCompareDate from "../../utils/compareData";
 import { useSelector } from "react-redux";
 import io from "socket.io-client";
-const socket = io("http://localhost:4000");
+const socket = io(`${process.env.REACT_APP_API_SOCKET}`);
 export default function ChatRoom() {
     const params = useParams();
     const [data, setData] = useState({});
