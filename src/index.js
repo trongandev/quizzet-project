@@ -8,7 +8,6 @@ import { Provider } from "react-redux";
 import { store } from "./reducers/store";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Analytics } from "@vercel/analytics/react";
 const queryClient = new QueryClient();
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -17,7 +16,6 @@ root.render(
             <BrowserRouter>
                 <QueryClientProvider client={queryClient}>
                     <App />
-                    <Analytics />
                 </QueryClientProvider>
             </BrowserRouter>
         </GoogleOAuthProvider>
