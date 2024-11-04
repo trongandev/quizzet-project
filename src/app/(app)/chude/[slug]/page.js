@@ -1,5 +1,5 @@
 "use client";
-import { Button, Tooltip } from "antd";
+import { Button } from "antd";
 import React, { useEffect, useState } from "react";
 import { CiTimer } from "react-icons/ci";
 import { MdOutlineVerified } from "react-icons/md";

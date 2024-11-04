@@ -1,15 +1,13 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button, Modal } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
-import { message, Upload } from "antd";
-import Swal from "sweetalert2";
+import { Upload } from "antd";
 
 const { Dragger } = Upload;
 
 export default function SubjectOutline() {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [confirmLoading, setConfirmLoading] = useState(false);
     const [fileList, setFileList] = useState([]);
     const showModal = () => {
         setIsModalOpen(true);

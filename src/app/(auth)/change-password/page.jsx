@@ -4,7 +4,6 @@ import Swal from "sweetalert2";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Cookies from "js-cookie";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { POST_API } from "@/lib/fetchAPI";
 

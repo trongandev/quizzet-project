@@ -1,8 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { MdOutlineVerified } from "react-icons/md";
-import Swal from "sweetalert2";
-import { Tooltip, Avatar, Button } from "antd";
+import { Button } from "antd";
 import { CiTimer } from "react-icons/ci";
 import { FaEye } from "react-icons/fa";
 import { FaFacebookMessenger } from "react-icons/fa6";
@@ -18,7 +17,6 @@ export default function ProfileUID({ params }) {
     const { slug } = params;
     const [profile, setProfile] = useState({});
     const [quiz, setQuiz] = useState([]);
-    const [loading, setLoading] = useState(false);
 
     const router = useRouter();
     const token = Cookies.get("token");
@@ -28,12 +26,11 @@ export default function ProfileUID({ params }) {
             const req = await GET_API(`/profile/${slug}`, token);
             setProfile(req.user);
             setQuiz(req.quiz);
-            setLoading(true);
         };
 
         fetchAPI();
     }, []);
-    const { user, clearUser } = useUser();
+    const { user } = useUser();
 
     const handleCreateAndCheckRoomChat = async (id_another_user) => {
         const req = await GET_API(`/chat/check/${id_another_user}`, token);

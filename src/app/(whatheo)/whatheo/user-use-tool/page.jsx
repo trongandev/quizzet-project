@@ -1,15 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Switch, Button, Popover, message, Spin, Modal, Input, InputNumber } from "antd";
+import { Switch, Button, message, Modal, Input, InputNumber } from "antd";
 import Swal from "sweetalert2";
-import { HiDotsHorizontal } from "react-icons/hi";
-import { FaRegEye, FaRegTrashAlt } from "react-icons/fa";
-import { LoadingOutlined } from "@ant-design/icons";
+import { FaRegEye } from "react-icons/fa";
 import { GET_API, POST_API } from "@/lib/fetchAPI";
 import handleCompareDate from "@/lib/CompareDate";
 import Cookies from "js-cookie";
-import Image from "next/image";
-import Link from "next/link";
 import { IoAdd } from "react-icons/io5";
 import { CiTrash } from "react-icons/ci";
 

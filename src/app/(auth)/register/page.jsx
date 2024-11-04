@@ -1,12 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
 import { FcGoogle } from "react-icons/fc";
-import { FaFacebook } from "react-icons/fa";
+// import { FaFacebook } from "react-icons/fa";
 // import ReCAPTCHA from "react-google-recaptcha";
-import { GET_API, POST_API } from "@/lib/fetchAPI";
+import { POST_API } from "@/lib/fetchAPI";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -78,13 +78,13 @@ export default function RegisterForm() {
         });
     };
 
-    const handleLoginWithFacebook = async () => {
-        Swal.fire({
-            title: "Đăng nhập thất bại",
-            text: "Vui lòng thử lại sau",
-            icon: "info",
-        });
-    };
+    // const handleLoginWithFacebook = async () => {
+    //     Swal.fire({
+    //         title: "Đăng nhập thất bại",
+    //         text: "Vui lòng thử lại sau",
+    //         icon: "info",
+    //     });
+    // };
 
     return (
         <div className="flex justify-center flex-col items-center ">

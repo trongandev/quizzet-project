@@ -132,10 +132,6 @@ export default function Edit({ params }) {
 
     const [open, setOpen] = useState(false);
 
-    const hide = () => {
-        setOpen(false);
-    };
-
     const handleOpenChange = (newOpen) => {
         setOpen(newOpen);
     };

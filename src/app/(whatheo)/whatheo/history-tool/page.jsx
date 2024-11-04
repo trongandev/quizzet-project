@@ -1,13 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Button, Modal, Spin, message } from "antd";
-import Swal from "sweetalert2";
-import { HiDotsHorizontal } from "react-icons/hi";
-import { FaRegEye, FaRegTrashAlt } from "react-icons/fa";
+import { Button, Modal } from "antd";
+import { FaRegEye } from "react-icons/fa";
 import Cookies from "js-cookie";
 import Link from "next/link";
-import Image from "next/image";
-import { LoadingOutlined } from "@ant-design/icons";
 import { GET_API } from "@/lib/fetchAPI";
 import handleCompareDate from "@/lib/CompareDate";
 
@@ -16,7 +12,6 @@ export default function HistoryTool() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const token = Cookies.get("token");
-    const [messageApi, contextHolder] = message.useMessage();
     const showModal = (item) => {
         setSelectedItem(item);
         setIsModalOpen(true);

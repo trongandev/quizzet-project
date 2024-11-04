@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Switch, message, Spin, Button, Modal, Input } from "antd";
+import { message, Spin, Button, Modal, Input } from "antd";
 import Swal from "sweetalert2";
 import { LoadingOutlined } from "@ant-design/icons";
 import { GET_API, POST_API } from "@/lib/fetchAPI";

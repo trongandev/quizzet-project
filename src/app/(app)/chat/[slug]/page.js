@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { IoIosCall } from "react-icons/io";
 import { IoVideocam } from "react-icons/io5";
 import { IoIosInformationCircle } from "react-icons/io";
-import { BiArrowBack, BiSolidSend } from "react-icons/bi";
+import { BiSolidSend } from "react-icons/bi";
 import { MdArrowBackIos, MdEmojiEmotions } from "react-icons/md";
 import { FaCirclePlus } from "react-icons/fa6";
 import Cookies from "js-cookie";
@@ -84,10 +84,6 @@ export default function ChatRoom({ params }) {
     };
 
     const [open, setOpen] = useState(false);
-
-    const hide = () => {
-        setOpen(false);
-    };
 
     const handleOpenChange = (newOpen) => {
         setOpen(newOpen);
@@ -188,7 +184,7 @@ export default function ChatRoom({ params }) {
                                                 <div className="grid grid-cols-5 gap-1 w-[300px] overflow-y-scroll h-[300px] mt-2">
                                                     {dataEmoji.map((item, index) => (
                                                         <div className="flex items-center justify-center hover:bg-gray-200 cursor-pointer" key={index}>
-                                                            <h1 className="text-xl" onClick={(e) => setInput(input + item.character)}>
+                                                            <h1 className="text-xl" onClick={() => setInput(input + item.character)}>
                                                                 {item.character}
                                                             </h1>
                                                         </div>
