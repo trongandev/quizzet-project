@@ -13,6 +13,7 @@ import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { Analytics } from "@vercel/analytics/react";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import Script from "next/script";
 
 export default function RootLayout({ children }: any) {
     const pathname = usePathname();
@@ -22,6 +23,9 @@ export default function RootLayout({ children }: any) {
     }, []);
     return (
         <html lang="en">
+            <head>
+                <Script async src="https://www.googletagmanager.com/gtag/js?id=G-L681038P5E"></Script>
+            </head>
             <UserProvider>
                 <body className="bg-gray-100">
                     <CHeader token={token || ""} />
