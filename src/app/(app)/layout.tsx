@@ -11,6 +11,8 @@ import { FiFilePlus } from "react-icons/fi";
 import { usePathname } from "next/navigation";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
+import { Analytics } from "@vercel/analytics/react";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 export default function RootLayout({ children }: any) {
     const pathname = usePathname();
@@ -56,6 +58,8 @@ export default function RootLayout({ children }: any) {
                         </div>
                     </div>
                     <CFooter />
+                    <Analytics />
+                    <GoogleAnalytics gaId="G-GDHGH5TZW6" />
                 </body>
             </UserProvider>
         </html>
