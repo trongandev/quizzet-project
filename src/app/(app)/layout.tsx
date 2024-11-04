@@ -12,17 +12,17 @@ import { usePathname } from "next/navigation";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: any) {
     const pathname = usePathname();
-    const [token, setToken] = useState(null);
+    const [token, setToken] = useState<string | null>(null);
     useEffect(() => {
-        setToken(Cookies.get("token"));
+        setToken(Cookies.get("token") || null);
     }, []);
     return (
         <html lang="en">
             <UserProvider>
                 <body className="bg-gray-100">
-                    <CHeader token={token} />
+                    <CHeader token={token || ""} />
                     <div className="flex items-center justify-center">
                         <div className="w-[800px] md:w-[1000px] xl:w-[1200px] py-5">{children}</div>
                         <div className="fixed bottom-0 bg-gray-100 text-black h-[48px] w-full block md:hidden">

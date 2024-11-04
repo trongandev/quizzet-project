@@ -1,7 +1,6 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { CiTimer } from "react-icons/ci";
-import { Tooltip } from "antd";
 import { MdOutlineVerified } from "react-icons/md";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";

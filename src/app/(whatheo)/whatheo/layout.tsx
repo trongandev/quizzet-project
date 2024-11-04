@@ -4,7 +4,7 @@ export const metadata = {
     title: "Dashboard",
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: any) {
     return (
         <html lang="en">
             <body className={``}>

@@ -5,7 +5,7 @@ import { Modal, Spin } from "antd";
 import { IoIosArrowUp } from "react-icons/io";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { GET_API, POST_API } from "@/lib/fetchAPI";
+import { POST_API } from "@/lib/fetchAPI";
 import handleCompareDate from "@/lib/CompareDate";
 import { useUser } from "@/context/userContext";
 
@@ -47,7 +47,7 @@ export default function CQuiz({ QuizData }) {
             [questionId]: answerIndex,
         });
     };
-    const { user, clearUser } = useUser();
+    const { user } = useUser();
     function handleQuiz(e) {
         e.preventDefault();
         if (Object.keys(selectedAnswers).length !== quiz.questions.data_quiz.length) {

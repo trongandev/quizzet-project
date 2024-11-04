@@ -23,8 +23,8 @@ const getCachedTool = unstable_cache(
 export async function generateMetadata() {
     const quiz = await getCachedQuizzet();
     const tool = await getCachedTool();
-    var data = "";
-    var dataTool = "";
+    let data = "";
+    let dataTool = "";
     quiz?.map((item) => {
         data += item.content + " | ";
     });
