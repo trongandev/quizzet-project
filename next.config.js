@@ -9,7 +9,7 @@ module.exports = {
     },
     distDir: "build",
     env: {
-        API_ENDPOINT: "http://localhost:5000/api",
-        API_SOCKET: "http://localhost:4000/",
+        API_ENDPOINT: process.env.API_ENDPOINT,
+        API_SOCKET: process.env.API_SOCKET,
     },
 };
