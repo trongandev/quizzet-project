@@ -59,7 +59,7 @@ export default function RootLayout({ children }: any) {
                     </div>
                     <CFooter />
                     <Analytics />
-                    <GoogleAnalytics gaId="G-GDHGH5TZW6" />
+                    <GoogleAnalytics gaId="G-L681038P5E" />
                 </body>
             </UserProvider>
         </html>
