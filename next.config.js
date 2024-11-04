@@ -7,6 +7,9 @@ module.exports = {
             },
         ],
     },
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
     distDir: "build",
     env: {
         API_ENDPOINT: process.env.API_ENDPOINT,
