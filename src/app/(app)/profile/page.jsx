@@ -55,17 +55,16 @@ export default function CProfile() {
     const showModal = () => {
         setOpen(true);
     };
-
     const handleUpdateProfile = async (e) => {
         e.preventDefault();
 
         const userProfile = {
-            _id: profileData._id,
-            displayName: profileData.displayName,
-            profilePicture: profileData.profilePicture,
+            _id: user._id,
+            displayName: user.displayName,
+            profilePicture: user.profilePicture,
         };
 
-        const res = await POST_API("/profileData", userProfile, "PATCH", token);
+        const res = await POST_API("/profile", userProfile, "PATCH", token);
         const data = await res.json();
         if (res.ok) {
             setOpen(false);
@@ -142,7 +141,7 @@ export default function CProfile() {
     };
     const handleInputChange = (e) => {
         const { id, value } = e.target;
-        setProfile({ ...profileData, [id]: value });
+        setUser({ ...user, [id]: value });
     };
 
     const [openTopic, setOpenTopic] = useState(false);

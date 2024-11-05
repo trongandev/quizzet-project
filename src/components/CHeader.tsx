@@ -36,7 +36,7 @@ export default function CHeader({ token }: { token: string }) {
         <header className="bg-orange-500  text-white w-full flex items-center justify-center">
             <div className="flex items-center justify-between px-5 py-1 md:px-0 md:py-0 w-[800px] md:w-[1000px] xl:w-[1200px]">
                 <Link href="/">
-                    <h1 className="text-3xl rubik-wet-paint-regular ">Quizzet</h1>
+                    <h1 className="text-3xl rubik-wet-paint-regular">Quizzet</h1>
                 </Link>
                 <ul className="hidden md:flex">
                     <li>

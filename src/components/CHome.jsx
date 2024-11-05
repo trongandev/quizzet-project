@@ -7,16 +7,17 @@ import { LoadingOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import Image from "next/image";
 import handleCompareDate from "@/lib/CompareDate";
-
+import "@/app/globals.css";
 export default function CHome({ quizData, toolData }) {
     return (
         <div className=" ">
             <div className="">
                 <div className="bg-white p-5">
-                    <h1 className="text-xl md:text-2xl text-green-700 font-bold">Chào mừng bạn đến với QuizzEt</h1>
+                    <h1 className="text-xl md:text-2xl text-green-700 font-bold ">Chào mừng bạn đến với <span className="rubik-wet-paint-regular">Quizzet</span></h1>
                     <p className="text-sm md:text-md text-gray-500">
-                        QuizzEt là trang web giúp bạn tạo ra các bài quiz online một cách dễ dàng và nhanh chóng. Bạn có thể tạo ra các câu hỏi, trả lời và chia sẻ với bạn bè.
+                    Quizzet là một cộng đồng chia sẻ tài liệu cho sinh viên Đại học Công nghệ Đồng Nai 
                     </p>
+                    <p className="text-sm md:text-md text-gray-500">Trang web này giúp bạn tạo ra các bài quiz online đồng thời cũng là nơi chia sẻ tài liệu các môn đại cương hoặc chuyên ngành một cách dễ dàng và nhanh chóng. Bạn có thể tạo ra các câu hỏi, trả lời và chia sẻ với bạn bè.</p>
                 </div>
                 <div className="bg-white p-5 mt-2 text-red-500 flex justify-between items-center flex-col md:flex-row gap-3 md:gap-0">
                     <p>Bạn có thể thêm bài quiz mới ở đây</p>

@@ -16,7 +16,7 @@ export default function CQuiz({ QuizData }) {
     const router = useRouter();
     const token = Cookies.get("token");
     useEffect(() => {
-        if (QuizData.length == 0) {
+        if (!QuizData) {
             Swal.fire({
                 title: "Không tìm thấy bài quiz",
                 text: "Bài quiz bạn tìm không tồn tại hoặc đã bị xóa",
