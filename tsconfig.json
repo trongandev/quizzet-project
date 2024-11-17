@@ -33,6 +33,6 @@
         "src/components/CQuiz.jsx",
         "src/app/(app)/page.jsx",
         "src/app/(whatheo)/whatheo/users/page.jsx"
-    ],
+, "src/app/(app)/themcauhoi/gui/page.jsx", "src/app/(app)/edit-tool/[slug]/page.jsx"    ],
     "exclude": ["node_modules"]
 }

@@ -6,10 +6,12 @@ import * as Yup from "yup";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { POST_API } from "@/lib/fetchAPI";
-
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 export default function ChangePassword() {
     const router = useRouter();
     const token = Cookies.get("token");
+    const [loading, setLoading] = React.useState(false);
 
     useEffect(() => {
         if (token === undefined) {
@@ -38,6 +40,7 @@ export default function ChangePassword() {
                 .required("Vui lòng nhập lại mật khẩu mới"),
         }),
         onSubmit: (values) => {
+            setLoading(true);
             fetchChangePassword(values);
         },
     });
@@ -61,6 +64,7 @@ export default function ChangePassword() {
                 icon: "error",
             });
         }
+        setLoading(false);
     };
 
     return (
@@ -114,7 +118,8 @@ export default function ChangePassword() {
                         {formik.touched.re_new_password && formik.errors.re_new_password ? <div className="text-red-500">{formik.errors.re_new_password}</div> : null}{" "}
                     </div>
                     <div className="mb-5">
-                        <button type="submit" className="bg-green-500 text-white  w-full">
+                        <button type="submit" className="bg-green-500 text-white  w-full flex gap-5 items-center justify-center" disabled={loading}>
+                            {loading && <Spin indicator={<LoadingOutlined spin />} size="default" />}
                             Thay đổi mật khẩu
                         </button>
                     </div>

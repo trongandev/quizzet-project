@@ -7,10 +7,12 @@ import Cookies from "js-cookie";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { POST_API } from "@/lib/fetchAPI";
-
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 export default function Forget() {
     const router = useRouter();
     const token = Cookies.get("token");
+    const [loading, setLoading] = React.useState(false);
 
     const formik = useFormik({
         initialValues: {
@@ -21,6 +23,7 @@ export default function Forget() {
         }),
         onSubmit: (values) => {
             fetchForget(values.email);
+            setLoading(true);
         },
     });
 
@@ -43,6 +46,7 @@ export default function Forget() {
                 icon: "error",
             });
         }
+        setLoading(false);
     };
 
     return (
@@ -59,7 +63,8 @@ export default function Forget() {
                         {formik.touched.email && formik.errors.email ? <div className="text-red-500">{formik.errors.email}</div> : null}
                     </div>
                     <div className="mb-5">
-                        <button type="submit" className="bg-green-500 text-white  w-full">
+                        <button type="submit" className="bg-green-500 text-white  w-full flex gap-5 items-center justify-center" disabled={loading}>
+                            {loading && <Spin indicator={<LoadingOutlined spin />} size="default" />}
                             Gửi yêu cầu mật khẩu mới
                         </button>
                     </div>

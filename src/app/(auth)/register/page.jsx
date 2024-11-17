@@ -10,10 +10,14 @@ import { POST_API } from "@/lib/fetchAPI";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { BiHome } from "react-icons/bi";
 export default function RegisterForm() {
     const token = Cookies.get("token");
     const router = useRouter();
+    const [loading, setLoading] = React.useState(false);
+
     // const [capVal, setCapVal] = useState(null);
 
     const formik = useFormik({
@@ -37,6 +41,7 @@ export default function RegisterForm() {
                 email: values.email,
                 password: values.password,
             };
+            setLoading(true);
             fetchRegister(profile);
         },
     });
@@ -61,6 +66,7 @@ export default function RegisterForm() {
                     icon: "error",
                 });
             }
+            setLoading(false);
         } catch (error) {
             Swal.fire({
                 title: "Lỗi",
@@ -90,7 +96,12 @@ export default function RegisterForm() {
         <div className="flex justify-center flex-col items-center ">
             <div className="w-full mt-10 md:mt-0 md:w-[500px] border-[1px] border-green-500 px-3 md:px-10 py-5 rounded-lg shadow-lg bg-white">
                 <form onSubmit={formik.handleSubmit} action="" className="">
-                    <h1 className="text-2xl font-bold text-green-500 text-center mb-5">Đăng ký tài khoản mới</h1>
+                    <div className="flex items-center mb-5">
+                        <Link href="/">
+                            <BiHome size={25} />
+                        </Link>
+                        <h1 className="text-2xl font-bold text-green-500 text-center w-full">Đăng ký tài khoản mới</h1>
+                    </div>
                     <div className="mb-3">
                         <label htmlFor="displayName" className="block">
                             Nhập họ tên của bạn
@@ -150,7 +161,9 @@ export default function RegisterForm() {
                     {/* <ReCAPTCHA sitekey="6LdxGvopAAAAALOqa3Ytk-IGNlYlfeOx6N1XHV8M" onChange={(val) => setCapVal(val)} /> */}
                     <div className="mb-3 text-right">
                         {/* disabled={!capVal} */}
-                        <button type="submit" className="bg-green-500 text-white w-full mt-3">
+
+                        <button type="submit" className="bg-green-500 text-white  w-full flex gap-5 items-center justify-center" disabled={loading}>
+                            {loading && <Spin indicator={<LoadingOutlined spin />} size="default" />}
                             Đăng ký ngay
                         </button>
                     </div>

@@ -9,9 +9,13 @@ import Cookies from "js-cookie";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { POST_API } from "@/lib/fetchAPI";
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { BiHome } from "react-icons/bi";
 export default function LoginForm() {
     const router = useRouter();
     const token = Cookies.get("token");
+    const [loading, setLoading] = React.useState(false);
     useEffect(() => {
         if (token) {
             router.push("/");
@@ -28,6 +32,7 @@ export default function LoginForm() {
             password: Yup.string().required("Vui lòng nhập password"),
         }),
         onSubmit: (values) => {
+            setLoading(true);
             fetchLogin(values);
         },
     });
@@ -38,7 +43,7 @@ export default function LoginForm() {
             const data = await res.json();
             if (res.ok) {
                 Cookies.set("token", data.token, { expires: 1 });
-                router.push("/");
+                // router.push("/");
             } else {
                 Swal.fire({
                     title: "Thất bại",
@@ -46,6 +51,7 @@ export default function LoginForm() {
                     icon: "error",
                 });
             }
+            setLoading(false);
         } catch (error) {
             Swal.fire({
                 title: "Lỗi",
@@ -69,7 +75,12 @@ export default function LoginForm() {
         <div className="flex justify-center flex-col items-center h-full">
             <div className="w-full mt-10 md:mt-0 md:w-[500px] border-[1px] border-green-500 px-3 md:px-10 py-5 rounded-lg shadow-lg bg-white">
                 <form onSubmit={formik.handleSubmit}>
-                    <h1 className="text-2xl font-bold text-green-500 text-center mb-5">Đăng nhập</h1>
+                    <div className="flex items-center mb-5">
+                        <Link href="/">
+                            <BiHome size={25} />
+                        </Link>
+                        <h1 className="text-2xl font-bold text-green-500 text-center w-full">Đăng nhập</h1>
+                    </div>
                     <div className="mb-3">
                         <label htmlFor="email" className="block">
                             Nhập email
@@ -93,7 +104,8 @@ export default function LoginForm() {
                         {formik.touched.password && formik.errors.password ? <div className="text-red-500">{formik.errors.password}</div> : null}{" "}
                     </div>
                     <div className="mb-5">
-                        <button type="submit" className="bg-green-500 text-white  w-full">
+                        <button type="submit" className="bg-green-500 text-white  w-full flex gap-5 items-center justify-center" disabled={loading}>
+                            {loading && <Spin indicator={<LoadingOutlined spin />} size="default" />}
                             Đăng nhập
                         </button>
                     </div>

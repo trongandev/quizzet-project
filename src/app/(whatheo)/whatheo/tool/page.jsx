@@ -13,6 +13,7 @@ import { FiSearch } from "react-icons/fi";
 import { MdContentPaste } from "react-icons/md";
 import TextArea from "antd/es/input/TextArea";
 import { IoAdd } from "react-icons/io5";
+import { BiEdit } from "react-icons/bi";
 
 export default function NewPostTool() {
     const [tool, setTool] = useState([]);
@@ -196,10 +197,15 @@ export default function NewPostTool() {
                                         </td>
 
                                         <td className="px-6 py-4">{handleCompareDate(item?.date)}</td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-6 py-4 ">
                                             <Button onClick={() => handleDelete(item._id)}>
                                                 <CiTrash />
                                             </Button>
+                                            <Link href={`/edit-tool/${item._id}`}>
+                                                <Button className="mt-1">
+                                                    <BiEdit />
+                                                </Button>
+                                            </Link>
                                         </td>
                                     </tr>
                                 ))}

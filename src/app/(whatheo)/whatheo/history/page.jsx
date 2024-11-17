@@ -81,7 +81,7 @@ export default function History() {
                                         </Link>
                                     </td>
                                     <td className="px-6 py-4 hover:text-red-500 hover:underline">
-                                        <Link target="_blank" href={`/answer/${item._id}`} rel="noreferrer">
+                                        <Link target="_blank" href={`/dapan/${item._id}`} rel="noreferrer">
                                             {item.title}
                                         </Link>
                                     </td>

@@ -134,39 +134,41 @@ export default function CQuiz({ QuizData }) {
                         <p className="text-gray-600">Tác giả: {QuizData?.uid.displayName}</p>
                         <p className="text-gray-600">Ngày đăng: {handleCompareDate(QuizData?.date)}</p>
                     </div>
-                    <form action="" onSubmit={handleQuiz} className="relative flex">
-                        <div className="w-full md:w-2/3 ">
-                            {QuizData.questions.data_quiz?.map((item, index) => (
-                                <div className="bg-white p-5 mt-2" key={index} id={item.id}>
-                                    <h1 className="text-lg font-bold text-green-500 mb-3">
-                                        Câu {index + 1}: {item.question}
-                                    </h1>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                        {item.answers.map((answer, index) => (
-                                            <div key={index} className={`border relative flex items-center ${selectedAnswers[item.id] === index ? "bg-green-100 text-green-500 font-bold" : ""}`}>
-                                                <input
-                                                    type="radio"
-                                                    name={item.id}
-                                                    className="w-1 invisible"
-                                                    id={`${item.id}ans${index}`}
-                                                    checked={selectedAnswers[item.id] === index}
-                                                    onChange={() => handleSelect(item.id, index)}
-                                                />
-                                                <label
-                                                    htmlFor={`${item.id}ans${index}`}
-                                                    className={`absolute  h-full font-bold p-3 flex items-center justify-center ${
-                                                        selectedAnswers[item.id] === index ? "bg-green-400 text-white" : ""
-                                                    }`}>
-                                                    {index === 0 ? "A" : index === 1 ? "B" : index === 2 ? "C" : "D"}
-                                                </label>
-                                                <label htmlFor={`${item.id}ans${index}`} className="block w-full ml-7 p-3">
-                                                    {answer}
-                                                </label>
-                                            </div>
-                                        ))}
+                    <form action="" onSubmit={handleQuiz} className="relative flex flex-col">
+                        <div className="w-full md:w-2/3">
+                            <div className=" h-[500px] overflow-y-auto scroll-smooth">
+                                {QuizData.questions.data_quiz?.map((item, index) => (
+                                    <div className="bg-white p-5 mt-2" key={index} id={item.id}>
+                                        <h1 className="text-lg font-bold text-green-500 mb-3">
+                                            Câu {index + 1}: {item.question}
+                                        </h1>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                            {item.answers.map((answer, index) => (
+                                                <div key={index} className={`border relative flex items-center ${selectedAnswers[item.id] === index ? "bg-green-100 text-green-500 font-bold" : ""}`}>
+                                                    <input
+                                                        type="radio"
+                                                        name={item.id}
+                                                        className="w-1 invisible"
+                                                        id={`${item.id}ans${index}`}
+                                                        checked={selectedAnswers[item.id] === index}
+                                                        onChange={() => handleSelect(item.id, index)}
+                                                    />
+                                                    <label
+                                                        htmlFor={`${item.id}ans${index}`}
+                                                        className={`absolute  h-full font-bold p-3 flex items-center justify-center ${
+                                                            selectedAnswers[item.id] === index ? "bg-green-400 text-white" : ""
+                                                        }`}>
+                                                        {index === 0 ? "A" : index === 1 ? "B" : index === 2 ? "C" : "D"}
+                                                    </label>
+                                                    <label htmlFor={`${item.id}ans${index}`} className="block w-full ml-7 p-3">
+                                                        {answer}
+                                                    </label>
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                             <div className="mt-5 md:text-right">
                                 {QuizData.status ? (
                                     <button type="submit" className="bg-green-500 text-white">

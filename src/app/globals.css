@@ -25,6 +25,11 @@ button {
 button:hover {
     opacity: 0.8;
 }
+button:disabled,
+button[disabled] {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
 
 .active {
     background-color: #bbf7d0;
