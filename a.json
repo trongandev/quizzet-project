@@ -1,0 +1,12 @@
+[
+    {
+        "question": "Câu hỏi 1",
+        "answers": ["Đáp án 1", "Đáp án 2", "Đáp án 3", "Đáp án 4"],
+        "correct": 0
+    },
+    {
+        "question": "Câu hỏi 2",
+        "answers": ["Đáp án 1", "Đáp án 2", "Đáp án 3", "Đáp án 4"],
+        "correct": 0
+    }
+]

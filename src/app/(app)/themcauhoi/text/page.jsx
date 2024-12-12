@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { Button, Modal, Popover, Select, Input, Form } from "antd";
 import { CiCirclePlus } from "react-icons/ci";
 import { IoIosClose } from "react-icons/io";
-import { FaRegEdit } from "react-icons/fa";
+import { FaBrain, FaRegEdit } from "react-icons/fa";
 import { MdContentPaste } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
 import Cookies from "js-cookie";
@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { POST_API } from "@/lib/fetchAPI";
 import { subjectOption } from "@/lib/subjectOption";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default function Text() {
     const [quiz, setQuiz] = useState({
@@ -140,6 +141,7 @@ export default function Text() {
     var regex = /^(A|a|B|b|C|c|D|d)\.\s+/;
     const handleQuest = (e) => {
         const value = e.target.value.trim();
+        setResponePrompt(value);
         const questArray = value.split("\n");
         const arr = [];
         setDefaultValue(value);
@@ -178,6 +180,52 @@ export default function Text() {
             ...quiz,
             subject: value,
         });
+    };
+    const [isModalOpenAI, setIsModalOpenAI] = useState(false);
+
+    const showModalAI = () => {
+        setIsModalOpenAI(true);
+    };
+
+    const handleOkAI = () => {
+        setIsModalOpenAI(false);
+    };
+
+    const handleCancelAI = () => {
+        setIsModalOpenAI(false);
+    };
+
+    const [promptValue, setPromptValue] = useState("");
+    const [responePrompt, setResponePrompt] = useState(
+        "Hàng hóa là gì?\nSản phẩm của lao động\nTất cả những gì có ích\nNhững gì có thể mua bán\nSản phẩm của lao động, có thể thỏa mãn nhu cầu nào đó của con người thông qua trao đổi mua bán\n4"
+    );
+    const [loading, setLoading] = useState(false);
+    const genAI = new GoogleGenerativeAI(process.env.API_KEY_AI);
+
+    const handleSendPrompt = async () => {
+        setLoading(true);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        var defaultPrompt = ` yêu cầu:
+
+không giải thích hay nói bất cứ thứ gì thêm, nếu người dùng nhập sai thì hãy trả ra yêu cầu người dùng nhập lại. Có câu hỏi - không cần ghi lại chữ câu hỏi 1,2,3..v.v, kết thúc câu hỏi phải có dấu "?" , có 4 đáp án - không cần phải ghi lại chữ đáp án 1,2,3,4. Có 1 đáp án đúng là thứ tự của đáp án ví dụ
+Câu hỏi 1
+Đáp án 1
+Đáp án 2
+Đáp án 3
+Đáp án 4
+4
+Câu hỏi 2
+Đáp án 1
+Đáp án 2
+Đáp án 3
+Đáp án 4
+1`;
+        const result = await model.generateContent(promptValue + defaultPrompt);
+        var replace = result.response.text().replace(/```/g, "");
+        setResponePrompt(replace);
+        setLoading(false);
+        handleCancelAI();
+        handleQuest({ target: { value: replace } });
     };
 
     return (
@@ -249,7 +297,7 @@ export default function Text() {
                             <div className="flex items-center">
                                 <Input type="text" onChange={(e) => handleImage(e)} name="image" id="image" placeholder="Dán URL hình ảnh ở đây..." value={quiz.img} />
                                 <Popover
-                                    content={<Image width={400} height={400} src="./guide4.png" alt="" className="" />}
+                                    content={<Image width={400} height={400} src="/guide4.png" alt="" className="" />}
                                     title="Cách lấy đường đẫn hình ảnh (Image Address)"
                                     trigger="click"
                                     open={open}
@@ -265,34 +313,64 @@ export default function Text() {
                             <h1 className="text-2xl font-bold text-green-500 text-center mb-3">Thêm câu hỏi</h1>
 
                             <div className="block text-sm text-red-500">
-                                <div className="flex items-center gap-2">
-                                    <p>Click vào đây để xem</p>
-                                    <Button className="bg-red-200 text-red-500 font-bold" onClick={showModal}>
-                                        Lưu ý
-                                    </Button>
-                                    <Modal title="Các lưu ý trong quá trình thêm câu hỏi " open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                                        <p>
-                                            - Phải có kí tự <label className="text-red-500 font-bold">"?" hoặc ":"</label> ở cuối câu hỏi
-                                        </p>
-                                        <p>
-                                            - Các đáp án chỉ có <label className="text-red-500 font-bold">4</label>
-                                        </p>
-                                        <p>
-                                            - Bấm phím <label className="text-red-500 font-bold">Enter</label> để xuống đáp án tiếp theo
-                                        </p>
-                                        <Image src="./guide.png" alt="" width={500} height={500} className="mt-3 border-[5px] border-green-500 rounded-lg" />
-                                        <Image src="./guide3.png" alt="" width={500} height={500} className="mt-3 border-[5px] border-green-500 rounded-lg" />
-                                    </Modal>
+                                <div className="flex items-center justify-between px-3">
+                                    <div className="">
+                                        <Button className="bg-red-200 text-red-500 font-bold" onClick={showModal}>
+                                            Lưu ý
+                                        </Button>
+                                        <Modal title="Các lưu ý trong quá trình thêm câu hỏi " open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                                            <p>
+                                                - Phải có kí tự <label className="text-red-500 font-bold">"?" hoặc ":"</label> ở cuối câu hỏi
+                                            </p>
+                                            <p>
+                                                - Các đáp án chỉ có <label className="text-red-500 font-bold">4</label>
+                                            </p>
+                                            <p>
+                                                - Bấm phím <label className="text-red-500 font-bold">Enter</label> để xuống đáp án tiếp theo
+                                            </p>
+                                            <Image src="/guide.png" alt="" width={500} height={500} className="mt-3 border-[5px] border-green-500 rounded-lg" />
+                                            <Image src="/guide3.png" alt="" width={500} height={500} className="mt-3 border-[5px] border-green-500 rounded-lg" />
+                                        </Modal>
+                                    </div>
+                                    <div className="">
+                                        <Button className="text-green-500 cursor-pointer flex items-center gap-1" onClick={showModalAI}>
+                                            <FaBrain size={20} />
+                                            AI Generate
+                                        </Button>
+                                        <Modal
+                                            title="AI Generate Quiz"
+                                            open={isModalOpenAI}
+                                            onOk={handleOkAI}
+                                            onCancel={handleCancelAI}
+                                            footer={[
+                                                <Button key="back" onClick={handleCancelAI}>
+                                                    Hủy bỏ
+                                                </Button>,
+                                                <Button key="submit" type="primary" onClick={handleSendPrompt} loading={loading}>
+                                                    Tạo Quiz
+                                                </Button>,
+                                            ]}>
+                                            <div className="">
+                                                <textarea
+                                                    className="resize-none h-24"
+                                                    maxLength={1000}
+                                                    placeholder="Nhập prompt để tạo ra các bài quiz theo yêu cầu 
+                                        Ví dụ: cho tôi 20 bài quiz về tư tưởng hồ chí minh"
+                                                    onChange={(e) => setPromptValue(e.target.value)}
+                                                />
+                                                <p className="text-sm text-red-500">Lưu ý: nếu nó không trả ra gì thì bạn hãy yêu cầu câu hỏi khác</p>
+                                            </div>
+                                        </Modal>
+                                    </div>
                                 </div>
-                                <p className="font-bold mt-3">Ví dụ:</p>
                                 <textarea
                                     type="text"
                                     name="content"
                                     id="content"
-                                    className="w-full p-2 border-[1px] border-gray-200 h-[400px] text-xl"
+                                    className="w-full p-2 border-[1px] border-gray-200 h-[400px] text-xl mt-3"
                                     placeholder=""
                                     onChange={(e) => handleQuest(e)}
-                                    defaultValue={`Hàng hóa là gì?\nSản phẩm của lao động\nTất cả những gì có ích\nNhững gì có thể mua bán\nSản phẩm của lao động, có thể thỏa mãn nhu cầu nào đó của con người thông qua trao đổi mua bán\n4`}></textarea>
+                                    value={responePrompt}></textarea>
                             </div>
                         </div>
                     </div>

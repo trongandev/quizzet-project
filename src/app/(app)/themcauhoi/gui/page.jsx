@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { Button, Modal, Popover, Select, Input } from "antd";
 import { CiCirclePlus } from "react-icons/ci";
 import { IoIosClose } from "react-icons/io";
-import { FaRegEdit } from "react-icons/fa";
+import { FaBrain, FaRegEdit } from "react-icons/fa";
 import { MdContentPaste } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
 import Cookies from "js-cookie";
@@ -14,6 +14,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { POST_API } from "@/lib/fetchAPI";
 import { subjectOption } from "@/lib/subjectOption";
+import TextArea from "antd/es/input/TextArea";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 export default function PostGUI() {
     const [quiz, setQuiz] = useState({
         slug: "",
@@ -65,6 +67,20 @@ export default function PostGUI() {
 
     const handleCancel = () => {
         setIsModalOpen(false);
+    };
+
+    const [isModalOpenAI, setIsModalOpenAI] = useState(false);
+
+    const showModalAI = () => {
+        setIsModalOpenAI(true);
+    };
+
+    const handleOkAI = () => {
+        setIsModalOpenAI(false);
+    };
+
+    const handleCancelAI = () => {
+        setIsModalOpenAI(false);
     };
 
     const pushData = async () => {
@@ -216,58 +232,152 @@ export default function PostGUI() {
             subject: value,
         });
     };
+
+    const [promptValue, setPromptValue] = useState("");
+    const [responePrompt, setResponePrompt] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const genAI = new GoogleGenerativeAI(process.env.API_KEY_AI);
+
+    const handleSendPrompt = async () => {
+        setLoading(true);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        var defaultPrompt = ` yêu cầu:
+
+trả về kiểu dữ liệu json, không giải thích hay nói bất cứ thứ gì thêm, nếu người dùng nhập sai thì hãy trả ra yêu cầu người dùng nhập lại. có câu hỏi, có 4 đáp án, và có 1 đáp án đúng ví dụ
+
+[
+
+{
+"id": Math.random(),
+
+"question": "Câu hỏi 1",
+
+"answers": ["Đáp án 1", "Đáp án 2", "Đáp án 3", "Đáp án 4"],
+
+"correct": 0
+
+},
+
+{
+"id": Math.random(),
+
+"question": "Câu hỏi 2",
+
+"answers": ["Đáp án 1", "Đáp án 2", "Đáp án 3", "Đáp án 4"],
+
+"correct": 0
+
+}
+
+]`;
+        const result = await model.generateContent(promptValue + defaultPrompt);
+        const parse = result.response
+            .text()
+            .replace(/```json/g, "")
+            .replace(/```/g, "");
+
+        setResponePrompt(JSON.parse(parse));
+        setLoading(false);
+        handleCancelAI();
+        console.log(responePrompt);
+        setQuest([...quest, ...responePrompt]);
+    };
     return (
         <div className="flex items-center justify-center gap-5 flex-col md:flex-row">
             <div className="w-full md:w-[1000px]  overflow-y-auto frm-post">
-                <div className="flex items-center flex-row my-3 bg-white">
+                <div className="flex items-center flex-row my-3 bg-white ">
                     <div className="w-[150px] h-[100px] overflow-hidden group relative">{quiz.img && <Image src={quiz.img} alt="" className="absolute w-full h-full object-cover" fill />}</div>
-                    <div className="p-3">
-                        <h1 className="text-md text-green-500 font-bold line-clamp-1 h-[24px]">{quiz.title || "Chưa có tiêu đề?"}</h1>
-                        <p className="text-gray-500 line-clamp-1 text-sm h-[20px]">{quiz.content || "Chưa có nội dung"}</p>
-                    </div>
-                    <Button className="text-orange-500 cursor-pointer hover:text-red-500 flex items-center gap-1" onClick={showModal}>
-                        <FaRegEdit size={20} />
-                        Bấm vào để sửa
-                    </Button>
-                    <Modal title="Thêm hình ảnh" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                        <p className="text-gray-500 text-[12px]">* Nhập tiêu đề xong bấm tìm hình ảnh</p>
-                        <div className="mt-b flex items-center justify-between gap-1">
-                            <Input type="text" className="rounded-none" onChange={(e) => handleTitle(e)} name="title" id="title" placeholder="Nhập tiêu đề..." value={quiz.title} />
-                            <Link href={`https://www.google.com/search?q=${quiz.title}&udm=2`} target="_black">
-                                <Button className="rounded-none">Tìm hình ảnh này</Button>
-                            </Link>
-                        </div>
-                        <div className="mt-3">
-                            <Input type="text" onChange={(e) => handleContent(e)} name="content" id="content" placeholder="Nhập nội dung..." value={quiz.content} />
-                        </div>
-                        <div className="flex items-center gap-1 mt-3 h-[32px]">
-                            <Button className="rounded-none" onClick={handlePaste}>
-                                <MdContentPaste />
+
+                    <div className="flex items-center justify-between w-full p-3">
+                        <div className="flex items-center ">
+                            <div className="mr-5">
+                                <h1 className="text-md text-green-500 font-bold line-clamp-1 h-[24px]">{quiz.title || "Chưa có tiêu đề?"}</h1>
+                                <p className="text-gray-500 line-clamp-1 text-sm h-[20px]">{quiz.content || "Chưa có nội dung"}</p>
+                            </div>
+                            <Button className="text-orange-500 cursor-pointer hover:text-red-500 flex items-center gap-1" onClick={showModal}>
+                                <FaRegEdit size={20} />
+                                Bấm vào để sửa
                             </Button>
-                            <Input type="text" className="rounded-none h-full" onChange={(e) => handleImage(e)} name="image" id="image" placeholder="Dán URL hình ảnh ở đây..." value={quiz.img} />
-                            <Popover
-                                content={<Image width={400} height={400} src="./guide4.png" alt="" className="" />}
-                                title="Cách lấy đường đẫn hình ảnh (Image Address)"
-                                trigger="click"
-                                open={open}
-                                onOpenChange={handleOpenChange}>
-                                <Button className="text-gray-500 font-bold rounded-none">?</Button>
-                            </Popover>
+                            <Modal title="Thêm hình ảnh" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                                <p className="text-gray-500 text-[12px]">* Nhập tiêu đề xong bấm tìm hình ảnh</p>
+                                <div className="mt-b flex items-center justify-between gap-1">
+                                    <Input type="text" className="rounded-none" onChange={(e) => handleTitle(e)} name="title" id="title" placeholder="Nhập tiêu đề..." value={quiz.title} />
+                                    <Link href={`https://www.google.com/search?q=${quiz.title}&udm=2`} target="_black">
+                                        <Button className="rounded-none">Tìm hình ảnh này</Button>
+                                    </Link>
+                                </div>
+                                <div className="mt-3">
+                                    <Input type="text" onChange={(e) => handleContent(e)} name="content" id="content" placeholder="Nhập nội dung..." value={quiz.content} />
+                                </div>
+                                <div className="flex items-center gap-1 mt-3 h-[32px]">
+                                    <Button className="rounded-none" onClick={handlePaste}>
+                                        <MdContentPaste />
+                                    </Button>
+                                    <Input
+                                        type="text"
+                                        className="rounded-none h-full"
+                                        onChange={(e) => handleImage(e)}
+                                        name="image"
+                                        id="image"
+                                        placeholder="Dán URL hình ảnh ở đây..."
+                                        value={quiz.img}
+                                    />
+                                    <Popover
+                                        content={<Image width={400} height={400} src="/guide4.png" alt="" className="" />}
+                                        title="Cách lấy đường đẫn hình ảnh (Image Address)"
+                                        trigger="click"
+                                        open={open}
+                                        onOpenChange={handleOpenChange}>
+                                        <Button className="text-gray-500 font-bold rounded-none">?</Button>
+                                    </Popover>
+                                </div>
+                                <Select
+                                    className="w-full mt-3 rounded-none"
+                                    showSearch
+                                    placeholder="Tìm kiếm nghành học - môn học saa..."
+                                    optionFilterProp="children"
+                                    filterOption={(input, option) => (option?.label ?? "").includes(input)}
+                                    filterSort={(optionA, optionB) => (optionA?.label ?? "").toLowerCase().localeCompare((optionB?.label ?? "").toLowerCase())}
+                                    options={subjectOption}
+                                    value={quiz.subject}
+                                    onChange={onChange}
+                                />
+                            </Modal>
                         </div>
-                        <Select
-                            className="w-full mt-3 rounded-none"
-                            showSearch
-                            placeholder="Tìm kiếm nghành học - môn học saa..."
-                            optionFilterProp="children"
-                            filterOption={(input, option) => (option?.label ?? "").includes(input)}
-                            filterSort={(optionA, optionB) => (optionA?.label ?? "").toLowerCase().localeCompare((optionB?.label ?? "").toLowerCase())}
-                            options={subjectOption}
-                            value={quiz.subject}
-                            onChange={onChange}
-                        />
-                    </Modal>
+                        <div className="flex-1 flex justify-end">
+                            <Button className="text-green-500 cursor-pointer flex items-center gap-1" onClick={showModalAI}>
+                                <FaBrain size={20} />
+                                AI Generate
+                            </Button>
+                            <Modal
+                                title="AI Generate Quiz"
+                                open={isModalOpenAI}
+                                onOk={handleOkAI}
+                                onCancel={handleCancelAI}
+                                footer={[
+                                    <Button key="back" onClick={handleCancelAI}>
+                                        Hủy bỏ
+                                    </Button>,
+                                    <Button key="submit" type="primary" onClick={handleSendPrompt} loading={loading}>
+                                        Tạo Quiz
+                                    </Button>,
+                                ]}>
+                                <div className="">
+                                    <textarea
+                                        className="resize-none h-24"
+                                        maxLength={1000}
+                                        placeholder="Nhập prompt để tạo ra các bài quiz theo yêu cầu 
+                                        Ví dụ: cho tôi 20 bài quiz về tư tưởng hồ chí minh"
+                                        onChange={(e) => setPromptValue(e.target.value)}
+                                    />
+                                    <p className="text-sm text-red-500">Lưu ý: nếu nó không trả ra gì thì bạn hãy yêu cầu câu hỏi khác</p>
+                                </div>
+                            </Modal>
+                        </div>
+                    </div>
                 </div>
-                <div className="">
+
+                <div className="h-[500px] overflow-y-scroll">
                     {quest.map((item, index) => (
                         <div className="bg-white p-5 mt-5" key={index}>
                             <div className="flex justify-between items-center mb-3">
