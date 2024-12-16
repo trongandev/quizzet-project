@@ -15,10 +15,18 @@ export default function CHome({ quizData, toolData }) {
                 <div className="text-secondary text-center space-y-7 px-5 md:p-0 w-full md:w-[700px] lg:w-[900px] mx-auto">
                     <h1 className=" font-bold text-4xl">Chào mừng bạn đến với Quizzet</h1>
                     <div className="">
-                        <p className="">Quizzet là một cộng đồng chia sẻ tài liệu cho sinh viên Đại học Công nghệ Đồng Nai</p>
+                        <p className="">
+                            <a href="/GIAO TRINH PLDK.zip" download>
+                                Quizzet là
+                            </a>
+                            một cộng đồng chia sẻ tài liệu cho sinh viên Đại học Công nghệ Đồng Nai
+                        </p>
                         <p>
                             Trang web này giúp bạn tạo ra các bài quiz online đồng thời cũng là nơi chia sẻ tài liệu các môn đại cương hoặc chuyên ngành một cách dễ dàng và nhanh chóng. Bạn có thể tạo
-                            ra các câu hỏi, trả lời và chia sẻ với bạn bè.
+                            ra các câu hỏi, trả lời và chia sẻ với
+                            <a href="/GIAO TRINH LSD.zip" download>
+                                bạn bè.
+                            </a>
                         </p>
                     </div>
                 </div>
