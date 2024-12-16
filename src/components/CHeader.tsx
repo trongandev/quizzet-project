@@ -33,26 +33,34 @@ export default function CHeader({ token }: { token: string }) {
     };
 
     return (
-        <header className="bg-orange-500  text-white w-full flex items-center justify-center">
+        <header className="bg-white text-primary w-full flex items-center justify-center fixed z-20 shadow-lg">
             <div className="flex items-center justify-between px-5 py-1 md:px-0 md:py-0 w-[800px] md:w-[1000px] xl:w-[1200px]">
-                <Link href="/">
-                    <h1 className="text-3xl rubik-wet-paint-regular">Quizzet</h1>
-                </Link>
-                <ul className="hidden md:flex">
+                <ul className="hidden md:flex items-center gap-5">
                     <li>
-                        <Link href="/" className={`block px-5 py-3 ${pathname == "/" ? "active" : ""}`}>
+                        <Link href="/" className={`block  ${pathname == "/" ? "active" : ""}`}>
                             Trang chủ
+                        </Link>
+                    </li>
+
+                    <li className="">
+                        <Link href="/tailieu" className={`block  ${pathname == "/tailieu" ? "active" : ""}`}>
+                            Tài liệu
+                        </Link>
+                    </li>
+                    <li className="">
+                        <Link href="/decuong" className={`block  ${pathname == "/decuong" ? "active" : ""}`}>
+                            Đề cương
                         </Link>
                     </li>
                     {token ? (
                         <>
                             <li>
-                                <Link href="/chude" className={`block px-5 py-3 ${pathname == "/chude" ? "active" : ""}`}>
+                                <Link href="/chude" className={`block  ${pathname == "/chude" ? "active" : ""}`}>
                                     Chủ đề
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/lichsu" className={`block px-5 py-3 ${pathname == "/lichsu" ? "active" : ""}`}>
+                                <Link href="/lichsu" className={`block  ${pathname == "/lichsu" ? "active" : ""}`}>
                                     Lịch sử
                                 </Link>
                             </li>
@@ -60,17 +68,14 @@ export default function CHeader({ token }: { token: string }) {
                     ) : (
                         ""
                     )}
-
-                    <li className="flex-1">
-                        <Link href="/tailieu" className={`block px-5 py-3 ${pathname == "/tailieu" ? "active" : ""}`}>
-                            Tài liệu
-                        </Link>
-                    </li>
                 </ul>
+                <Link href="/">
+                    <Image src="/logo.png" alt="" width={120} height={30}></Image>
+                </Link>
                 {!token ? (
                     <div className="">
                         <Link href="/login">
-                            <button className="bg-green-500">Đăng nhập</button>
+                            <button className="">Đăng nhập</button>
                         </Link>
                     </div>
                 ) : (

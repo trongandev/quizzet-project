@@ -92,7 +92,7 @@ export default function CProfile() {
     };
 
     const handleSendMail = async () => {
-        const req = await GET_API("/profileData/sendmail", token);
+        const req = await GET_API("/profile/sendmail", token);
         if (req.ok) {
             Swal.fire({
                 title: "Đã gửi mail xác thực",
@@ -113,7 +113,7 @@ export default function CProfile() {
 
     const handleOkProfile = async () => {
         setConfirmLoading(true);
-        const req = await POST_API("/profileData/checkotp", { otp: valueOtp }, "POST", token);
+        const req = await POST_API("/profile/checkotp", { otp: valueOtp }, "POST", token);
         const data = await req.json();
         if (req.ok) {
             Swal.fire({

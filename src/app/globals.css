@@ -1,25 +1,20 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Rubik+Wet+Paint&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Maven+Pro:wght@400..900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
     margin: 0;
-    font-family: "Inter", sans-serif;
+    font-family: "Maven Pro", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-.rubik-wet-paint-regular {
-    font-family: "Rubik Wet Paint", system-ui;
-    font-weight: 400;
-    font-style: normal;
-}
-
 button {
-    padding: 6px 16px;
-    background-color: #fff;
-    border-radius: 4px;
+    padding: 6px 18px;
+    background-color: #2187d5;
+    color: white;
+    border-radius: 15px;
 }
 
 button:hover {
@@ -32,9 +27,8 @@ button[disabled] {
 }
 
 .active {
-    background-color: #bbf7d0;
-    color: #22c55e;
-    font-weight: bold;
+    color: #2187d5;
+    text-decoration: underline;
 }
 
 input,
@@ -92,4 +86,16 @@ textarea::-webkit-scrollbar-thumb {
 
 mark {
     background-color: #ffe9e9;
+}
+
+.bg-linear {
+    background: linear-gradient(140deg, rgba(199, 208, 228, 1) 12%, rgba(233, 222, 229, 1) 71%, rgba(218, 215, 229, 1) 100%);
+}
+
+.bg-linear-item-blue {
+    background: linear-gradient(140deg, rgba(101, 159, 210, 1) 39%, rgba(144, 178, 208, 1) 74%);
+}
+
+.bg-linear-item-pink {
+    background: linear-gradient(140deg, rgba(155, 134, 191, 1) 39%, rgba(164, 152, 186, 1) 74%);
 }
