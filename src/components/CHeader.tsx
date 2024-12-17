@@ -35,6 +35,9 @@ export default function CHeader({ token }: { token: string }) {
     return (
         <header className="bg-white text-primary w-full flex items-center justify-center fixed z-20 shadow-lg">
             <div className="flex items-center justify-between px-5 py-1 md:px-0 md:py-0 w-[800px] md:w-[1000px] xl:w-[1200px]">
+                <Link href="/">
+                    <Image src="/logo.png" alt="" width={120} height={30}></Image>
+                </Link>
                 <ul className="hidden md:flex items-center gap-5">
                     <li>
                         <Link href="/" className={`block  ${pathname == "/" ? "active" : ""}`}>
@@ -69,9 +72,7 @@ export default function CHeader({ token }: { token: string }) {
                         ""
                     )}
                 </ul>
-                <Link href="/">
-                    <Image src="/logo.png" alt="" width={120} height={30}></Image>
-                </Link>
+
                 {!token ? (
                     <div className="">
                         <Link href="/login">
