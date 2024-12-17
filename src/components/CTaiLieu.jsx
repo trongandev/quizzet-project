@@ -34,7 +34,7 @@ export default function CTaiLieu({ toolData }) {
                                 </p>
                                 <p className="flex gap-1 items-center">
                                     <FaRegEye />
-                                    Lượt xem: 1
+                                    Lượt xem: {item.view}
                                 </p>
                             </div>
                         </div>

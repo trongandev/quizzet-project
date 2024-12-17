@@ -230,9 +230,9 @@ Câu hỏi 2
 
     return (
         <div className="flex items-center justify-center gap-5 flex-col md:flex-row">
-            <div className="w-full h-[500px] md:h-auto md:w-[700px] bg-white p-2 md:p-5">
+            <div className="w-full h-[500px] md:h-auto md:w-[700px] bg-linear-item-2 p-2 md:p-5 rounded-xl">
                 <Form onFinishFailed={onFinishFailed} onFinish={onFinish} autoComplete="off" layout="vertical" className="frm-post my-3 overflow-y-scroll h-[600px]">
-                    <h1 className="text-2xl font-bold text-green-500 text-center mb-5">Thêm bài quiz mới</h1>
+                    <h1 className="text-2xl font-bold text-primary text-center mb-5">Thêm bài quiz mới</h1>
                     <div className="flex gap-3">
                         <div className="flex-1">
                             <Form.Item
@@ -310,7 +310,7 @@ Câu hỏi 2
 
                     <div className="my-5">
                         <div className="mb-3">
-                            <h1 className="text-2xl font-bold text-green-500 text-center mb-3">Thêm câu hỏi</h1>
+                            <h1 className="text-2xl font-bold text-primary text-center mb-3">Thêm câu hỏi</h1>
 
                             <div className="block text-sm text-red-500">
                                 <div className="flex items-center justify-between px-3">
@@ -328,12 +328,12 @@ Câu hỏi 2
                                             <p>
                                                 - Bấm phím <label className="text-red-500 font-bold">Enter</label> để xuống đáp án tiếp theo
                                             </p>
-                                            <Image src="/guide.png" alt="" width={500} height={500} className="mt-3 border-[5px] border-green-500 rounded-lg" />
-                                            <Image src="/guide3.png" alt="" width={500} height={500} className="mt-3 border-[5px] border-green-500 rounded-lg" />
+                                            <Image src="/guide.png" alt="" width={500} height={500} className="mt-3 border-[5px] border-primary rounded-lg" />
+                                            <Image src="/guide3.png" alt="" width={500} height={500} className="mt-3 border-[5px] border-primary rounded-lg" />
                                         </Modal>
                                     </div>
                                     <div className="">
-                                        <Button className="text-green-500 cursor-pointer flex items-center gap-1" onClick={showModalAI}>
+                                        <Button className="text-primary cursor-pointer flex items-center gap-1" onClick={showModalAI}>
                                             <FaBrain size={20} />
                                             AI Generate
                                         </Button>
@@ -375,19 +375,18 @@ Câu hỏi 2
                         </div>
                     </div>
                     <div className="mt-3 text-right">
-                        <button type="submit" className="bg-green-500 text-white ">
+                        <button type="submit" className=" ">
                             Thêm bài viết này
                         </button>
                     </div>
                 </Form>
             </div>
-            <div className="w-full md:w-[700px] md:h-[650px] bg-white p-5 overflow-y-auto frm-post">
-                <h1 className="text-xl font-bold text-green-500 text-center">Preview</h1>
+            <div className="w-full md:w-[700px] md:h-[650px] overflow-y-auto frm-post">
                 <div className="flex items-center justify-center flex-col my-3">
                     <div className=" shadow-md border-2 rounded-lg overflow-hidden group w-[200px] h-[100px] relative">
                         {quiz.img && <Image src={quiz?.img} alt="" className="absolute w-full h-full  object-cover" fill />}
                         <div className="p-3">
-                            <h1 className="text-md text-green-500 font-bold line-clamp-1 h-[24px]">{quiz.title}</h1>
+                            <h1 className="text-md text-primary font-bold line-clamp-1 h-[24px]">{quiz.title}</h1>
                             <p className="text-gray-500 line-clamp-1 text-sm h-[20px]">{quiz.content}</p>
                         </div>
                     </div>
@@ -395,22 +394,22 @@ Câu hỏi 2
                 <div className="">
                     {quest.map((item, index) => {
                         return (
-                            <div className="bg-white p-2 mt-2" key={index}>
-                                <h1 className="text-lg font-bold text-green-500 mb-3">
+                            <div className="bg-linear-item-2 p-5 mt-2 rounded-xl" key={index}>
+                                <h1 className="text-lg font-bold text-primary mb-3">
                                     Câu {index + 1}: {item.question}
                                 </h1>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                     {item.answers.map((answer, index) => (
-                                        <div key={index} className={`border relative flex items-center ${item.correct === index ? "bg-green-100 text-green-500 font-bold" : ""}`}>
-                                            <label className={`absolute h-full flex items-center justify-center font-bold p-3 ${item.correct === index ? "bg-green-500 text-white" : ""}`}>
+                                        <div key={index} className={` relative flex items-center ${item.correct === index ? " text-primary font-bold" : ""}`}>
+                                            <label className={`absolute h-full flex items-center justify-center font-bold p-3 ${item.correct === index ? "bg-primary text-white" : ""}`}>
                                                 {index === 0 ? "A" : index === 1 ? "B" : index === 2 ? "C" : "D"}
                                             </label>
                                             <input className="w-1 invisible" type="radio" id={item} name={item} checked={item.correct === index} />
                                             <label className="block w-full ml-7 p-3">{answer}</label>
                                         </div>
                                     ))}
-                                    <p className="text-green-500 line-clamp-2 h-[48px]`">Đáp án đúng: {item.answers[item.correct]}</p>
                                 </div>
+                                <p className="text-primary line-clamp-2 h-[48px]`">Đáp án đúng: {item.answers[item.correct]}</p>
                             </div>
                         );
                     })}

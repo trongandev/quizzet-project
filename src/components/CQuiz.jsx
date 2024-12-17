@@ -127,24 +127,24 @@ export default function CQuiz({ QuizData }) {
     return (
         <>
             {loading ? (
-                <div className="">
+                <div className="text-third px-2 md:px-0">
                     <div className="">
-                        <h1 className="text-xl font-bold text-green-500">{QuizData?.title}</h1>
+                        <h1 className="text-xl font-bold text-primary">{QuizData?.title}</h1>
                         <p className="text-gray-600">{QuizData?.content}</p>
                         <p className="text-gray-600">Tác giả: {QuizData?.uid.displayName}</p>
                         <p className="text-gray-600">Ngày đăng: {handleCompareDate(QuizData?.date)}</p>
                     </div>
-                    <form action="" onSubmit={handleQuiz} className="relative flex flex-col">
+                    <form action="" onSubmit={handleQuiz} className="relative flex flex-col  mt-1">
                         <div className="w-full md:w-2/3">
                             <div className=" h-[500px] overflow-y-auto scroll-smooth">
                                 {QuizData.questions.data_quiz?.map((item, index) => (
-                                    <div className="bg-white p-5 mt-2" key={index} id={item.id}>
-                                        <h1 className="text-lg font-bold text-green-500 mb-3">
+                                    <div className="bg-linear-item-2 p-5 mt-2 rounded-xl" key={index} id={item.id}>
+                                        <h1 className="text-lg font-bold text-primary mb-3">
                                             Câu {index + 1}: {item.question}
                                         </h1>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                             {item.answers.map((answer, index) => (
-                                                <div key={index} className={`border relative flex items-center ${selectedAnswers[item.id] === index ? "bg-green-100 text-green-500 font-bold" : ""}`}>
+                                                <div key={index} className={` relative flex items-center ${selectedAnswers[item.id] === index ? " text-primary font-bold" : ""}`}>
                                                     <input
                                                         type="radio"
                                                         name={item.id}
@@ -156,7 +156,7 @@ export default function CQuiz({ QuizData }) {
                                                     <label
                                                         htmlFor={`${item.id}ans${index}`}
                                                         className={`absolute  h-full font-bold p-3 flex items-center justify-center ${
-                                                            selectedAnswers[item.id] === index ? "bg-green-400 text-white" : ""
+                                                            selectedAnswers[item.id] === index ? "bg-primary text-white" : ""
                                                         }`}>
                                                         {index === 0 ? "A" : index === 1 ? "B" : index === 2 ? "C" : "D"}
                                                     </label>
@@ -171,7 +171,7 @@ export default function CQuiz({ QuizData }) {
                             </div>
                             <div className="mt-5 md:text-right">
                                 {QuizData.status ? (
-                                    <button type="submit" className="bg-green-500 text-white">
+                                    <button type="submit" className="">
                                         Nộp bài
                                     </button>
                                 ) : (
@@ -179,17 +179,18 @@ export default function CQuiz({ QuizData }) {
                                 )}
                             </div>
                         </div>
+                        {/* desktop */}
                         <div className="hidden md:block">
-                            <div className="fixed md:w-1/4 p-5 right-5 top-[70px]">
-                                <div className=" w-[240px] bg-gray-200 p-5">
-                                    <h1 className="text-lg font-bold text-green-500 text-center mb-3">Danh sách câu hỏi</h1>
-                                    <div className="grid grid-cols-5 gap-2">
+                            <div className="fixed md:w-1/4 p-5 right-5 bottom-[25%]">
+                                <div className="w-[240px] bg-gray-200 p-5">
+                                    <h1 className="text-lg font-bold text-primary text-center mb-3">Danh sách câu hỏi</h1>
+                                    <div className="grid grid-cols-5 gap-2 h-[300px] overflow-y-scroll">
                                         {QuizData.questions.data_quiz?.map((item, index) => (
                                             <a
                                                 href={`#${item.id}`}
                                                 key={index}
                                                 className={`flex items-center justify-center w-full h-[45px] ${
-                                                    selectedAnswers[item.id] !== undefined ? "bg-green-500 text-green-100 font-bold" : "bg-red-500 text-red-100"
+                                                    selectedAnswers[item.id] !== undefined ? "bg-primary text-green-100 font-bold" : "bg-red-500 text-red-100"
                                                 }`}>
                                                 <p>{index + 1}</p>
                                             </a>
@@ -198,6 +199,7 @@ export default function CQuiz({ QuizData }) {
                                 </div>
                             </div>
                         </div>
+                        {/* mobile */}
                         <div className="fixed right-[10px] bottom-[60px] md:hidden">
                             <div onClick={showModal} className="w-[50px] h-[50px] px-2 bg-red-500 flex items-center justify-center rounded-full text-white animate-bounce">
                                 <IoIosArrowUp />
@@ -211,7 +213,7 @@ export default function CQuiz({ QuizData }) {
                                                 key={index}
                                                 onClick={handleCancel}
                                                 className={`flex items-center justify-center w-full h-[55px] ${
-                                                    selectedAnswers[item.id] !== undefined ? "bg-green-500 text-green-100 font-bold" : "bg-red-500 text-red-100"
+                                                    selectedAnswers[item.id] !== undefined ? "bg-primary text-white font-bold" : "bg-red-500 text-red-100"
                                                 }`}>
                                                 <p>{index + 1}</p>
                                             </a>

@@ -38,18 +38,18 @@ export default function History() {
 
     return (
         <>
-            <div className="p-5 md:p-0">
-                <p className="text-2xl font-bold text-green-500">Lịch sử làm bài</p>
+            <div className=" md:p-0 text-third md:h-screen px-2 md:px-0">
+                <p className="text-2xl font-bold text-primary">Lịch sử làm bài</p>
                 {historyData === undefined ? "Bạn chưa có lịch sử làm bài..." : ""}
-                <div className="grid md:grid-cols-4 gap-5 my-5 relative grid-cols-1 ">
+                <div className="grid md:grid-cols-4 gap-5 my-5 relative grid-cols-2 ">
                     {historyData &&
                         historyData.map((item) => (
-                            <div key={item.id} className="bg-white border-[1px] shadow-md">
+                            <div key={item.id} className="bg-white border-[1px] shadow-md rounded-xl">
                                 <div className="p-3 ">
-                                    <h1 className="text-lg mb-3 text-green-500 font-bold h-[56px] line-clamp-2">{item.title}</h1>
+                                    <h1 className="text-lg mb-3 text-primary font-bold h-[56px] line-clamp-2">{item.title}</h1>
                                     <p>
                                         Số câu đúng:{" "}
-                                        <label className="text-green-500 font-bold">
+                                        <label className="text-primary font-bold">
                                             {item.score}/{item.lenght}
                                         </label>{" "}
                                     </p>
@@ -57,7 +57,7 @@ export default function History() {
                                         <IoIosTimer /> {handleCompareDate(item.date)}
                                     </p>
                                     <Link href={`/dapan/${item._id}`} className="block text-right mt-3">
-                                        <button className="bg-green-500 text-white ">Xem chi tiết</button>
+                                        <button className="">Xem chi tiết</button>
                                     </Link>
                                 </div>
                             </div>

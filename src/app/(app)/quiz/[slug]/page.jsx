@@ -1,16 +1,6 @@
 import React from "react";
-import { unstable_cache } from "next/cache";
-import { GET_API } from "@/lib/fetchAPI";
 import CQuiz from "@/components/CQuiz";
-const getCachedQuiz = (slug) =>
-    unstable_cache(
-        async () => {
-            const response = await GET_API(`/quiz/${slug}`);
-            return response.quiz;
-        },
-        [`quiz_${slug}`], // Key cache
-        { revalidate: 30 } // TTL = 1 giờ
-    );
+import { getCachedQuiz } from "@/lib/cacheData";
 
 export async function generateMetadata({ params }) {
     const { slug } = params;

@@ -23,11 +23,11 @@ export default function Answer({ params }) {
     return (
         <>
             {loading ? (
-                <div>
-                    <div className="flex justify-between flex-col md:flex-row gap-5 md:gap-0 px-5">
+                <div className="">
+                    <div className="flex justify-between flex-col md:flex-row gap-5 md:gap-0 px-5 text-third">
                         <div className="">
-                            <h1 className="text-xl font-bold text-green-500">Bài quiz về chủ đê: {quiz.title}</h1>
-                            <p className="text-gray-600" key={quiz.id}>
+                            <h1 className="text-2xl font-bold text-primary">Bài quiz về chủ đê: {quiz.title}</h1>
+                            <p className="text-secondary" key={quiz.id}>
                                 Nội dung: {quiz.content}
                             </p>
                             <p>
@@ -45,7 +45,7 @@ export default function Answer({ params }) {
                             </div>
 
                             <div className="">
-                                <Progress type="circle" percent={Math.floor((quiz.score / quiz.questions?.data_history.length) * 100)} />
+                                <Progress type="circle" strokeColor="#2187d5" percent={Math.floor((quiz.score / quiz.questions?.data_history.length) * 100)} />
                                 <p className="text-gray-600 mt-1">Tỉ lệ đúng</p>
                             </div>
                         </div>
@@ -53,24 +53,24 @@ export default function Answer({ params }) {
 
                     <div className="w-full">
                         {quiz.questions?.data_history.map((item, index) => (
-                            <div className="bg-white p-5 mt-5 shadow-sm border-[1px]" key={item.id}>
-                                <h1 className={` ${item.answer_correct === item.answer_choose ? "text-green-500 " : "text-red-500"}   mb-3 flex gap-2 items-center`}>
+                            <div className="bg-linear-item-2 p-5 mt-5 shadow-sm rounded-xl" key={item.id}>
+                                <h1 className={` ${item.answer_correct === item.answer_choose ? "text-primary " : "text-red-500"}   mb-3 flex gap-2 items-center`}>
                                     <p className="text-lg font-bold">
                                         Câu {index + 1}: {item.question_name}
                                     </p>
-                                    {item.answer_correct === item.answer_choose ? <p className="text-green-500 bg-green-100 px-3">Đúng</p> : <p className="text-red-500 bg-red-100 px-3">Sai</p>}
+                                    {item.answer_correct === item.answer_choose ? <p className="text-white bg-primary px-3">Đúng</p> : <p className="text-white bg-red-500 px-3">Sai</p>}
                                 </h1>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                     {item.answers?.map((answer, ansIndex) => (
                                         <div
                                             key={ansIndex}
-                                            className={`border relative  flex items-center  ${item.answer_correct === ansIndex ? "!bg-green-100 text-green-500 font-bold" : ""} ${
-                                                item.answer_choose === ansIndex ? "bg-red-100 " : ""
+                                            className={` relative  flex items-center  ${item.answer_correct === ansIndex ? "text-primary font-bold" : ""} ${
+                                                item.answer_choose === ansIndex ? "" : ""
                                             }`}>
                                             <input type="radio" name={item.id} className="w-1 invisible" disabled id={`${item.id}ans${ansIndex}`} defaultChecked={item.answer_correct === ansIndex} />
                                             <label
                                                 htmlFor={`${item.id}ans${ansIndex}`}
-                                                className={`absolute  h-full font-bold p-3 flex items-center justify-center   ${item.answer_correct === ansIndex ? "!bg-green-400 !text-white" : ""} ${
+                                                className={`absolute  h-full font-bold p-3 flex items-center justify-center   ${item.answer_correct === ansIndex ? "!bg-primary !text-white" : ""} ${
                                                     item.answer_choose === ansIndex ? "bg-red-500 text-white" : " "
                                                 }`}>
                                                 {ansIndex === 0 ? "A" : ansIndex === 1 ? "B" : ansIndex === 2 ? "C" : "D"}

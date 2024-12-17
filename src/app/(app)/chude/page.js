@@ -97,7 +97,7 @@ export default function Topic() {
     ];
     return (
         <div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 px-2 md:px-0">
                 {topic.map((item) => (
                     <Link href={`/chude/${item.value}`} className="bg-white shadow-md rounded-lg overflow-hidden" key={item.value}>
                         <div className="h-[150px] w-full relative">

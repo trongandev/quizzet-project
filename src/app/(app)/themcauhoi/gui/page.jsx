@@ -291,7 +291,7 @@ trả về kiểu dữ liệu json, không giải thích hay nói bất cứ th�
                     <div className="flex items-center justify-between w-full p-3">
                         <div className="flex items-center ">
                             <div className="mr-5">
-                                <h1 className="text-md text-green-500 font-bold line-clamp-1 h-[24px]">{quiz.title || "Chưa có tiêu đề?"}</h1>
+                                <h1 className="text-md text-primary font-bold line-clamp-1 h-[24px]">{quiz.title || "Chưa có tiêu đề?"}</h1>
                                 <p className="text-gray-500 line-clamp-1 text-sm h-[20px]">{quiz.content || "Chưa có nội dung"}</p>
                             </div>
                             <Button className="text-orange-500 cursor-pointer hover:text-red-500 flex items-center gap-1" onClick={showModal}>
@@ -345,7 +345,7 @@ trả về kiểu dữ liệu json, không giải thích hay nói bất cứ th�
                             </Modal>
                         </div>
                         <div className="flex-1 flex justify-end">
-                            <Button className="text-green-500 cursor-pointer flex items-center gap-1" onClick={showModalAI}>
+                            <Button className="text-primary cursor-pointer flex items-center gap-1" onClick={showModalAI}>
                                 <FaBrain size={20} />
                                 AI Generate
                             </Button>
@@ -377,11 +377,11 @@ trả về kiểu dữ liệu json, không giải thích hay nói bất cứ th�
                     </div>
                 </div>
 
-                <div className="h-[500px] overflow-y-scroll">
+                <div className="h-[500px] overflow-y-scroll text-third">
                     {quest.map((item, index) => (
-                        <div className="bg-white p-5 mt-5" key={index}>
+                        <div className="bg-linear-item-2 p-5 mt-5 rounded-xl" key={index}>
                             <div className="flex justify-between items-center mb-3">
-                                <h1 className="text-lg font-bold text-green-500">
+                                <h1 className="text-lg font-bold text-primary">
                                     Câu {index + 1}: {item.question}
                                 </h1>
                                 <div className="flex items-center gap-1">
@@ -395,7 +395,7 @@ trả về kiểu dữ liệu json, không giải thích hay nói bất cứ th�
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                 {item.answers.map((answer, idx) => (
-                                    <div key={idx} className={`border relative flex items-center ${item.correct === idx ? "bg-green-100 text-green-500 font-bold" : ""}`}>
+                                    <div key={idx} className={` relative flex items-center ${item.correct === idx ? " text-primary font-bold" : ""}`}>
                                         <input
                                             type="radio"
                                             name={item.id}
@@ -406,7 +406,7 @@ trả về kiểu dữ liệu json, không giải thích hay nói bất cứ th�
                                         />
                                         <label
                                             htmlFor={`${item.id}ans${idx}`}
-                                            className={`absolute h-full font-bold p-3 flex items-center justify-center ${item.correct === idx ? "bg-green-400 text-white" : ""}`}>
+                                            className={`absolute h-full font-bold p-3 flex items-center justify-center ${item.correct === idx ? "bg-primary text-white" : ""}`}>
                                             {idx === 0 ? "A" : idx === 1 ? "B" : idx === 2 ? "C" : "D"}
                                         </label>
                                         <label htmlFor={`${item.id}ans${idx}`} className="block w-full ml-7 p-3">

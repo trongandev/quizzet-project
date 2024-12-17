@@ -5,7 +5,7 @@ export default async function SubjectOutline() {
     const toolData = await getCachedTool();
 
     return (
-        <div>
+        <div className="px-2 md:px-0">
             <CTaiLieu toolData={toolData} />
         </div>
     );

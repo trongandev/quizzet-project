@@ -104,3 +104,7 @@ mark {
 .bg-linear-item {
     background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.5999649859943977) 40%);
 }
+
+.bg-linear-item-2 {
+    background: linear-gradient(120deg, rgba(33, 135, 213, 0.1966036414565826) 0%, rgba(3, 2, 24, 0.1966036414565826) 100%);
+}
