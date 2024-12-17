@@ -12,6 +12,8 @@ import { POST_API } from "@/lib/fetchAPI";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { BiHome } from "react-icons/bi";
+import { IoIosArrowBack } from "react-icons/io";
+import Image from "next/image";
 export default function LoginForm() {
     const router = useRouter();
     const token = Cookies.get("token");
@@ -71,62 +73,78 @@ export default function LoginForm() {
     //     flow: "auth-code",
     // });
 
+    const handleBackRouter = () => {
+        router.back();
+    };
+
     return (
-        <div className="flex justify-center flex-col items-center h-full">
-            <div className="w-full mt-10 md:mt-0 md:w-[500px] border-[1px] border-green-500 px-3 md:px-10 py-5 rounded-lg shadow-lg bg-white">
+        <div className="flex justify-center flex-col items-center h-full bg-white p-5 rounded-xl">
+            <div className="text-third">
                 <form onSubmit={formik.handleSubmit}>
-                    <div className="flex items-center mb-5">
-                        <Link href="/">
-                            <BiHome size={25} />
-                        </Link>
-                        <h1 className="text-2xl font-bold text-green-500 text-center w-full">Đăng nhập</h1>
+                    <div onClick={handleBackRouter}>
+                        <IoIosArrowBack size={25} />
                     </div>
-                    <div className="mb-3">
-                        <label htmlFor="email" className="block">
-                            Nhập email
-                        </label>
-                        <input type="email" placeholder="Nhập email của bạn..." name="email" id="email" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.email} />
-                        {formik.touched.email && formik.errors.email ? <div className="text-red-500">{formik.errors.email}</div> : null}{" "}
+                    <Image alt="" width={150} height={150} src="/logo.png"></Image>
+
+                    <h1 className="text-2xl font-bold text-primary">Đăng nhập</h1>
+                    <p>Đăng nhập để trải nghiệm Quizzet tốt hơn nhé</p>
+
+                    <div className="mb-1 mt-5">
+                        <input type="email" placeholder="Email của bạn..." name="email" id="email" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.email} />
+                        {formik.touched.email && formik.errors.email ? <div className="text-red-500 mt-1 mb-3 mx-5 text-sm">{formik.errors.email}</div> : null}{" "}
                     </div>
-                    <div className="mb-3">
-                        <label htmlFor="password" className="block">
-                            Nhập password
-                        </label>
+                    <div className="mb-5">
                         <input
                             type="password"
-                            placeholder="Nhập password của bạn..."
+                            placeholder="Mật khẩu của bạn..."
                             name="password"
                             id="password"
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.password}
                         />
-                        {formik.touched.password && formik.errors.password ? <div className="text-red-500">{formik.errors.password}</div> : null}{" "}
+                        {formik.touched.password && formik.errors.password ? <div className="text-red-500 mt-1 mb-3 mx-5 text-sm">{formik.errors.password}</div> : null}{" "}
                     </div>
                     <div className="mb-5">
-                        <button type="submit" className="bg-green-500 text-white  w-full flex gap-5 items-center justify-center" disabled={loading}>
-                            {loading && <Spin indicator={<LoadingOutlined spin />} size="default" />}
+                        <button type="submit" className=" w-full flex gap-5 items-center justify-center" disabled={loading}>
+                            {loading && <Spin className="text-white" indicator={<LoadingOutlined spin />} size="default" />}
                             Đăng nhập
                         </button>
                     </div>
-                    <div className="mt-5">
+                    <div className="mt-5 flex justify-between items-center text-sm">
                         <p>
-                            Bạn chưa có tài khoản ư?{" "}
-                            <Link href="/register" className="text-green-500">
-                                Đăng ký ngay
+                            <Link href="/register" className="underline text-primary">
+                                Đăng ký
                             </Link>
                         </p>
+                        <Link href="/forget" className="underline text-primary">
+                            Quên mật khẩu?
+                        </Link>
                     </div>
-                    <Link href="/forget" className="block mt-3 text-right text-sm text-gray-500 hover:text-blue-600 hover:cursor-pointer hover:underline">
-                        Quên mật khẩu?
-                    </Link>
                 </form>
-                <div className="mt-5 text-gray-500 ">
-                    <p className="">Hoặc bạn có thể</p>
+                <div className="my-5">
+                    <div className="relative mb-3">
+                        <div className="absolute w-full h-[1px] bg-gray-500"></div>
+                        <div className="absolute w-full flex items-center justify-center bottom-[-12px]">
+                            <p className=" bg-white px-2 ">Hoặc tiếp tục với</p>
+                        </div>
+                    </div>
                     {/* onClick={() => googleLogin()} */}
-                    <button className="flex w-full gap-2 items-center border-2 rounded-lg mb-3 text-orange-700 font-bold mt-2">
-                        <FcGoogle size={30} /> Đăng nhập bằng Google
-                    </button>
+                </div>
+                <div className="mt-10 pt-3">
+                    <div className="flex border-2 border-gray-200 rounded-full overflow-hidden h-[60px]">
+                        <button className="bg-white flex-1 flex justify-center py-3 hover:bg-gray-200 rounded-l-full  ">
+                            <Image
+                                alt=""
+                                width={35}
+                                height={35}
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/480px-Facebook_Logo_%282019%29.png"></Image>
+                        </button>
+                        <div className="w-[1px] h-full bg-gray-200"></div>
+                        <button className="bg-white flex-1 flex justify-center py-3 hover:bg-gray-200 rounded-r-full">
+                            <Image alt="" width={35} height={35} src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png"></Image>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

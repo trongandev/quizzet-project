@@ -9,8 +9,6 @@ import { useRouter } from "next/navigation";
 import { POST_API } from "@/lib/fetchAPI";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import { IoIosArrowBack } from "react-icons/io";
-import Image from "next/image";
 export default function Forget() {
     const router = useRouter();
     const token = Cookies.get("token");
@@ -52,28 +50,31 @@ export default function Forget() {
     };
 
     return (
-        <div className="flex justify-center flex-col items-center h-full bg-white p-5 rounded-xl">
-            <div className="text-third  w-[400px]">
-                <form onSubmit={formik.handleSubmit}>
-                    <Link href="/">
-                        <IoIosArrowBack size={25} />
-                    </Link>
-                    <Image alt="" width={150} height={150} src="/logo.png"></Image>
+        <div className="flex justify-center flex-col items-center">
+            <div className="w-full mt-10 md:mt-0 md:w-[500px] border-[1px] border-green-500 px-3 md:px-10 py-5 rounded-lg shadow-lg bg-white">
+                <form action="" onSubmit={formik.handleSubmit} className="">
+                    <h1 className="text-2xl font-bold text-green-500 text-center mb-5">Quên mật khẩu</h1>
 
-                    <h1 className="text-2xl font-bold text-primary">Quên mật khẩu</h1>
-
-                    <div className="my-3">
+                    <div className="mb-3">
                         <label htmlFor="email" className="block">
                             Nhập email đã đăng ký của bạn
                         </label>
                         <input type="email" placeholder="Nhập email của bạn..." name="email" id="email" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.email} />
-                        {formik.touched.email && formik.errors.email ? <div className="text-red-500 mt-1 mb-3 mx-5 text-sm">{formik.errors.email}</div> : null}
+                        {formik.touched.email && formik.errors.email ? <div className="text-red-500">{formik.errors.email}</div> : null}
                     </div>
                     <div className="mb-5">
-                        <button type="submit" className=" w-full flex gap-5 items-center justify-center" disabled={loading}>
-                            {loading && <Spin className="text-white" indicator={<LoadingOutlined spin />} size="default" />}
+                        <button type="submit" className="bg-green-500 text-white  w-full flex gap-5 items-center justify-center" disabled={loading}>
+                            {loading && <Spin indicator={<LoadingOutlined spin />} size="default" />}
                             Gửi yêu cầu mật khẩu mới
                         </button>
+                    </div>
+                    <div className="mt-5">
+                        <p>
+                            Bạn chưa có tài khoản ư?{" "}
+                            <Link href="/register" className="text-green-500">
+                                Đăng ký ngay
+                            </Link>
+                        </p>
                     </div>
                 </form>
             </div>

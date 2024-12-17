@@ -95,11 +95,11 @@ export default function CHeader({ token }: { token: string }) {
                                 open={openNoti}
                                 onOpenChange={handleOpenNoti}
                                 title="Thông báo">
-                                <Badge count={1} offset={[-5, 5]} size="small" className="text-white">
+                                <Badge count={1} offset={[-5, 5]} size="small" className="text-primary">
                                     <IoMdNotificationsOutline size={30} />
                                 </Badge>
                             </Popover>
-                            <Badge count={1} offset={[-5, 5]} size="small" className="text-white">
+                            <Badge count={1} offset={[-5, 5]} size="small" className="text-primary">
                                 <Link href={`/chat`}>
                                     <RiMessengerLine size={26} />
                                 </Link>

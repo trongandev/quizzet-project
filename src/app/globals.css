@@ -28,7 +28,7 @@ button[disabled] {
 
 .active {
     color: #2187d5;
-    text-decoration: underline;
+    font-weight: bold;
 }
 
 input,
@@ -37,12 +37,13 @@ select {
     padding: 6px 20px;
     border: 1px solid #ccc;
     width: 100%;
+    border-radius: 10px;
 }
 
 input:focus-visible,
 textarea:focus-visible {
     outline: none;
-    border: 1px solid #62b669;
+    border: 1px solid #2187d5;
 }
 
 .helvetica {
@@ -63,7 +64,7 @@ textarea::-webkit-scrollbar {
 
 /* Handle */
 textarea::-webkit-scrollbar-thumb {
-    background: #22c55e;
+    background: #2187d5;
     border-radius: 5px;
 }
 
@@ -98,4 +99,8 @@ mark {
 
 .bg-linear-item-pink {
     background: linear-gradient(140deg, rgba(155, 134, 191, 1) 39%, rgba(164, 152, 186, 1) 74%);
+}
+
+.bg-linear-item {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 0.5999649859943977) 40%);
 }

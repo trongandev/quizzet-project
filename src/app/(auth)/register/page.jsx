@@ -13,6 +13,8 @@ import Link from "next/link";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { BiHome } from "react-icons/bi";
+import { IoIosArrowBack } from "react-icons/io";
+import Image from "next/image";
 export default function RegisterForm() {
     const token = Cookies.get("token");
     const router = useRouter();
@@ -91,60 +93,50 @@ export default function RegisterForm() {
     //         icon: "info",
     //     });
     // };
-
+    const handleBackRouter = () => {
+        router.back();
+    };
     return (
-        <div className="flex justify-center flex-col items-center ">
-            <div className="w-full mt-10 md:mt-0 md:w-[500px] border-[1px] border-green-500 px-3 md:px-10 py-5 rounded-lg shadow-lg bg-white">
-                <form onSubmit={formik.handleSubmit} action="" className="">
-                    <div className="flex items-center mb-5">
-                        <Link href="/">
-                            <BiHome size={25} />
-                        </Link>
-                        <h1 className="text-2xl font-bold text-green-500 text-center w-full">Đăng ký tài khoản mới</h1>
+        <div className="flex justify-center flex-col items-center h-full bg-white p-5 rounded-xl">
+            <div className="text-third">
+                <form onSubmit={formik.handleSubmit}>
+                    <div onClick={handleBackRouter}>
+                        <IoIosArrowBack size={25} />
                     </div>
-                    <div className="mb-3">
-                        <label htmlFor="displayName" className="block">
-                            Nhập họ tên của bạn
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="Nhập họ tên của bạn... VD: Trọng An"
-                            name="displayName"
-                            id="displayName"
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            value={formik.values.displayName}
-                        />
-                        {formik.touched.displayName && formik.errors.displayName ? <div classdisplayName="text-red-500">{formik.errors.displayName}</div> : null}
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="email" className="block">
-                            Nhập email
-                        </label>
-                        <input type="email" placeholder="Nhập email của bạn..." name="email" id="email" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.email} />
-                        {formik.touched.email && formik.errors.email ? <div className="text-red-500">{formik.errors.email}</div> : null}
-                    </div>
+                    <Image alt="" width={150} height={150} src="/logo.png"></Image>
 
-                    <div className="mb-3 flex gap-2">
-                        <div className="flex-1">
-                            <label htmlFor="password" className="block">
-                                Nhập password
-                            </label>
+                    <h1 className="text-2xl font-bold text-primary">Đăng ký</h1>
+                    <p>Đăng ký để trải nghiệm Quizzet tốt hơn nhé</p>
+                    <div className="my-5 space-y-2">
+                        <div className="">
+                            <input
+                                type="text"
+                                placeholder="Nhập họ tên của bạn..."
+                                name="displayName"
+                                id="displayName"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.displayName}
+                            />
+                            {formik.touched.displayName && formik.errors.displayName ? <div className="text-red-500 mt-1 mb-3 mx-5 text-sm">{formik.errors.displayName}</div> : null}
+                        </div>
+                        <div className="">
+                            <input type="email" placeholder="Email của bạn..." name="email" id="email" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.email} />
+                            {formik.touched.email && formik.errors.email ? <div className="text-red-500 mt-1 mb-3 mx-5 text-sm">{formik.errors.email}</div> : null}{" "}
+                        </div>
+                        <div className="">
                             <input
                                 type="password"
-                                placeholder="Nhập password của bạn..."
+                                placeholder="Mật khẩu của bạn..."
                                 name="password"
                                 id="password"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 value={formik.values.password}
                             />
-                            {formik.touched.password && formik.errors.password ? <div className="text-red-500">{formik.errors.password}</div> : null}
+                            {formik.touched.password && formik.errors.password ? <div className="text-red-500 mt-1 mb-3 mx-5 text-sm">{formik.errors.password}</div> : null}{" "}
                         </div>
                         <div className="flex-1">
-                            <label htmlFor="re-password" className="block">
-                                Nhập lại mật khẩu
-                            </label>
                             <input
                                 type="password"
                                 placeholder="Nhập lại mật khẩu của bạn..."
@@ -154,36 +146,47 @@ export default function RegisterForm() {
                                 onBlur={formik.handleBlur}
                                 value={formik.values.rePassword}
                             />
-                            {formik.touched.rePassword && formik.errors.rePassword ? <div className="text-red-500">{formik.errors.rePassword}</div> : null}
+                            {formik.touched.rePassword && formik.errors.rePassword ? <div className="text-red-500 mt-1 mb-3 mx-5 text-sm">{formik.errors.rePassword}</div> : null}
                         </div>
                     </div>
-
-                    {/* <ReCAPTCHA sitekey="6LdxGvopAAAAALOqa3Ytk-IGNlYlfeOx6N1XHV8M" onChange={(val) => setCapVal(val)} /> */}
-                    <div className="mb-3 text-right">
-                        {/* disabled={!capVal} */}
-
-                        <button type="submit" className="bg-green-500 text-white  w-full flex gap-5 items-center justify-center" disabled={loading}>
-                            {loading && <Spin indicator={<LoadingOutlined spin />} size="default" />}
-                            Đăng ký ngay
+                    <div className="mb-5">
+                        <button type="submit" className=" w-full flex gap-5 items-center justify-center" disabled={loading}>
+                            {loading && <Spin className="text-white" indicator={<LoadingOutlined spin />} size="default" />}
+                            Đăng nhập
                         </button>
                     </div>
-                    <div className="mt-5">
+                    <div className="my-5 text-sm">
                         <p>
                             Bạn đã có tài khoản rồi à?{" "}
-                            <Link href="/login" className="text-green-500">
-                                Đăng nhập thôi
+                            <Link href="/login" className="underline text-primary">
+                                Đăng nhập
                             </Link>
                         </p>
                     </div>
                 </form>
-                <div className="mt-5 text-gray-500">
-                    <p className="">Hoặc bạn có thể</p>
-                    <button className="flex w-full gap-2 items-center border-2 rounded-lg mb-3 text-orange-700 font-bold mt-2" onClick={handleLoginWithGoogle}>
-                        <FcGoogle size={30} /> Đăng ký bằng Google
-                    </button>
-                    {/* <button className="flex w-full gap-2 items-center border-2 rounded-lg text-blue-700 font-bold" onClick={handleLoginWithFacebook}>
-                        <FaFacebook size={30} color="#1e40af" /> Đăng ký bằng Facebook
-                    </button> */}
+                <div className="">
+                    <div className="relative mb-3">
+                        <div className="absolute w-full h-[1px] bg-gray-500"></div>
+                        <div className="absolute w-full flex items-center justify-center bottom-[-10px]">
+                            <p className=" bg-white px-2 ">Hoặc tiếp tục với</p>
+                        </div>
+                    </div>
+                    {/* onClick={() => googleLogin()} */}
+                </div>
+                <div className="mt-10 pt-3">
+                    <div className="flex border-2 border-gray-200 rounded-full overflow-hidden h-[60px]">
+                        <button className="bg-white flex-1 flex justify-center py-3 hover:bg-gray-200 rounded-l-full  ">
+                            <Image
+                                alt=""
+                                width={35}
+                                height={35}
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/480px-Facebook_Logo_%282019%29.png"></Image>
+                        </button>
+                        <div className="w-[1px] h-full bg-gray-200"></div>
+                        <button className="bg-white flex-1 flex justify-center py-3 hover:bg-gray-200 rounded-r-full">
+                            <Image alt="" width={35} height={35} src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png"></Image>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

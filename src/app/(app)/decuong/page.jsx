@@ -1,12 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import { Button, Modal } from "antd";
-import { InboxOutlined } from "@ant-design/icons";
-import { Upload } from "antd";
 
-const { Dragger } = Upload;
-
-export default function SubjectOutline() {
+export default function DeCuong() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [fileList, setFileList] = useState([]);
     const showModal = () => {
@@ -66,10 +61,12 @@ export default function SubjectOutline() {
         },
         fileList,
     };
-
     return (
-        <div>
-            <div className="">
+        <div className="h-screen flex justify-center items-center flex-col p-5">
+            <h1 className="text-primary text-2xl font-bold">Khu vực hiển thị các đề cương mà mọi người share cũng như mình sưu tầm</h1>
+            <p className="text-secondary">Hiện đang làm tính năng này...</p>
+
+            {/* <div className="">
                 <div className="bg-white p-5 mt-2 flex flex-col">
                     <h1 className="text-2xl text-gray-800 font-bold">Đề cương từ cộng đồng chúng tôi</h1>
                     <p className="text-gray-500">Nếu bạn có đề cương và muốn chia sẻ</p>
@@ -89,7 +86,7 @@ export default function SubjectOutline() {
                     </Modal>
                 </div>
                 <div className="bg-white p-5 mt-2 flex items-center justify-between flex-col md:flex-row gap-3 md:gap-0"></div>
-            </div>
+            </div> */}
         </div>
     );
 }
