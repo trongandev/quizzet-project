@@ -58,7 +58,11 @@ export default function Answer({ params }) {
                                     <p className="text-lg font-bold">
                                         Câu {index + 1}: {item.question_name}
                                     </p>
-                                    {item.answer_correct === item.answer_choose ? <p className="text-white bg-primary px-3">Đúng</p> : <p className="text-white bg-red-500 px-3">Sai</p>}
+                                    {item.answer_correct === item.answer_choose ? (
+                                        <p className="text-white bg-primary px-3 rounded-md text-[12px]">Đúng</p>
+                                    ) : (
+                                        <p className="text-white bg-red-500 px-3 rounded-md text-[12px]">Sai</p>
+                                    )}
                                 </h1>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                     {item.answers?.map((answer, ansIndex) => (
@@ -70,12 +74,12 @@ export default function Answer({ params }) {
                                             <input type="radio" name={item.id} className="w-1 invisible" disabled id={`${item.id}ans${ansIndex}`} defaultChecked={item.answer_correct === ansIndex} />
                                             <label
                                                 htmlFor={`${item.id}ans${ansIndex}`}
-                                                className={`absolute  h-full font-bold p-3 flex items-center justify-center   ${item.answer_correct === ansIndex ? "!bg-primary !text-white" : ""} ${
-                                                    item.answer_choose === ansIndex ? "bg-red-500 text-white" : " "
-                                                }`}>
+                                                className={`absolute font-bold w-10 h-10 flex items-center justify-center rounded-full ${
+                                                    item.answer_correct === ansIndex ? "!bg-primary !text-white " : ""
+                                                } ${item.answer_choose === ansIndex ? "bg-red-500 text-white" : " "}`}>
                                                 {ansIndex === 0 ? "A" : ansIndex === 1 ? "B" : ansIndex === 2 ? "C" : "D"}
                                             </label>
-                                            <label htmlFor={`${item.id}ans${ansIndex}`} className="block w-full ml-7 p-3">
+                                            <label htmlFor={`${item.id}ans${ansIndex}`} className="block w-full ml-10 p-3">
                                                 {answer}
                                             </label>
                                         </div>

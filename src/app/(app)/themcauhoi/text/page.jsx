@@ -20,7 +20,7 @@ export default function Text() {
     const [quiz, setQuiz] = useState({
         title: "",
         content: "",
-        img: "",
+        img: "https://www.didongmy.com/vnt_upload/news/05_2024/anh-27-meme-dang-yeu-didongmy.jpg",
     });
     const [quest, setQuest] = useState([
         {

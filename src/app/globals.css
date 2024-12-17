@@ -17,8 +17,18 @@ button {
     border-radius: 15px;
 }
 
+button.btn-outline {
+    background-color: transparent;
+    color: #2187d5;
+    border: 1px solid #2187d5;
+    padding: 4px 16px;
+}
+
 button:hover {
-    opacity: 0.8;
+    background-color: transparent;
+    color: #2187d5;
+    border: 1px solid #2187d5;
+    padding: 5px 18px;
 }
 button:disabled,
 button[disabled] {

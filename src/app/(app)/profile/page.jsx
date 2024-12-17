@@ -7,7 +7,7 @@ import { IoMdSettings } from "react-icons/io";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { CiTimer } from "react-icons/ci";
 import { MdModeEdit } from "react-icons/md";
-import { FaTrash } from "react-icons/fa";
+import { FaRegEye, FaTrash } from "react-icons/fa";
 import { FaEye } from "react-icons/fa";
 import Cookies from "js-cookie";
 import { Spin } from "antd";
@@ -17,6 +17,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { GET_API, POST_API } from "@/lib/fetchAPI";
 import handleCompareDate from "@/lib/CompareDate";
+import { IoArrowForwardCircleOutline } from "react-icons/io5";
 
 export default function CProfile() {
     const [user, setUser] = useState(null);
@@ -189,13 +190,13 @@ export default function CProfile() {
 
     return (
         <div>
-            <div className="flex gap-3 items-center">
+            <div className="flex gap-3 items-center text-third">
                 <div className="w-[100px] h-[100px] rounded-full overflow-hidden relative">
                     <Image src={user?.profilePicture} alt="" className="object-cover h-full w-full absolute" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                 </div>
                 <div className="">
                     <div className="flex gap-2 items-center">
-                        <h1 className="text-2xl font-bold text-gray-700">{user?.displayName}</h1>
+                        <h1 className="text-2xl font-bold text-primary">{user?.displayName}</h1>
                         {user?.verify ? <MdOutlineVerified color="#3b82f6" /> : ""}
                     </div>
                     {user?.verify ? (
@@ -253,7 +254,7 @@ export default function CProfile() {
 
             <hr className="my-5" />
             <div className="">
-                <h1 className="text-lg font-bold text-green-500">Bài đăng của bạn</h1>
+                <h1 className="text-2xl font-bold text-primary">Bài đăng của bạn</h1>
                 {!loading && (
                     <div className="h-[400px] flex items-center justify-center w-full">
                         <Spin indicator={<LoadingOutlined spin />} size="large" />
@@ -263,47 +264,46 @@ export default function CProfile() {
                     <div>
                         <p>Bạn chưa đăng bài nào</p>
                         <Link href="/post">
-                            <button className="bg-green-500 text-white mt-2">Tạo bài trắc nghiệm mới thôi</button>
+                            <button className="mt-2">Tạo bài trắc nghiệm mới thôi</button>
                         </Link>
                     </div>
                 )}
-                <div className="bg-white p-5 mt-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <div className=" mt-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {loading &&
                         quiz?.map((item) => (
-                            <div key={item.id} className="relative">
-                                <div className="shadow-md border-2 rounded-lg overflow-hidden group ">
-                                    <div className="relative h-[150px]">
-                                        <Image src={item?.img} alt="" className="h-full w-full object-cover absolute" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
-                                    </div>
-                                    <div className="p-3">
-                                        <div className="flex items-center gap-2 mb-3">
-                                            <div className="w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden relative">
-                                                <Image
-                                                    src={user?.profilePicture}
-                                                    alt=""
-                                                    className="object-cover h-full w-full absolute"
-                                                    fill
-                                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                />
-                                            </div>
-                                            <div className="">
-                                                <div className="flex items-center gap-1">
-                                                    <h2 className="text-gray-800 text-sm line-clamp-1 overflow-hidden">{user.displayName}</h2>
-                                                    {user?.verify ? <MdOutlineVerified color="#3b82f6" /> : ""}
-                                                </div>
-                                                <p className="text-gray-400 text-[10px] flex gap-1 items-center">
-                                                    <CiTimer color="#1f2937" /> {handleCompareDate(item.date)}
+                            <div key={item._id} className="rounded-xl  shadow-md h-[400px] relative">
+                                <div className="overflow-hidden relative h-full rounded-[8px]">
+                                    <Image
+                                        src={item.img}
+                                        alt={item.title}
+                                        className="absolute h-full w-full object-cover hover:scale-110 duration-300  brightness-75"
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                        priority
+                                    />
+                                    <div className="p-3 absolute z-1 text-white bottom-0 w-full bg-linear-item">
+                                        <h1 className="text-lg font-bold">{item.title}</h1>
+                                        <p className="line-clamp-2 text-sm text-[#D9D9D9]">{item.content}</p>
+
+                                        <div className="flex justify-between items-center mt-2">
+                                            <div className="flex flex-col">
+                                                <p className="text-[#D9D9D9] text-[10px] flex gap-1 items-center">
+                                                    <FaRegEye /> Lượt làm: {item.noa}
+                                                </p>
+                                                <p className="text-[#D9D9D9] text-[10px] flex gap-1 items-center">
+                                                    <CiTimer color="#D9D9D9" /> {handleCompareDate(item.date)}
                                                 </p>
                                             </div>
+
+                                            <Link href={`/quiz/${item.slug}`} className="block">
+                                                <button className="flex gap-1 items-center text-sm">
+                                                    Làm bài <IoArrowForwardCircleOutline />
+                                                </button>
+                                            </Link>
                                         </div>
-                                        <h1 className="text-lg h-[56px] font-bold text-gray-800">{item.title}</h1>
-                                        <p className="text-gray-700 line-clamp-2 h-[45px] my-3 text-[15px]">{item.content}</p>
-                                        <Link href={`/quiz/${item._id}`} className="text-right">
-                                            {item.status ? <Button className="bg-green-600 text-white">Làm bài ngay</Button> : <Button className="bg-gray-200 text-black">Xem lại bài</Button>}
-                                        </Link>
                                     </div>
                                 </div>
-                                <div className="absolute top-0 right-0 z-50">
+                                <div className="absolute top-1 right-1 z-50">
                                     <Popover
                                         placement="bottom"
                                         content={
@@ -319,14 +319,14 @@ export default function CProfile() {
                                         trigger="click"
                                         open={openTopic === item._id}
                                         onOpenChange={(newOpen) => handleOpenTopic(newOpen, item._id)}>
-                                        <Button>
+                                        <button className="bg-primary">
                                             <HiDotsHorizontal />
-                                        </Button>
+                                        </button>
                                     </Popover>
                                 </div>
                                 {!item.status ? (
-                                    <div className="absolute top-0 left-0 right-0 bottom-0 z-10 opacity-80">
-                                        <div className="bg-gray-100 text-center text-red-700 text-2xl font-bold h-full flex items-center justify-center flex-col">
+                                    <div className="absolute top-0 left-0 right-0 bottom-0 z-1 opacity-80 ">
+                                        <div className="bg-gray-100 text-center text-red-700 text-2xl rounded-md font-bold h-full flex items-center justify-center flex-col">
                                             <p>Đang kiểm duyệt</p>
                                             <Link href={`/quiz/${item.slug}`} className="text-right">
                                                 <Button className="mt-3 text-red-700 font-bold flex gap-1 items-center">

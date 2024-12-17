@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { MdOutlineVerified } from "react-icons/md";
 import { Button } from "antd";
 import { CiTimer } from "react-icons/ci";
-import { FaEye } from "react-icons/fa";
+import { FaEye, FaRegEye } from "react-icons/fa";
 import { FaFacebookMessenger } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import { GET_API } from "@/lib/fetchAPI";
@@ -12,6 +12,7 @@ import Cookies from "js-cookie";
 import Image from "next/image";
 import Link from "next/link";
 import handleCompareDate from "@/lib/CompareDate";
+import { IoArrowForwardCircleOutline } from "react-icons/io5";
 
 export default function ProfileUID({ params }) {
     const { slug } = params;
@@ -72,17 +73,17 @@ export default function ProfileUID({ params }) {
                             </div>
                         </div>
                     </div>
-                    <Button onClick={() => handleCreateAndCheckRoomChat(params.uid)} className="w-[100px] flex gap-1 items-center mt-2">
+                    <button onClick={() => handleCreateAndCheckRoomChat(params.uid)} className="flex gap-2 items-center mt-2">
                         <FaFacebookMessenger />
                         Nhắn tin
-                    </Button>
+                    </button>
 
                     <hr className="my-5" />
                     <div className="">
-                        <h1 className="text-lg font-bold text-green-500" key={profile._id}>
+                        <h1 className="text-2xl font-bold text-primary" key={profile._id}>
                             Các bài đăng của {profile.displayName || profile.email}
                         </h1>
-                        <div className="bg-white p-5 mt-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <div className=" mt-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             {quiz && quiz.length === 0 && (
                                 <div>
                                     <p>Người này chưa có đăng bài nào</p>
@@ -90,54 +91,38 @@ export default function ProfileUID({ params }) {
                             )}
                             {quiz &&
                                 quiz?.map((item) => (
-                                    <div key={item.id} className="relative">
-                                        <div className="shadow-md border-2 rounded-lg overflow-hidden group ">
-                                            <div className="relative h-[150px]">
-                                                <Image src={item.img} alt="" className="h-full w-full object-cover absolute" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
-                                            </div>
-                                            <div className="p-3">
-                                                <div className="flex items-center gap-2 mb-3">
-                                                    <div className="w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden relative">
-                                                        <Image
-                                                            src={profile.profilePicture}
-                                                            alt=""
-                                                            className="object-cover h-full absolute"
-                                                            fill
-                                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                        />
-                                                    </div>
-                                                    <div className="">
-                                                        <div className="flex items-center gap-1">
-                                                            <h2 className="text-gray-800 text-sm line-clamp-1 overflow-hidden">{profile.displayName}</h2>
-                                                            {profile.verify ? <MdOutlineVerified color="#3b82f6" /> : ""}
-                                                        </div>
-                                                        <p className="text-gray-400 text-[10px] flex gap-1 items-center">
-                                                            <CiTimer color="#1f2937" /> {handleCompareDate(item.date)}
+                                    <div key={item._id} className="rounded-[12px]  shadow-md h-[400px]">
+                                        <div className="overflow-hidden relative h-full rounded-[8px]">
+                                            <Image
+                                                src={item.img}
+                                                alt={item.title}
+                                                className="absolute h-full w-full object-cover hover:scale-110 duration-300  brightness-75"
+                                                fill
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                priority
+                                            />
+                                            <div className="p-3 absolute z-1 text-white bottom-0 w-full bg-linear-item">
+                                                <h1 className="text-lg font-bold">{item.title}</h1>
+                                                <p className="line-clamp-2 text-sm text-[#D9D9D9]">{item.content}</p>
+
+                                                <div className="flex justify-between items-center mt-2">
+                                                    <div className="flex flex-col">
+                                                        <p className="text-[#D9D9D9] text-[10px] flex gap-1 items-center">
+                                                            <FaRegEye /> Lượt làm: {item.noa}
+                                                        </p>
+                                                        <p className="text-[#D9D9D9] text-[10px] flex gap-1 items-center">
+                                                            <CiTimer color="#D9D9D9" /> {handleCompareDate(item.date)}
                                                         </p>
                                                     </div>
-                                                </div>
-                                                <h1 className="text-lg h-[56px] font-bold text-gray-800">{item.title}</h1>
-                                                <p className="text-gray-700 line-clamp-2 h-[45px] my-3 text-[15px]">{item.content}</p>
-                                                <Link href={`/quiz/${item.slug}`} className="text-right">
-                                                    {item.status ? <Button className="bg-green-600 text-white">Làm bài ngay</Button> : <Button className="bg-gray-200 text-black">Xem lại bài</Button>}
-                                                </Link>
-                                            </div>
-                                        </div>
 
-                                        {!item.status && (
-                                            <div className="absolute top-0 left-0 right-0 bottom-0 z-10 opacity-80">
-                                                <div className="bg-gray-100 text-center text-red-700 text-2xl font-bold h-full flex items-center justify-center flex-col">
-                                                    <p>Đang kiểm duyệt</p>
-                                                    <Link href={`/quiz/${item.id}`} className="text-right">
-                                                        <Button className="mt-3 text-red-700 font-bold flex gap-1 items-center">
-                                                            {" "}
-                                                            <FaEye />
-                                                            Xem lại bài
-                                                        </Button>
+                                                    <Link href={`/quiz/${item.slug}`} className="block">
+                                                        <button className="flex gap-1 items-center text-sm">
+                                                            Làm bài <IoArrowForwardCircleOutline />
+                                                        </button>
                                                     </Link>
                                                 </div>
                                             </div>
-                                        )}
+                                        </div>
                                     </div>
                                 ))}
                         </div>

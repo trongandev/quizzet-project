@@ -67,7 +67,7 @@ export default function CHome({ quizData, toolData }) {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     {quizData?.map((item) => (
-                        <div key={item._id} className="bg-white p-3 rounded-[12px]  shadow-md h-[400px]">
+                        <div key={item._id} className=" rounded-xl  shadow-md h-[400px]">
                             <div className="overflow-hidden relative h-full rounded-[8px]">
                                 <Image
                                     src={item.img}

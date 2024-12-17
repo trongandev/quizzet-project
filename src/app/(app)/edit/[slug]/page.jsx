@@ -205,12 +205,12 @@ export default function Edit({ params }) {
     return (
         <div className="flex items-center justify-center gap-5 flex-col md:flex-row">
             <div className="w-full md:w-[1000px]  overflow-y-auto frm-post">
-                <div className="flex items-center flex-row my-3 bg-white">
+                <div className="flex items-center flex-row my-3 bg-linear-item-2 rounded-xl">
                     <div className="w-[150px] h-[100px] overflow-hidden group relative">
                         <Image src={quiz?.img} alt="" className="w-full h-[100px] object-cover absolute" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                     </div>
                     <div className="p-3">
-                        <h1 className="text-md text-green-500 font-bold line-clamp-1 h-[24px]">{quiz?.title || "Chưa có tiêu đề?"}</h1>
+                        <h1 className="text-md text-primary font-bold line-clamp-1 h-[24px]">{quiz?.title || "Chưa có tiêu đề?"}</h1>
                         <p className="text-gray-500 line-clamp-1 text-sm h-[20px]">{quiz?.content || "Chưa có nội dung"}</p>
                     </div>
                     <Button className="text-orange-500 cursor-pointer hover:text-red-500 flex items-center gap-1" onClick={showModal}>
@@ -255,25 +255,25 @@ export default function Edit({ params }) {
                         />
                     </Modal>
                 </div>
-                <div className="">
+                <div className="h-[440px] overflow-y-scroll">
                     {quest.map((item, index) => (
-                        <div className="bg-white p-5 mt-5" key={index}>
+                        <div className="bg-linear-item-2 p-5 mt-5 rounded-lg " key={index}>
                             <div className="flex justify-between items-center mb-3">
-                                <h1 className="text-lg font-bold text-green-500">
+                                <h1 className="text-lg font-bold text-primary">
                                     Câu {index + 1}: {item.question}
                                 </h1>
                                 <div className="flex items-center gap-1">
-                                    <Button onClick={() => handleUpdateQuest(item.id)}>
-                                        <MdEdit />
-                                    </Button>
-                                    <Button className="cursor-pointer hover:text-red-500" onClick={handleDelete(index)}>
-                                        <IoIosClose size={25} />
-                                    </Button>
+                                    <button onClick={() => handleUpdateQuest(item.id)} className="btn-outline hover:text-white hover:border-white">
+                                        <MdEdit size={20} />
+                                    </button>
+                                    <button className="" onClick={handleDelete(index)}>
+                                        <IoIosClose size={20} />
+                                    </button>
                                 </div>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                 {item.answers.map((answer, idx) => (
-                                    <div key={idx} className={`border relative flex items-center ${item.correct === idx ? "bg-green-100 text-green-500 font-bold" : ""}`}>
+                                    <div key={idx} className={` relative flex items-center ${item.correct === idx ? " text-primary font-bold" : ""}`}>
                                         <input
                                             type="radio"
                                             name={item.id}
@@ -284,7 +284,7 @@ export default function Edit({ params }) {
                                         />
                                         <label
                                             htmlFor={`${item.id}ans${idx}`}
-                                            className={`absolute h-full font-bold p-3 flex items-center justify-center ${item.correct === idx ? "bg-green-400 text-white" : ""}`}>
+                                            className={`absolute h-full font-bold p-3 flex items-center justify-center ${item.correct === idx ? "bg-primary text-white" : ""}`}>
                                             {idx === 0 ? "A" : idx === 1 ? "B" : idx === 2 ? "C" : "D"}
                                         </label>
                                         <label htmlFor={`${item.id}ans${idx}`} className="block w-full ml-7 p-3">
@@ -298,11 +298,11 @@ export default function Edit({ params }) {
                 </div>
                 <div className="mt-5">
                     <div className="flex justify-between items-center">
-                        <Button className="flex gap-1 items-center" onClick={showModalAddQuest}>
+                        <button className="flex gap-2 items-center btn-outline" onClick={showModalAddQuest}>
                             <CiCirclePlus size={20} />
                             Thêm câu hỏi
-                        </Button>
-                        <Button onClick={handlePost}>Cập nhật bài</Button>
+                        </button>
+                        <button onClick={handlePost}>Cập nhật bài</button>
                     </div>
                     <Modal
                         title="Thêm câu hỏi"
@@ -310,19 +310,19 @@ export default function Edit({ params }) {
                         onOk={handleOkAddQuest}
                         onCancel={handleCancelAddQuest}
                         footer={[
-                            <Button key="back" onClick={handleClearField}>
+                            <button key="back" className="btn-outline mr-3" onClick={handleClearField}>
                                 Xoá
-                            </Button>,
-                            <Button key="submit" type="primary" onClick={handleOkAddQuest}>
+                            </button>,
+                            <button key="submit" type="primary" onClick={handleOkAddQuest}>
                                 Thêm/Cập nhật
-                            </Button>,
+                            </button>,
                         ]}>
                         <Input placeholder="Nhập câu hỏi?" name="quest" value={questAddEdit.question} onChange={(e) => setQuestAddEdit({ ...questAddEdit, question: e.target.value })}></Input>
                         <div className="flex flex-col gap-3 mt-5">
-                            <Input placeholder="Đáp án A?" name="ans1" value={questAddEdit.answers[0]} onChange={(e) => updateAnswer(0, e.target.value)}></Input>
-                            <Input placeholder="Đáp án B?" name="ans2" value={questAddEdit.answers[1]} onChange={(e) => updateAnswer(1, e.target.value)}></Input>
-                            <Input placeholder="Đáp án C?" name="ans3" value={questAddEdit.answers[2]} onChange={(e) => updateAnswer(2, e.target.value)}></Input>
-                            <Input placeholder="Đáp án D?" name="ans4" value={questAddEdit.answers[3]} onChange={(e) => updateAnswer(3, e.target.value)}></Input>
+                            <input placeholder="Đáp án A?" name="ans1" value={questAddEdit.answers[0]} onChange={(e) => updateAnswer(0, e.target.value)}></input>
+                            <input placeholder="Đáp án B?" name="ans2" value={questAddEdit.answers[1]} onChange={(e) => updateAnswer(1, e.target.value)}></input>
+                            <input placeholder="Đáp án C?" name="ans3" value={questAddEdit.answers[2]} onChange={(e) => updateAnswer(2, e.target.value)}></input>
+                            <input placeholder="Đáp án D?" name="ans4" value={questAddEdit.answers[3]} onChange={(e) => updateAnswer(3, e.target.value)}></input>
                         </div>
                     </Modal>
                 </div>
