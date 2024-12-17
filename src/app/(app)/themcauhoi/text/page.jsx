@@ -2,16 +2,11 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { Button, Modal, Popover, Select, Input, Form } from "antd";
-import { CiCirclePlus } from "react-icons/ci";
-import { IoIosClose } from "react-icons/io";
-import { FaBrain, FaRegEdit } from "react-icons/fa";
-import { MdContentPaste } from "react-icons/md";
-import { MdEdit } from "react-icons/md";
+import { FaBrain } from "react-icons/fa";
 import Cookies from "js-cookie";
 import Image from "next/image";
 import { useUser } from "@/context/userContext";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { POST_API } from "@/lib/fetchAPI";
 import { subjectOption } from "@/lib/subjectOption";
 import { GoogleGenerativeAI } from "@google/generative-ai";

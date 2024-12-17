@@ -3,8 +3,6 @@ import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
-import { FcGoogle } from "react-icons/fc";
-// import { FaFacebook } from "react-icons/fa";
 // import ReCAPTCHA from "react-google-recaptcha";
 import { GET_API, POST_API } from "@/lib/fetchAPI";
 import Cookies from "js-cookie";
@@ -12,7 +10,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import { BiHome } from "react-icons/bi";
 import { IoIosArrowBack } from "react-icons/io";
 import Image from "next/image";
 export default function RegisterForm() {

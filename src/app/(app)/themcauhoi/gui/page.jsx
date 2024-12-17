@@ -14,7 +14,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { POST_API } from "@/lib/fetchAPI";
 import { subjectOption } from "@/lib/subjectOption";
-import TextArea from "antd/es/input/TextArea";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 export default function PostGUI() {
     const [quiz, setQuiz] = useState({
@@ -160,9 +159,6 @@ export default function PostGUI() {
 
     const [open, setOpen] = useState(false);
 
-    const hide = () => {
-        setOpen(false);
-    };
 
     const handleOpenChange = (newOpen) => {
         setOpen(newOpen);

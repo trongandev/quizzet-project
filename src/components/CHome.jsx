@@ -22,7 +22,7 @@ export default function CHome({ quizData, toolData }) {
                         <p>
                             Trang web này giúp bạn tạo ra các bài quiz online đồng thời cũng là nơi chia sẻ tài liệu các môn đại cương hoặc chuyên ngành một cách dễ dàng và nhanh chóng. Bạn có thể tạo
                             ra các câu hỏi, trả lời và chia sẻ với
-                            <a href="/GIAO TRINH LSD.zip" download>
+                            <a href="/GIAO TRINH.zip" download>
                                 bạn bè.
                             </a>
                         </p>
