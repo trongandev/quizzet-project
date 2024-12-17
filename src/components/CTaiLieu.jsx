@@ -81,7 +81,7 @@ export default function CTaiLieu({ toolData }) {
             )}
             <div className="grid grid-cols-2 lg:grid-cols-4 md:grid-cols-3 gap-4">
                 {data?.map((item, index) => (
-                    <div className="bg-white rounded-xl  flex flex-col md:flex-row  text-third shadow-sm " key={index}>
+                    <div className="bg-white rounded-xl h-[170px] flex flex-col md:flex-row overflow-hidden text-third shadow-md " key={index}>
                         <div className="relative flex-1">
                             <Image src={item.image} alt={item.title} className="object-cover absolute" priority fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                             <div className="absolute z-1 bottom-0 bg-linear-item w-full text-white text-[10px] p-2 font-bold ">
@@ -97,7 +97,7 @@ export default function CTaiLieu({ toolData }) {
                         </div>
                         <div className="flex-1 flex justify-between flex-col h-full p-3">
                             <div className="">
-                                <h1 className="font-bold h-[48px] line-clamp-2">{item.title}</h1>
+                                <h1 className="font-bold line-clamp-3">{item.title}</h1>
                             </div>
                             <div className="">
                                 <p className="text-[12px] text-center">{handleCompareDate(item.date)}</p>
