@@ -1,12 +1,12 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
 import { FcGoogle } from "react-icons/fc";
 // import { FaFacebook } from "react-icons/fa";
 // import ReCAPTCHA from "react-google-recaptcha";
-import { POST_API } from "@/lib/fetchAPI";
+import { GET_API, POST_API } from "@/lib/fetchAPI";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -78,21 +78,26 @@ export default function RegisterForm() {
         }
     };
 
-    const handleLoginWithGoogle = async () => {
-        Swal.fire({
-            title: "Đăng nhập thất bại",
-            text: "Vui lòng thử lại sau",
-            icon: "info",
-        });
+    const handleLoginGoogle = async () => {
+        window.location.href = process.env.API_ENDPOINT + "/auth/google";
     };
 
-    // const handleLoginWithFacebook = async () => {
-    //     Swal.fire({
-    //         title: "Đăng nhập thất bại",
-    //         text: "Vui lòng thử lại sau",
-    //         icon: "info",
-    //     });
-    // };
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get("token");
+
+        if (token) {
+            Cookies.set("token", token, { expires: 1 });
+            const fetchAPI = async () => {
+                const req = await GET_API("/profile", token);
+                console.log(req);
+            };
+            fetchAPI();
+
+            router.push("/");
+        }
+    }, []);
+
     const handleBackRouter = () => {
         router.back();
     };
@@ -171,7 +176,6 @@ export default function RegisterForm() {
                             <p className=" bg-white px-2 ">Hoặc tiếp tục với</p>
                         </div>
                     </div>
-                    {/* onClick={() => googleLogin()} */}
                 </div>
                 <div className="mt-10 pt-3">
                     <div className="flex border-2 border-gray-200 rounded-full overflow-hidden h-[60px]">
@@ -183,7 +187,7 @@ export default function RegisterForm() {
                                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/480px-Facebook_Logo_%282019%29.png"></Image>
                         </button>
                         <div className="w-[1px] h-full bg-gray-200"></div>
-                        <button className="bg-white flex-1 flex justify-center py-3 hover:bg-gray-200 rounded-r-full">
+                        <button className="bg-white flex-1 flex justify-center py-3 hover:bg-gray-200 rounded-r-full" onClick={handleLoginGoogle}>
                             <Image alt="" width={35} height={35} src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png"></Image>
                         </button>
                     </div>

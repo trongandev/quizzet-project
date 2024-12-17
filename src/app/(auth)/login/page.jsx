@@ -3,15 +3,12 @@ import React, { useEffect } from "react";
 import Swal from "sweetalert2";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-// import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
-import { FcGoogle } from "react-icons/fc";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { GET_API, POST_API } from "@/lib/fetchAPI";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import { BiHome } from "react-icons/bi";
 import { IoIosArrowBack } from "react-icons/io";
 import Image from "next/image";
 export default function LoginForm() {
@@ -83,7 +80,7 @@ export default function LoginForm() {
             };
             fetchAPI();
 
-            window.location.href = "/";
+            router.push("/");
         }
     }, []);
 

@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { Button, Modal, Spin, Switch } from "antd";
+import { Modal, Spin, Switch } from "antd";
 import { IoIosArrowUp } from "react-icons/io";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
@@ -11,7 +11,6 @@ import { useUser } from "@/context/userContext";
 import { BiCheck } from "react-icons/bi";
 import { BsQuestion } from "react-icons/bs";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { LoadingOutlined } from "@ant-design/icons";
 
 export default function CQuiz({ QuizData }) {
     const quiz = QuizData;

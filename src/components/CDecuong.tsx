@@ -14,7 +14,7 @@ export default function CDeCuong({ DeCuongData }: { DeCuongData: any }) {
                     Tổng: <label className="text-secondary font-bold ">{DeCuongData?.lenght} câu hỏi</label>
                 </p>
             </div>
-            <div className="grid grid-cols-1  gap-2 md:gap-5 mt-5 h-[540px] overflow-y-scroll">
+            <div className="grid grid-cols-1  gap-2 md:gap-5 mt-5">
                 {DeCuongData &&
                     DeCuongData?.quest?.data_so.map((item: any, index: number) => (
                         <div className=" bg-linear-item-2 rounded-xl  p-5" key={index}>
