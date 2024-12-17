@@ -8,7 +8,7 @@ import { FcGoogle } from "react-icons/fc";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { POST_API } from "@/lib/fetchAPI";
+import { GET_API, POST_API } from "@/lib/fetchAPI";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { BiHome } from "react-icons/bi";
@@ -63,19 +63,29 @@ export default function LoginForm() {
         }
     };
 
-    // const googleLogin = useGoogleLogin({
-    //     onSuccess: async ({ code }) => {
-    //         const tokens = await axios.post("http://localhost:5000/api/auth/google", {
-    //             code,
-    //         });
-    //         console.log(tokens);
-    //     },
-    //     flow: "auth-code",
-    // });
-
     const handleBackRouter = () => {
         router.back();
     };
+
+    const handleLoginGoogle = async () => {
+        window.location.href = process.env.API_ENDPOINT + "/auth/google";
+    };
+
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get("token");
+
+        if (token) {
+            Cookies.set("token", token, { expires: 1 });
+            const fetchAPI = async () => {
+                const req = await GET_API("/profile", token);
+                console.log(req);
+            };
+            fetchAPI();
+
+            window.location.href = "/";
+        }
+    }, []);
 
     return (
         <div className="flex justify-center flex-col items-center h-full bg-white p-5 rounded-xl">
@@ -132,7 +142,7 @@ export default function LoginForm() {
                     {/* onClick={() => googleLogin()} */}
                 </div>
                 <div className="mt-10 pt-3">
-                    <div className="flex border-2 border-gray-200 rounded-full overflow-hidden h-[60px]">
+                    <div className="flex border-2 border-primary rounded-full overflow-hidden h-[60px]">
                         <button className="bg-white flex-1 flex justify-center py-3 hover:bg-gray-200 rounded-l-full  ">
                             <Image
                                 alt=""
@@ -140,8 +150,8 @@ export default function LoginForm() {
                                 height={35}
                                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/480px-Facebook_Logo_%282019%29.png"></Image>
                         </button>
-                        <div className="w-[1px] h-full bg-gray-200"></div>
-                        <button className="bg-white flex-1 flex justify-center py-3 hover:bg-gray-200 rounded-r-full">
+                        <div className="w-[1px] h-full bg-primary"></div>
+                        <button className="bg-white flex-1 flex justify-center py-3 hover:bg-gray-200 rounded-r-full" onClick={handleLoginGoogle}>
                             <Image alt="" width={35} height={35} src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png"></Image>
                         </button>
                     </div>
