@@ -1,13 +1,17 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { Modal, Spin } from "antd";
+import { Button, Modal, Spin, Switch } from "antd";
 import { IoIosArrowUp } from "react-icons/io";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { POST_API } from "@/lib/fetchAPI";
 import handleCompareDate from "@/lib/CompareDate";
 import { useUser } from "@/context/userContext";
+import { BiCheck } from "react-icons/bi";
+import { BsQuestion } from "react-icons/bs";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { LoadingOutlined } from "@ant-design/icons";
 
 export default function CQuiz({ QuizData }) {
     const quiz = QuizData;
@@ -124,24 +128,71 @@ export default function CQuiz({ QuizData }) {
     const handleCancel = () => {
         setIsModalOpen(false);
     };
+
+    const handleCheckAns = (e, item) => {
+        e.preventDefault();
+        Swal.fire({
+            title: "Đáp án đúng",
+            text: item.answers[item.correct],
+            icon: "info",
+        });
+    };
+
+    const [checkAns, setCheckAns] = useState(false);
+    const handleChangeCheckAns = (checked) => {
+        setCheckAns(checked);
+    };
+
+    const genAI = new GoogleGenerativeAI(process.env.API_KEY_AI);
+    const handleExplaneAns = async (e, item) => {
+        e.preventDefault();
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        var defaultPrompt = `giải thích lựa chọn câu nào, tại sao lại lựa chọn, ngắn gọn xúc tích dễ hiểu, đúng vào trọng tâm, không lòng vòng, không cần nói tóm lại, không cần nói lại sự kì vọng ở cuối câu,trả ra định dạng html có format rõ ràng `;
+        var promptValue = `Câu hỏi:  + ${item.question} +  \nA:  + ${item.answers[0]}\nB:  + ${item.answers[1]}\nC:  + ${item.answers[2]}\nD:  + ${
+            item.answers[3]
+        }\nĐáp án theo tôi nghĩ là đúng, bạn có thể tham khảo:  + ${item.answers[item.correct]}\n`;
+        const result = await model.generateContent(promptValue + defaultPrompt);
+        Swal.fire({
+            title: "Giải thích",
+            html: result.response
+                .text()
+                .replace(/```html/g, "")
+                .replace(/```/g, ""),
+            icon: "info",
+        });
+    };
     return (
         <>
             {loading ? (
                 <div className="text-third px-2 md:px-0">
                     <div className="">
                         <h1 className="text-xl font-bold text-primary">{QuizData?.title}</h1>
-                        <p className="text-gray-600">{QuizData?.content}</p>
-                        <p className="text-gray-600">Tác giả: {QuizData?.uid.displayName}</p>
-                        <p className="text-gray-600">Ngày đăng: {handleCompareDate(QuizData?.date)}</p>
+                        <p className="">{QuizData?.content}</p>
+                        <p className="">Tác giả: {QuizData?.uid.displayName}</p>
+                        <p className="">Ngày đăng: {handleCompareDate(QuizData?.date)}</p>
+                        <div className="flex gap-3 items-center">
+                            <p>Bật check đáp án</p>
+                            <Switch checkedChildren="Bật" unCheckedChildren="Tắt" defaultChecked={checkAns} onChange={() => handleChangeCheckAns(!checkAns)} />
+                        </div>
                     </div>
                     <form action="" onSubmit={handleQuiz} className="relative flex flex-col  mt-1">
                         <div className="w-full md:w-2/3">
                             <div className=" h-[500px] overflow-y-auto scroll-smooth">
                                 {QuizData.questions.data_quiz?.map((item, index) => (
                                     <div className="bg-linear-item-2 p-5 mt-2 rounded-xl" key={index} id={item.id}>
-                                        <h1 className="text-lg font-bold text-primary mb-3">
-                                            Câu {index + 1}: {item.question}
+                                        <h1 className="text-lg font-bold text-primary">
+                                            Câu {index + 1}: {item.question}{" "}
                                         </h1>
+                                        <div className="flex items-center gap-3 my-3">
+                                            {checkAns && (
+                                                <button className="text-[10px] btn-small flex items-center gap-1" onClick={(e) => handleCheckAns(e, item)}>
+                                                    <BiCheck /> Check answer
+                                                </button>
+                                            )}
+                                            <button className="text-[10px] btn-small flex items-center gap-1" onClick={(e) => handleExplaneAns(e, item)}>
+                                                <BsQuestion /> Giải thích
+                                            </button>
+                                        </div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                             {item.answers.map((answer, index) => (
                                                 <div key={index} className={` relative flex items-center ${selectedAnswers[item.id] === index ? " text-primary font-bold" : ""}`}>
