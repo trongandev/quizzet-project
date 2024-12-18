@@ -6,7 +6,7 @@ import { CiTimer } from "react-icons/ci";
 import { FaEye, FaRegEye } from "react-icons/fa";
 import { FaFacebookMessenger } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
-import { GET_API } from "@/lib/fetchAPI";
+import { GET_API, POST_API } from "@/lib/fetchAPI";
 import { useUser } from "@/context/userContext";
 import Cookies from "js-cookie";
 import Image from "next/image";
@@ -37,19 +37,20 @@ export default function ProfileUID({ params }) {
         const req = await GET_API(`/chat/check/${id_another_user}`, token);
         if (req.ok && req.exists) {
             // Phòng chat đã tồn tại, điều hướng đến phòng chat
-            router.push(`/chat/room/${req.chatId}`);
+            router.push(`/chat/${req.chatId}`);
         } else if (req.ok && !req.exists) {
             // Phòng chat chưa tồn tại, tạo mới
-            const createReq = await post_api(
+            const createReq = await POST_API(
                 "/chat/create-chat",
                 {
                     participants: [user._id, id_another_user],
                 },
-                "POST"
+                "POST",
+                token
             );
             const reqData = await createReq.json();
             if (reqData.ok) {
-                router.push(`/chat/room/${reqData.chat}`);
+                router.push(`/chat/${reqData.chat}`);
             } else {
                 console.log(reqData.message);
             }
@@ -73,7 +74,7 @@ export default function ProfileUID({ params }) {
                             </div>
                         </div>
                     </div>
-                    <button onClick={() => handleCreateAndCheckRoomChat(params.uid)} className="flex gap-2 items-center mt-2">
+                    <button onClick={() => handleCreateAndCheckRoomChat(params.slug)} className="flex gap-2 items-center mt-2">
                         <FaFacebookMessenger />
                         Nhắn tin
                     </button>

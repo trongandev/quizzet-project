@@ -52,7 +52,7 @@ export default function CTaiLieu({ toolData }) {
 
     return (
         <div className="">
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-center md:justify-between items-center mb-4 gap-3 flex-wrap ">
                 <div className="flex gap-3 items-center">
                     <button onClick={() => handleDefault()} className="text-[11px]">
                         Default
@@ -71,7 +71,7 @@ export default function CTaiLieu({ toolData }) {
                         <TbSortDescendingNumbers />
                     </button>
                 </div>
-                <input type="text" placeholder="Tìm tên tài liệu mà bạn cần..." className="w-[500px]" onChange={(e) => handleSearch(e.target.value)} />
+                <input type="text" placeholder="Tìm tên tài liệu mà bạn cần..." className="w-full md:w-[500px]" onChange={(e) => handleSearch(e.target.value)} />
             </div>
 
             {!data && (

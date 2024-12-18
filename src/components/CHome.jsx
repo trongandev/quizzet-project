@@ -9,7 +9,7 @@ import Image from "next/image";
 import handleCompareDate from "@/lib/CompareDate";
 import "@/app/globals.css";
 import { IoArrowForwardCircleOutline } from "react-icons/io5";
-import { FaRegEye, FaRegQuestionCircle } from "react-icons/fa";
+import { FaRegEye } from "react-icons/fa";
 import CTaiLieu from "@/components/CTaiLieu";
 export default function CHome({ quizData, toolData }) {
     return (

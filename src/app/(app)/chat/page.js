@@ -18,6 +18,9 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@/context/userContext";
 import Link from "next/link";
 import Image from "next/image";
+import io from "socket.io-client";
+import { useSocket } from "@/context/socketContext";
+import handleCompareDate from "@/lib/CompareDate";
 function useDebounce(value, duration = 300) {
     const [debounceValue, setDebounceValue] = useState(value);
     useEffect(() => {
@@ -33,9 +36,10 @@ function useDebounce(value, duration = 300) {
 
 export default function Chat() {
     const [profile, setProfile] = useState(null);
+    const [dataId, setDataId] = useState({});
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState(null);
-    const [input, setInput] = useState(null);
+    const [input, setInput] = useState("a");
     const debouncedSearchTerm = useDebounce(input, 300);
     const router = useRouter();
     const token = Cookies.get("token");
@@ -44,7 +48,9 @@ export default function Chat() {
         const handleRenderUser = async () => {
             setLoading(true);
             const req = await GET_API("/chat", token);
+            console.log(req);
             if (req.ok) {
+                setDataId(req.data_id);
                 setProfile(req.chats);
             }
             setLoading(false);
@@ -62,7 +68,6 @@ export default function Chat() {
             handleRenderUser();
         }
     }, []);
-
     useEffect(() => {
         const fetchAPI = async () => {
             const req = await GET_API(`/profile/findbyname/${input}`, token);
@@ -121,6 +126,20 @@ export default function Chat() {
         setLoading(true);
     };
 
+    const { socket, onlineUsers } = useSocket();
+
+    const getUserOnlineStatus = (userId) => {
+        const onlineUser = onlineUsers.find((user) => user.userId === userId);
+        return onlineUser ? "bg-green-600" : "bg-gray-400";
+    };
+
+    const checkIdUser = (item) => {
+        if (user?._id === item?.participants[1]._id) {
+            return item?.participants[0]._id;
+        }
+        return item?.participants[1]._id;
+    };
+
     return (
         <div className="">
             <div className="flex justify-between items-center px-3 h-[44px]">
@@ -143,11 +162,13 @@ export default function Chat() {
                                     alt=""
                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                 />
-                                <div className="absolute w-3 h-3 bg-green-400 rounded-full bottom-0 right-1"></div>
+                                <div className={`absolute w-3 h-3 rounded-full ${getUserOnlineStatus(checkIdUser(item))} bottom-[-2px] right-1`}></div>
                             </div>
                             <div className="">
                                 <h1 className="font-bold">{user?._id === item?.participants[1]._id ? item?.participants[0].displayName : item?.participants[1].displayName}</h1>
-                                <p className="text-gray-500">Chat now</p>
+                                <p className="text-gray-500">
+                                    {item?.last_message || "Chat ngay"} | {handleCompareDate(item.last_message_date)}
+                                </p>
                             </div>
                         </Link>
                     ))}
@@ -160,7 +181,7 @@ export default function Chat() {
                     <div className="">
                         <Input value={input} autoFocus placeholder="Tìm kiếm bạn bè mới của bạn..." onChange={(e) => handleChangeInput(e)}></Input>
                     </div>
-                    <div className="py-3 flex flex-col gap-3">
+                    <div className="py-3 flex flex-col gap-3 h-[500px] overflow-y-scroll pr-3">
                         {!loading &&
                             search &&
                             search.map((item) => (
@@ -175,7 +196,7 @@ export default function Chat() {
                                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                     alt=""
                                                 />
-                                                <div className="absolute w-3 h-3 bg-green-400 rounded-full bottom-0 right-1"></div>
+                                                <div className={`absolute w-3 h-3   ${getUserOnlineStatus(item._id)} rounded-full bottom-[-2px] right-0`}></div>
                                             </div>
                                             <Link href={`/profile/${item._id}`}>
                                                 <h1 className="hover:underline hover:cursor-pointer">{item.displayName}</h1>

@@ -28,3 +28,13 @@ export const getCachedTool = unstable_cache(
     ["tool"], // Key cache
     { revalidate: 30 } // TTL = 30 giây
 );
+
+export const getEmoji = unstable_cache(
+    async () => {
+        const req = await fetch("https://emoji-api.com/emojis?access_key=bf409e3ed3d59cc01d12b7f1a9512896fe36f4f1");
+        const data = await req.json();
+        return data;
+    },
+    ["emoji"], // Key cache
+    { revalidate: 3000 } // TTL = 30 giây
+);
