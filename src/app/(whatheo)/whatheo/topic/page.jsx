@@ -130,7 +130,14 @@ export default function TopicManager() {
                                     </th>
                                     <td className="px-6 py-4 ">
                                         <div className="relative w-[150px] h-[80px]">
-                                            <Image src={item.img} className="w-full h-full object-cover absolute" alt="" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                                            <Image
+                                                unoptimized
+                                                src={item.img}
+                                                className="w-full h-full object-cover absolute"
+                                                alt=""
+                                                fill
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                            />
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 hover:text-red-500 hover:underline">

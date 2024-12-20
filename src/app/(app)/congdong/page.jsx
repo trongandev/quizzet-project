@@ -192,7 +192,9 @@ export default function CongDong() {
                                     <div className="flex gap-1 items-center justify-end ">
                                         <div className="">
                                             <p className="bg-linear-item-2 rounded-full px-3 py-1 mb-[2px]">{msg?.message}</p>
-                                            {msg?.image && <Images src={process.env.API_IMAGE + msg?.image || "/meme.jpg"} alt="" width={200} height="auto" className=" object-cover  rounded-2xl" />}
+                                            {msg?.image && (
+                                                <Images unoptimized src={process.env.API_IMAGE + msg?.image || "/meme.jpg"} alt="" width={200} height="auto" className=" object-cover  rounded-2xl" />
+                                            )}
                                         </div>
                                     </div>
                                 ) : (
@@ -202,6 +204,7 @@ export default function CongDong() {
                                                 <Image
                                                     src={msg?.userId.profilePicture || "/meme.jpg"}
                                                     alt=""
+                                                    unoptimized
                                                     className="w-full h-full object-cover absolute border-2 border-primary rounded-full"
                                                     fill
                                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -211,14 +214,16 @@ export default function CongDong() {
                                         </Link>
                                         <div className="">
                                             <p className="bg-linear-item-2 px-3 py-1 w-full rounded-full mb-[2px]">{msg?.message}</p>
-                                            {msg?.image && <Images src={process.env.API_IMAGE + msg?.image || "/meme.jpg"} alt="" width={200} height={70} className=" object-cover  rounded-2xl" />}
+                                            {msg?.image && (
+                                                <Images unoptimized src={process.env.API_IMAGE + msg?.image || "/meme.jpg"} alt="" width={200} height={70} className=" object-cover  rounded-2xl" />
+                                            )}
                                         </div>
                                         <div className="hidden group-hover:block">
                                             <Popover
                                                 content={
                                                     <div className="flex gap-4 items-center">
                                                         {reactIcons.map((icon, index) => (
-                                                            <Image src={icon} alt="" width={25} height={25} className="cursor-pointer" key={index} />
+                                                            <Image unoptimized src={icon} alt="" width={25} height={25} className="cursor-pointer" key={index} />
                                                         ))}
                                                     </div>
                                                 }
@@ -288,7 +293,7 @@ export default function CongDong() {
                             </div>
                             {imageReview && (
                                 <div className="relative w-[100px] h-[100px] mt-3">
-                                    <Image src={imageReview} alt="" className="w-full h-full rounded-lg absolute object-cover" fill></Image>
+                                    <Image src={imageReview} unoptimized alt="" className="w-full h-full rounded-lg absolute object-cover" fill></Image>
                                     <GrFormClose
                                         className="absolute z-1 top-1 right-1 bg-red-500 text-white rounded-full p-1 text-xl cursor-pointer hover:opacity-80"
                                         onClick={() => {
@@ -315,7 +320,7 @@ export default function CongDong() {
                             passHref>
                             <div className="w-[50px] h-[50px] overflow-hidden relative rounded-full">
                                 <Image
-                                    src={onl_user?.profilePicture || "/meme.jpg"}
+                                    src={onl_user?.profilePicture || "https://github.com/angutboiz/quiz/blob/master/public/meme.jpg?raw=true"}
                                     alt=""
                                     className={`w-full h-full object-cover absolute  border ${onl_user._id ? "border-primary" : ""}  rounded-full`}
                                     fill

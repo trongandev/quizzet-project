@@ -89,7 +89,7 @@ export default function LoginForm() {
                     <div onClick={handleBackRouter}>
                         <IoIosArrowBack size={25} />
                     </div>
-                    <Image alt="" width={150} height={150} src="/logo.png"></Image>
+                    <Image unoptimized alt="" width={150} height={150} src="/logo.png"></Image>
 
                     <h1 className="text-2xl font-bold text-primary">Đăng nhập</h1>
                     <p>Đăng nhập để trải nghiệm Quizzet tốt hơn nhé</p>
@@ -140,6 +140,7 @@ export default function LoginForm() {
                     <div className="flex border-2 border-primary rounded-full overflow-hidden h-[60px]">
                         <button className="bg-white flex-1 flex justify-center py-3 hover:bg-gray-200 rounded-l-full  ">
                             <Image
+                                unoptimized
                                 alt=""
                                 width={35}
                                 height={35}
@@ -147,7 +148,12 @@ export default function LoginForm() {
                         </button>
                         <div className="w-[1px] h-full bg-primary"></div>
                         <button className="bg-white flex-1 flex justify-center py-3 hover:bg-gray-200 rounded-r-full" onClick={handleLoginGoogle}>
-                            <Image alt="" width={35} height={35} src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png"></Image>
+                            <Image
+                                unoptimized
+                                alt=""
+                                width={35}
+                                height={35}
+                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png"></Image>
                         </button>
                     </div>
                 </div>

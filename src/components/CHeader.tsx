@@ -37,7 +37,7 @@ export default function CHeader({ token }: { token: string }) {
         <header className="bg-white text-primary w-full flex items-center justify-center fixed z-20 shadow-lg">
             <div className="flex items-center justify-between px-5 py-1 md:px-0 md:py-0 w-[800px] md:w-[1000px] xl:w-[1200px]">
                 <Link href="/">
-                    <Image src="/logo.png" alt="" width={120} height={30} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"></Image>
+                    <Image unoptimized src="/logo.png" alt="" width={120} height={30} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"></Image>
                 </Link>
                 <ul className="hidden md:flex items-center gap-5">
                     <li>
@@ -130,7 +130,14 @@ export default function CHeader({ token }: { token: string }) {
                                 onOpenChange={handleOpenChange}>
                                 {user?.profilePicture ? (
                                     <div className="w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden relative">
-                                        <Image src={user?.profilePicture} alt="" className="object-cover h-full absolute" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                                        <Image
+                                            unoptimized
+                                            src={user?.profilePicture}
+                                            alt=""
+                                            className="object-cover h-full absolute"
+                                            fill
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                        />
                                     </div>
                                 ) : (
                                     <Avatar className="w-[40px] h-[40px] md:w-[35px] md:h-[35px]" icon={<UserOutlined />} />

@@ -70,6 +70,7 @@ export default function History() {
                                         <Link href={`/profile/${item.uid._id}`}>
                                             <div className="w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden relative">
                                                 <Image
+                                                    unoptimized
                                                     src={item.uid.profilePicture}
                                                     alt=""
                                                     className="object-cover h-full w-full absolute"

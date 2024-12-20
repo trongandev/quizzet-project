@@ -207,7 +207,7 @@ export default function Edit({ params }) {
             <div className="w-full md:w-[1000px]  overflow-y-auto frm-post">
                 <div className="flex items-center flex-row my-3 bg-linear-item-2 rounded-xl">
                     <div className="w-[150px] h-[100px] overflow-hidden group relative">
-                        <Image src={quiz?.img} alt="" className="w-full h-[100px] object-cover absolute" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                        <Image unoptimized src={quiz?.img} alt="" className="w-full h-[100px] object-cover absolute" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                     </div>
                     <div className="p-3">
                         <h1 className="text-md text-primary font-bold line-clamp-1 h-[24px]">{quiz?.title || "Chưa có tiêu đề?"}</h1>

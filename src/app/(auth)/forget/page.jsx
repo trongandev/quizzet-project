@@ -58,7 +58,7 @@ export default function Forget() {
                     <Link href="/">
                         <IoIosArrowBack size={25} />
                     </Link>
-                    <Image alt="" width={150} height={150} src="/logo.png"></Image>
+                    <Image unoptimized alt="" width={150} height={150} src="/logo.png"></Image>
 
                     <h1 className="text-2xl font-bold text-primary">Quên mật khẩu</h1>
 

@@ -292,7 +292,7 @@ Câu hỏi 2
                             <div className="flex items-center">
                                 <Input type="text" onChange={(e) => handleImage(e)} name="image" id="image" placeholder="Dán URL hình ảnh ở đây..." value={quiz.img} />
                                 <Popover
-                                    content={<Image width={400} height={400} src="/guide4.png" alt="" className="" />}
+                                    content={<Image unoptimized width={400} height={400} src="/guide4.png" alt="" className="" />}
                                     title="Cách lấy đường đẫn hình ảnh (Image Address)"
                                     trigger="click"
                                     open={open}
@@ -326,6 +326,7 @@ Câu hỏi 2
                                             <Image
                                                 src="/guide.png"
                                                 alt=""
+                                                unoptimized
                                                 width={500}
                                                 height={500}
                                                 className="mt-3 border-[5px] border-primary rounded-lg"
@@ -334,6 +335,7 @@ Câu hỏi 2
                                             <Image
                                                 src="/guide3.png"
                                                 alt=""
+                                                unoptimized
                                                 width={500}
                                                 height={500}
                                                 className="mt-3 border-[5px] border-primary rounded-lg"
@@ -393,7 +395,9 @@ Câu hỏi 2
             <div className="w-full md:w-[700px] md:h-[650px] overflow-y-auto frm-post">
                 <div className="flex items-center justify-center flex-col my-3">
                     <div className=" shadow-md border-2 rounded-lg overflow-hidden group w-[200px] h-[100px] relative">
-                        {quiz.img && <Image src={quiz?.img} alt="" className="absolute w-full h-full  object-cover" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />}
+                        {quiz.img && (
+                            <Image unoptimized src={quiz?.img} alt="" className="absolute w-full h-full  object-cover" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                        )}
                         <div className="p-3">
                             <h1 className="text-md text-primary font-bold line-clamp-1 h-[24px]">{quiz.title}</h1>
                             <p className="text-gray-500 line-clamp-1 text-sm h-[20px]">{quiz.content}</p>

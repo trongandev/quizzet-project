@@ -138,6 +138,7 @@ export default function CQuiz({ quizData }) {
                                     <Link href={`/profile/${item.uid._id}`} className="flex items-center gap-2">
                                         <div className="relative w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden">
                                             <Image
+                                                unoptimized
                                                 src={item.uid.profilePicture}
                                                 alt={item.uid.displayName}
                                                 className="absolute object-cover h-full"

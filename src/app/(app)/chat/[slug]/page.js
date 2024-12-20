@@ -49,7 +49,6 @@ export default function ChatRoom({ params }) {
         socket.emit("joinRoom", slug);
 
         socket.on("message", (data) => {
-            console.log(data);
             setData((prevData) => ({
                 ...prevData,
                 messages: [...prevData.messages, data.newMessage],
@@ -113,6 +112,7 @@ export default function ChatRoom({ params }) {
                                     className="w-full h-full rounded-full object-cover absolute"
                                     alt="User Avatar"
                                     fill
+                                    unoptimized
                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                 />
                             )}
@@ -157,6 +157,7 @@ export default function ChatRoom({ params }) {
                                                 className="w-full h-full object-cover absolute "
                                                 alt=""
                                                 fill
+                                                unoptimized
                                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                             />
                                         </div>

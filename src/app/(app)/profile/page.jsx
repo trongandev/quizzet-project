@@ -188,7 +188,7 @@ export default function CProfile() {
             {contextHolder}
             <div className="flex gap-3 items-center text-third">
                 <div className="w-[100px] h-[100px] rounded-full overflow-hidden relative">
-                    <Image src={user?.profilePicture} alt="" className="object-cover h-full w-full absolute" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                    <Image unoptimized src={user?.profilePicture} alt="" className="object-cover h-full w-full absolute" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                 </div>
                 <div className="text-secondary">
                     <div className="flex gap-2 items-center">
@@ -241,7 +241,14 @@ export default function CProfile() {
                         <Input onChange={(e) => handleInputChange(e)} type="text" id="profilePicture" name="profilePicture" placeholder="dán URL ảnh vào đây" value={user?.profilePicture} />
                         <div className="flex items-center justify-center mt-2">
                             <div className="w-[75px] h-[75px] rounded-full overflow-hidden relative ">
-                                <Image src={user?.profilePicture} alt="" className="object-cover w-full h-full absolute" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                                <Image
+                                    unoptimized
+                                    src={user?.profilePicture}
+                                    alt=""
+                                    className="object-cover w-full h-full absolute"
+                                    fill
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                />
                             </div>
                         </div>
                     </div>

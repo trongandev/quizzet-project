@@ -75,7 +75,14 @@ export default function ProfileUID({ params }) {
                 <>
                     <div className="flex gap-3 items-center">
                         <div className="w-[100px] h-[100px] rounded-full overflow-hidden relative">
-                            <Image src={profile?.profilePicture || "/meme.jpg"} alt="" className="object-cover h-full absolute" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                            <Image
+                                unoptimized
+                                src={profile?.profilePicture || "/meme.jpg"}
+                                alt=""
+                                className="object-cover h-full absolute"
+                                fill
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            />
                         </div>
                         <div className="">
                             <div className="flex flex-col">
@@ -114,6 +121,7 @@ export default function ProfileUID({ params }) {
                                                 fill
                                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                 priority
+                                                unoptimized
                                             />
                                             <div className="p-3 absolute z-1 text-white bottom-0 w-full bg-linear-item">
                                                 <h1 className="text-lg font-bold">{item.title}</h1>

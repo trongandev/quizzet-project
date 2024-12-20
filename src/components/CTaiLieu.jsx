@@ -133,7 +133,15 @@ export default function CTaiLieu({ toolData }) {
                 {data?.map((item, index) => (
                     <div className="bg-white rounded-xl h-[200px] flex flex-col md:flex-row overflow-hidden text-third shadow-md " key={index}>
                         <div className="relative flex-1">
-                            <Image src={item.image} alt={item.title} className="object-cover absolute h-full" priority fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                            <Image
+                                unoptimized
+                                src={item.image}
+                                alt={item.title}
+                                className="object-cover absolute h-full"
+                                priority
+                                fill
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            />
                             <div className="absolute z-1 bottom-0 bg-linear-item w-full text-white text-[10px] p-2 font-bold ">
                                 <p className="flex gap-1 items-center">
                                     <FaRegQuestionCircle />

@@ -91,6 +91,7 @@ export default function Users() {
                                             <Link href={`/profile/${item._id}`}>
                                                 <div className="w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden relative">
                                                     <Image
+                                                        unoptimized
                                                         src={item.profilePicture}
                                                         alt=""
                                                         className="object-cover h-full absolute"

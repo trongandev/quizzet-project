@@ -281,7 +281,7 @@ trả về kiểu dữ liệu json, không giải thích hay nói bất cứ th�
             <div className="w-full md:w-[1000px]  overflow-y-auto frm-post">
                 <div className="flex items-center flex-row my-3 bg-white ">
                     <div className="w-[150px] h-[100px] overflow-hidden group relative">
-                        {quiz.img && <Image src={quiz.img} alt="" className="absolute w-full h-full object-cover" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />}
+                        {quiz.img && <Image unoptimized src={quiz.img} alt="" className="absolute w-full h-full object-cover" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />}
                     </div>
 
                     <div className="flex items-center justify-between w-full p-3">

@@ -152,6 +152,7 @@ export default function Chat() {
                                     className="w-full h-full rounded-full object-cover absolute"
                                     fill
                                     alt=""
+                                    unoptimized
                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                 />
                                 <div className={`absolute w-3 h-3 rounded-full ${getUserOnlineStatus(checkIdUser(item))} bottom-[-2px] right-1`}></div>
@@ -185,6 +186,7 @@ export default function Chat() {
                                                     src={item.profilePicture}
                                                     className="w-full h-full rounded-full object-cover absolute"
                                                     fill
+                                                    unoptimized
                                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                     alt=""
                                                 />

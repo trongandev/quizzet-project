@@ -34,7 +34,7 @@ export default function CHome({ quizData, toolData }) {
                 <div className="mt-10 flex flex-wrap gap-5 text-third">
                     <div className="h-[500px] bg-linear-item-blue flex-1 rounded-3xl flex items-center justify-center flex-col">
                         <div className="w-[250px] h-[280px] overflow-hidden relative">
-                            <Image src="/item1.png" alt="" className="absolute w-full h-full" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"></Image>
+                            <Image unoptimized src="/item1.png" alt="" className="absolute w-full h-full" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"></Image>
                         </div>
                         <div className="bg-white text-center p-4 rounded-xl w-[350px] space-y-2">
                             <h1 className="text-2xl font-bold">Quiz</h1>
@@ -46,7 +46,7 @@ export default function CHome({ quizData, toolData }) {
                     </div>
                     <div className="h-[500px] bg-linear-item-pink flex-1 rounded-3xl flex items-center justify-center flex-col">
                         <div className="w-[250px] h-[280px] overflow-hidden relative">
-                            <Image src="/item2.png" alt="" className="absolute w-full h-full" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"></Image>
+                            <Image unoptimized src="/item2.png" alt="" className="absolute w-full h-full" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"></Image>
                         </div>
                         <div className="bg-white text-center p-4 rounded-xl w-[350px] space-y-2">
                             <h1 className="text-2xl font-bold">Tài liệu</h1>
