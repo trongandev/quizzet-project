@@ -2,13 +2,12 @@
 import React, { useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import Swal from "sweetalert2";
 // import ReCAPTCHA from "react-google-recaptcha";
 import { GET_API, POST_API } from "@/lib/fetchAPI";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Spin } from "antd";
+import { message, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { IoIosArrowBack } from "react-icons/io";
 import Image from "next/image";
@@ -16,7 +15,7 @@ export default function RegisterForm() {
     const token = Cookies.get("token");
     const router = useRouter();
     const [loading, setLoading] = React.useState(false);
-
+    const [messageApi, contextHolder] = message.useMessage();
     // const [capVal, setCapVal] = useState(null);
 
     const formik = useFormik({
@@ -50,27 +49,22 @@ export default function RegisterForm() {
             const res = await POST_API("/auth/register", profile, "POST", token);
             const data = await res.json();
             if (res.ok) {
-                Swal.fire({
-                    title: "Thành công",
-                    text: data.message,
-                    icon: "success",
-                    willClose: () => {
-                        router.push("/login");
-                    },
+                messageApi.open({
+                    type: "success",
+                    content: data.message,
                 });
+                router.push("/login");
             } else {
-                Swal.fire({
-                    title: "Thất bại",
-                    text: data.message,
-                    icon: "error",
+                messageApi.open({
+                    type: "warning",
+                    content: data.message,
                 });
             }
             setLoading(false);
         } catch (error) {
-            Swal.fire({
-                title: "Lỗi",
-                text: error.message,
-                icon: "error",
+            messageApi.open({
+                type: "warning",
+                content: error.message,
             });
         }
     };
@@ -86,8 +80,7 @@ export default function RegisterForm() {
         if (token) {
             Cookies.set("token", token, { expires: 1 });
             const fetchAPI = async () => {
-                const req = await GET_API("/profile", token);
-                console.log(req);
+                await GET_API("/profile", token);
             };
             fetchAPI();
 
@@ -100,6 +93,7 @@ export default function RegisterForm() {
     };
     return (
         <div className="flex justify-center flex-col items-center h-full bg-white p-5 rounded-xl">
+            {contextHolder}
             <div className="text-third">
                 <form onSubmit={formik.handleSubmit}>
                     <div onClick={handleBackRouter}>

@@ -10,6 +10,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useUser } from "../context/userContext";
+import { MdOutlineHistory } from "react-icons/md";
 
 export default function CHeader({ token }: { token: string }) {
     const [open, setOpen] = useState(false);
@@ -36,7 +37,7 @@ export default function CHeader({ token }: { token: string }) {
         <header className="bg-white text-primary w-full flex items-center justify-center fixed z-20 shadow-lg">
             <div className="flex items-center justify-between px-5 py-1 md:px-0 md:py-0 w-[800px] md:w-[1000px] xl:w-[1200px]">
                 <Link href="/">
-                    <Image src="/logo.png" alt="" width={120} height={30}></Image>
+                    <Image src="/logo.png" alt="" width={120} height={30} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"></Image>
                 </Link>
                 <ul className="hidden md:flex items-center gap-5">
                     <li>
@@ -44,10 +45,19 @@ export default function CHeader({ token }: { token: string }) {
                             Trang chủ
                         </Link>
                     </li>
-
                     <li className="">
-                        <Link href="/tailieu" className={`block  ${pathname == "/tailieu" ? "active" : ""}`}>
+                        <Link href="/quiz" className={`block ${pathname.startsWith("/quiz") ? "active" : ""}`}>
+                            Quiz
+                        </Link>
+                    </li>
+                    <li className="">
+                        <Link href="/tailieu" className={`block ${pathname.startsWith("/tailieu") ? "active" : ""}`}>
                             Tài liệu
+                        </Link>
+                    </li>
+                    <li className="">
+                        <Link href="/flashcard" className={`block  ${pathname.startsWith("/flashcard") ? "active" : ""}`}>
+                            Flashcard
                         </Link>
                     </li>
                     <li className="">
@@ -55,22 +65,11 @@ export default function CHeader({ token }: { token: string }) {
                             Đề cương
                         </Link>
                     </li>
-                    {token ? (
-                        <>
-                            <li>
-                                <Link href="/chude" className={`block  ${pathname == "/chude" ? "active" : ""}`}>
-                                    Chủ đề
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/lichsu" className={`block  ${pathname == "/lichsu" ? "active" : ""}`}>
-                                    Lịch sử
-                                </Link>
-                            </li>
-                        </>
-                    ) : (
-                        ""
-                    )}
+                    <li className="">
+                        <Link href="/congdong" className={`block ${pathname.startsWith("/congdong") ? "active" : ""}`}>
+                            Cộng đồng
+                        </Link>
+                    </li>
                 </ul>
 
                 {!token ? (
@@ -112,6 +111,13 @@ export default function CHeader({ token }: { token: string }) {
                                             <UserOutlined />
                                             <p>Quản lí tài khoản</p>
                                         </Link>
+                                        {token && (
+                                            <Link href={`/lichsu`} className="flex items-center gap-2 p-2 hover:bg-gray-100">
+                                                <MdOutlineHistory />
+                                                <p>Lịch sử làm bài</p>
+                                            </Link>
+                                        )}
+
                                         <div onClick={handleLogout} className="flex gap-2 items-center p-2 hover:bg-gray-100 hover:text-red-500 cursor-pointer">
                                             <FiLogOut />
                                             Đăng xuất

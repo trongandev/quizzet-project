@@ -38,3 +38,18 @@ export const POST_API = async (url: string, data: any, method: string, token: st
         console.log(error);
     }
 };
+
+export const POST_API_FILE = async (url: string, data: any, token: string) => {
+    try {
+        const res = await fetch(`${API_ENDPOINT}${url}`, {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            body: data,
+        });
+        return await res;
+    } catch (error) {
+        console.log(error);
+    }
+};

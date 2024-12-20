@@ -34,7 +34,6 @@ export default function EditTool({ params }) {
     useEffect(() => {
         const fetchAPI = async () => {
             const req = await GET_API(`/admin/suboutline/${slug}`, token);
-            console.log(req);
             setQuiz(req);
             setQuest(req.quest.data_so);
             setSo_id(req.quest._id);

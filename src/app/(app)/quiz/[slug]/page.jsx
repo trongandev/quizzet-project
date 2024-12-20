@@ -1,5 +1,5 @@
 import React from "react";
-import CQuiz from "@/components/CQuiz";
+import CQuizDetail from "@/components/CQuizDetail";
 import { getCachedQuiz } from "@/lib/cacheData";
 
 export async function generateMetadata({ params }) {
@@ -22,5 +22,5 @@ export default async function Quiz({ params }) {
     const { slug } = params;
 
     const quiz = await getCachedQuiz(slug)();
-    return <CQuiz QuizData={quiz} />;
+    return <CQuizDetail QuizData={quiz} />;
 }

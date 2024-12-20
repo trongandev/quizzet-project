@@ -59,6 +59,7 @@ select {
 }
 
 input:focus-visible,
+select:focus-visible,
 textarea:focus-visible {
     outline: none;
     border: 1px solid #2187d5;

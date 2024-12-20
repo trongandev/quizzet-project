@@ -2,17 +2,27 @@
 import React from "react";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
+import { GiCardPick } from "react-icons/gi";
+import Link from "next/link";
 
 export default function CDeCuong({ DeCuongData }: { DeCuongData: any }) {
     return (
         <div className="text-third px-2 md:px-0">
-            <div className="">
-                <h1 className="text-2xl ">
-                    Bộ đề môn: <label className="text-primary font-bold ">{DeCuongData?.title}</label>{" "}
-                </h1>
-                <p>
-                    Tổng: <label className="text-secondary font-bold ">{DeCuongData?.lenght} câu hỏi</label>
-                </p>
+            <div className="flex justify-between items-center">
+                <div className="">
+                    <h1 className="text-2xl ">
+                        Bộ đề môn: <label className="text-primary font-bold ">{DeCuongData?.title}</label>{" "}
+                    </h1>
+                    <p>
+                        Tổng: <label className="text-secondary font-bold ">{DeCuongData?.lenght} câu hỏi</label>
+                    </p>
+                </div>
+                <Link href="/flashcard">
+                    <button className="flex gap-2 items-center">
+                        <GiCardPick size={20} />
+                        Luyện tập bằng Flashcard
+                    </button>
+                </Link>
             </div>
             <div className="grid grid-cols-1  gap-2 md:gap-5 mt-5">
                 {DeCuongData &&

@@ -1,5 +1,17 @@
 export const subjectOption = [
     {
+        value: "none",
+        label: "Tất cả",
+    },
+    {
+        value: "daicuong",
+        label: "Đại cương",
+    },
+    {
+        value: "taichinh",
+        label: "Tài chính - ngân hàng",
+    },
+    {
         value: "cntt",
         label: "CNTT",
     },
@@ -19,10 +31,7 @@ export const subjectOption = [
         value: "thucpham",
         label: "Thực phẩm",
     },
-    {
-        value: "taichinh",
-        label: "Tài chính - ngân hàng",
-    },
+
     {
         value: "qtkd",
         label: "Quản trị kinh doanh",
@@ -46,29 +55,5 @@ export const subjectOption = [
     {
         value: "trung",
         label: "Ngôn ngữ Trung",
-    },
-    {
-        value: "tthcm",
-        label: "Tư tưởng Hồ Chí Minh",
-    },
-    {
-        value: "lsdang",
-        label: "Lịch sử Đảng Cộng sản Việt Nam",
-    },
-    {
-        value: "pldc",
-        label: "Pháp luật đại cương	",
-    },
-    {
-        value: "kttt",
-        label: "Kinh tế chính trị Mác - Lênin",
-    },
-    {
-        value: "cnxh",
-        label: "Chủ nghĩa xã hội khoa học",
-    },
-    {
-        value: "triet",
-        label: "Triết học Mác - Lênin",
     },
 ];

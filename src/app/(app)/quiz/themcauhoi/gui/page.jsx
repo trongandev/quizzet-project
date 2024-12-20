@@ -52,7 +52,7 @@ export default function PostGUI() {
         setQuest((prevQuest) => prevQuest.map((q) => (q.id === questionId ? { ...q, correct: answerIndex } : q)));
     };
 
-    const [defaultValue, setDefaultValue] = useState("");
+    const [defaultValue] = useState("");
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -103,7 +103,7 @@ export default function PostGUI() {
                 title: "Thêm bài viết thành công",
                 text: "Bài viết của bạn sẽ được kiểm duyệt trước khi hiển thị",
                 didClose: () => {
-                    router.push("/");
+                    router.push("/profile");
                 },
             });
         } else {
@@ -158,7 +158,6 @@ export default function PostGUI() {
     };
 
     const [open, setOpen] = useState(false);
-
 
     const handleOpenChange = (newOpen) => {
         setOpen(newOpen);
@@ -275,14 +274,15 @@ trả về kiểu dữ liệu json, không giải thích hay nói bất cứ th�
         setResponePrompt(JSON.parse(parse));
         setLoading(false);
         handleCancelAI();
-        console.log(responePrompt);
         setQuest([...quest, ...responePrompt]);
     };
     return (
         <div className="flex items-center justify-center gap-5 flex-col md:flex-row">
             <div className="w-full md:w-[1000px]  overflow-y-auto frm-post">
                 <div className="flex items-center flex-row my-3 bg-white ">
-                    <div className="w-[150px] h-[100px] overflow-hidden group relative">{quiz.img && <Image src={quiz.img} alt="" className="absolute w-full h-full object-cover" fill />}</div>
+                    <div className="w-[150px] h-[100px] overflow-hidden group relative">
+                        {quiz.img && <Image src={quiz.img} alt="" className="absolute w-full h-full object-cover" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />}
+                    </div>
 
                     <div className="flex items-center justify-between w-full p-3">
                         <div className="flex items-center ">

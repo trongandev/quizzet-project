@@ -10,8 +10,12 @@ import { FaRegEye, FaSortAlphaDown, FaSortAlphaDownAlt } from "react-icons/fa";
 import { IoArrowForwardCircleOutline } from "react-icons/io5";
 import { MdOutlineVerified } from "react-icons/md";
 import { TbSortAscendingNumbers, TbSortDescendingNumbers } from "react-icons/tb";
-
-export default function CQuiz({ quizData }) {
+// Import Swiper React components
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from "swiper/modules";
+// Import Swiper styles
+import "swiper/css";
+export default function CQuizMobile({ quizData }) {
     const [toggleBtnSortAlpha, setToggleBtnSortAlpha] = useState(true);
     const [toggleBtnSortNumber, setToggleBtnSortNumber] = useState(true);
 
@@ -115,60 +119,70 @@ export default function CQuiz({ quizData }) {
                     </div>
                 </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <Swiper
+                spaceBetween={10}
+                slidesPerView={1}
+                autoplay={{
+                    delay: 2500,
+                    disableOnInteraction: false,
+                }}
+                modules={[Autoplay]}
+                className="w-[400px] overflow-hidden mySwiper">
                 {data?.map((item) => (
-                    <div key={item._id} className=" rounded-xl  shadow-md h-[400px]">
-                        <div className="overflow-hidden relative h-full rounded-[8px]">
-                            <Image
-                                src={item.img}
-                                alt={item.title}
-                                className="absolute h-full w-full object-cover hover:scale-110 duration-300  brightness-75"
-                                fill
-                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                priority
-                            />
-                            <div className="p-3 absolute z-1 text-white bottom-0 w-full bg-linear-item">
-                                <h1 className="text-lg font-bold">{item.title}</h1>
-                                <p className="line-clamp-2 text-sm text-[#D9D9D9]">{item.content}</p>
-                                <div className="flex justify-end items-center gap-1 mb-[1px] text-[10px]">
-                                    <FaRegEye />
-                                    <p className="">Lượt làm: {item.noa}</p>
-                                </div>
-                                <div className="flex justify-between items-center gap-1">
-                                    <Link href={`/profile/${item.uid._id}`} className="flex items-center gap-2">
-                                        <div className="relative w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden">
-                                            <Image
-                                                src={item.uid.profilePicture}
-                                                alt={item.uid.displayName}
-                                                className="absolute object-cover h-full"
-                                                fill
-                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                priority
-                                            />
-                                        </div>
-                                        <div className="group">
-                                            <div className="flex items-center gap-1">
-                                                <h2 className="text-sm line-clamp-1 overflow-hidden group-hover:underline">{item.uid.displayName}</h2>
-                                                {item.uid.verify ? <MdOutlineVerified color="#3b82f6" /> : ""}
+                    <SwiperSlide key={item.id}>
+                        <div className=" rounded-xl  shadow-md h-[400px]">
+                            <div className="overflow-hidden relative h-full rounded-[8px]">
+                                <Image
+                                    src={item.img}
+                                    alt={item.title}
+                                    className="absolute h-full w-full object-cover hover:scale-110 duration-300  brightness-75"
+                                    fill
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                    priority
+                                />
+                                <div className="p-3 absolute z-1 text-white bottom-0 w-full bg-linear-item">
+                                    <h1 className="text-lg font-bold">{item.title}</h1>
+                                    <p className="line-clamp-2 text-sm text-[#D9D9D9]">{item.content}</p>
+                                    <div className="flex justify-end items-center gap-1 mb-[1px] text-[10px]">
+                                        <FaRegEye />
+                                        <p className="">Lượt làm: {item.noa}</p>
+                                    </div>
+                                    <div className="flex justify-between items-center gap-1">
+                                        <Link href={`/profile/${item.uid._id}`} className="flex items-center gap-2">
+                                            <div className="relative w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden">
+                                                <Image
+                                                    src={item.uid.profilePicture}
+                                                    alt={item.uid.displayName}
+                                                    className="absolute object-cover h-full"
+                                                    fill
+                                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                    priority
+                                                />
                                             </div>
-                                            <p className="text-[#D9D9D9] text-[10px] flex gap-1 items-center">
-                                                <CiTimer color="#D9D9D9" /> {handleCompareDate(item.date)}
-                                            </p>
-                                        </div>
-                                    </Link>
+                                            <div className="group">
+                                                <div className="flex items-center gap-1">
+                                                    <h2 className="text-sm line-clamp-1 overflow-hidden group-hover:underline">{item.uid.displayName}</h2>
+                                                    {item.uid.verify ? <MdOutlineVerified color="#3b82f6" /> : ""}
+                                                </div>
+                                                <p className="text-[#D9D9D9] text-[10px] flex gap-1 items-center">
+                                                    <CiTimer color="#D9D9D9" /> {handleCompareDate(item.date)}
+                                                </p>
+                                            </div>
+                                        </Link>
 
-                                    <Link href={`/quiz/${item.slug}`} className="block">
-                                        <button className="flex gap-1 items-center text-sm">
-                                            Làm bài <IoArrowForwardCircleOutline />
-                                        </button>
-                                    </Link>
+                                        <Link href={`/quiz/${item.slug}`} className="block">
+                                            <button className="flex gap-1 items-center text-sm">
+                                                Làm bài <IoArrowForwardCircleOutline />
+                                            </button>
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </SwiperSlide>
                 ))}
-                {data && data.length === 0 ? <p className="text-primary">Không có tài liệu nào...</p> : ""}
-            </div>
+            </Swiper>
+            {data && data.length === 0 ? <p className="text-primary">Không có tài liệu nào...</p> : ""}
         </div>
     );
 }

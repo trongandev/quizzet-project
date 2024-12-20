@@ -18,22 +18,26 @@ import { getEmoji } from "@/lib/cacheData";
 export default function ChatRoom({ params }) {
     const { slug } = params;
     const [data, setData] = useState({});
-    const [dataEmoji, setDataEmoji] = useState({});
+
     const [loading, setLoading] = useState(false);
-    const [searchEmoji, setSearchEmoji] = useState(false);
+
     const { user } = useUser();
     const lastMessageRef = useRef(null);
     const token = Cookies.get("token");
-
+    const [emoji, setEmoji] = useState([]);
+    const [emojiData, setEmojiData] = useState([]);
+    const [searchEmoji, setSearchEmoji] = useState("");
     const { socket } = useSocket();
     useEffect(() => {
         const fetchAPI = async () => {
             const req = await GET_API(`/chat/${slug}`, token);
             setData(req);
             setLoading(true);
-            // const emojiData = await getEmoji();
-            // console.log(emojiData);
-            // setDataEmoji(emojiData);
+            const reqEmoji = await fetch("https://emoji-api.com/emojis?access_key=bf409e3ed3d59cc01d12b7f1a9512896fe36f4f1");
+            const dataEmoji = await reqEmoji.json();
+
+            setEmoji(dataEmoji);
+            setEmojiData(dataEmoji);
         };
         fetchAPI();
     }, [slug]);
@@ -45,6 +49,7 @@ export default function ChatRoom({ params }) {
         socket.emit("joinRoom", slug);
 
         socket.on("message", (data) => {
+            console.log(data);
             setData((prevData) => ({
                 ...prevData,
                 messages: [...prevData.messages, data.newMessage],
@@ -81,8 +86,8 @@ export default function ChatRoom({ params }) {
 
     const handleSearchEmoji = (e) => {
         setSearchEmoji(e.target.value);
-        const filteredData = emojiData.filter((item) => item.unicodeName.includes(e.target.value));
-        setDataEmoji(filteredData);
+        const filteredData = emoji.filter((item) => item.unicodeName.includes(e.target.value));
+        setEmojiData(filteredData);
     };
     const router = useRouter();
     const handleReturn = () => {
@@ -180,23 +185,23 @@ export default function ChatRoom({ params }) {
                                 content={
                                     <div>
                                         <div className="">
-                                            <Input placeholder="Search" value={searchEmoji} onChange={(e) => handleSearchEmoji(e)}></Input>
+                                            <input placeholder="Tìm icon mà bạn thích" value={searchEmoji} onChange={(e) => handleSearchEmoji(e)}></input>
                                         </div>
                                         <div className="grid grid-cols-5 gap-1 w-[300px]  mt-2">
-                                            {dataEmoji && dataEmoji.length > 0 ? ( // Check if emoji exists and has elements
-                                                <div className="grid grid-cols-5 gap-1 w-[300px] overflow-y-scroll h-[300px] mt-2">
-                                                    {dataEmoji.map((item, index) => (
-                                                        <div className="flex items-center justify-center hover:bg-gray-200 cursor-pointer" key={index}>
-                                                            <h1 className="text-xl" onClick={() => setInput(input + item.character)}>
-                                                                {item.character}
-                                                            </h1>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            ) : (
-                                                <p>Lỗi không hiển thị được emoji</p> // Display a message if no data
-                                            )}
+                                            {emojiData &&
+                                                emojiData.length > 0 && ( // Check if emoji exists and has elements
+                                                    <div className="grid grid-cols-5 gap-1 w-[300px] overflow-y-scroll h-[300px] mt-2">
+                                                        {emojiData.map((item, index) => (
+                                                            <div className="flex items-center justify-center hover:bg-gray-200 cursor-pointer" key={index}>
+                                                                <h1 className="text-xl" onClick={() => setNewMessage(newMessage + item.character)}>
+                                                                    {item.character}
+                                                                </h1>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
                                         </div>
+                                        {emojiData && emojiData.length == 0 && <p className="h-[300px] flex items-center justify-center">Không tìm thấy Emojii này...</p>}
                                     </div>
                                 }
                                 title="Chọn icon"

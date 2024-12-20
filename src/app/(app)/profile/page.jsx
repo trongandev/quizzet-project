@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { MdOutlineVerified } from "react-icons/md";
 import Swal from "sweetalert2";
-import { Modal, Input, Popover, Button } from "antd";
+import { Modal, Input, Popover, Button, message } from "antd";
 import { IoMdSettings } from "react-icons/io";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { CiTimer } from "react-icons/ci";
@@ -14,7 +14,6 @@ import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { GET_API, POST_API } from "@/lib/fetchAPI";
 import handleCompareDate from "@/lib/CompareDate";
 import { IoArrowForwardCircleOutline } from "react-icons/io5";
@@ -23,7 +22,7 @@ export default function CProfile() {
     const [user, setUser] = useState(null);
     const [quiz, setQuiz] = useState(null);
     const token = Cookies.get("token");
-
+    const [messageApi, contextHolder] = message.useMessage();
     const [loading, setLoading] = useState(false);
     useEffect(() => {
         const fetchAPI = async () => {
@@ -36,18 +35,14 @@ export default function CProfile() {
     }, [loading, token]);
     const [valueOtp, setValueOtp] = useState("");
 
-    const router = useRouter();
-
-    if (token === undefined) {
-        Swal.fire({
-            title: "Bạn chưa đăng nhập",
-            text: "Vui lòng đăng nhập xem lại lịch sử làm bài",
-            icon: "warning",
-            didClose: () => {
-                router.push("/login");
-            },
-        });
-    }
+    useEffect(() => {
+        if (token === undefined) {
+            messageApi.open({
+                type: "error",
+                content: "Bạn chưa đăng nhập",
+            });
+        }
+    }, []);
 
     const [open, setOpen] = useState(false);
     const [openProfile, setOpenProfile] = useState(false);
@@ -189,18 +184,22 @@ export default function CProfile() {
     };
 
     return (
-        <div>
+        <div className="px-3 md:px-0">
+            {contextHolder}
             <div className="flex gap-3 items-center text-third">
                 <div className="w-[100px] h-[100px] rounded-full overflow-hidden relative">
                     <Image src={user?.profilePicture} alt="" className="object-cover h-full w-full absolute" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                 </div>
-                <div className="">
+                <div className="text-secondary">
                     <div className="flex gap-2 items-center">
-                        <h1 className="text-2xl font-bold text-primary">{user?.displayName}</h1>
+                        <h1 className="text-2xl font-bold text-primary">{user?.displayName || "Đang tải..."}</h1>
                         {user?.verify ? <MdOutlineVerified color="#3b82f6" /> : ""}
                     </div>
                     {user?.verify ? (
-                        <p>{user?.email}</p>
+                        <div className="">
+                            <p>{user?.email || "Đang tải..."}</p>
+                            <p className="">Tham gia vào ngày {new Date(user?.created_at).toLocaleDateString("vi-VN") || "Đang tải..."}</p>
+                        </div>
                     ) : (
                         <>
                             <p>Tài khoản chưa xác thực email</p>

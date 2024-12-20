@@ -5,7 +5,7 @@ import { SocketProvider } from "../../context/socketContext";
 import CHeader from "../../components/CHeader";
 import CFooter from "../../components/Footer";
 import Link from "next/link";
-import { IoHomeOutline } from "react-icons/io5";
+import { IoFolderOpenSharp, IoHomeOutline } from "react-icons/io5";
 import { MdOutlineTopic } from "react-icons/md";
 import { GoHistory } from "react-icons/go";
 import { FiFilePlus } from "react-icons/fi";
@@ -15,6 +15,11 @@ import { useEffect, useState } from "react";
 import { Analytics } from "@vercel/analytics/react";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import Script from "next/script";
+import { SiQuizlet } from "react-icons/si";
+import { FaPeopleGroup } from "react-icons/fa6";
+import { AiFillHome } from "react-icons/ai";
+import { FaFileAlt } from "react-icons/fa";
+import { GiCardPick } from "react-icons/gi";
 
 export default function RootLayout({ children }: any) {
     const pathname = usePathname();
@@ -37,29 +42,34 @@ export default function RootLayout({ children }: any) {
                                 <ul className="flex h-full">
                                     <li className="flex-1">
                                         <Link href="/" className={`flex items-center h-full justify-center ${pathname == "/" ? "active" : ""}`}>
-                                            <IoHomeOutline size={25} />
+                                            <AiFillHome size={25} />
                                         </Link>
                                     </li>
-                                    {token && (
-                                        <>
-                                            {" "}
-                                            <li className="flex-1">
-                                                <Link href="/chude" className={`flex items-center h-full justify-center ${pathname == "/chude" ? "active" : ""}`}>
-                                                    <MdOutlineTopic size={25} />
-                                                </Link>
-                                            </li>
-                                            <li className="flex-1">
-                                                <Link href="/lichsu" className={`flex items-center h-full justify-center ${pathname == "/lichsu" ? "active" : ""}`}>
-                                                    <GoHistory size={25} />
-                                                </Link>
-                                            </li>
-                                            <li className="flex-1">
-                                                <Link href="/tailieu" className={`flex items-center h-full justify-center ${pathname == "/tailieu" ? "active" : ""}`}>
-                                                    <FiFilePlus size={25} />
-                                                </Link>
-                                            </li>
-                                        </>
-                                    )}
+                                    <li className="flex-1">
+                                        <Link href="/quiz" className={`flex items-center h-full justify-center ${pathname.startsWith("/quiz") ? "active" : ""}`}>
+                                            <SiQuizlet size={21} />
+                                        </Link>
+                                    </li>
+                                    <li className="flex-1">
+                                        <Link href="/tailieu" className={`flex items-center h-full justify-center ${pathname.startsWith("/tailieu") ? "active" : ""}`}>
+                                            <FaFileAlt size={22} />
+                                        </Link>
+                                    </li>
+                                    <li className="flex-1">
+                                        <Link href="/decuong" className={`flex items-center h-full justify-center ${pathname.startsWith("/decuong") ? "active" : ""}`}>
+                                            <IoFolderOpenSharp size={25} />
+                                        </Link>
+                                    </li>
+                                    <li className="flex-1">
+                                        <Link href="/congdong" className={`flex items-center h-full justify-center ${pathname.startsWith("/congdong") ? "active" : ""}`}>
+                                            <FaPeopleGroup size={25} />
+                                        </Link>
+                                    </li>
+                                    <li className="flex-1">
+                                        <Link href="/flashcard" className={`flex items-center h-full justify-center ${pathname.startsWith("/flashcard") ? "active" : ""}`}>
+                                            <GiCardPick size={25} />
+                                        </Link>
+                                    </li>
                                 </ul>
                             </div>
                         </div>

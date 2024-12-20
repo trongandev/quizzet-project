@@ -1,13 +1,12 @@
 "use client";
 import React, { useEffect } from "react";
-import Swal from "sweetalert2";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { GET_API, POST_API } from "@/lib/fetchAPI";
-import { Spin } from "antd";
+import { message, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { IoIosArrowBack } from "react-icons/io";
 import Image from "next/image";
@@ -15,6 +14,7 @@ export default function LoginForm() {
     const router = useRouter();
     const token = Cookies.get("token");
     const [loading, setLoading] = React.useState(false);
+    const [messageApi, contextHolder] = message.useMessage();
     useEffect(() => {
         if (token) {
             router.push("/");
@@ -42,20 +42,18 @@ export default function LoginForm() {
             const data = await res.json();
             if (res.ok) {
                 Cookies.set("token", data.token, { expires: 1 });
-                // router.push("/");
+                router.push("/");
             } else {
-                Swal.fire({
-                    title: "Thất bại",
-                    text: data.message,
-                    icon: "error",
+                messageApi.open({
+                    type: "warning",
+                    content: data.message,
                 });
             }
             setLoading(false);
         } catch (error) {
-            Swal.fire({
-                title: "Lỗi",
-                text: error.message,
-                icon: "error",
+            messageApi.open({
+                type: "error",
+                content: error.message,
             });
         }
     };
@@ -75,8 +73,7 @@ export default function LoginForm() {
         if (token) {
             Cookies.set("token", token, { expires: 1 });
             const fetchAPI = async () => {
-                const req = await GET_API("/profile", token);
-                console.log(req);
+                await GET_API("/profile", token);
             };
             fetchAPI();
 
@@ -86,6 +83,7 @@ export default function LoginForm() {
 
     return (
         <div className="flex justify-center flex-col items-center h-full bg-white p-5 rounded-xl">
+            {contextHolder}
             <div className="text-third">
                 <form onSubmit={formik.handleSubmit}>
                     <div onClick={handleBackRouter}>

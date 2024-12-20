@@ -25,7 +25,7 @@ export const SocketProvider = ({ children }) => {
 
     useEffect(() => {
         if (socket === null) return;
-        socket.emit("newUser", user?._id);
+        socket.emit("newUser", user);
         socket.on("getOnlineUsers", (res) => {
             setOnlineUsers(res);
         });

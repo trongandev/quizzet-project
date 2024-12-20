@@ -14,7 +14,7 @@ export const getCachedQuiz = (slug: string) =>
     unstable_cache(
         async () => {
             const response = await GET_API_WITHOUT_COOKIE(`/quiz/${slug}`);
-            return response.quiz;
+            return response?.quiz;
         },
         [`quiz_${slug}`], // Key cache
         { revalidate: 30 } // TTL = 1 giờ
@@ -36,5 +36,5 @@ export const getEmoji = unstable_cache(
         return data;
     },
     ["emoji"], // Key cache
-    { revalidate: 3000 } // TTL = 30 giây
+    { revalidate: 300 } // TTL = 30 giây
 );

@@ -1,11 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Swal from "sweetalert2";
 import { IoIosTimer } from "react-icons/io";
 import Cookies from "js-cookie";
-import { Spin } from "antd";
+import { message, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { GET_API } from "@/lib/fetchAPI";
 import handleCompareDate from "@/lib/CompareDate";
@@ -13,9 +11,8 @@ import handleCompareDate from "@/lib/CompareDate";
 export default function History() {
     const [historyData, setHistoryData] = useState();
     const [loading, setLoading] = useState(false);
-    const router = useRouter();
     const token = Cookies.get("token");
-
+    const [messageApi, contextHolder] = message.useMessage();
     const fetchHistory = async () => {
         const req = await GET_API("/history", token);
         setHistoryData(req.history);
@@ -25,19 +22,18 @@ export default function History() {
     useEffect(() => {
         fetchHistory();
     }, []);
-    if (token === undefined) {
-        Swal.fire({
-            title: "Bạn chưa đăng nhập",
-            text: "Vui lòng đăng nhập xem lại lịch sử làm bài",
-            icon: "warning",
-            didClose: () => {
-                router.push("/login");
-            },
-        });
-    }
+    useEffect(() => {
+        if (token === undefined) {
+            messageApi.open({
+                type: "error",
+                content: "Bạn chưa đăng nhập, đăng nhập để có thể xem lịch sử làm bài",
+            });
+        }
+    }, []);
 
     return (
         <>
+            {contextHolder}
             <div className=" md:p-0 text-third md:h-screen px-2 md:px-0">
                 <p className="text-2xl font-bold text-primary">Lịch sử làm bài</p>
                 {historyData === undefined ? "Bạn chưa có lịch sử làm bài..." : ""}

@@ -2,23 +2,15 @@
 import { Button, Input, Modal, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { IoIosSettings } from "react-icons/io";
-// import { UserOutlined } from "@ant-design/icons";
-// import { IoIosCall } from "react-icons/io";
-// import { IoVideocam } from "react-icons/io5";
-// import { IoIosInformationCircle } from "react-icons/io";
-// import { BiSolidSend } from "react-icons/bi";
-// import { MdEmojiEmotions } from "react-icons/md";
 import { FaCirclePlus } from "react-icons/fa6";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import Cookies from "js-cookie";
-import Swal from "sweetalert2";
 import { GET_API, POST_API } from "@/lib/fetchAPI";
 import { useRouter } from "next/navigation";
 import { useUser } from "@/context/userContext";
 import Link from "next/link";
 import Image from "next/image";
-import io from "socket.io-client";
 import { useSocket } from "@/context/socketContext";
 import handleCompareDate from "@/lib/CompareDate";
 function useDebounce(value, duration = 300) {
@@ -36,33 +28,26 @@ function useDebounce(value, duration = 300) {
 
 export default function Chat() {
     const [profile, setProfile] = useState(null);
-    const [dataId, setDataId] = useState({});
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState(null);
     const [input, setInput] = useState("a");
     const debouncedSearchTerm = useDebounce(input, 300);
     const router = useRouter();
     const token = Cookies.get("token");
-
+    const [messageApi, contextHolder] = message.useMessage();
     useEffect(() => {
         const handleRenderUser = async () => {
             setLoading(true);
             const req = await GET_API("/chat", token);
-            console.log(req);
             if (req.ok) {
-                setDataId(req.data_id);
                 setProfile(req.chats);
             }
             setLoading(false);
         };
         if (token === undefined) {
-            Swal.fire({
-                title: "Bạn chưa đăng nhập",
-                text: "Vui lòng đăng nhập để nhắn tin",
-                icon: "warning",
-                didClose: () => {
-                    router.push("/login");
-                },
+            messageApi.open({
+                type: "error",
+                content: "Vui lòng đăng nhập để nhắn tin",
             });
         } else {
             handleRenderUser();
@@ -113,10 +98,16 @@ export default function Chat() {
             if (reqData.ok) {
                 router.push(`/chat/${reqData.chat}`);
             } else {
-                console.log(reqData.message);
+                messageApi.open({
+                    type: "error",
+                    content: reqData.message,
+                });
             }
         } else {
-            console.log(req.message);
+            messageApi.open({
+                type: "error",
+                content: reqData.message,
+            });
         }
         setIsModalOpen(false);
     };
@@ -126,7 +117,7 @@ export default function Chat() {
         setLoading(true);
     };
 
-    const { socket, onlineUsers } = useSocket();
+    const { onlineUsers } = useSocket();
 
     const getUserOnlineStatus = (userId) => {
         const onlineUser = onlineUsers.find((user) => user.userId === userId);
@@ -142,6 +133,7 @@ export default function Chat() {
 
     return (
         <div className="">
+            {contextHolder}
             <div className="flex justify-between items-center px-3 h-[44px]">
                 <Link href="/chat">
                     <h1 className="text-2xl">Chats</h1>

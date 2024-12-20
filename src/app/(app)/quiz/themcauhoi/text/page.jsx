@@ -81,7 +81,7 @@ export default function Text() {
                     title: "Thêm bài viết thành công",
                     text: "Bài viết của bạn sẽ được kiểm duyệt trước khi hiển thị",
                     didClose: () => {
-                        router.push("/login");
+                        router.push("/profile");
                     },
                 });
             } else {
@@ -323,8 +323,22 @@ Câu hỏi 2
                                             <p>
                                                 - Bấm phím <label className="text-red-500 font-bold">Enter</label> để xuống đáp án tiếp theo
                                             </p>
-                                            <Image src="/guide.png" alt="" width={500} height={500} className="mt-3 border-[5px] border-primary rounded-lg" />
-                                            <Image src="/guide3.png" alt="" width={500} height={500} className="mt-3 border-[5px] border-primary rounded-lg" />
+                                            <Image
+                                                src="/guide.png"
+                                                alt=""
+                                                width={500}
+                                                height={500}
+                                                className="mt-3 border-[5px] border-primary rounded-lg"
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                            />
+                                            <Image
+                                                src="/guide3.png"
+                                                alt=""
+                                                width={500}
+                                                height={500}
+                                                className="mt-3 border-[5px] border-primary rounded-lg"
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                            />
                                         </Modal>
                                     </div>
                                     <div className="">
@@ -379,7 +393,7 @@ Câu hỏi 2
             <div className="w-full md:w-[700px] md:h-[650px] overflow-y-auto frm-post">
                 <div className="flex items-center justify-center flex-col my-3">
                     <div className=" shadow-md border-2 rounded-lg overflow-hidden group w-[200px] h-[100px] relative">
-                        {quiz.img && <Image src={quiz?.img} alt="" className="absolute w-full h-full  object-cover" fill />}
+                        {quiz.img && <Image src={quiz?.img} alt="" className="absolute w-full h-full  object-cover" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />}
                         <div className="p-3">
                             <h1 className="text-md text-primary font-bold line-clamp-1 h-[24px]">{quiz.title}</h1>
                             <p className="text-gray-500 line-clamp-1 text-sm h-[20px]">{quiz.content}</p>
