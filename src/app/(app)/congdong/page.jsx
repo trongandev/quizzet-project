@@ -1,17 +1,21 @@
 "use client";
 import { useSocket } from "@/context/socketContext";
 import { useUser } from "@/context/userContext";
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Cookies from "js-cookie";
-import { GET_API, POST_API, POST_API_FILE } from "@/lib/fetchAPI";
+import { GET_API, POST_API } from "@/lib/fetchAPI";
 import Image from "next/image";
-import { Image as Images } from "antd";
+import { Image as Images, Spin, Tooltip } from "antd";
 
 import Link from "next/link";
 import { GrFormClose } from "react-icons/gr";
-import { MdOutlineInsertEmoticon } from "react-icons/md";
+import { MdOutlineInsertEmoticon, MdOutlineReply } from "react-icons/md";
 import { IoSend } from "react-icons/io5";
 import { Popover } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import axios from "axios";
+import { FaRegImage } from "react-icons/fa6";
+import { IoMdClose } from "react-icons/io";
 export default function CongDong() {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
@@ -27,12 +31,15 @@ export default function CongDong() {
     const [emoji, setEmoji] = useState([]);
     const [emojiData, setEmojiData] = useState([]);
     const [searchEmoji, setSearchEmoji] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [replyingTo, setReplyingTo] = useState(null);
 
     useEffect(() => {
         const fetchAPI = async () => {
             const req = await GET_API(`/chatcommu?skip=${skip}&limit=50`, token);
             if (req) {
                 setMessages(req.messages);
+                console.log(req);
                 setHasMore(req.hasMore);
             }
 
@@ -55,6 +62,7 @@ export default function CongDong() {
         if (!socket) return;
 
         socket.on("newMessageCommu", (message) => {
+            console.log(message);
             setMessages((prevMessages) => [...prevMessages, message]);
         });
 
@@ -68,91 +76,31 @@ export default function CongDong() {
         setSkip((prevSkip) => prevSkip + 50);
     };
 
-    // // Debounce function
-    // const debounce = (func, wait) => {
-    //     let timeout;
-    //     return function executedFunction(...args) {
-    //         const later = () => {
-    //             clearTimeout(timeout);
-    //             func(...args);
-    //         };
-    //         clearTimeout(timeout);
-    //         timeout = setTimeout(later, wait);
-    //     };
-    // };
-
-    // // Xử lý typing status
-    // const handleTyping = useCallback(
-    //     debounce((isTyping) => {
-    //         if (socket) {
-    //             if (isTyping) {
-    //                 socket.emit("startTyping", { roomId, userId, username });
-    //             } else {
-    //                 socket.emit("stopTyping", { roomId, userId });
-    //             }
-    //         }
-    //     }, 300),
-    //     [socket, roomId, userId, username]
-    // );
-
-    // const handleInputChange = (e) => {
-    //     setMessage(e.target.value);
-    //     handleTyping(e.target.value.length > 0);
-    // };
-
     const handleSendMessage = async () => {
+        setLoading(true);
         let imageUrl = "";
 
         if (image) {
             const formData = new FormData();
-            formData.append("image", image);
-            try {
-                const req = await POST_API_FILE("/upload", formData, token);
-                const res = await req.json();
-                imageUrl = res.imageUrl;
-            } catch (error) {
-                console.error("Error uploading image:", error);
-            }
+            formData.append("file", image);
+            const response = await axios.post(process.env.API_ENDPOINT + "/upload", formData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "multipart/form-data", // Định dạng bắt buộc
+                },
+            });
+            imageUrl = response.data.data;
         }
 
-        if (newMessage.trim() && token !== undefined) {
-            const messageData = { userId: user, message: newMessage, image: imageUrl, token };
+        if (newMessage.trim() || image) {
+            const messageData = { userId: user, message: newMessage, image: imageUrl, token, replyTo: replyingTo };
             socket.emit("sendMessageCommu", messageData);
             setNewMessage("");
             setImage(null);
             setImageReview(null);
+            setReplyingTo(null);
         }
-    };
-    // const handleBlur = () => {
-    //     handleTyping(false);
-    // };
-    const reactIcons = [
-        "https://static.xx.fbcdn.net/images/emoji.php/v9/t72/1/32/2764.png",
-        "https://static.xx.fbcdn.net/images/emoji.php/v9/t8e/1/32/1f606.png",
-        "https://static.xx.fbcdn.net/images/emoji.php/v9/t7b/1/32/1f62e.png",
-        "https://static.xx.fbcdn.net/images/emoji.php/v9/tc8/1/32/1f622.png",
-        "https://static.xx.fbcdn.net/images/emoji.php/v9/t47/1/32/1f621.png",
-        "https://static.xx.fbcdn.net/images/emoji.php/v9/tb6/1/32/1f44d.png",
-    ];
-    const [openReact, setOpenReact] = useState(false);
-
-    const hideReact = () => {
-        setOpen(false);
-    };
-
-    const handleOpenChangeReact = (newOpen) => {
-        setOpenReact(newOpen);
-    };
-
-    const handleReaction = async (messageId, emoji) => {
-        try {
-            const req = await POST_API("/chatcommu/react", { messageId, userId, emoji }, "POST", token);
-            await req.json();
-            const updatedMessages = messages.map((msg) => (msg._id === messageId ? { ...msg, reactions: [...msg.reactions, { userId, emoji }] } : msg));
-            setMessages(updatedMessages);
-        } catch (error) {
-            console.error("Error adding reaction:", error);
-        }
+        setLoading(false);
     };
 
     const handlePaste = (event) => {
@@ -168,6 +116,12 @@ export default function CongDong() {
         }
     };
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        setImage(file);
+        setImageReview(file ? URL.createObjectURL(file) : null);
+    };
+
     const [open, setOpen] = useState(false);
 
     const handleOpenChange = (newOpen) => {
@@ -179,65 +133,79 @@ export default function CongDong() {
         const filteredData = emoji.filter((item) => item.unicodeName.includes(e.target.value));
         setEmojiData(filteredData);
     };
+    console.log(messages);
 
     return (
         <div className="text-third flex gap-5 flex-wrap px-3 md:px-0">
             <div className="my-5 w-full md:w-[700px] p-3 md:p-5  border border-primary  rounded-md">
-                <div className="h-[400px]  overflow-y-scroll flex gap-1 flex-col pr-3">
-                    {messages &&
-                        messages?.map((msg, index) => (
-                            <div className="" key={index} ref={index === messages.length - 1 ? lastMessageRef : null}>
-                                {hasMore && <button onClick={loadMoreMessages}>Load more</button>}
-                                {user?._id === msg?.userId._id ? (
-                                    <div className="flex gap-1 items-center justify-end ">
-                                        <div className="">
-                                            <p className="bg-linear-item-2 rounded-full px-3 py-1 mb-[2px]">{msg?.message}</p>
-                                            {msg?.image && (
-                                                <Images unoptimized src={process.env.API_IMAGE + msg?.image || "/meme.jpg"} alt="" width={200} height="auto" className=" object-cover  rounded-2xl" />
-                                            )}
+                <div className="h-[400px] overflow-y-scroll flex flex-col pr-3">
+                    {messages?.map((msg, index) => {
+                        const isSameUser = index > 0 && messages[index - 1].userId._id === msg?.userId._id;
+                        const isCurrentUser = msg?.userId._id === user?._id;
+                        const isLastMessage = index === messages.length - 1;
+
+                        return (
+                            <div key={index} ref={isLastMessage ? lastMessageRef : null}>
+                                {/* Hiển thị tên người dùng trên đầu nhóm */}
+                                {!isSameUser && !isCurrentUser && <p className="ml-[45px] text-gray-500 text-sm mb-1 pl-1">{msg.userId.displayName}</p>}
+
+                                {/* Tin nhắn */}
+                                <div className={`flex items-start ${isCurrentUser ? "justify-end" : "justify-start"} mb-[4px] group min-h-[40px] items-center`}>
+                                    {/* Avatar của người khác */}
+                                    {!isCurrentUser && !isSameUser && (
+                                        <div className="w-[40px] h-[40px] relative mr-[-40px]">
+                                            <Image
+                                                src={msg.userId.profilePicture || "/meme.jpg"}
+                                                alt=""
+                                                unoptimized
+                                                className="w-full h-full object-cover absolute border-2 border-primary rounded-full"
+                                                fill
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                            />
                                         </div>
-                                    </div>
-                                ) : (
-                                    <div className="flex gap-2 items-center group">
-                                        <Link href={`/profile/${msg?.userId._id}`} className="w-[100px] flex justify-center flex-col items-center">
-                                            <div className="w-[40px] h-[40px] relative ">
-                                                <Image
-                                                    src={msg?.userId.profilePicture || "/meme.jpg"}
-                                                    alt=""
-                                                    unoptimized
-                                                    className="w-full h-full object-cover absolute border-2 border-primary rounded-full"
-                                                    fill
-                                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                />
+                                    )}
+
+                                    {/* Nội dung tin nhắn */}
+                                    <div className={`max-w-[70%] ml-[45px]`}>
+                                        {msg.replyTo && (
+                                            <div className="text-[12px]">
+                                                {isCurrentUser ? (
+                                                    <p className="flex items-center gap-1">
+                                                        <MdOutlineReply />
+                                                        Bạn đã trả lời: {msg.replyTo.userId.displayName}
+                                                    </p>
+                                                ) : (
+                                                    <p className="flex items-center gap-1">
+                                                        <MdOutlineReply />
+                                                        {msg.userId.displayName} đã trả lời bạn
+                                                    </p>
+                                                )}
+                                                <div className={`${isCurrentUser ? "w-full text-end" : ""}`}>
+                                                    <p className={` inline-block bg-gray-400 rounded-full px-3 py-2 mb-[-10px]`}>{msg.replyTo.message}</p>
+                                                </div>
                                             </div>
-                                            <p className="text-primary font-bold">{msg?.userId.displayName}</p>
-                                        </Link>
-                                        <div className="">
-                                            <p className="bg-linear-item-2 px-3 py-1 w-full rounded-full mb-[2px]">{msg?.message}</p>
-                                            {msg?.image && (
-                                                <Images unoptimized src={process.env.API_IMAGE + msg?.image || "/meme.jpg"} alt="" width={200} height={70} className=" object-cover  rounded-2xl" />
-                                            )}
+                                        )}
+                                        <div className={` ${isCurrentUser ? "w-full text-end" : ""} `}>
+                                            <p className={` ${isCurrentUser ? " bg-primary text-white" : "bg-gray-200 "} rounded-full px-3 py-2 inline-block`}>{msg.message}</p>
                                         </div>
-                                        <div className="hidden group-hover:block">
-                                            <Popover
-                                                content={
-                                                    <div className="flex gap-4 items-center">
-                                                        {reactIcons.map((icon, index) => (
-                                                            <Image unoptimized src={icon} alt="" width={25} height={25} className="cursor-pointer" key={index} />
-                                                        ))}
-                                                    </div>
-                                                }
-                                                trigger="click"
-                                                open={openReact}
-                                                onOpenChange={handleOpenChangeReact}>
-                                                <MdOutlineInsertEmoticon size={22} className="cursor-pointer hover:text-primary" />
-                                            </Popover>
-                                        </div>
+                                        {msg.image && <Images src={msg.image || "/meme.jpg"} alt="" width={200} height="auto" className="object-cover rounded-lg mt-2" />}
                                     </div>
-                                )}
+                                    {!isCurrentUser && (
+                                        <Tooltip placement="top" title="Trả lời">
+                                            <label
+                                                htmlFor="message"
+                                                className="hidden group-hover:block h-full text-white ml-3 cursor-pointer bg-gray-400 p-2 rounded-full"
+                                                onClick={() => setReplyingTo(msg)}>
+                                                <MdOutlineReply />
+                                            </label>
+                                        </Tooltip>
+                                    )}
+                                </div>
                             </div>
-                        ))}
+                        );
+                    })}
                 </div>
+
                 <div className="mt-5">
                     {user === null ? (
                         <div className="text-center">
@@ -245,9 +213,23 @@ export default function CongDong() {
                         </div>
                     ) : (
                         <div className="">
+                            {replyingTo && (
+                                <label htmlFor="message" className="block replying-to relative bg-linear-item-blue px-3 py-1 rounded-lg mb-2 text-secondary ">
+                                    <div className="absolute top-2 right-3 cursor-pointer hover:text-red-500" onClick={() => setReplyingTo(null)}>
+                                        <IoMdClose />
+                                    </div>
+                                    <h1 className="text-secondary font-bold">Bạn đang trả lời: {replyingTo?.userId.displayName}</h1>
+                                    <p>{replyingTo.message}</p>
+                                </label>
+                            )}
                             <div className="flex gap-2">
+                                <label htmlFor="image" className=" bg-primary px-3  rounded-xl flex items-center justify-center text-white">
+                                    <FaRegImage />{" "}
+                                </label>
+                                <input id="image" type="file" className="hidden" onChange={(e) => handleImageChange(e)} />
                                 <input
                                     type="text"
+                                    id="message"
                                     className="rounded-full"
                                     value={newMessage}
                                     onChange={(e) => setNewMessage(e.target.value)}
@@ -287,8 +269,8 @@ export default function CongDong() {
                                         <MdOutlineInsertEmoticon size={20} />
                                     </button>
                                 </Popover>
-                                <button type="submit" disabled={token === undefined} onClick={handleSendMessage}>
-                                    <IoSend />
+                                <button type="submit" disabled={loading} onClick={handleSendMessage}>
+                                    {loading ? <Spin indicator={<LoadingOutlined spin />} size="default" /> : <IoSend />}
                                 </button>
                             </div>
                             {imageReview && (
@@ -309,7 +291,7 @@ export default function CongDong() {
             </div>
             <div className="flex-1">
                 <h3>Các thành viên đang online: {onlineUsers.length}</h3>
-                <div className="grid grid-cols-3 gap-3 mt-2">
+                <div className="grid grid-cols-3 xl:grid-cols-4 gap-3 mt-2">
                     {onlineUsers?.map((onl_user) => (
                         <Link
                             className={`flex flex-col items-center  ${

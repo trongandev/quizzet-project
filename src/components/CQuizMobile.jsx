@@ -63,7 +63,7 @@ export default function CQuizMobile({ quizData }) {
         setData(quizData);
     };
     return (
-        <div className="">
+        <div className="w-full">
             <div className="flex justify-center md:justify-between items-center mb-4 gap-3 flex-wrap ">
                 <div className="flex gap-3 items-center">
                     <Tooltip placement="top" title="Sắp xếp theo thời gian">
@@ -127,7 +127,7 @@ export default function CQuizMobile({ quizData }) {
                     disableOnInteraction: false,
                 }}
                 modules={[Autoplay]}
-                className="w-[400px] overflow-hidden mySwiper">
+                className="w-[340px] md:w-[400px] mySwiper">
                 {data?.map((item) => (
                     <SwiperSlide key={item.id}>
                         <div className=" rounded-xl  shadow-md h-[400px]">

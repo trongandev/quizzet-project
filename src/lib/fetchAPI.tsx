@@ -39,11 +39,12 @@ export const POST_API = async (url: string, data: any, method: string, token: st
     }
 };
 
-export const POST_API_FILE = async (url: string, data: any, token: string) => {
+export const POST_API_CLOUD = async (url: string, data: any, token: string) => {
     try {
         const res = await fetch(`${API_ENDPOINT}${url}`, {
             method: "POST",
             headers: {
+                "Content-Type": "multipart/form-data",
                 Authorization: `Bearer ${token}`,
             },
             body: data,
