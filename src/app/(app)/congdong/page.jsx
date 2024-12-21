@@ -3,7 +3,7 @@ import { useSocket } from "@/context/socketContext";
 import { useUser } from "@/context/userContext";
 import React, { useState, useEffect, useRef } from "react";
 import Cookies from "js-cookie";
-import { GET_API, POST_API } from "@/lib/fetchAPI";
+import { GET_API } from "@/lib/fetchAPI";
 import Image from "next/image";
 import { Image as Images, Spin, Tooltip } from "antd";
 
@@ -39,7 +39,6 @@ export default function CongDong() {
             const req = await GET_API(`/chatcommu?skip=${skip}&limit=50`, token);
             if (req) {
                 setMessages(req.messages);
-                console.log(req);
                 setHasMore(req.hasMore);
             }
 
@@ -62,7 +61,6 @@ export default function CongDong() {
         if (!socket) return;
 
         socket.on("newMessageCommu", (message) => {
-            console.log(message);
             setMessages((prevMessages) => [...prevMessages, message]);
         });
 
@@ -133,77 +131,77 @@ export default function CongDong() {
         const filteredData = emoji.filter((item) => item.unicodeName.includes(e.target.value));
         setEmojiData(filteredData);
     };
-    console.log(messages);
 
     return (
         <div className="text-third flex gap-5 flex-wrap px-3 md:px-0">
             <div className="my-5 w-full md:w-[700px] p-3 md:p-5  border border-primary  rounded-md">
                 <div className="h-[400px] overflow-y-scroll flex flex-col pr-3">
-                    {messages?.map((msg, index) => {
-                        const isSameUser = index > 0 && messages[index - 1].userId._id === msg?.userId._id;
-                        const isCurrentUser = msg?.userId._id === user?._id;
-                        const isLastMessage = index === messages.length - 1;
+                    {messages &&
+                        messages?.map((msg, index) => {
+                            const isSameUser = index > 0 && messages[index - 1].userId._id === msg?.userId._id;
+                            const isCurrentUser = msg?.userId._id === user?._id;
+                            const isLastMessage = index === messages?.length - 1;
 
-                        return (
-                            <div key={index} ref={isLastMessage ? lastMessageRef : null}>
-                                {/* Hiển thị tên người dùng trên đầu nhóm */}
-                                {!isSameUser && !isCurrentUser && <p className="ml-[45px] text-gray-500 text-sm mb-1 pl-1">{msg.userId.displayName}</p>}
+                            return (
+                                <div key={index} ref={isLastMessage ? lastMessageRef : null}>
+                                    {/* Hiển thị tên người dùng trên đầu nhóm */}
+                                    {!isSameUser && !isCurrentUser && <p className="ml-[45px] text-gray-500 text-sm mb-1 pl-1">{msg?.userId.displayName}</p>}
 
-                                {/* Tin nhắn */}
-                                <div className={`flex items-start ${isCurrentUser ? "justify-end" : "justify-start"} mb-[4px] group min-h-[40px] items-center`}>
-                                    {/* Avatar của người khác */}
-                                    {!isCurrentUser && !isSameUser && (
-                                        <div className="w-[40px] h-[40px] relative mr-[-40px]">
-                                            <Image
-                                                src={msg.userId.profilePicture || "/meme.jpg"}
-                                                alt=""
-                                                unoptimized
-                                                className="w-full h-full object-cover absolute border-2 border-primary rounded-full"
-                                                fill
-                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                            />
-                                        </div>
-                                    )}
-
-                                    {/* Nội dung tin nhắn */}
-                                    <div className={`max-w-[70%] ml-[45px]`}>
-                                        {msg.replyTo && (
-                                            <div className="text-[12px]">
-                                                {isCurrentUser ? (
-                                                    <p className="flex items-center gap-1">
-                                                        <MdOutlineReply />
-                                                        Bạn đã trả lời: {msg.replyTo.userId.displayName}
-                                                    </p>
-                                                ) : (
-                                                    <p className="flex items-center gap-1">
-                                                        <MdOutlineReply />
-                                                        {msg.userId.displayName} đã trả lời bạn
-                                                    </p>
-                                                )}
-                                                <div className={`${isCurrentUser ? "w-full text-end" : ""}`}>
-                                                    <p className={` inline-block bg-gray-400 rounded-full px-3 py-2 mb-[-10px]`}>{msg.replyTo.message}</p>
-                                                </div>
+                                    {/* Tin nhắn */}
+                                    <div className={`flex items-start ${isCurrentUser ? "justify-end" : "justify-start"} mb-[4px] group min-h-[40px] items-center`}>
+                                        {/* Avatar của người khác */}
+                                        {!isCurrentUser && !isSameUser && (
+                                            <div className="w-[40px] h-[40px] relative mr-[-40px]">
+                                                <Image
+                                                    src={msg?.userId.profilePicture || "/meme.jpg"}
+                                                    alt=""
+                                                    unoptimized
+                                                    className="w-full h-full object-cover absolute border-2 border-primary rounded-full"
+                                                    fill
+                                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                />
                                             </div>
                                         )}
-                                        <div className={` ${isCurrentUser ? "w-full text-end" : ""} `}>
-                                            <p className={` ${isCurrentUser ? " bg-primary text-white" : "bg-gray-200 "} rounded-full px-3 py-2 inline-block`}>{msg.message}</p>
+
+                                        {/* Nội dung tin nhắn */}
+                                        <div className={`max-w-[70%] ml-[45px]`}>
+                                            {msg?.replyTo && (
+                                                <div className="text-[12px]">
+                                                    {isCurrentUser ? (
+                                                        <p className="flex items-center gap-1">
+                                                            <MdOutlineReply />
+                                                            Bạn đã trả lời: {msg?.replyTo.userId.displayName}
+                                                        </p>
+                                                    ) : (
+                                                        <p className="flex items-center gap-1">
+                                                            <MdOutlineReply />
+                                                            {msg?.userId.displayName} đã trả lời bạn
+                                                        </p>
+                                                    )}
+                                                    <div className={`${isCurrentUser ? "w-full text-end" : ""}`}>
+                                                        <p className={` inline-block bg-gray-400 rounded-full px-3 py-2 mb-[-10px]`}>{msg?.replyTo.message}</p>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            <div className={` ${isCurrentUser ? "w-full text-end" : ""} `}>
+                                                <p className={` ${isCurrentUser ? " bg-primary text-white" : "bg-gray-200 "} rounded-full px-3 py-2 inline-block`}>{msg?.message}</p>
+                                            </div>
+                                            {msg?.image && <Images src={msg?.image || "/meme.jpg"} alt="" width={200} height="auto" className="object-cover rounded-lg mt-2" />}
                                         </div>
-                                        {msg.image && <Images src={msg.image || "/meme.jpg"} alt="" width={200} height="auto" className="object-cover rounded-lg mt-2" />}
+                                        {!isCurrentUser && (
+                                            <Tooltip placement="top" title="Trả lời">
+                                                <label
+                                                    htmlFor="message"
+                                                    className="hidden group-hover:block h-full text-white ml-3 cursor-pointer bg-gray-400 p-2 rounded-full"
+                                                    onClick={() => setReplyingTo(msg)}>
+                                                    <MdOutlineReply />
+                                                </label>
+                                            </Tooltip>
+                                        )}
                                     </div>
-                                    {!isCurrentUser && (
-                                        <Tooltip placement="top" title="Trả lời">
-                                            <label
-                                                htmlFor="message"
-                                                className="hidden group-hover:block h-full text-white ml-3 cursor-pointer bg-gray-400 p-2 rounded-full"
-                                                onClick={() => setReplyingTo(msg)}>
-                                                <MdOutlineReply />
-                                            </label>
-                                        </Tooltip>
-                                    )}
                                 </div>
-                            </div>
-                        );
-                    })}
+                            );
+                        })}
                 </div>
 
                 <div className="mt-5">
@@ -219,7 +217,7 @@ export default function CongDong() {
                                         <IoMdClose />
                                     </div>
                                     <h1 className="text-secondary font-bold">Bạn đang trả lời: {replyingTo?.userId.displayName}</h1>
-                                    <p>{replyingTo.message}</p>
+                                    <p>{replyingTo?.message}</p>
                                 </label>
                             )}
                             <div className="flex gap-2">
@@ -290,21 +288,21 @@ export default function CongDong() {
                 </div>
             </div>
             <div className="flex-1">
-                <h3>Các thành viên đang online: {onlineUsers.length}</h3>
+                <h3>Các thành viên đang online: {onlineUsers?.length}</h3>
                 <div className="grid grid-cols-3 xl:grid-cols-4 gap-3 mt-2">
                     {onlineUsers?.map((onl_user) => (
                         <Link
                             className={`flex flex-col items-center  ${
                                 onl_user._id ? "group bg-linear-item-2 text-secondary " : "border border-purple-900 text-purple-900 cursor-default"
                             } rounded-md py-2`}
-                            key={onl_user.socketId}
-                            href={`${onl_user._id ? `/profile/${onl_user._id}` : "#"} `}
+                            key={onl_user?.socketId}
+                            href={`${onl_user?._id ? `/profile/${onl_user?._id}` : "#"} `}
                             passHref>
                             <div className="w-[50px] h-[50px] overflow-hidden relative rounded-full">
                                 <Image
                                     src={onl_user?.profilePicture || "https://github.com/angutboiz/quiz/blob/master/public/meme.jpg?raw=true"}
                                     alt=""
-                                    className={`w-full h-full object-cover absolute  border ${onl_user._id ? "border-primary" : ""}  rounded-full`}
+                                    className={`w-full h-full object-cover absolute  border ${onl_user?._id ? "border-primary" : ""}  rounded-full`}
                                     fill
                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                 />
