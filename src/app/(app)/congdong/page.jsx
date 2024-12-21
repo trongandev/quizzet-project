@@ -33,6 +33,7 @@ export default function CongDong() {
     const [searchEmoji, setSearchEmoji] = useState("");
     const [loading, setLoading] = useState(false);
     const [replyingTo, setReplyingTo] = useState(null);
+    const scrollContainerRef = useRef(null);
 
     useEffect(() => {
         const fetchAPI = async () => {
@@ -40,6 +41,7 @@ export default function CongDong() {
             if (req) {
                 setMessages(req.messages);
                 setHasMore(req.hasMore);
+                setSkip((prevSkip) => prevSkip + 50);
             }
 
             const reqEmoji = await fetch("https://emoji-api.com/emojis?access_key=bf409e3ed3d59cc01d12b7f1a9512896fe36f4f1");
@@ -70,9 +72,26 @@ export default function CongDong() {
         };
     }, [socket, userId, token]);
 
-    const loadMoreMessages = () => {
+    const loadMoreMessages = async () => {
+        setLoading(true);
         setSkip((prevSkip) => prevSkip + 50);
+        try {
+            const newMessages = await GET_API(`/chatcommu?skip=${skip}&limit=50`, token); // Gọi API để tải tin nhắn
+            setMessages((prevMessages) => [...newMessages.messages, ...prevMessages]);
+            setHasMore(newMessages.length > 0);
+        } catch (error) {
+            console.error("Error loading messages:", error);
+        } finally {
+            setLoading(false);
+        }
     };
+
+    useEffect(() => {
+        // Giữ vị trí cuộn khi tải thêm tin nhắn
+        if (scrollContainerRef.current) {
+            scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+        }
+    }, [messages]);
 
     const handleSendMessage = async () => {
         setLoading(true);
@@ -131,11 +150,20 @@ export default function CongDong() {
         const filteredData = emoji.filter((item) => item.unicodeName.includes(e.target.value));
         setEmojiData(filteredData);
     };
-
     return (
         <div className="text-third flex gap-5 flex-wrap px-3 md:px-0">
             <div className="my-5 w-full md:w-[700px] p-3 md:p-5  border border-primary  rounded-md">
-                <div className="h-[400px] overflow-y-scroll flex flex-col pr-3">
+                <div className="h-[400px] overflow-y-scroll flex flex-col pr-3 scroll-smooth" ref={scrollContainerRef}>
+                    {loading && (
+                        <div className="h-[300px] flex items-center justify-center">
+                            <Spin indicator={<LoadingOutlined spin />} size="default" />
+                        </div>
+                    )}
+                    {!loading && hasMore && (
+                        <button onClick={loadMoreMessages} className="mb-5">
+                            Load More Messages
+                        </button>
+                    )}
                     {messages &&
                         messages?.map((msg, index) => {
                             const isSameUser = index > 0 && messages[index - 1].userId._id === msg?.userId._id;
@@ -178,12 +206,12 @@ export default function CongDong() {
                                                             {msg?.userId.displayName} đã trả lời bạn
                                                         </p>
                                                     )}
-                                                    <div className={`${isCurrentUser ? "w-full text-end" : ""}`}>
+                                                    <Link href={`#${msg?.replyTo._id}`} className={`block ${isCurrentUser ? "w-full text-end" : ""}`}>
                                                         <p className={` inline-block bg-gray-400 rounded-full px-3 py-2 mb-[-10px]`}>{msg?.replyTo.message}</p>
-                                                    </div>
+                                                    </Link>
                                                 </div>
                                             )}
-                                            <div className={` ${isCurrentUser ? "w-full text-end" : ""} `}>
+                                            <div className={` ${isCurrentUser ? "w-full text-end" : ""} `} id={msg?._id}>
                                                 <p className={` ${isCurrentUser ? " bg-primary text-white" : "bg-gray-200 "} rounded-full px-3 py-2 inline-block`}>{msg?.message}</p>
                                             </div>
                                             {msg?.image && <Images src={msg?.image || "/meme.jpg"} alt="" width={200} height="auto" className="object-cover rounded-lg mt-2" />}

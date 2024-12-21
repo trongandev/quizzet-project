@@ -15,6 +15,7 @@ module.exports = {
     eslint: {
         ignoreDuringBuilds: true,
     },
+    reactStrictMode: false,
     distDir: "build",
     env: {
         API_ENDPOINT: process.env.API_ENDPOINT,
