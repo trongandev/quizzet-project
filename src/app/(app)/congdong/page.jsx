@@ -3,9 +3,9 @@ import { useSocket } from "@/context/socketContext";
 import { useUser } from "@/context/userContext";
 import React, { useState, useEffect, useRef } from "react";
 import Cookies from "js-cookie";
-import { GET_API } from "@/lib/fetchAPI";
+import { GET_API, POST_API } from "@/lib/fetchAPI";
 import Image from "next/image";
-import { Image as Images, Spin, Tooltip } from "antd";
+import { Image as Images, message, Spin, Tooltip } from "antd";
 
 import Link from "next/link";
 import { GrFormClose } from "react-icons/gr";
@@ -16,6 +16,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { FaRegImage } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
+import { TbSendOff } from "react-icons/tb";
 export default function CongDong() {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
@@ -150,8 +151,32 @@ export default function CongDong() {
         const filteredData = emoji.filter((item) => item.unicodeName.includes(e.target.value));
         setEmojiData(filteredData);
     };
+    const [messageApi, contextHolder] = message.useMessage();
+
+    const handleUnsend = async (messageId) => {
+        setLoading(true);
+        const req = await POST_API(`/chatcommu/unsend`, { messageId, userId: user._id }, "POST", token);
+        const res = await req.json();
+        if (res.ok) {
+            setMessages((prevMessages) => prevMessages.map((msg) => (msg._id === messageId ? { ...msg, unsend: true } : msg)));
+            messageApi.open({
+                type: "success",
+                content: res.message,
+            });
+        } else {
+            messageApi.open({
+                type: "error",
+                content: res.message,
+            });
+        }
+        setLoading(false);
+    };
+
+    console.log(messages);
     return (
         <div className="text-third flex gap-5 flex-wrap px-3 md:px-0">
+            {contextHolder}
+
             <div className="my-5 w-full md:w-[700px] p-3 md:p-5  border border-primary  rounded-md">
                 <div className="h-[400px] overflow-y-scroll flex flex-col pr-3 scroll-smooth" ref={scrollContainerRef}>
                     {loading && (
@@ -212,20 +237,33 @@ export default function CongDong() {
                                                 </div>
                                             )}
                                             <div className={` ${isCurrentUser ? "w-full text-end" : ""} `} id={msg?._id}>
-                                                <p className={` ${isCurrentUser ? " bg-primary text-white" : "bg-gray-200 "} rounded-full px-3 py-2 inline-block`}>{msg?.message}</p>
+                                                <p
+                                                    className={` ${isCurrentUser ? " bg-primary text-white" : "bg-gray-200 "} ${
+                                                        msg.unsend ? "!bg-white border border-primary !text-primary text-[12px]" : ""
+                                                    } rounded-full px-3 py-2 inline-block`}>
+                                                    {msg.unsend ? "Tin nhắn đã bị gỡ" : msg?.message}
+                                                </p>
                                             </div>
                                             {msg?.image && <Images src={msg?.image || "/meme.jpg"} alt="" width={200} height="auto" className="object-cover rounded-lg mt-2" />}
                                         </div>
-                                        {!isCurrentUser && (
-                                            <Tooltip placement="top" title="Trả lời">
-                                                <label
-                                                    htmlFor="message"
-                                                    className="hidden group-hover:block h-full text-white ml-3 cursor-pointer bg-gray-400 p-2 rounded-full"
-                                                    onClick={() => setReplyingTo(msg)}>
-                                                    <MdOutlineReply />
-                                                </label>
-                                            </Tooltip>
-                                        )}
+                                        <div className="hidden group-hover:block">
+                                            <div className="flex">
+                                                {!isCurrentUser && !msg.unsend && (
+                                                    <Tooltip placement="top" title="Trả lời">
+                                                        <label htmlFor="message" className=" h-full text-white ml-3 cursor-pointer bg-gray-400 p-2 rounded-full" onClick={() => setReplyingTo(msg)}>
+                                                            <MdOutlineReply />
+                                                        </label>
+                                                    </Tooltip>
+                                                )}
+                                                {isCurrentUser && !msg.unsend && (
+                                                    <Tooltip placement="top" title="Thu hồi">
+                                                        <div className=" h-full text-white ml-3 cursor-pointer bg-gray-400 p-2 rounded-full" onClick={() => handleUnsend(msg._id)}>
+                                                            {loading ? <Spin indicator={<LoadingOutlined spin />} size="default" /> : <TbSendOff />}
+                                                        </div>
+                                                    </Tooltip>
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             );

@@ -18,8 +18,8 @@ export default function CHome({ quizData, toolData }) {
                     <div className="">
                         <p className="">
                             Quizzet là một cộng đồng chia sẻ tài liệu cho sinh viên Đại học Công nghệ Đồng Nai
-                            <a href="/BAOCAOTHUE.zip" download>
-                                thuế
+                            <a href="/GIAOTRINH.zip" download>
+                                triết
                             </a>
                         </p>
                         <p>
