@@ -204,7 +204,6 @@ export default function CongDong() {
     const handleCancel = () => {
         setIsModalOpen(null);
     };
-    console.log(messages);
     return (
         <div className="text-third flex gap-5 flex-wrap px-3 md:px-0">
             {contextHolder}
