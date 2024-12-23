@@ -5,7 +5,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Cookies from "js-cookie";
 import { GET_API, POST_API } from "@/lib/fetchAPI";
 import Image from "next/image";
-import { Image as Images, message, Spin, Tooltip } from "antd";
+import { Dropdown, Image as Images, message, Modal, Spin, Tooltip } from "antd";
 
 import Link from "next/link";
 import { GrFormClose } from "react-icons/gr";
@@ -34,7 +34,9 @@ export default function CongDong() {
     const [searchEmoji, setSearchEmoji] = useState("");
     const [loading, setLoading] = useState(false);
     const [replyingTo, setReplyingTo] = useState(null);
+    const [reactIcon, setReactIcon] = useState(null);
     const scrollContainerRef = useRef(null);
+    const [messageApi, contextHolder] = message.useMessage();
 
     useEffect(() => {
         const fetchAPI = async () => {
@@ -42,7 +44,7 @@ export default function CongDong() {
             if (req) {
                 setMessages(req.messages);
                 setHasMore(req.hasMore);
-                setSkip((prevSkip) => prevSkip + 50);
+                // setSkip((prevSkip) => prevSkip + 50);
             }
 
             const reqEmoji = await fetch("https://emoji-api.com/emojis?access_key=bf409e3ed3d59cc01d12b7f1a9512896fe36f4f1");
@@ -109,7 +111,6 @@ export default function CongDong() {
             });
             imageUrl = response.data.data;
         }
-
         if (newMessage.trim() || image) {
             const messageData = { userId: user, message: newMessage, image: imageUrl, token, replyTo: replyingTo };
             socket.emit("sendMessageCommu", messageData);
@@ -151,7 +152,6 @@ export default function CongDong() {
         const filteredData = emoji.filter((item) => item.unicodeName.includes(e.target.value));
         setEmojiData(filteredData);
     };
-    const [messageApi, contextHolder] = message.useMessage();
 
     const handleUnsend = async (messageId) => {
         setLoading(true);
@@ -172,6 +172,38 @@ export default function CongDong() {
         setLoading(false);
     };
 
+    const handleReactIcon = async (messageId, emoji) => {
+        console.log(messageId, emoji);
+        const req = await POST_API(`/chatcommu/react`, { messageId, userId: user._id, emoji }, "POST", token);
+        const res = await req.json();
+        if (res.ok) {
+            setMessages((prevMessages) => prevMessages.map((msg) => (msg._id === messageId ? { ...msg, reactions: res.reactions } : msg)));
+        } else {
+            messageApi.open({
+                type: "error",
+                content: res.message,
+            });
+        }
+    };
+
+    const reactIconList = [
+        "https://static.xx.fbcdn.net/images/emoji.php/v9/tb6/1/32/1f44d.png",
+        "https://static.xx.fbcdn.net/images/emoji.php/v9/t72/1/32/2764.png",
+        "https://static.xx.fbcdn.net/images/emoji.php/v9/t8e/1/32/1f606.png",
+        "https://static.xx.fbcdn.net/images/emoji.php/v9/t7b/1/32/1f62e.png",
+        "https://static.xx.fbcdn.net/images/emoji.php/v9/tc8/1/32/1f622.png",
+        "https://static.xx.fbcdn.net/images/emoji.php/v9/t47/1/32/1f621.png",
+    ];
+
+    const [isModalOpen, setIsModalOpen] = useState(null);
+
+    const showModal = (messageId) => {
+        setIsModalOpen(messageId);
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(null);
+    };
     console.log(messages);
     return (
         <div className="text-third flex gap-5 flex-wrap px-3 md:px-0">
@@ -191,8 +223,8 @@ export default function CongDong() {
                     )}
                     {messages &&
                         messages?.map((msg, index) => {
-                            const isSameUser = index > 0 && messages[index - 1].userId._id === msg?.userId._id;
-                            const isCurrentUser = msg?.userId._id === user?._id;
+                            const isSameUser = index > 0 && messages[index - 1]?.userId?._id === msg?.userId?._id;
+                            const isCurrentUser = msg?.userId?._id === user?._id;
                             const isLastMessage = index === messages?.length - 1;
 
                             return (
@@ -204,7 +236,7 @@ export default function CongDong() {
                                     <div className={`flex items-start ${isCurrentUser ? "justify-end" : "justify-start"} mb-[4px] group min-h-[40px] items-center`}>
                                         {/* Avatar của người khác */}
                                         {!isCurrentUser && !isSameUser && (
-                                            <div className="w-[40px] h-[40px] relative mr-[-40px]">
+                                            <Link href={`/profile/${msg?.userId._id}`} className="w-[40px] h-[40px] relative mr-[-40px]">
                                                 <Image
                                                     src={msg?.userId.profilePicture || "/meme.jpg"}
                                                     alt=""
@@ -213,55 +245,132 @@ export default function CongDong() {
                                                     fill
                                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                 />
-                                            </div>
+                                            </Link>
                                         )}
 
                                         {/* Nội dung tin nhắn */}
-                                        <div className={`max-w-[70%] ml-[45px]`}>
-                                            {msg?.replyTo && (
-                                                <div className="text-[12px]">
-                                                    {isCurrentUser ? (
-                                                        <p className="flex items-center gap-1">
-                                                            <MdOutlineReply />
-                                                            Bạn đã trả lời: {msg?.replyTo.userId.displayName}
-                                                        </p>
-                                                    ) : (
-                                                        <p className="flex items-center gap-1">
-                                                            <MdOutlineReply />
-                                                            {msg?.userId.displayName} đã trả lời bạn
-                                                        </p>
-                                                    )}
-                                                    <Link href={`#${msg?.replyTo._id}`} className={`block ${isCurrentUser ? "w-full text-end" : ""}`}>
-                                                        <p className={` inline-block bg-gray-400 rounded-full px-3 py-2 mb-[-10px]`}>{msg?.replyTo.message}</p>
-                                                    </Link>
-                                                </div>
-                                            )}
-                                            <div className={` ${isCurrentUser ? "w-full text-end" : ""} `} id={msg?._id}>
-                                                <p
-                                                    className={` ${isCurrentUser ? " bg-primary text-white" : "bg-gray-200 "} ${
-                                                        msg.unsend ? "!bg-white border border-primary !text-primary text-[12px]" : ""
-                                                    } rounded-full px-3 py-2 inline-block`}>
-                                                    {msg.unsend ? "Tin nhắn đã bị gỡ" : msg?.message}
-                                                </p>
-                                            </div>
-                                            {msg?.image && <Images src={msg?.image || "/meme.jpg"} alt="" width={200} height="auto" className="object-cover rounded-lg mt-2" />}
-                                        </div>
-                                        <div className="hidden group-hover:block">
-                                            <div className="flex">
-                                                {!isCurrentUser && !msg.unsend && (
-                                                    <Tooltip placement="top" title="Trả lời">
-                                                        <label htmlFor="message" className=" h-full text-white ml-3 cursor-pointer bg-gray-400 p-2 rounded-full" onClick={() => setReplyingTo(msg)}>
-                                                            <MdOutlineReply />
-                                                        </label>
-                                                    </Tooltip>
+                                        <div className={`flex items-center w-full gap-3 ${isCurrentUser ? "flex-row-reverse" : ""}`}>
+                                            <div className={`max-w-[70%]  ${isCurrentUser ? "" : "ml-[45px]"}`}>
+                                                {msg?.replyTo && (
+                                                    <div className="text-[12px]">
+                                                        {isCurrentUser ? (
+                                                            <p className="flex items-center gap-1">
+                                                                <MdOutlineReply />
+                                                                Bạn đã trả lời {msg?.replyTo.userId._id == userId ? "chính bạn" : ":" + msg?.replyTo.userId.displayName}
+                                                            </p>
+                                                        ) : (
+                                                            <p className="flex items-center gap-1">
+                                                                <MdOutlineReply />
+                                                                {msg?.userId.displayName} đã trả lời bạn
+                                                            </p>
+                                                        )}
+                                                        <Link href={`#${msg?.replyTo._id}`} className={`block ${isCurrentUser ? "w-full text-end" : ""}`}>
+                                                            <p className={` inline-block bg-gray-400 rounded-full px-3 py-2 mb-[-10px]`}>
+                                                                {msg.replyTo.unsend ? "Tin nhắn đã bị gỡ" : msg?.replyTo.message}
+                                                            </p>
+                                                        </Link>
+                                                    </div>
                                                 )}
-                                                {isCurrentUser && !msg.unsend && (
-                                                    <Tooltip placement="top" title="Thu hồi">
-                                                        <div className=" h-full text-white ml-3 cursor-pointer bg-gray-400 p-2 rounded-full" onClick={() => handleUnsend(msg._id)}>
-                                                            {loading ? <Spin indicator={<LoadingOutlined spin />} size="default" /> : <TbSendOff />}
+                                                <div className={` ${isCurrentUser ? "w-full text-end" : ""} `} id={msg?._id}>
+                                                    <p
+                                                        className={` ${isCurrentUser ? " bg-primary text-white" : "bg-gray-200 "} ${
+                                                            msg.unsend ? "!bg-white border border-primary !text-primary text-[12px]" : ""
+                                                        } rounded-full px-3 py-2 inline-block`}>
+                                                        {msg.unsend ? "Tin nhắn đã bị gỡ" : msg?.message}
+                                                    </p>
+                                                    {!msg.unsend && msg?.reactions && msg?.reactions.length != 0 && (
+                                                        <div className={`mt-[-10px] relative z-2 h-[20px] flex ${isCurrentUser ? "justify-end mr-1" : "ml-1"}`} onClick={() => showModal(msg._id)}>
+                                                            {msg?.reactions?.map((react, index) => (
+                                                                <div className="flex bg-linear-item-2 rounded-full items-center px-[3px] cursor-pointer " key={index}>
+                                                                    <Image src={react.emoji} alt="" width={15} height={15} className="" />
+                                                                </div>
+                                                            ))}
                                                         </div>
-                                                    </Tooltip>
-                                                )}
+                                                    )}
+                                                    <Modal title="Tin nhắn cảm xúc" open={isModalOpen === msg?._id} footer={[]} onCancel={handleCancel}>
+                                                        {msg?.reactions && (
+                                                            <div className="">
+                                                                <div className="flex border rounded-full items-center h-[54px]">
+                                                                    <div className="flex-1 text-center text-lg text-primary">Tất cả: {msg?.reactions?.length}</div>
+                                                                    <div className="w-[1px] h-full bg-gray-100"></div>
+                                                                    <div className="flex-1 text-center flex gap-1 justify-center">
+                                                                        {msg?.reactions?.length > 0 && (
+                                                                            <div className="flex items-center gap-2">
+                                                                                {Object.entries(
+                                                                                    msg.reactions.reduce((acc, react) => {
+                                                                                        acc[react.emoji] = (acc[react.emoji] || 0) + 1;
+                                                                                        return acc;
+                                                                                    }, {})
+                                                                                ).map(([emoji, count]) => (
+                                                                                    <div className="flex items-center gap-1" key={emoji}>
+                                                                                        <Image src={emoji} alt="Reaction" width={20} height={20} />
+                                                                                        <span className="text-sm font-medium">{count}</span>
+                                                                                    </div>
+                                                                                ))}
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                                <div className="mt-3">
+                                                                    {msg?.reactions?.map((react, index) => (
+                                                                        <Link
+                                                                            href={`/profile/${react?.userId._id}`}
+                                                                            className="flex items-center justify-between hover:bg-gray-200 cursor-pointer px-3 py-2 rounded-md"
+                                                                            key={index}>
+                                                                            <div className="flex gap-3 items-center">
+                                                                                <div className="w-[40px] h-[40px] relative">
+                                                                                    <Image src={react.userId.profilePicture} alt="Reaction" fill className="rounded-full object-cover absolute" />
+                                                                                </div>
+                                                                                <div className="">
+                                                                                    <p className="text-md font-medium">{react.userId.displayName}</p>
+                                                                                    <span className="text-sm">Bấm vào để xem profile</span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <Image src={react.emoji} alt="Reaction" width={20} height={20} />
+                                                                        </Link>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </Modal>
+                                                </div>
+                                                {!msg.unsend && msg?.image && <Images src={msg?.image || "/meme.jpg"} alt="" width={200} height="auto" className="object-cover rounded-lg mt-2" />}
+                                            </div>
+                                            <div className={`hidden group-hover:block `}>
+                                                <div className={`flex gap-2 `}>
+                                                    {!msg.unsend && (
+                                                        <Tooltip placement="top" title="Trả lời">
+                                                            <label htmlFor="message" className=" h-full text-white cursor-pointer bg-gray-400 p-2 rounded-full" onClick={() => setReplyingTo(msg)}>
+                                                                <MdOutlineReply />
+                                                            </label>
+                                                        </Tooltip>
+                                                    )}
+                                                    {isCurrentUser && !msg.unsend && (
+                                                        <Tooltip placement="top" title="Thu hồi">
+                                                            <div className=" h-full text-white cursor-pointer bg-gray-400 p-2 rounded-full" onClick={() => handleUnsend(msg._id)}>
+                                                                {loading ? <Spin indicator={<LoadingOutlined spin />} size="default" /> : <TbSendOff />}
+                                                            </div>
+                                                        </Tooltip>
+                                                    )}
+                                                    {!msg.unsend && (
+                                                        <Dropdown
+                                                            overlay={
+                                                                <div className="flex items-center bg-linear-item-2 rounded-full h-[40px]">
+                                                                    {reactIconList.map((icon, index) => (
+                                                                        <div className=" hover:bg-gray-400 rounded-full cursor-pointer w-[40px] h-[40px] flex items-center justify-center" key={index}>
+                                                                            <Image src={icon} width={25} height={25} alt="" onClick={() => handleReactIcon(msg._id, icon)} />
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            }
+                                                            trigger={["click"]}
+                                                            placement="top">
+                                                            <div className=" h-full text-white cursor-pointer bg-gray-400 p-2 rounded-full">
+                                                                <MdOutlineInsertEmoticon />
+                                                            </div>
+                                                        </Dropdown>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -282,7 +391,7 @@ export default function CongDong() {
                                     <div className="absolute top-2 right-3 cursor-pointer hover:text-red-500" onClick={() => setReplyingTo(null)}>
                                         <IoMdClose />
                                     </div>
-                                    <h1 className="text-secondary font-bold">Bạn đang trả lời: {replyingTo?.userId.displayName}</h1>
+                                    <h1 className="text-secondary font-bold">Bạn đang trả lời{replyingTo?.userId._id == userId ? " chính bạn" : ": " + replyingTo?.userId.displayName}</h1>
                                     <p>{replyingTo?.message}</p>
                                 </label>
                             )}
