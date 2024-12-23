@@ -12,29 +12,16 @@ import { BiCheck } from "react-icons/bi";
 import { BsQuestion } from "react-icons/bs";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-export default function CQuizDetail({ QuizData }) {
+export default function CQuizDetail({ QuizData, QuestData }) {
     const quiz = QuizData;
     const [selectedAnswers, setSelectedAnswers] = useState({});
     const [loading, setLoading] = useState(false);
     const router = useRouter();
     const token = Cookies.get("token");
     const [messageApi, contextHolder] = message.useMessage();
+    console.log(QuestData);
     useEffect(() => {
-        if (!QuizData) {
-            Swal.fire({
-                title: "Không tìm thấy bài quiz",
-                text: "Bài quiz bạn tìm không tồn tại hoặc đã bị xóa",
-                icon: "error",
-                didClose: () => {
-                    router.push("/");
-                },
-            });
-        } else {
-            setLoading(true);
-        }
-    }, []);
-
-    useEffect(() => {
+        setLoading(true);
         if (token === undefined) {
             messageApi.open({
                 type: "error",
@@ -165,10 +152,15 @@ export default function CQuizDetail({ QuizData }) {
             {loading ? (
                 <div className="text-third px-2 md:px-0">
                     <div className="">
-                        <h1 className="text-xl font-bold text-primary">{QuizData?.title}</h1>
-                        <p className="">{QuizData?.content}</p>
-                        <p className="">Tác giả: {QuizData?.uid.displayName}</p>
-                        <p className="">Ngày đăng: {handleCompareDate(QuizData?.date)}</p>
+                        {QuizData && (
+                            <div className="">
+                                <h1 className="text-xl font-bold text-primary">{QuizData?.title}</h1>
+                                <p className="">{QuizData?.content}</p>
+                                <p className="">Tác giả: {QuizData?.uid.displayName}</p>
+                                <p className="">Ngày đăng: {handleCompareDate(QuizData?.date)}</p>
+                            </div>
+                        )}
+
                         <div className="flex gap-3 items-center">
                             <p>Bật check đáp án</p>
                             <Switch checkedChildren="Bật" unCheckedChildren="Tắt" defaultChecked={checkAns} onChange={() => handleChangeCheckAns(!checkAns)} />
@@ -177,7 +169,7 @@ export default function CQuizDetail({ QuizData }) {
                     <form action="" onSubmit={handleQuiz} className="relative flex flex-col  mt-1">
                         <div className="w-full md:w-2/3">
                             <div className=" h-[500px] overflow-y-auto scroll-smooth">
-                                {QuizData.questions.data_quiz?.map((item, index) => (
+                                {QuestData?.map((item, index) => (
                                     <div className="bg-linear-item-2 p-5 mt-2 rounded-xl" key={index} id={item.id}>
                                         <h1 className="text-lg font-bold text-primary">
                                             Câu {index + 1}: {item.question}{" "}
@@ -220,7 +212,7 @@ export default function CQuizDetail({ QuizData }) {
                                 ))}
                             </div>
                             <div className="mt-5 md:text-right">
-                                {QuizData.status && token != undefined ? (
+                                {token != undefined ? (
                                     <button type="submit" className="">
                                         Nộp bài
                                     </button>
@@ -235,7 +227,7 @@ export default function CQuizDetail({ QuizData }) {
                                 <div className="w-[240px] bg-gray-200 p-5">
                                     <h1 className="text-lg font-bold text-primary text-center mb-3">Danh sách câu hỏi</h1>
                                     <div className="grid grid-cols-5 gap-2 h-[300px] overflow-y-scroll">
-                                        {QuizData.questions.data_quiz?.map((item, index) => (
+                                        {QuestData?.map((item, index) => (
                                             <a
                                                 href={`#${item.id}`}
                                                 key={index}
@@ -257,7 +249,7 @@ export default function CQuizDetail({ QuizData }) {
                             <Modal title="Danh sách câu hỏi" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
                                 <div className="">
                                     <div className="grid grid-cols-5 gap-3">
-                                        {QuizData.questions?.data_quiz.map((item, index) => (
+                                        {QuestData.map((item, index) => (
                                             <a
                                                 href={`#${item.id}`}
                                                 key={index}

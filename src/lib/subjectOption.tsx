@@ -8,6 +8,22 @@ export const subjectOption = [
         label: "Đại cương",
     },
     {
+        value: "lsdang",
+        label: "Lịch sử đảng",
+    },
+    {
+        value: "tthcm",
+        label: "Tư tưởng HCM",
+    },
+    {
+        value: "triet",
+        label: "Triết học",
+    },
+    {
+        value: "daicuong",
+        label: "Đại cương",
+    },
+    {
         value: "taichinh",
         label: "Tài chính - ngân hàng",
     },

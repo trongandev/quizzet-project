@@ -9,7 +9,7 @@ import { Dropdown, Image as Images, message, Modal, Spin, Tooltip } from "antd";
 
 import Link from "next/link";
 import { GrFormClose } from "react-icons/gr";
-import { MdOutlineInsertEmoticon, MdOutlineReply } from "react-icons/md";
+import { MdEdit, MdOutlineInsertEmoticon, MdOutlineReply } from "react-icons/md";
 import { IoSend } from "react-icons/io5";
 import { Popover } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -17,6 +17,7 @@ import axios from "axios";
 import { FaRegImage } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 import { TbSendOff } from "react-icons/tb";
+import handleCompareDate from "@/lib/CompareDate";
 export default function CongDong() {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
@@ -34,7 +35,7 @@ export default function CongDong() {
     const [searchEmoji, setSearchEmoji] = useState("");
     const [loading, setLoading] = useState(false);
     const [replyingTo, setReplyingTo] = useState(null);
-    const [reactIcon, setReactIcon] = useState(null);
+    const [loadingIcon, setLoadingIcon] = useState(false);
     const scrollContainerRef = useRef(null);
     const [messageApi, contextHolder] = message.useMessage();
 
@@ -44,7 +45,7 @@ export default function CongDong() {
             if (req) {
                 setMessages(req.messages);
                 setHasMore(req.hasMore);
-                // setSkip((prevSkip) => prevSkip + 50);
+                setSkip((prevSkip) => prevSkip + 50);
             }
 
             const reqEmoji = await fetch("https://emoji-api.com/emojis?access_key=bf409e3ed3d59cc01d12b7f1a9512896fe36f4f1");
@@ -83,7 +84,10 @@ export default function CongDong() {
             setMessages((prevMessages) => [...newMessages.messages, ...prevMessages]);
             setHasMore(newMessages.length > 0);
         } catch (error) {
-            console.error("Error loading messages:", error);
+            messageApi.open({
+                type: "error",
+                content: error,
+            });
         } finally {
             setLoading(false);
         }
@@ -102,14 +106,14 @@ export default function CongDong() {
 
         if (image) {
             const formData = new FormData();
-            formData.append("file", image);
+            formData.append("image", image);
             const response = await axios.post(process.env.API_ENDPOINT + "/upload", formData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                     "Content-Type": "multipart/form-data", // Định dạng bắt buộc
                 },
             });
-            imageUrl = response.data.data;
+            imageUrl = response.data.originalUrl;
         }
         if (newMessage.trim() || image) {
             const messageData = { userId: user, message: newMessage, image: imageUrl, token, replyTo: replyingTo };
@@ -173,6 +177,7 @@ export default function CongDong() {
     };
 
     const handleReactIcon = async (messageId, emoji) => {
+        setLoadingIcon(true);
         const req = await POST_API(`/chatcommu/react`, { messageId, userId: user._id, emoji }, "POST", token);
         const res = await req.json();
         if (res.ok) {
@@ -183,6 +188,7 @@ export default function CongDong() {
                 content: res.message,
             });
         }
+        setLoadingIcon(false);
     };
 
     const reactIconList = [
@@ -203,17 +209,46 @@ export default function CongDong() {
     const handleCancel = () => {
         setIsModalOpen(null);
     };
+
+    const [isModalOpenEditMess, setIsModalOpenEditMess] = useState(null);
+    const [editMess, setEditMess] = useState({});
+
+    const showModalEditMess = (messageId) => {
+        setIsModalOpenEditMess(messageId);
+    };
+
+    const handleOkEditMess = async () => {
+        setLoading(true);
+        const req = await POST_API(`/chatcommu/editmess`, { messageId: editMess._id, userId: user._id, newMessage: editMess.message }, "PUT", token);
+        const res = await req.json();
+        if (res.ok) {
+            setMessages((prevMessages) => prevMessages.map((msg) => (msg._id === editMess._id ? { ...msg, message: editMess.message, isEdit: true } : msg)));
+        } else {
+            messageApi.open({
+                type: "error",
+                content: res.message,
+            });
+        }
+        handleCancelEditMess();
+        setLoading(false);
+        setEditMess({});
+    };
+
+    const handleCancelEditMess = () => {
+        setIsModalOpenEditMess(null);
+    };
+
+    const handleEditMess = async (msg) => {
+        console.log(msg);
+        setEditMess(msg);
+        showModalEditMess(msg._id);
+    };
     return (
         <div className="text-third flex gap-5 flex-wrap px-3 md:px-0">
             {contextHolder}
 
             <div className="my-5 w-full md:w-[700px] p-3 md:p-5  border border-primary  rounded-md">
                 <div className="h-[400px] overflow-y-scroll flex flex-col pr-3 scroll-smooth" ref={scrollContainerRef}>
-                    {loading && (
-                        <div className="h-[300px] flex items-center justify-center">
-                            <Spin indicator={<LoadingOutlined spin />} size="default" />
-                        </div>
-                    )}
                     {!loading && hasMore && (
                         <button onClick={loadMoreMessages} className="mb-5">
                             Load More Messages
@@ -252,30 +287,51 @@ export default function CongDong() {
                                                 {msg?.replyTo && (
                                                     <div className="text-[12px]">
                                                         {isCurrentUser ? (
-                                                            <p className="flex items-center gap-1">
-                                                                <MdOutlineReply />
-                                                                Bạn đã trả lời {msg?.replyTo?.userId?._id == userId ? "chính bạn" : ":" + msg?.replyTo?.userId?.displayName}
-                                                            </p>
+                                                            <div className="">
+                                                                <p className="flex items-center gap-1">
+                                                                    <MdOutlineReply />
+                                                                    Bạn đã trả lời {msg?.replyTo?.userId?._id == userId ? "chính bạn" : ":" + msg?.replyTo?.userId?.displayName}
+                                                                </p>
+
+                                                                {msg?.replyTo?.image && (
+                                                                    <Link href={`#${msg?.replyTo._id}`} className={`mb-1 flex justify-end`}>
+                                                                        <Image alt="" src={msg?.replyTo.image} width={100} height={100} className="brightness-50 rounded-lg " />
+                                                                    </Link>
+                                                                )}
+                                                            </div>
                                                         ) : (
-                                                            <p className="flex items-center gap-1">
-                                                                <MdOutlineReply />
-                                                                {msg?.userId?.displayName} đã trả lời bạn
-                                                            </p>
+                                                            <div className="">
+                                                                <p className="flex items-center gap-1">
+                                                                    <MdOutlineReply />
+                                                                    {msg?.userId?.displayName} đã trả lời bạn
+                                                                </p>
+                                                                {msg?.replyTo?.image && (
+                                                                    <Link href={`#${msg?.replyTo._id}`} className={`mb-1 flex justify-start`}>
+                                                                        <Image alt="" src={msg?.replyTo.image} width={100} height={100} className="brightness-50 rounded-lg " />
+                                                                    </Link>
+                                                                )}
+                                                            </div>
                                                         )}
-                                                        <Link href={`#${msg?.replyTo._id}`} className={`block ${isCurrentUser ? "w-full text-end" : ""}`}>
-                                                            <p className={` inline-block bg-gray-400 rounded-full px-3 py-2 mb-[-10px]`}>
-                                                                {msg?.replyTo?.unsend ? "Tin nhắn đã bị gỡ" : msg?.replyTo?.message}
-                                                            </p>
-                                                        </Link>
+                                                        {msg?.replyTo?.message !== "" && (
+                                                            <Link href={`#${msg?.replyTo._id}`} className={`block ${isCurrentUser ? "w-full text-end" : ""}`}>
+                                                                <p className={` inline-block bg-gray-400 rounded-full px-3 py-2 mb-[-10px]`}>
+                                                                    {msg?.replyTo?.unsend ? "Tin nhắn đã bị gỡ" : msg?.replyTo?.message}
+                                                                </p>
+                                                            </Link>
+                                                        )}
                                                     </div>
                                                 )}
+                                                {msg?.isEdit && <span className={`text-xs text-gray-600 ${isCurrentUser ? "text-end mr-5" : "text-start ml-5"} block `}>Đã chỉnh sửa</span>}
                                                 <div className={` ${isCurrentUser ? "w-full text-end" : ""} `} id={msg?._id}>
-                                                    <p
-                                                        className={` ${isCurrentUser ? " bg-primary text-white" : "bg-gray-200 "} ${
-                                                            msg?.unsend ? "!bg-white border border-primary !text-primary text-[12px]" : ""
-                                                        } rounded-full px-3 py-2 inline-block`}>
-                                                        {msg?.unsend ? "Tin nhắn đã bị gỡ" : msg?.message}
-                                                    </p>
+                                                    {msg?.message && (
+                                                        <p
+                                                            className={` ${isCurrentUser ? " bg-primary text-white" : "bg-gray-200 "} ${
+                                                                msg?.unsend ? "!bg-white border border-primary !text-primary text-[12px]" : ""
+                                                            } rounded-full px-3 py-2 inline-block`}>
+                                                            {msg?.unsend ? "Tin nhắn đã bị gỡ" : msg?.message}
+                                                        </p>
+                                                    )}
+
                                                     {!msg?.unsend && msg?.reactions && msg?.reactions?.length != 0 && (
                                                         <div className={`mt-[-10px] relative z-2 h-[20px] flex ${isCurrentUser ? "justify-end mr-1" : "ml-1"}`} onClick={() => showModal(msg._id)}>
                                                             {msg?.reactions?.map((react, index) => (
@@ -338,14 +394,17 @@ export default function CongDong() {
                                                 <div className={`flex gap-2 `}>
                                                     {!msg?.unsend && (
                                                         <Tooltip placement="top" title="Trả lời">
-                                                            <label htmlFor="message" className=" h-full text-white cursor-pointer bg-gray-400 p-2 rounded-full" onClick={() => setReplyingTo(msg)}>
+                                                            <label
+                                                                htmlFor="message"
+                                                                className=" h-full text-white cursor-pointer bg-gray-400 p-2 rounded-full hover:bg-secondary"
+                                                                onClick={() => setReplyingTo(msg)}>
                                                                 <MdOutlineReply />
                                                             </label>
                                                         </Tooltip>
                                                     )}
                                                     {isCurrentUser && !msg?.unsend && (
                                                         <Tooltip placement="top" title="Thu hồi">
-                                                            <div className=" h-full text-white cursor-pointer bg-gray-400 p-2 rounded-full" onClick={() => handleUnsend(msg?._id)}>
+                                                            <div className=" h-full text-white cursor-pointer bg-gray-400 p-2 rounded-full hover:bg-secondary" onClick={() => handleUnsend(msg?._id)}>
                                                                 {loading ? <Spin indicator={<LoadingOutlined spin />} size="default" /> : <TbSendOff />}
                                                             </div>
                                                         </Tooltip>
@@ -353,23 +412,48 @@ export default function CongDong() {
                                                     {!msg?.unsend && (
                                                         <Dropdown
                                                             overlay={
-                                                                <div className="flex items-center bg-linear-item-2 rounded-full h-[40px]">
+                                                                <div className="flex items-center bg-linear-item-2 rounded-full h-[40px] ">
                                                                     {reactIconList.map((icon, index) => (
-                                                                        <div className=" hover:bg-gray-400 rounded-full cursor-pointer w-[40px] h-[40px] flex items-center justify-center" key={index}>
-                                                                            <Image src={icon} width={25} height={25} alt="" onClick={() => handleReactIcon(msg._id, icon)} />
+                                                                        <div className=" hover:bg-gray-400 rounded-full cursor-pointer w-[40px] h-[40px] flex items-center justify-center " key={index}>
+                                                                            {loadingIcon ? (
+                                                                                <Spin indicator={<LoadingOutlined spin />} size="default" />
+                                                                            ) : (
+                                                                                <Image src={icon} width={25} height={25} alt="" onClick={() => handleReactIcon(msg._id, icon)} />
+                                                                            )}
                                                                         </div>
                                                                     ))}
                                                                 </div>
                                                             }
                                                             trigger={["click"]}
                                                             placement="top">
-                                                            <div className=" h-full text-white cursor-pointer bg-gray-400 p-2 rounded-full">
+                                                            <div className=" h-full text-white cursor-pointer bg-gray-400 p-2 rounded-full hover:bg-secondary">
                                                                 <MdOutlineInsertEmoticon />
                                                             </div>
                                                         </Dropdown>
                                                     )}
+                                                    {isCurrentUser && !msg?.unsend && (
+                                                        <Tooltip placement="top" title="Chỉnh sửa">
+                                                            <div className=" h-full text-white cursor-pointer bg-gray-400 p-2 rounded-full hover:bg-secondary" onClick={() => handleEditMess(msg)}>
+                                                                <MdEdit />
+                                                            </div>
+                                                        </Tooltip>
+                                                    )}
+                                                    <Modal
+                                                        title="Chỉnh sửa tin nhắn"
+                                                        open={isModalOpenEditMess === msg?._id}
+                                                        onOk={handleOkEditMess}
+                                                        onCancel={handleCancelEditMess}
+                                                        confirmLoading={loading}>
+                                                        <input
+                                                            type="text"
+                                                            placeholder="Nhập thông tin bạn muốn sửa"
+                                                            value={editMess?.message}
+                                                            onChange={(e) => setEditMess({ ...editMess, message: e.target.value })}
+                                                        />
+                                                    </Modal>
                                                 </div>
                                             </div>
+                                            {isSameUser && <p className="text-gray-500 text-xs ">{handleCompareDate(msg?.timestamp)}</p>}
                                         </div>
                                     </div>
                                 </div>
@@ -391,6 +475,7 @@ export default function CongDong() {
                                     </div>
                                     <h1 className="text-secondary font-bold">Bạn đang trả lời{replyingTo?.userId?._id == userId ? " chính bạn" : ": " + replyingTo?.userId.displayName}</h1>
                                     <p>{replyingTo?.message}</p>
+                                    {replyingTo?.image && <Image src={replyingTo?.image} alt="" width={120} height={100} className="object-cover rounded-lg mt-2" />}
                                 </label>
                             )}
                             <div className="flex gap-2">

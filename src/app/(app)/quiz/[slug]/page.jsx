@@ -22,5 +22,7 @@ export default async function Quiz({ params }) {
     const { slug } = params;
 
     const quiz = await getCachedQuiz(slug)();
-    return <CQuizDetail QuizData={quiz} />;
+    const question = quiz?.questions.data_quiz;
+    delete quiz?.questions;
+    return <CQuizDetail QuizData={quiz} QuestData={question} />;
 }
