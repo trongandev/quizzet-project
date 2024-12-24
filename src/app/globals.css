@@ -10,6 +10,10 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+pre {
+    font-family: "Maven Pro", sans-serif;
+}
+
 button {
     padding: 6px 18px;
     background-color: #2187d5;
@@ -126,4 +130,15 @@ mark {
 
 .bg-linear-item-2 {
     background: linear-gradient(120deg, rgba(33, 135, 213, 0.1966036414565826) 0%, rgba(3, 2, 24, 0.1966036414565826) 100%);
+}
+
+.preserve-3d {
+    transform-style: preserve-3d;
+    transition: transform 0.7s;
+}
+.rotate-y-180 {
+    transform: rotateY(180deg);
+}
+.backface-hidden {
+    backface-visibility: hidden;
 }
