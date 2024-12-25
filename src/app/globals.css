@@ -14,34 +14,52 @@ pre {
     font-family: "Maven Pro", sans-serif;
 }
 
-button {
-    padding: 6px 18px;
+button.btn {
+    padding: 6px 16px;
+    border-radius: 16px;
+    transition: all 0.1s;
+    cursor: pointer;
+    border: none;
+    color: white;
+}
+
+button.btn-primary {
     background-color: #2187d5;
     color: white;
+}
+
+button.btn-primary:hover {
+    background-color: #0e5a8a;
+}
+
+button.btn-second {
+    padding: 5px 15px;
     border-radius: 15px;
+    border: 1px solid #2187d5;
+    color: #2187d5;
 }
 
-button.btn-outline {
-    background-color: transparent;
-    color: #2187d5;
-    border: 1px solid #2187d5;
-    padding: 5px 17px;
-}
-
-button:hover {
-    background-color: transparent;
-    color: #2187d5;
-    border: 1px solid #2187d5;
-    padding: 5px 17px;
+button.btn-second:hover {
+    background-color: #2187d5;
+    color: white;
 }
 
 button.btn-small {
-    padding: 5px 12px;
+    padding: 2px 12px;
+    border-radius: 12px;
+    font-size: 10px;
+    color: white;
+    background-color: #2187d5;
 }
 
-button.btn-small:hover {
-    padding: 4px 11px;
+button.btn-small-outline {
+    padding: 1px 11px;
+    border-radius: 11px;
+    font-size: 10px;
+    color: #2187d5;
+    border: 1px solid #2187d5;
 }
+
 button:disabled,
 button[disabled] {
     background-color: #ccc;
@@ -56,10 +74,10 @@ button[disabled] {
 input,
 textarea,
 select {
-    padding: 6px 20px;
+    padding: 5px 15px;
     border: 1px solid #ccc;
     width: 100%;
-    border-radius: 10px;
+    border-radius: 5px;
 }
 
 input:focus-visible,

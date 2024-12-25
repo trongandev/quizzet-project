@@ -7,7 +7,6 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { POST_API } from "@/lib/fetchAPI";
 import handleCompareDate from "@/lib/CompareDate";
-import { useUser } from "@/context/userContext";
 import { BiCheck } from "react-icons/bi";
 import { BsQuestion } from "react-icons/bs";
 import { GoogleGenerativeAI } from "@google/generative-ai";
@@ -19,7 +18,8 @@ export default function CQuizDetail({ QuizData, QuestData }) {
     const router = useRouter();
     const token = Cookies.get("token");
     const [messageApi, contextHolder] = message.useMessage();
-    console.log(QuestData);
+    const [seconds, setSeconds] = useState(0);
+
     useEffect(() => {
         setLoading(true);
         if (token === undefined) {
@@ -30,25 +30,31 @@ export default function CQuizDetail({ QuizData, QuestData }) {
         }
     }, []);
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setSeconds((prevSeconds) => prevSeconds + 1);
+        }, 1000);
+        return () => clearInterval(interval);
+    }, []);
+
     const handleSelect = (questionId, answerIndex) => {
         setSelectedAnswers({
             ...selectedAnswers,
             [questionId]: answerIndex,
         });
     };
-    const { user } = useUser();
     function handleQuiz(e) {
         e.preventDefault();
-        if (Object.keys(selectedAnswers).length !== quiz.questions.data_quiz.length) {
-            Swal.fire({
-                icon: "error",
-                title: "Vui lòng chọn đáp án cho tất cả câu hỏi",
+        if (Object.keys(selectedAnswers).length !== QuestData.length) {
+            messageApi.open({
+                type: "warning",
+                content: "Vui lòng chọn đáp án cho tất cả câu hỏi",
             });
             return;
         }
 
         let score = 0;
-        quiz.questions.data_quiz.map((item) => {
+        QuestData.map((item) => {
             if (item.correct === selectedAnswers[item.id]) {
                 score++;
             }
@@ -56,15 +62,11 @@ export default function CQuizDetail({ QuizData, QuestData }) {
 
         const pushData = async () => {
             const historyData = {
-                uid: user._id,
-                id_quiz: quiz._id,
-                author: user.displayName || user.email,
-                title: quiz.title,
-                content: quiz.content,
-                image_quiz: quiz.img,
+                quiz_id: quiz?._id,
                 score: score,
+                time: seconds,
                 questions: [
-                    ...quiz.questions.data_quiz.map((item) => {
+                    ...QuestData.map((item) => {
                         var isTrue = item.correct === selectedAnswers[item.id];
 
                         return {
@@ -81,21 +83,19 @@ export default function CQuizDetail({ QuizData, QuestData }) {
             const req = await POST_API("/history", historyData, "POST", token);
             const data = await req.json();
             if (req.ok) {
-                Swal.fire({
-                    icon: "success",
-                    title: "Gửi bài thành công",
-                    didClose: () => {
-                        router.push("/dapan/" + data.id_history);
-                    },
+                messageApi.open({
+                    type: "success",
+                    content: data.message,
                 });
+                setTimeout(() => {
+                    router.push("/dapan/" + data.id_history);
+                }, 3000);
             } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Gửi bài không thành công",
-                    text: "Mã lỗi\n" + data.message,
+                messageApi.open({
+                    type: "error",
+                    content: data.message,
                 });
             }
-            await POST_API(`/quiz/${quiz._id}`, { noa: quiz.noa }, "PATCH", token);
         };
         pushData();
     }
@@ -180,29 +180,29 @@ export default function CQuizDetail({ QuizData, QuestData }) {
                                                     <BiCheck /> Check answer
                                                 </button>
                                             )}
-                                            <button className="text-[10px] btn-small flex items-center gap-1" onClick={(e) => handleExplaneAns(e, item)}>
+                                            <button className=" flex items-center gap-1 btn-small" onClick={(e) => handleExplaneAns(e, item)}>
                                                 <BsQuestion /> Giải thích
                                             </button>
                                         </div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                            {item.answers.map((answer, index) => (
-                                                <div key={index} className={` relative flex items-center ${selectedAnswers[item.id] === index ? " text-primary font-bold" : ""}`}>
+                                            {item.answers.map((answer, idx) => (
+                                                <div key={idx} className={` relative flex items-center ${selectedAnswers[item.id] === idx ? " text-primary font-bold" : ""}`}>
                                                     <input
                                                         type="radio"
                                                         name={item.id}
                                                         className="w-1 invisible"
-                                                        id={`${item.id}ans${index}`}
+                                                        id={`${index}ans${idx}`}
                                                         checked={selectedAnswers[item.id] === index}
-                                                        onChange={() => handleSelect(item.id, index)}
+                                                        onChange={() => handleSelect(item.id, idx)}
                                                     />
                                                     <label
-                                                        htmlFor={`${item.id}ans${index}`}
+                                                        htmlFor={`${index}ans${idx}`}
                                                         className={`absolute  h-full font-bold p-3 flex items-center justify-center ${
-                                                            selectedAnswers[item.id] === index ? "bg-primary text-white" : ""
+                                                            selectedAnswers[item.id] === idx ? "bg-primary text-white" : ""
                                                         }`}>
-                                                        {index === 0 ? "A" : index === 1 ? "B" : index === 2 ? "C" : "D"}
+                                                        {idx === 0 ? "A" : idx === 1 ? "B" : idx === 2 ? "C" : "D"}
                                                     </label>
-                                                    <label htmlFor={`${item.id}ans${index}`} className="block w-full ml-7 p-3">
+                                                    <label htmlFor={`${index}ans${idx}`} className="block w-full ml-7 p-3">
                                                         {answer}
                                                     </label>
                                                 </div>
@@ -211,9 +211,12 @@ export default function CQuizDetail({ QuizData, QuestData }) {
                                     </div>
                                 ))}
                             </div>
-                            <div className="mt-5 md:text-right">
+                            <div className="mt-5 flex items-center justify-between">
+                                <h1>
+                                    {Math.floor(seconds / 3600)}h:{Math.floor((seconds % 3600) / 60)}p:{seconds % 60}s
+                                </h1>
                                 {token != undefined ? (
-                                    <button type="submit" className="">
+                                    <button type="submit" className="btn btn-primary">
                                         Nộp bài
                                     </button>
                                 ) : (

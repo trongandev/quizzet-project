@@ -111,7 +111,7 @@ export default function LoginForm() {
                         {formik.touched.password && formik.errors.password ? <div className="text-red-500 mt-1 mb-3 mx-5 text-sm">{formik.errors.password}</div> : null}{" "}
                     </div>
                     <div className="mb-5">
-                        <button type="submit" className=" w-full flex gap-5 items-center justify-center" disabled={loading}>
+                        <button type="submit" className="btn btn-primary w-full flex gap-5 items-center justify-center" disabled={loading}>
                             {loading && <Spin className="text-white" indicator={<LoadingOutlined spin />} size="default" />}
                             Đăng nhập
                         </button>
@@ -137,8 +137,8 @@ export default function LoginForm() {
                     {/* onClick={() => googleLogin()} */}
                 </div>
                 <div className="mt-10 pt-3">
-                    <div className="flex border-2 border-primary rounded-full overflow-hidden h-[60px]">
-                        <button className="bg-white flex-1 flex justify-center py-3 hover:bg-gray-200 rounded-l-full  ">
+                    <div className="flex border border-primary rounded-full overflow-hidden h-[50px]">
+                        <button className="bg-white h-full flex-1 flex items-center justify-center hover:bg-gray-200 rounded-l-full  ">
                             <Image
                                 unoptimized
                                 alt=""
@@ -147,7 +147,7 @@ export default function LoginForm() {
                                 src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/480px-Facebook_Logo_%282019%29.png"></Image>
                         </button>
                         <div className="w-[1px] h-full bg-primary"></div>
-                        <button className="bg-white flex-1 flex justify-center py-3 hover:bg-gray-200 rounded-r-full" onClick={handleLoginGoogle}>
+                        <button className="bg-white flex-1 flex justify-center items-center hover:bg-gray-200 rounded-r-full" onClick={handleLoginGoogle}>
                             <Image
                                 unoptimized
                                 alt=""

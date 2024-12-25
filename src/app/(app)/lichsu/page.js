@@ -30,7 +30,7 @@ export default function History() {
             });
         }
     }, []);
-
+    console.log(historyData);
     return (
         <>
             {contextHolder}
@@ -42,18 +42,21 @@ export default function History() {
                         historyData.map((item) => (
                             <div key={item.id} className="bg-white border-[1px] shadow-md rounded-xl">
                                 <div className="p-3 ">
-                                    <h1 className="text-lg mb-3 text-primary font-bold h-[56px] line-clamp-2">{item.title}</h1>
+                                    <h1 className="text-lg mb-3 text-primary font-bold h-[56px] line-clamp-2">{item?.title || "Chưa có tiêu đề"}</h1>
                                     <p>
                                         Số câu đúng:{" "}
                                         <label className="text-primary font-bold">
-                                            {item.score}/{item.lenght}
+                                            {item.score}/{item?.questions?.data_history.length}
                                         </label>{" "}
                                     </p>
                                     <p className="text-gray-500 flex gap-1 items-center">
-                                        <IoIosTimer /> {handleCompareDate(item.date)}
+                                        <IoIosTimer /> {handleCompareDate(item?.date)}
                                     </p>
-                                    <Link href={`/dapan/${item._id}`} className="block text-right mt-3">
-                                        <button className="">Xem chi tiết</button>
+                                    <p className="text-gray-500">
+                                        Tổng thời gian làm: {Math.floor((item?.time % 3600) / 60)}p:{item?.time % 60}s
+                                    </p>
+                                    <Link href={`/dapan/${item?._id}`} className="block text-right mt-3">
+                                        <button className="btn btn-primary">Xem chi tiết</button>
                                     </Link>
                                 </div>
                             </div>

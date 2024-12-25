@@ -67,8 +67,8 @@ export default function FlashCard() {
                 <div className="flex-1 flex items-center justify-between">
                     <h1 className="text-2xl font-bold text-primary">Flashcard</h1>
                     <div className="">
-                        <button className="btn-outline mr-3 mt-2">List từ của tôi</button>
-                        <button>Khám phá</button>
+                        <button className="btn btn-second mr-3 mt-2">List từ của tôi</button>
+                        <button className="btn btn-primary">Khám phá</button>
                     </div>
                 </div>
                 <div className="py-3 md:py-0 h-full bg-gray-200 border shadow-md rounded-md flex flex-1">
@@ -86,7 +86,7 @@ export default function FlashCard() {
                     </div>
                 </div>
             </div>
-            <div className="my-5">
+            {/* <div className="my-5">
                 <div className="">
                     <h3 className="text-xl mb-2 text-primary">Đang học</h3>
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 h-[248px]">
@@ -122,7 +122,7 @@ export default function FlashCard() {
                         Xem tất cả <MdKeyboardDoubleArrowRight />
                     </div>
                 </div>
-            </div>
+            </div> */}
             <div className="">
                 <h3 className="text-xl mb-2 text-primary">List từ đã tạo</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
@@ -130,18 +130,19 @@ export default function FlashCard() {
                         onClick={showModal}
                         className="w-full text-primary cursor-pointer hover:border-primary bg-gray-200 rounded-xl shadow-sm p-3 border hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 flex-col  h-[161px]">
                         <AiOutlinePlus size={30} />
-                        <h1>Tạo list từ</h1>
+                        <h1>Tạo list từ mới</h1>
                     </div>
                     <Modal title="Tạo list từ" open={open} onOk={handleOk} confirmLoading={loading} okText="Tạo" onCancel={handleCancel}>
                         <div className="space-y-2">
                             <input
                                 type="text"
+                                autoFocus
                                 placeholder="Tên list từ"
                                 className="w-full p-3 border rounded-md"
                                 value={newListFlashCard.title}
                                 onChange={(e) => setNewListFlashCard({ ...newListFlashCard, title: e.target.value })}
                             />
-                            <select name="" id="" defaultValue="english" value={newListFlashCard.language} onChange={(e) => setNewListFlashCard({ ...newListFlashCard, language: e.target.value })}>
+                            <select name="" id="" value={newListFlashCard.language} onChange={(e) => setNewListFlashCard({ ...newListFlashCard, language: e.target.value })}>
                                 <option value="english">Tiếng Anh-Mỹ</option>
                                 <option value="chinese">Tiếng Trung</option>
                                 <option value="korea">Tiếng Hàn</option>

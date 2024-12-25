@@ -18,7 +18,7 @@ export default function CDeCuong({ DeCuongData }: { DeCuongData: any }) {
                     </p>
                 </div>
                 <Link href="/flashcard">
-                    <button className="flex gap-2 items-center">
+                    <button className="flex gap-2 items-center btn btn-primary">
                         <GiCardPick size={20} />
                         Luyện tập bằng Flashcard
                     </button>

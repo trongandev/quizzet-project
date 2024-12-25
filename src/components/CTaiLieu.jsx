@@ -68,18 +68,18 @@ export default function CTaiLieu({ toolData }) {
             <div className="flex justify-center md:justify-between items-center mb-4 gap-3 flex-wrap ">
                 <div className="flex gap-3 items-center">
                     <Tooltip placement="top" title="Sắp xếp theo lượt xem giảm dần">
-                        <button onClick={() => handleDefault()} className="text-[11px]">
+                        <button onClick={() => handleDefault()} className="text-[11px] btn btn-primary">
                             Default
                         </button>
                     </Tooltip>
                     {toggleBtnSortAlpha ? (
-                        <Tooltip placement="top" title="Sắp xếp theo tên tài liệu từ A -> Z">
+                        <Tooltip placement="top" title="Sắp xếp theo tên tài liệu từ A -> Z" className="btn btn-primary">
                             <button onClick={() => handleSort("title", "asc")}>
                                 <FaSortAlphaDown />
                             </button>
                         </Tooltip>
                     ) : (
-                        <Tooltip placement="top" title="Sắp xếp theo tên tài liệu từ Z -> A">
+                        <Tooltip placement="top" title="Sắp xếp theo tên tài liệu từ Z -> A" className="btn btn-primary">
                             <button onClick={() => handleSort("title", "desc")}>
                                 <FaSortAlphaDownAlt />
                             </button>
@@ -87,13 +87,13 @@ export default function CTaiLieu({ toolData }) {
                     )}
 
                     {toggleBtnSortNumber ? (
-                        <Tooltip placement="top" title="Sắp xếp theo số câu hỏi tăng dần">
+                        <Tooltip placement="top" title="Sắp xếp theo số câu hỏi tăng dần" className="btn btn-primary">
                             <button onClick={() => handleSortByNumber("lenght", "asc")}>
                                 <TbSortAscendingNumbers />
                             </button>
                         </Tooltip>
                     ) : (
-                        <Tooltip placement="top" title="Sắp xếp theo số câu hỏi giảm dần">
+                        <Tooltip placement="top" title="Sắp xếp theo số câu hỏi giảm dần" className="btn btn-primary">
                             <button onClick={() => handleSortByNumber("lenght", "desc")}>
                                 <TbSortDescendingNumbers />
                             </button>
@@ -110,14 +110,14 @@ export default function CTaiLieu({ toolData }) {
                 </div>
                 <div className="flex items-center gap-3 flex-1 flex-wrap justify-end">
                     <input type="text" placeholder="Tìm tên tài liệu mà bạn cần..." className="w-full md:w-[250px]" onChange={(e) => handleSearch(e.target.value)} />
-                    <div className="flex gap-3 flex-1">
+                    <div className="flex gap-3 flex-1 items-center">
                         <Link href="/tailieu/themtailieu" className="block flex-1">
-                            <button className="w-full md:w-[170px]">Thêm tài liệu</button>
+                            <button className="w-full md:w-[170px] btn btn-second">Thêm tài liệu</button>
                         </Link>
                         <Link href="/flashcard" className="block flex-1">
-                            <button className="w-full flex gap-2 items-center">
+                            <button className="w-full flex gap-2 items-center btn btn-primary">
                                 <GiCardPick size={20} />
-                                Học nhanh bằng Flashcard
+                                Flashcard
                             </button>
                         </Link>
                     </div>
@@ -159,7 +159,7 @@ export default function CTaiLieu({ toolData }) {
                             </div>
                             <div className="">
                                 <p className="text-[12px]">{handleCompareDate(item.date)}</p>
-                                <button onClick={() => handleChangeRouterDeCuong(item)} className="text-sm w-full">
+                                <button onClick={() => handleChangeRouterDeCuong(item)} className="text-sm w-full btn btn-primary">
                                     Xem ngay
                                 </button>
                             </div>

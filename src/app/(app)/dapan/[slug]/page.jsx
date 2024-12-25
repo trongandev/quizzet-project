@@ -20,18 +20,29 @@ export default function Answer({ params }) {
         fetchAPI();
     }, [slug, token]);
 
+    console.log(quiz);
+
     return (
         <>
             {loading ? (
                 <div className="">
                     <div className="flex justify-between flex-col md:flex-row gap-5 md:gap-0 px-5 text-third">
                         <div className="">
-                            <h1 className="text-2xl font-bold text-primary">Bài quiz về chủ đê: {quiz.title}</h1>
-                            <p className="text-secondary" key={quiz.id}>
-                                Nội dung: {quiz.content}
+                            {quiz?.quiz_id && (
+                                <>
+                                    {" "}
+                                    <h1 className="text-2xl font-bold text-primary">Bài quiz về chủ đê: {quiz?.quiz_id.title}</h1>
+                                    <p className="text-secondary" key={quiz.id}>
+                                        Nội dung: {quiz?.quiz_id.content}
+                                    </p>
+                                </>
+                            )}
+
+                            <p>
+                                Tổng số câu đúng: {quiz?.score}/{quiz.questions?.data_history.length} câu
                             </p>
                             <p>
-                                Tổng số câu đúng: {quiz.score}/{quiz.questions?.data_history.length} câu
+                                Tổng thời gian làm: {Math.floor(quiz?.time / 3600)}h:{Math.floor((quiz?.time % 3600) / 60)}p:{quiz?.time % 60}s
                             </p>
                         </div>
                         <div className="flex gap-5 text-center justify-center">
@@ -71,15 +82,15 @@ export default function Answer({ params }) {
                                             className={` relative  flex items-center  ${item.answer_correct === ansIndex ? "text-primary font-bold" : ""} ${
                                                 item.answer_choose === ansIndex ? "" : ""
                                             }`}>
-                                            <input type="radio" name={item.id} className="w-1 invisible" disabled id={`${item.id}ans${ansIndex}`} defaultChecked={item.answer_correct === ansIndex} />
+                                            <input type="radio" name={item.id} className="w-1 invisible" disabled id={`${index}ans${ansIndex}`} defaultChecked={item.answer_correct === ansIndex} />
                                             <label
-                                                htmlFor={`${item.id}ans${ansIndex}`}
+                                                htmlFor={`${index}ans${ansIndex}`}
                                                 className={`absolute font-bold w-10 h-10 flex items-center justify-center rounded-full ${
                                                     item.answer_correct === ansIndex ? "!bg-primary !text-white " : ""
                                                 } ${item.answer_choose === ansIndex ? "bg-red-500 text-white" : " "}`}>
                                                 {ansIndex === 0 ? "A" : ansIndex === 1 ? "B" : ansIndex === 2 ? "C" : "D"}
                                             </label>
-                                            <label htmlFor={`${item.id}ans${ansIndex}`} className="block w-full ml-10 p-3">
+                                            <label htmlFor={`${index}ans${ansIndex}`} className="block w-full ml-10 p-3">
                                                 {answer}
                                             </label>
                                         </div>

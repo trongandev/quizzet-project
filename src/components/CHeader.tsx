@@ -75,7 +75,7 @@ export default function CHeader({ token }: { token: string }) {
                 {!token ? (
                     <div className="">
                         <Link href="/login">
-                            <button className="">Đăng nhập</button>
+                            <button className="btn btn-primary">Đăng nhập</button>
                         </Link>
                     </div>
                 ) : (

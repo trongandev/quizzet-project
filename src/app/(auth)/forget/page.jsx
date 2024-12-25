@@ -1,13 +1,12 @@
 "use client";
 import React from "react";
-import Swal from "sweetalert2";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { POST_API } from "@/lib/fetchAPI";
-import { Spin } from "antd";
+import { message, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { IoIosArrowBack } from "react-icons/io";
 import Image from "next/image";
@@ -15,6 +14,7 @@ export default function Forget() {
     const router = useRouter();
     const token = Cookies.get("token");
     const [loading, setLoading] = React.useState(false);
+    const [messageApi, contextHolder] = message.useMessage();
 
     const formik = useFormik({
         initialValues: {
@@ -33,19 +33,18 @@ export default function Forget() {
         const req = await POST_API("/auth/forget", { email: email }, "POST", token);
         const data = await req.json();
         if (req.ok) {
-            Swal.fire({
-                title: "Thành công",
-                text: data.message,
-                icon: "success",
-                willClose: () => {
-                    router.push("/login");
-                },
+            messageApi.open({
+                type: "success",
+                content: data.message,
+                duration: 3000,
             });
+            setTimeout(() => {
+                router.push("/login");
+            }, 3000);
         } else {
-            Swal.fire({
-                title: "Có lỗi xảy ra",
-                text: data.message,
-                icon: "error",
+            messageApi.open({
+                type: "error",
+                content: data.message,
             });
         }
         setLoading(false);
@@ -53,6 +52,8 @@ export default function Forget() {
 
     return (
         <div className="flex justify-center flex-col items-center h-full bg-white p-5 rounded-xl">
+            {contextHolder}
+
             <div className="text-third  w-[400px]">
                 <form onSubmit={formik.handleSubmit}>
                     <Link href="/">
@@ -70,7 +71,7 @@ export default function Forget() {
                         {formik.touched.email && formik.errors.email ? <div className="text-red-500 mt-1 mb-3 mx-5 text-sm">{formik.errors.email}</div> : null}
                     </div>
                     <div className="mb-5">
-                        <button type="submit" className=" w-full flex gap-5 items-center justify-center" disabled={loading}>
+                        <button type="submit" className="btn btn-primary w-full flex gap-5 items-center justify-center" disabled={loading}>
                             {loading && <Spin className="text-white" indicator={<LoadingOutlined spin />} size="default" />}
                             Gửi yêu cầu mật khẩu mới
                         </button>

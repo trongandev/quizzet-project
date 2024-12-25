@@ -32,7 +32,7 @@ export default function CHome({ quizData, toolData }) {
                             <h1 className="text-2xl font-bold">Quiz</h1>
                             <p className="">Tổng hợp những bài quiz để bạn kiểm tra thử kiến thức của bản thân </p>
                             <Link href="/quiz">
-                                <button>Tìm hiểu thêm</button>
+                                <button className="btn btn-primary">Tìm hiểu thêm</button>
                             </Link>
                         </div>
                     </div>
@@ -44,7 +44,7 @@ export default function CHome({ quizData, toolData }) {
                             <h1 className="text-2xl font-bold">Tài liệu</h1>
                             <p className="">Tổng hợp những tài liệu của nhiều môn luôn sẵn sàng để bạn ôn bài hiệu quả nhất.</p>
                             <Link href="/tailieu">
-                                <button>Tìm hiểu thêm</button>
+                                <button className="btn btn-primary">Tìm hiểu thêm</button>
                             </Link>
                         </div>
                     </div>

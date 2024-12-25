@@ -45,28 +45,23 @@ export default function RegisterForm() {
     });
 
     const fetchRegister = async (profile) => {
-        try {
-            const res = await POST_API("/auth/register", profile, "POST", token);
-            const data = await res.json();
-            if (res.ok) {
-                messageApi.open({
-                    type: "success",
-                    content: data.message,
-                });
+        const res = await POST_API("/auth/register", profile, "POST", token);
+        const data = await res.json();
+        if (res.ok) {
+            messageApi.open({
+                type: "success",
+                content: data.message,
+            });
+            setTimeout(() => {
                 router.push("/login");
-            } else {
-                messageApi.open({
-                    type: "warning",
-                    content: data.message,
-                });
-            }
-            setLoading(false);
-        } catch (error) {
+            }, 3000);
+        } else {
             messageApi.open({
                 type: "warning",
-                content: error.message,
+                content: data.message,
             });
         }
+        setLoading(false);
     };
 
     const handleLoginGoogle = async () => {
@@ -146,7 +141,7 @@ export default function RegisterForm() {
                         </div>
                     </div>
                     <div className="mb-5">
-                        <button type="submit" className=" w-full flex gap-5 items-center justify-center" disabled={loading}>
+                        <button type="submit" className="btn btn-primary w-full flex gap-5 items-center justify-center" disabled={loading}>
                             {loading && <Spin className="text-white" indicator={<LoadingOutlined spin />} size="default" />}
                             Đăng nhập
                         </button>

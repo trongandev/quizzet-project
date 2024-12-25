@@ -6,22 +6,19 @@ import * as Yup from "yup";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { POST_API } from "@/lib/fetchAPI";
-import { Spin } from "antd";
+import { message, Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 export default function ChangePassword() {
     const router = useRouter();
     const token = Cookies.get("token");
     const [loading, setLoading] = React.useState(false);
+    const [messageApi, contextHolder] = message.useMessage();
 
     useEffect(() => {
         if (token === undefined) {
-            Swal.fire({
-                title: "Bạn chưa đăng nhập",
-                text: "Vui lòng đăng nhập để thay đổi mật khẩu",
-                icon: "warning",
-                didClose: () => {
-                    router.push("/login");
-                },
+            messageApi.open({
+                type: "error",
+                content: "Vui lòng đăng nhập để nhắn tin",
             });
         }
     }, []);
@@ -54,14 +51,13 @@ export default function ChangePassword() {
                 text: data.message,
                 icon: "success",
                 willClose: () => {
-                    router.push("/");
+                    router.back();
                 },
             });
         } else {
-            Swal.fire({
-                title: "Thất bại",
-                text: data.message,
-                icon: "error",
+            messageApi.open({
+                type: "error",
+                content: data.message,
             });
         }
         setLoading(false);
@@ -69,6 +65,8 @@ export default function ChangePassword() {
 
     return (
         <div className="flex justify-center flex-col items-center">
+            {contextHolder}
+
             <div className="w-full mt-10 md:mt-0 md:w-[500px] border-[1px] border-green-500 px-3 md:px-10 py-5 rounded-lg shadow-lg bg-white">
                 <form onSubmit={formik.handleSubmit}>
                     <h1 className="text-2xl font-bold text-green-500 text-center mb-5">Cập nhật mật khẩu</h1>
@@ -118,7 +116,7 @@ export default function ChangePassword() {
                         {formik.touched.re_new_password && formik.errors.re_new_password ? <div className="text-red-500">{formik.errors.re_new_password}</div> : null}{" "}
                     </div>
                     <div className="mb-5">
-                        <button type="submit" className="bg-green-500 text-white  w-full flex gap-5 items-center justify-center" disabled={loading}>
+                        <button type="submit" className="btn btn-primary text-white  w-full flex gap-5 items-center justify-center" disabled={loading}>
                             {loading && <Spin indicator={<LoadingOutlined spin />} size="default" />}
                             Thay đổi mật khẩu
                         </button>
