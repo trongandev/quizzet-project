@@ -38,14 +38,21 @@ export default function PractiveFlashcard({ params }) {
             const token = Cookies.get("token");
             const req = await GET_API(`/flashcards/${params?.slug}`, token);
             if (req.ok) {
-                setFlashcards(req.listFlashCards.flashcards);
-                generateQuizOptions(req.listFlashCards.flashcards[0]);
+                const result = req?.listFlashCards?.flashcards;
+                setFlashcards(result);
+                generateQuizOptions(result[0]);
             } else {
                 messageApi.error(req.message);
             }
         };
         fetchFlashCards();
     }, [params?.slug]);
+
+    useEffect(() => {
+        if (flashcards.length > 0) {
+            generateQuizOptions(flashcards[0]);
+        }
+    }, [flashcards]);
 
     const randomizeFeature = useCallback(() => {
         const features = [FEATURES.FLASHCARD, FEATURES.QUIZ, FEATURES.LISTENING, FEATURES.FILL_BLANK];
@@ -54,20 +61,43 @@ export default function PractiveFlashcard({ params }) {
     }, []);
 
     // Generate quiz options
+    // const generateQuizOptions = useCallback(
+    //     (currentCard) => {
+    //         if (!currentCard || flashcards.length < 4) return;
+
+    //         const options = [currentCard];
+    //         const availableCards = flashcards.filter((card) => card._id !== currentCard._id);
+
+    //         while (options.length < 4 && availableCards.length > 0) {
+    //             const randomIndex = Math.floor(Math.random() * availableCards.length);
+    //             options.push(availableCards[randomIndex]);
+    //             availableCards.splice(randomIndex, 1);
+    //         }
+
+    //         // Shuffle options
+    //         setQuizOptions(options.sort(() => Math.random() - 0.5));
+    //     },
+    //     [flashcards]
+    // );
+
     const generateQuizOptions = useCallback(
         (currentCard) => {
             if (!currentCard || flashcards.length < 4) return;
 
-            const options = [currentCard];
-            const availableCards = flashcards.filter((card) => card._id !== currentCard._id);
+            // Đáp án đúng
+            const correctOption = currentCard.title;
 
-            while (options.length < 4 && availableCards.length > 0) {
+            // Các đáp án sai
+            const availableCards = flashcards.filter((card) => card._id !== currentCard._id);
+            const wrongOptions = [];
+            while (wrongOptions.length < 3 && availableCards.length > 0) {
                 const randomIndex = Math.floor(Math.random() * availableCards.length);
-                options.push(availableCards[randomIndex]);
+                wrongOptions.push(availableCards[randomIndex].title);
                 availableCards.splice(randomIndex, 1);
             }
 
-            // Shuffle options
+            // Trộn đáp án đúng và đáp án sai
+            const options = [correctOption, ...wrongOptions];
             setQuizOptions(options.sort(() => Math.random() - 0.5));
         },
         [flashcards]
@@ -185,19 +215,7 @@ export default function PractiveFlashcard({ params }) {
                         checkListeningAnswer();
                     }
                     break;
-                case "k":
-                    handleProgress("known");
-                    break;
-                case "u":
-                    handleProgress("unknown");
-                    break;
-                case "r":
-                    setIsRandomMode((prev) => !prev);
-                    break;
-                case "f":
-                    setIsRandomFeature((prev) => !prev);
-                    break;
-                case "s":
+                case "shift":
                     // Phát âm thanh với accent đang được chọn
                     speakWord(flashcards[index]?.title, speakLang, flashcards[index]?._id);
                     break;
@@ -222,7 +240,7 @@ export default function PractiveFlashcard({ params }) {
                     <div className="w-full flex flex-col gap-5">
                         {/* Main Flashcard Container */}
                         <div
-                            className="relative w-full md:w-[600px] h-[400px] border rounded-xl shadow-md overflow-hidden bg-white"
+                            className="relative w-full h-[500px] border rounded-xl shadow-md overflow-hidden bg-white"
                             style={{ perspective: "1000px" }}
                             onClick={feature === FEATURES.FLASHCARD ? () => setIsFlipped(!isFlipped) : undefined}>
                             {/* Flashcard Feature */}
@@ -256,8 +274,9 @@ export default function PractiveFlashcard({ params }) {
                                         <p className="text-lg text-gray-700">{flashcards[index]?.define}</p>
                                         {flashcards[index]?.example && (
                                             <div className="mt-4 p-4 bg-gray-50 rounded-lg w-full">
-                                                <p className="font-medium mb-2">Example:</p>
+                                                <p className="font-medium mb-2">Ví dụ:</p>
                                                 <p className="italic text-gray-600">{flashcards[index].example[0]?.en}</p>
+                                                <p className="italic text-gray-600">{flashcards[index].example[0]?.vi}</p>
                                             </div>
                                         )}
                                     </div>
@@ -272,14 +291,14 @@ export default function PractiveFlashcard({ params }) {
                                         <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">Quiz</span>
                                     </div>
                                     <p className="text-lg mb-6">{flashcards[index]?.define}</p>
-                                    <div className="grid grid-cols-2 gap-4 flex-1">
+                                    <div className="grid grid-cols-2 gap-5 flex-1">
                                         {quizOptions.map((option, idx) => (
                                             <button
-                                                key={option._id}
-                                                onClick={() => handleQuizAnswer(option.title)}
+                                                key={idx}
+                                                onClick={() => handleQuizAnswer(option)}
                                                 className="flex items-center h-full border rounded-lg group hover:border-primary hover:bg-blue-50 transition-colors">
                                                 <div className="w-[50px] h-full flex items-center justify-center border-r group-hover:border-r-primary transition-colors">{idx + 1}</div>
-                                                <p className="flex-1 text-center px-2">{option.title}</p>
+                                                <p className="flex-1 text-center px-2">{option}</p>
                                             </button>
                                         ))}
                                     </div>
@@ -362,26 +381,27 @@ export default function PractiveFlashcard({ params }) {
 
                         {/* Navigation Controls */}
 
-                        <div className="bg-gray-100 rounded-xl overflow-hidden w-full md:w-[600px] flex items-center justify-between shadow-md text-2xl">
-                            <div
+                        <div className="bg-gray-100 rounded-xl overflow-hidden w-full flex items-center justify-between shadow-md text-2xl">
+                            {/* <div
                                 className="flex-1 p-3 h-full hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer"
                                 onClick={() => handleChangeIndex("prev")}>
                                 <GrFormPrevious />
 
                                 <p className="text-sm">Lùi lại</p>
-                            </div>
-                            <div className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer" onClick={() => handleProgress("known")}>
-                                <CiCircleCheck />
-                                <p className="text-sm">Đã biết</p>
-                            </div>
+                            </div> */}
                             <div className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer" onClick={() => handleProgress("unknown")}>
-                                <IoIosCloseCircleOutline />
+                                <GrFormPrevious />
                                 <p className="text-sm">Chưa biết</p>
                             </div>
-                            <div className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer" onClick={() => handleChangeIndex("next")}>
+                            <div className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer" onClick={() => handleProgress("known")}>
+                                <GrFormNext />
+                                <p className="text-sm">Đã biết</p>
+                            </div>
+
+                            {/* <div className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer" onClick={() => handleChangeIndex("next")}>
                                 <GrFormNext />
                                 <p className="text-sm">Tiến tới</p>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
 
@@ -466,15 +486,13 @@ export default function PractiveFlashcard({ params }) {
                         <div className="space-y-2">
                             <h2 className="font-medium">Phím tắt</h2>
                             <div className="bg-gray-100 p-4 rounded-lg space-y-3">
-                                <div className="flex items-center gap-2 justify-center">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-gray-600">Về trước</span>
-                                        <kbd className="px-2 py-1 bg-white rounded shadow text-sm">←</kbd>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <kbd className="px-2 py-1 bg-white rounded shadow text-sm">→</kbd>
-                                        <span className="text-gray-600">Tiếp tục</span>
-                                    </div>
+                                <div className="flex items-center gap-2">
+                                    <kbd className="px-2 py-1 bg-white rounded shadow text-sm">→</kbd>
+                                    <span className="text-gray-600">Hiểu</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <kbd className="px-2 py-1 bg-white rounded shadow text-sm">←</kbd>
+                                    <span className="text-gray-600">Không biết</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <kbd className="px-2 py-1 bg-white rounded shadow text-sm">Space</kbd>
@@ -484,25 +502,10 @@ export default function PractiveFlashcard({ params }) {
                                     <kbd className="px-2 py-1 bg-white rounded shadow text-sm">Enter</kbd>
                                     <span className="text-gray-600">Kiểm tra đáp án</span>
                                 </div>
+
                                 <div className="flex items-center gap-2">
-                                    <kbd className="px-2 py-1 bg-white rounded shadow text-sm">K</kbd>
-                                    <span className="text-gray-600">Hiểu (Know)</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <kbd className="px-2 py-1 bg-white rounded shadow text-sm">U</kbd>
-                                    <span className="text-gray-600">Không biết (Unknown)</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <kbd className="px-2 py-1 bg-white rounded shadow text-sm">S</kbd>
+                                    <kbd className="px-2 py-1 bg-white rounded shadow text-sm">Shift</kbd>
                                     <span className="text-gray-600">Phát âm thanh</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <kbd className="px-2 py-1 bg-white rounded shadow text-sm">R</kbd>
-                                    <span className="text-gray-600">Bật/tắt câu hỏi random</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <kbd className="px-2 py-1 bg-white rounded shadow text-sm">F</kbd>
-                                    <span className="text-gray-600">Bật/tắt chế độ học random</span>
                                 </div>
                             </div>
                         </div>

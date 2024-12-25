@@ -262,23 +262,23 @@ note, // ghi chú về từ bằng tiếng việt
     };
 
     const { user } = useUser();
-    console.log(flashcard);
+    console.log(user);
     return (
         <div className="text-third px-3 md:px-0">
             {contextHolder}
             <div className="flex items-center gap-2 md:gap-5 md:flex-row flex-col">
                 <h1 className="text-2xl font-bold text-primary">Flashcard: {flashcard?.title}</h1>
-                <div className="flex-1 flex justify-between gap-2 items-center">
-                    <div className="flex gap-2 items-center">
-                        <button className="btn btn-primary flex items-center gap-1" onClick={showModalEdit}>
-                            <MdEdit /> Chỉnh sửa
-                        </button>
-                        <button className="btn btn-primary flex items-center gap-1" onClick={showModal}>
-                            <IoMdAdd /> Thêm từ mới
-                        </button>
-                    </div>
-                    <div className="">
-                        {user?._id == flashcard?.userId ? (
+                {user?._id == flashcard?.userId ? (
+                    <div className="flex-1 flex justify-between gap-2 items-center">
+                        <div className="flex gap-2 items-center">
+                            <button className="btn btn-primary flex items-center gap-1" onClick={showModalEdit}>
+                                <MdEdit /> Chỉnh sửa
+                            </button>
+                            <button className="btn btn-primary flex items-center gap-1" onClick={showModal}>
+                                <IoMdAdd /> Thêm từ mới
+                            </button>
+                        </div>
+                        <div className="">
                             <Popconfirm
                                 title="Xóa flashcard này?"
                                 description="Bạn chắc chứ? nó sẽ không khôi phục được đâu"
@@ -292,11 +292,11 @@ note, // ghi chú về từ bằng tiếng việt
                                     <FaTrash /> Xóa
                                 </button>
                             </Popconfirm>
-                        ) : (
-                            ""
-                        )}
+                        </div>
                     </div>
-                </div>
+                ) : (
+                    ""
+                )}
                 {/* chỉnh sửa list flashcard*/}
                 <Modal title="Chỉnh sửa list từ" open={openEdit} onOk={handleOkEdit} confirmLoading={loading} okText="Chỉnh sửa" onCancel={handleCancelEdit}>
                     <div className="space-y-2">
