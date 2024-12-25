@@ -10,12 +10,15 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { LoadingOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { HiMiniSpeakerWave } from "react-icons/hi2";
 import { IoMdAdd } from "react-icons/io";
-import { MdEdit, MdOutlineQuestionMark } from "react-icons/md";
+import { MdEdit, MdOutlineQuestionMark, MdPublic } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import handleCompareDate from "@/lib/CompareDate";
 import { IoClose } from "react-icons/io5";
 import { TiEdit } from "react-icons/ti";
+import { useUser } from "@/context/userContext";
+import { RiGitRepositoryPrivateFill } from "react-icons/ri";
+import Image from "next/image";
 export default function FlashCardDetail({ params }) {
     const [open, setOpen] = useState(false);
     const [setOpenConfirm] = useState(false);
@@ -258,6 +261,8 @@ note, // ghi chú về từ bằng tiếng việt
         setOpenEditWord(null);
     };
 
+    const { user } = useUser();
+    console.log(flashcard);
     return (
         <div className="text-third px-3 md:px-0">
             {contextHolder}
@@ -265,26 +270,32 @@ note, // ghi chú về từ bằng tiếng việt
                 <h1 className="text-2xl font-bold text-primary">Flashcard: {flashcard?.title}</h1>
                 <div className="flex-1 flex justify-between gap-2 items-center">
                     <div className="flex gap-2 items-center">
-                        <button className="btn-small flex items-center gap-1" onClick={showModalEdit}>
+                        <button className="btn btn-primary flex items-center gap-1" onClick={showModalEdit}>
                             <MdEdit /> Chỉnh sửa
                         </button>
-                        <button className="btn-small flex items-center gap-1" onClick={showModal}>
+                        <button className="btn btn-primary flex items-center gap-1" onClick={showModal}>
                             <IoMdAdd /> Thêm từ mới
                         </button>
                     </div>
-                    <Popconfirm
-                        title="Xóa flashcard này?"
-                        description="Bạn chắc chứ? nó sẽ không khôi phục được đâu"
-                        onConfirm={confirm}
-                        okText="Chắc chắn!"
-                        cancelText="Để suy nghĩ lại"
-                        okButtonProps={{
-                            loading: loading,
-                        }}>
-                        <button className="btn-small !bg-red-500 flex items-center gap-1" onClick={showPopconfirm}>
-                            <FaTrash /> Xóa
-                        </button>
-                    </Popconfirm>
+                    <div className="">
+                        {user?._id == flashcard?.userId ? (
+                            <Popconfirm
+                                title="Xóa flashcard này?"
+                                description="Bạn chắc chứ? nó sẽ không khôi phục được đâu"
+                                onConfirm={confirm}
+                                okText="Chắc chắn!"
+                                cancelText="Để suy nghĩ lại"
+                                okButtonProps={{
+                                    loading: loading,
+                                }}>
+                                <button disabled={user?._id == flashcard?.userId} className="btn btn-primary !bg-red-500 flex items-center gap-1" onClick={showPopconfirm}>
+                                    <FaTrash /> Xóa
+                                </button>
+                            </Popconfirm>
+                        ) : (
+                            ""
+                        )}
+                    </div>
                 </div>
                 {/* chỉnh sửa list flashcard*/}
                 <Modal title="Chỉnh sửa list từ" open={openEdit} onOk={handleOkEdit} confirmLoading={loading} okText="Chỉnh sửa" onCancel={handleCancelEdit}>
@@ -407,9 +418,21 @@ note, // ghi chú về từ bằng tiếng việt
                     </div>
                 </Modal>
             </div>
+
             <p className="text-gray-500 italic">{flashcard?.desc || "Không có mô tả"}</p>
+            <div className="flex items-center gap-2 mt-2">
+                <p>Người chia sẻ:</p>
+                <div className="w-[40px] h-[40px] overflow-hidden relative">
+                    <Image src={flashcard?.userId?.profilePicture} alt="" className="rounded-full w-full h-full absolute object-cover" fill />
+                </div>
+                <Link href={`/profile/${flashcard?.userId?._id}`} className="hover:underline">
+                    <p title={flashcard?.userId?.displayName} className="line-clamp-1">
+                        {flashcard?.userId?.displayName}
+                    </p>
+                </Link>
+            </div>
             <Link href={`/flashcard/practice/${flashcard?._id}`} className="py-5 block">
-                <button className="w-full btn-outline">Luyện tập Flashcards</button>
+                <button className="w-full btn btn-primary">Luyện tập Flashcards</button>
             </Link>
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1 text-secondary">
@@ -421,7 +444,7 @@ note, // ghi chú về từ bằng tiếng việt
                     <p>Dừng học</p>
                 </div>
             </div>
-            <div className="h-[100px] bg-gray-100 border shadow-md rounded-md flex my-5">
+            {/* <div className="h-[100px] bg-gray-100 border shadow-md rounded-md flex my-5">
                 <div className="flex-1 flex items-center justify-center flex-col">
                     <h1 className="text-primary font-bold text-2xl">0</h1>
                     <p className="text-gray-500">Đã học</p>
@@ -434,7 +457,7 @@ note, // ghi chú về từ bằng tiếng việt
                     <h1 className="text-red-500 font-bold text-2xl">0</h1>
                     <p className="text-gray-500">Cần ôn tập</p>
                 </div>
-            </div>
+            </div> */}
             <div className="">
                 <h3>List có {flashcard?.flashcards?.length} từ</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-5 ">

@@ -250,7 +250,7 @@ export default function CongDong() {
             <div className="my-5 w-full md:w-[700px] p-3 md:p-5  border border-primary  rounded-md">
                 <div className="h-[400px] overflow-y-scroll flex flex-col pr-3 scroll-smooth" ref={scrollContainerRef}>
                     {!loading && hasMore && (
-                        <button onClick={loadMoreMessages} className="mb-5">
+                        <button onClick={loadMoreMessages} className="mb-5 btn btn-primary">
                             Load More Messages
                         </button>
                     )}
@@ -521,11 +521,11 @@ export default function CongDong() {
                                     trigger="click"
                                     open={open}
                                     onOpenChange={handleOpenChange}>
-                                    <button>
+                                    <button className="btn btn-primary">
                                         <MdOutlineInsertEmoticon size={20} />
                                     </button>
                                 </Popover>
-                                <button type="submit" disabled={loading} onClick={handleSendMessage}>
+                                <button type="submit" disabled={loading} onClick={handleSendMessage} className="btn btn-primary">
                                     {loading ? <Spin indicator={<LoadingOutlined spin />} size="default" /> : <IoSend />}
                                 </button>
                             </div>

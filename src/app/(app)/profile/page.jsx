@@ -203,7 +203,7 @@ export default function CProfile() {
                     ) : (
                         <>
                             <p>Tài khoản chưa xác thực email</p>
-                            <button className="text-red-700 bg-red-200 mt-2" onClick={handleSendMail}>
+                            <button className="btn btn-primary text-red-700 bg-red-200 mt-2" onClick={handleSendMail}>
                                 Mã xác thực
                             </button>
                             <Modal title="Nhập mã xác thực" open={openProfile} onOk={() => handleOkProfile()} confirmLoading={confirmLoading} onCancel={handleCancelProfile}>
@@ -215,9 +215,9 @@ export default function CProfile() {
                     )}
                 </div>
             </div>
-            <Button className="flex items-center gap-2 bg-yellow-200 mt-3" onClick={showModal}>
+            <button className="flex items-center gap-2 btn btn-primary mt-3" onClick={showModal}>
                 <IoMdSettings /> Cập nhật
-            </Button>
+            </button>
             <Modal title="Cập nhật thêm thông tin tài khoản của bạn" open={open} onOk={handleOk} confirmLoading={confirmLoading} onCancel={handleCancel}>
                 <form action="" className="profileData" onSubmit={(e) => handleUpdateProfile(e)}>
                     <div className="flex mb-3 gap-5">
@@ -254,7 +254,7 @@ export default function CProfile() {
                     </div>
                 </form>
                 <Link href="/change-password">
-                    <Button>Bấm vào để tới trang cập nhật mật khẩu</Button>
+                    <button className="btn btn-primary">Bấm vào để tới trang cập nhật mật khẩu</button>
                 </Link>
             </Modal>
 
@@ -270,7 +270,7 @@ export default function CProfile() {
                     <div>
                         <p>Bạn chưa đăng bài nào</p>
                         <Link href="/post">
-                            <button className="mt-2">Tạo bài trắc nghiệm mới thôi</button>
+                            <button className="mt-2 btn btn-second">Tạo bài trắc nghiệm mới thôi</button>
                         </Link>
                     </div>
                 )}
@@ -302,7 +302,7 @@ export default function CProfile() {
                                             </div>
 
                                             <Link href={`/quiz/${item.slug}`} className="block">
-                                                <button className="flex gap-1 items-center text-sm">
+                                                <button className="btn btn-primary flex gap-1 items-center text-sm">
                                                     Làm bài <IoArrowForwardCircleOutline />
                                                 </button>
                                             </Link>
@@ -317,15 +317,15 @@ export default function CProfile() {
                                                 <Link href={`/edit/${item.slug}`} className="flex items-center  gap-2 hover:bg-gray-200 px-3 py-2">
                                                     <MdModeEdit /> Sửa
                                                 </Link>
-                                                <Button onClick={() => handleRemove(item._id)} className="flex items-center gap-2 hover:bg-gray-200 px-3 py-2  border-none">
+                                                <button onClick={() => handleRemove(item._id)} className="flex items-center gap-2 hover:bg-gray-200 w-full hover:text-red-500 px-3 py-2  border-none">
                                                     <FaTrash /> Xoá
-                                                </Button>
+                                                </button>
                                             </div>
                                         }
                                         trigger="click"
                                         open={openTopic === item._id}
                                         onOpenChange={(newOpen) => handleOpenTopic(newOpen, item._id)}>
-                                        <button className="bg-primary">
+                                        <button className="btn bg-primary">
                                             <HiDotsHorizontal />
                                         </button>
                                     </Popover>
@@ -335,11 +335,11 @@ export default function CProfile() {
                                         <div className="bg-gray-100 text-center text-red-700 text-2xl rounded-md font-bold h-full flex items-center justify-center flex-col">
                                             <p>Đang kiểm duyệt</p>
                                             <Link href={`/quiz/${item.slug}`} className="text-right">
-                                                <Button className="mt-3 text-red-700 font-bold flex gap-1 items-center">
+                                                <button className=" btn btn-primary mt-3 text-red-700 font-bold flex gap-1 items-center">
                                                     {" "}
                                                     <FaEye />
                                                     Xem lại bài
-                                                </Button>
+                                                </button>
                                             </Link>
                                         </div>
                                     </div>

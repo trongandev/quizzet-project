@@ -29,7 +29,9 @@ export default function PractiveFlashcard({ params }) {
     const [progress, setProgress] = useState({ known: [], unknown: [] });
     const [quizOptions, setQuizOptions] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
-
+    // random moder
+    const [isRandomMode, setIsRandomMode] = useState(false);
+    const [isRandomFeature, setIsRandomFeature] = useState(false);
     // Fetch flashcards data
     useEffect(() => {
         const fetchFlashCards = async () => {
@@ -44,6 +46,12 @@ export default function PractiveFlashcard({ params }) {
         };
         fetchFlashCards();
     }, [params?.slug]);
+
+    const randomizeFeature = useCallback(() => {
+        const features = [FEATURES.FLASHCARD, FEATURES.QUIZ, FEATURES.LISTENING, FEATURES.FILL_BLANK];
+        const randomIndex = Math.floor(Math.random() * features.length);
+        setFeature(features[randomIndex]);
+    }, []);
 
     // Generate quiz options
     const generateQuizOptions = useCallback(
@@ -85,14 +93,27 @@ export default function PractiveFlashcard({ params }) {
     // Navigation handlers
     const handleChangeIndex = useCallback(
         async (type) => {
-            const newIndex = type === "next" ? (index < flashcards.length - 1 ? index + 1 : 0) : index > 0 ? index - 1 : flashcards.length - 1;
+            let newIndex;
+
+            if (isRandomMode) {
+                // Generate random index different from current
+                do {
+                    newIndex = Math.floor(Math.random() * flashcards.length);
+                } while (newIndex === index && flashcards.length > 1);
+            } else {
+                newIndex = type === "next" ? (index < flashcards.length - 1 ? index + 1 : 0) : index > 0 ? index - 1 : flashcards.length - 1;
+            }
 
             setIndex(newIndex);
             setIsFlipped(false);
             setInputAnswer("");
             setShowAns(false);
 
-            if (feature === FEATURES.FLASHCARD) {
+            if (isRandomFeature) {
+                randomizeFeature();
+            }
+
+            if (feature === FEATURES.FLASHCARD || feature === FEATURES.LISTENING) {
                 await speakWord(flashcards[newIndex].title, speakLang, flashcards[newIndex]._id);
             }
 
@@ -100,7 +121,7 @@ export default function PractiveFlashcard({ params }) {
                 generateQuizOptions(flashcards[newIndex]);
             }
         },
-        [index, flashcards, feature, speakLang]
+        [index, flashcards, feature, speakLang, isRandomMode, isRandomFeature, randomizeFeature]
     );
 
     // Progress tracking
@@ -135,13 +156,13 @@ export default function PractiveFlashcard({ params }) {
     };
 
     // Listening practice handler
-    const checkListeningAnswer = () => {
+    const checkListeningAnswer = useCallback(() => {
         const isCorrect = inputAnswer.toLowerCase() === flashcards[index].title.toLowerCase();
         messageApi[isCorrect ? "success" : "error"](isCorrect ? "Chính xác, giỏi quá" : "Sai rồi, thử lại nhé! ^^");
         if (isCorrect) {
             handleProgress("known");
         }
-    };
+    }, [inputAnswer, flashcards, index, messageApi, handleProgress]);
 
     // Keyboard navigation
     const handleKeyDown = useCallback(
@@ -169,6 +190,16 @@ export default function PractiveFlashcard({ params }) {
                     break;
                 case "u":
                     handleProgress("unknown");
+                    break;
+                case "r":
+                    setIsRandomMode((prev) => !prev);
+                    break;
+                case "f":
+                    setIsRandomFeature((prev) => !prev);
+                    break;
+                case "s":
+                    // Phát âm thanh với accent đang được chọn
+                    speakWord(flashcards[index]?.title, speakLang, flashcards[index]?._id);
                     break;
             }
         },
@@ -372,6 +403,24 @@ export default function PractiveFlashcard({ params }) {
                         )}
 
                         <div className="space-y-2">
+                            <h2 className="font-medium">Cài đặt Random</h2>
+                            <div className="bg-gray-100 p-4 rounded-lg space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-gray-600">Random câu hỏi</span>
+                                        <Switch checked={isRandomMode} onChange={(checked) => setIsRandomMode(checked)} className="bg-gray-300" />
+                                    </div>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-gray-600">Random chế độ học</span>
+                                        <Switch checked={isRandomFeature} onChange={(checked) => setIsRandomFeature(checked)} className="bg-gray-300" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
                             <h2 className="font-medium">Chế độ học</h2>
                             <div className="flex flex-wrap gap-2">
                                 {Object.entries({
@@ -417,13 +466,15 @@ export default function PractiveFlashcard({ params }) {
                         <div className="space-y-2">
                             <h2 className="font-medium">Phím tắt</h2>
                             <div className="bg-gray-100 p-4 rounded-lg space-y-3">
-                                <div className="flex items-center gap-2">
-                                    <kbd className="px-2 py-1 bg-white rounded shadow text-sm">←</kbd>
-                                    <span className="text-gray-600">Về trước</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <kbd className="px-2 py-1 bg-white rounded shadow text-sm">→</kbd>
-                                    <span className="text-gray-600">Tiếp tục</span>
+                                <div className="flex items-center gap-2 justify-center">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-gray-600">Về trước</span>
+                                        <kbd className="px-2 py-1 bg-white rounded shadow text-sm">←</kbd>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <kbd className="px-2 py-1 bg-white rounded shadow text-sm">→</kbd>
+                                        <span className="text-gray-600">Tiếp tục</span>
+                                    </div>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <kbd className="px-2 py-1 bg-white rounded shadow text-sm">Space</kbd>
@@ -440,6 +491,18 @@ export default function PractiveFlashcard({ params }) {
                                 <div className="flex items-center gap-2">
                                     <kbd className="px-2 py-1 bg-white rounded shadow text-sm">U</kbd>
                                     <span className="text-gray-600">Không biết (Unknown)</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <kbd className="px-2 py-1 bg-white rounded shadow text-sm">S</kbd>
+                                    <span className="text-gray-600">Phát âm thanh</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <kbd className="px-2 py-1 bg-white rounded shadow text-sm">R</kbd>
+                                    <span className="text-gray-600">Bật/tắt câu hỏi random</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <kbd className="px-2 py-1 bg-white rounded shadow text-sm">F</kbd>
+                                    <span className="text-gray-600">Bật/tắt chế độ học random</span>
                                 </div>
                             </div>
                         </div>

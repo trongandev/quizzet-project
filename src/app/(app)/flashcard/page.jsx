@@ -1,5 +1,5 @@
 "use client";
-import { GET_API, POST_API } from "@/lib/fetchAPI";
+import { GET_API, GET_API_WITHOUT_COOKIE, POST_API } from "@/lib/fetchAPI";
 import { message, Modal } from "antd";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,6 +15,7 @@ export default function FlashCard() {
     const [loading, setLoading] = useState(false);
     const defaultListFlashCard = { title: "", desc: "", language: "english", public: false };
     const [listFlashCard, setListFlashCard] = useState([]);
+    const [publicFlashcards, setPublicFlashcards] = useState([]);
     const [newListFlashCard, setNewListFlashCard] = useState(defaultListFlashCard);
     const token = Cookies.get("token");
     const [messageApi, contextHolder] = message.useMessage();
@@ -22,6 +23,8 @@ export default function FlashCard() {
     useEffect(() => {
         const fetchListFlashCard = async () => {
             const req = await GET_API("/list-flashcards", token);
+            const req1 = await GET_API_WITHOUT_COOKIE("/list-flashcards/public");
+
             if (req.ok) {
                 setListFlashCard(req.listFlashCards);
             } else {
@@ -29,6 +32,10 @@ export default function FlashCard() {
                     type: "error",
                     content: req.message,
                 });
+            }
+
+            if (req1.ok) {
+                setPublicFlashcards(req1?.publicFlashcards);
             }
         };
         fetchListFlashCard();
@@ -58,20 +65,15 @@ export default function FlashCard() {
     const handleCancel = () => {
         setOpen(false);
     };
+    console.log(publicFlashcards);
 
     return (
         <div className="text-third px-3 md:px-0">
             {contextHolder}
 
             <div className="flex gap-5 md:h-[70px] flex-col md:flex-row ">
-                <div className="flex-1 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold text-primary">Flashcard</h1>
-                    <div className="">
-                        <button className="btn btn-second mr-3 mt-2">List từ của tôi</button>
-                        <button className="btn btn-primary">Khám phá</button>
-                    </div>
-                </div>
-                <div className="py-3 md:py-0 h-full bg-gray-200 border shadow-md rounded-md flex flex-1">
+                <h1 className="text-2xl font-bold text-primary flex-1">Flashcard</h1>
+                {/* <div className="py-3 md:py-0 h-full bg-white border shadow-md rounded-md flex flex-1">
                     <div className="flex-1 flex items-center justify-center flex-col">
                         <h1 className="text-primary font-bold text-2xl">0</h1>
                         <p className="text-gray-500">Đã học</p>
@@ -84,7 +86,7 @@ export default function FlashCard() {
                         <h1 className="text-red-500 font-bold text-2xl">0</h1>
                         <p className="text-gray-500">Cần ôn tập</p>
                     </div>
-                </div>
+                </div> */}
             </div>
             {/* <div className="my-5">
                 <div className="">
@@ -128,7 +130,7 @@ export default function FlashCard() {
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
                     <div
                         onClick={showModal}
-                        className="w-full text-primary cursor-pointer hover:border-primary bg-gray-200 rounded-xl shadow-sm p-3 border hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 flex-col  h-[161px]">
+                        className="w-full text-primary cursor-pointer hover:border-primary bg-gray-100 rounded-xl shadow-sm p-3 border hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 flex-col  h-[161px]">
                         <AiOutlinePlus size={30} />
                         <h1>Tạo list từ mới</h1>
                     </div>
@@ -173,7 +175,46 @@ export default function FlashCard() {
                         listFlashCard.map((item) => (
                             <Link
                                 href={`/flashcard/${item?._id}`}
-                                className="w-full h-[161px] bg-gray-200 rounded-xl block shadow-sm p-3 border hover:shadow-md transition-all duration-300"
+                                className="w-full h-[161px] bg-gray-100 rounded-xl block shadow-sm p-3 border hover:shadow-md transition-all duration-300"
+                                key={item._id}>
+                                <h1 className="font-bold line-clamp-1" title={item.title}>
+                                    {item.title}
+                                </h1>
+                                <h1 className="flex items-center gap-1">
+                                    <IoCopyOutline />
+                                    {item?.flashcards.length} từ
+                                </h1>
+                                <p className="text-sm line-clamp-2 italic h-[40px]" title={item.desc}>
+                                    {item.desc || "Không có mô tả"}
+                                </p>
+                                <div className="flex items-center gap-2 mt-2">
+                                    <div className="w-[40px] h-[40px] overflow-hidden relative">
+                                        <Image src={item?.userId?.profilePicture} alt="" className="rounded-full w-full h-full absolute object-cover" fill />
+                                    </div>
+                                    <div className="">
+                                        <p title={item.userId.displayName} className="line-clamp-1">
+                                            {item.userId.displayName}
+                                        </p>
+                                        <div className="flex gap-1 items-center text-xs text-gray-500 " title={new Date(item.created_at).toLocaleString()}>
+                                            {item.public ? <MdPublic /> : <RiGitRepositoryPrivateFill />}
+                                            <p className="line-clamp-1">{handleCompareDate(item?.created_at)}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Link>
+                        ))}
+                    {listFlashCard.length === 0 && <div className="flex items-center justify-center">Nothing...</div>}
+                </div>
+            </div>
+
+            <div className="mt-5">
+                <h3 className="text-xl mb-2 text-primary">Khám phá</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+                    {publicFlashcards &&
+                        publicFlashcards.map((item) => (
+                            <Link
+                                href={`/flashcard/${item?._id}`}
+                                className="w-full h-[161px] bg-gray-100 rounded-xl block shadow-sm p-3 border hover:shadow-md transition-all duration-300"
                                 key={item._id}>
                                 <h1 className="font-bold line-clamp-1" title={item.title}>
                                     {item.title}
