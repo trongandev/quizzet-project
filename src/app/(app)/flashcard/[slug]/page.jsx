@@ -10,14 +10,13 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { LoadingOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { HiMiniSpeakerWave } from "react-icons/hi2";
 import { IoMdAdd } from "react-icons/io";
-import { MdEdit, MdOutlineQuestionMark, MdPublic } from "react-icons/md";
+import { MdEdit, MdOutlineQuestionMark } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import handleCompareDate from "@/lib/CompareDate";
 import { IoClose } from "react-icons/io5";
 import { TiEdit } from "react-icons/ti";
 import { useUser } from "@/context/userContext";
-import { RiGitRepositoryPrivateFill } from "react-icons/ri";
 import Image from "next/image";
 export default function FlashCardDetail({ params }) {
     const [open, setOpen] = useState(false);
@@ -268,7 +267,7 @@ note, // ghi chú về từ bằng tiếng việt
             {contextHolder}
             <div className="flex items-center gap-2 md:gap-5 md:flex-row flex-col">
                 <h1 className="text-2xl font-bold text-primary">Flashcard: {flashcard?.title}</h1>
-                {user?._id == flashcard?.userId ? (
+                {user?._id == flashcard?.userId._id ? (
                     <div className="flex-1 flex justify-between gap-2 items-center">
                         <div className="flex gap-2 items-center">
                             <button className="btn btn-primary flex items-center gap-1" onClick={showModalEdit}>
@@ -364,7 +363,7 @@ note, // ghi chú về từ bằng tiếng việt
                                     onKeyDown={handleKeyPress}
                                 />
                             </div>
-                            <button className="flex items-center gap-2 " onClick={handleSendPrompt}>
+                            <button className="btn btn-primary items-center gap-2 " onClick={handleSendPrompt}>
                                 {loading ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ color: "blue" }} /> : <FaBrain />}
                                 AI Generate
                             </button>

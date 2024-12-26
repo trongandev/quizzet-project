@@ -208,7 +208,7 @@ export default function FlashCard() {
             </div>
 
             <div className="mt-5">
-                <h3 className="text-xl mb-2 text-primary">Khám phá</h3>
+                <h3 className="text-xl mb-2 text-primary">Khám phá từ cộng đồng chúng tôi</h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
                     {publicFlashcards &&
                         publicFlashcards.map((item) => (

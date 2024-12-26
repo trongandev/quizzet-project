@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { Button, Modal, Select, Input } from "antd";
+import { Button, Modal, Select } from "antd";
 import { CiCirclePlus } from "react-icons/ci";
 import { FaRegEdit } from "react-icons/fa";
 import { MdContentPaste } from "react-icons/md";
@@ -11,7 +11,7 @@ import Link from "next/link";
 import { subjectOption } from "@/lib/subjectOption";
 import { GET_API, POST_API } from "@/lib/fetchAPI";
 import { useRouter } from "next/navigation";
-import { BiTrash } from "react-icons/bi";
+import { BiSearch, BiTrash } from "react-icons/bi";
 
 export default function EditTool({ params }) {
     const { slug } = params;
@@ -167,27 +167,29 @@ export default function EditTool({ params }) {
                         <Image unoptimized src={quiz?.image} alt="" className="w-full h-[100px] object-cover absolute" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                     </div>
                     <div className="p-3">
-                        <h1 className="text-md text-green-500 font-bold line-clamp-1 h-[24px]">{quiz?.title || "Chưa có tiêu đề?"}</h1>
+                        <h1 className="text-md text-primary font-bold line-clamp-1 h-[24px]">{quiz?.title || "Chưa có tiêu đề?"}</h1>
                         <p className="text-gray-500 line-clamp-1 text-sm h-[20px]">{quiz?.content || "Chưa có nội dung"}</p>
                     </div>
-                    <Button className="text-orange-500 cursor-pointer hover:text-red-500 flex items-center gap-1" onClick={showModal}>
+                    <button className="btn btn-primary !bg-orange-500 flex items-center gap-1" onClick={showModal}>
                         <FaRegEdit size={20} />
                         Bấm vào để sửa
-                    </Button>
+                    </button>
                     <Modal title="Thêm hình ảnh" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
                         <p className="text-gray-500 text-[12px]">* Nhập tiêu đề xong bấm tìm hình ảnh</p>
-                        <div className="mt-b flex items-center justify-between gap-1">
-                            <Input type="text" className="rounded-none" onChange={(e) => handleTitle(e)} name="title" id="title" placeholder="Nhập tiêu đề..." value={quiz?.title} />
+                        <div className="mt-b flex justify-between gap-1">
+                            <input type="text" className="flex-1" onChange={(e) => handleTitle(e)} name="title" id="title" placeholder="Nhập tiêu đề..." value={quiz?.title} />
                             <Link href={`https://www.google.com/search?q=${quiz?.title}&udm=2`} target="_black">
-                                <Button className="rounded-none">Tìm hình ảnh này</Button>
+                                <button className="btn btn-primary h-full">
+                                    <BiSearch />
+                                </button>
                             </Link>
                         </div>
 
-                        <div className="flex items-center gap-1 mt-3 h-[32px]">
-                            <Button className="rounded-none" onClick={handlePaste}>
+                        <div className="flex gap-1 mt-3 h-[32px]">
+                            <button className="btn btn-primary" onClick={handlePaste}>
                                 <MdContentPaste />
-                            </Button>
-                            <Input type="text" className="rounded-none h-full" onChange={(e) => handleImage(e)} name="image" id="image" placeholder="Dán URL hình ảnh ở đây..." value={quiz?.image} />
+                            </button>
+                            <input type="text" className="" onChange={(e) => handleImage(e)} name="image" id="image" placeholder="Dán URL hình ảnh ở đây..." value={quiz?.image} />
                         </div>
                         <Select
                             className="w-full mt-3 rounded-none"
@@ -218,11 +220,13 @@ export default function EditTool({ params }) {
                 </div>
                 <div className="mt-5">
                     <div className="flex justify-between items-center">
-                        <Button className="flex gap-1 items-center" onClick={showModalAddQuest}>
+                        <button className="btn btn-second flex gap-1 items-center" onClick={showModalAddQuest}>
                             <CiCirclePlus size={20} />
                             Thêm câu hỏi
-                        </Button>
-                        <Button onClick={handlePost}>Cập nhật bài</Button>
+                        </button>
+                        <button onClick={handlePost} className="btn btn-primary">
+                            Cập nhật bài
+                        </button>
                     </div>
                     <Modal
                         title="Thêm câu hỏi"

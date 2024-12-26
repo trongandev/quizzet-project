@@ -104,9 +104,9 @@ export default function CQuiz({ quizData }) {
                     </select>
                 </div>
                 <div className="flex items-center gap-3 flex-1 flex-wrap justify-end">
-                    <input type="text" placeholder="Tìm tên câu hỏi mà bạn cần..." className="w-full md:w-[250px]" onChange={(e) => handleSearch(e.target.value)} />
-                    <div className="flex-1 flex gap-3 justify-end">
-                        <Link href="/quiz/themcauhoi" className="block ">
+                    <input type="text" placeholder="Tìm tên câu hỏi mà bạn cần..." className="flex-1 w-full" onChange={(e) => handleSearch(e.target.value)} />
+                    <div className="flex-1 flex gap-3 md:justify-end">
+                        <Link href="/quiz/themcauhoi" className="block flex-1">
                             <button className="btn btn-second w-full lg:w-[170px]">Thêm câu hỏi</button>
                         </Link>
                         <Link href="/quiz/nganhang" className="block ">

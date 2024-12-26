@@ -97,7 +97,7 @@ export default function NewPostTool() {
             setData({});
             messageApi.success(res.message);
         } else {
-            messageApi.successc(res.message);
+            messageApi.error(res.message);
         }
         setConfirmLoading(false);
     };

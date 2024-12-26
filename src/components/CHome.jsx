@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -9,7 +9,17 @@ import "@/app/globals.css";
 import CTaiLieu from "@/components/CTaiLieu";
 import CQuizMobile from "./CQuizMobile";
 import CQuiz from "./CQuiz";
+import { GET_API_WITHOUT_COOKIE } from "@/lib/fetchAPI";
 export default function CHome({ quizData, toolData }) {
+    const [notice, setNotice] = useState([]);
+
+    useEffect(() => {
+        const fetchNotice = async () => {
+            const req = await GET_API_WITHOUT_COOKIE("/notice/public");
+            setNotice(req?.notice);
+        };
+        fetchNotice();
+    }, []);
     return (
         <div className="px-2">
             <div className="">
@@ -22,6 +32,16 @@ export default function CHome({ quizData, toolData }) {
                             ra các câu hỏi, trả lời và chia sẻ với bạn bè.
                         </p>
                     </div>
+                </div>
+                <div className="my-2 flex gap-5 items-center justify-center">
+                    {notice &&
+                        notice.map((item) => (
+                            <div className="bg-secondary px-3 py-1 rounded-md text-white" key={item?._id}>
+                                <p>{item?.title}</p>
+
+                                <Link href={item?.link || "#"}>Tải ở đây</Link>
+                            </div>
+                        ))}
                 </div>
                 <div className="mt-10 flex flex-wrap gap-5 text-third">
                     <div className="h-[500px] bg-linear-item-blue flex-1 rounded-3xl flex items-center justify-center flex-col">

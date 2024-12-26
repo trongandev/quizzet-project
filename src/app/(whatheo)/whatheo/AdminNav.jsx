@@ -9,6 +9,7 @@ import { VscBeaker } from "react-icons/vsc";
 import { BsClockHistory } from "react-icons/bs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { BiNotification } from "react-icons/bi";
 
 export default function Nav() {
     const pathname = usePathname();
@@ -57,6 +58,12 @@ export default function Nav() {
                     <Link href="/whatheo/history-tool" className={`p-3 flex items-center gap-2 ${pathname == "/whatheo/history-tool" ? "active" : ""}`}>
                         <BsClockHistory />
                         History Tool
+                    </Link>
+                </li>
+                <li>
+                    <Link href="/whatheo/notice" className={`p-3 flex items-center gap-2 ${pathname == "/whatheo/notice" ? "active" : ""}`}>
+                        <BiNotification />
+                        Thông báo trang chủ
                     </Link>
                 </li>
             </ul>
