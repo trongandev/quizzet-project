@@ -47,12 +47,6 @@ export default function CongDong() {
                 setHasMore(req.hasMore);
                 setSkip((prevSkip) => prevSkip + 50);
             }
-
-            const reqEmoji = await fetch("https://emoji-api.com/emojis?access_key=bf409e3ed3d59cc01d12b7f1a9512896fe36f4f1");
-            const dataEmoji = await reqEmoji.json();
-
-            setEmoji(dataEmoji);
-            setEmojiData(dataEmoji);
         };
         fetchAPI();
     }, []);
@@ -61,6 +55,16 @@ export default function CongDong() {
         if (lastMessageRef.current) {
             lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
         }
+    }, [messages]);
+
+    useEffect(() => {
+        setTimeout(async () => {
+            const reqEmoji = await fetch("https://emoji-api.com/emojis?access_key=bf409e3ed3d59cc01d12b7f1a9512896fe36f4f1");
+            const dataEmoji = await reqEmoji.json();
+
+            setEmoji(dataEmoji);
+            setEmojiData(dataEmoji);
+        }, 3000);
     }, [messages]);
 
     useEffect(() => {
