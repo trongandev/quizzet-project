@@ -267,7 +267,7 @@ note, // ghi chú về từ bằng tiếng việt
             {contextHolder}
             <div className="flex items-center gap-2 md:gap-5 md:flex-row flex-col">
                 <h1 className="text-2xl font-bold text-primary">Flashcard: {flashcard?.title}</h1>
-                {user?._id == flashcard?.userId._id ? (
+                {user?._id == flashcard?.userId?._id ? (
                     <div className="flex-1 flex justify-between gap-2 items-center">
                         <div className="flex gap-2 items-center">
                             <button className="btn btn-primary flex items-center gap-1" onClick={showModalEdit}>
@@ -303,10 +303,10 @@ note, // ghi chú về từ bằng tiếng việt
                             type="text"
                             placeholder="Tên list từ"
                             className="w-full p-3 border rounded-md"
-                            value={newListFlashCard.title}
+                            value={newListFlashCard?.title}
                             onChange={(e) => setNewListFlashCard({ ...newListFlashCard, title: e.target.value })}
                         />
-                        <select name="" id="" value={newListFlashCard.language} onChange={(e) => setNewListFlashCard({ ...newListFlashCard, language: e.target.value })}>
+                        <select name="" id="" value={newListFlashCard?.language} onChange={(e) => setNewListFlashCard({ ...newListFlashCard, language: e.target.value })}>
                             <option value="english">Tiếng Anh-Mỹ</option>
                             <option value="chinese">Tiếng Trung</option>
                             <option value="korea">Tiếng Hàn</option>
@@ -316,7 +316,7 @@ note, // ghi chú về từ bằng tiếng việt
                         <textarea
                             placeholder="Mô tả"
                             className="w-full p-3 border rounded-md"
-                            value={newListFlashCard.desc}
+                            value={newListFlashCard?.desc}
                             onChange={(e) => setNewListFlashCard({ ...newListFlashCard, desc: e.target.value })}
                         />
                         <div className="flex items-center">
@@ -324,7 +324,7 @@ note, // ghi chú về từ bằng tiếng việt
                                 type="checkbox"
                                 className="w-5"
                                 id="public"
-                                checked={newListFlashCard.public}
+                                checked={newListFlashCard?.public}
                                 onChange={(e) => setNewListFlashCard({ ...newListFlashCard, public: e.target.checked })}
                             />
                             <label htmlFor="public" className="cursor-pointer">
@@ -358,7 +358,7 @@ note, // ghi chú về từ bằng tiếng việt
                                     type="text"
                                     className=""
                                     placeholder="Tên từ mới "
-                                    value={newFlashcard.title}
+                                    value={newFlashcard?.title}
                                     onChange={(e) => setNewFlashcard({ ...newFlashcard, title: e.target.value })}
                                     onKeyDown={handleKeyPress}
                                 />
@@ -370,7 +370,7 @@ note, // ghi chú về từ bằng tiếng việt
                         </div>
                         <div className="">
                             <p className="ml-2">Định nghĩa</p>
-                            <input placeholder="Định nghĩa  (bắt buộc)" value={newFlashcard.define} onChange={(e) => setNewFlashcard({ ...newFlashcard, define: e.target.value })} />
+                            <input placeholder="Định nghĩa  (bắt buộc)" value={newFlashcard?.define} onChange={(e) => setNewFlashcard({ ...newFlashcard, define: e.target.value })} />
                         </div>
                         <div className="border border-secondary  p-2 rounded-md space-y-2">
                             <p className="text-gray-700">Không yêu cầu phải điền</p>
@@ -380,7 +380,7 @@ note, // ghi chú về từ bằng tiếng việt
                                     <input
                                         type="text"
                                         placeholder="Loại từ (N,V,Adj,...)"
-                                        value={newFlashcard.type_of_word}
+                                        value={newFlashcard?.type_of_word}
                                         onChange={(e) => setNewFlashcard({ ...newFlashcard, type_of_word: e.target.value })}
                                     />
                                 </div>
@@ -389,7 +389,7 @@ note, // ghi chú về từ bằng tiếng việt
                                     <input
                                         type="text"
                                         placeholder="Phiên âm"
-                                        value={newFlashcard.transcription}
+                                        value={newFlashcard?.transcription}
                                         onChange={(e) => setNewFlashcard({ ...newFlashcard, transcription: e.target.value })}
                                     />
                                 </div>
