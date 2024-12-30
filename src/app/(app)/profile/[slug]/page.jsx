@@ -7,12 +7,11 @@ import { useRouter } from "next/navigation";
 import { GET_API, POST_API } from "@/lib/fetchAPI";
 import { useUser } from "@/context/userContext";
 import Cookies from "js-cookie";
-import Image from "next/image";
 import Link from "next/link";
 import handleCompareDate from "@/lib/CompareDate";
 import { IoArrowForwardCircleOutline } from "react-icons/io5";
 import { FaRegEye } from "react-icons/fa";
-import { message, Skeleton } from "antd";
+import { message, Image } from "antd";
 
 export default function ProfileUID({ params }) {
     const { slug } = params;
@@ -74,16 +73,7 @@ export default function ProfileUID({ params }) {
             {profile ? (
                 <>
                     <div className="flex gap-3 items-center">
-                        <div className="w-[100px] h-[100px] rounded-full overflow-hidden relative">
-                            <Image
-                                unoptimized
-                                src={profile?.profilePicture || "/meme.jpg"}
-                                alt=""
-                                className="object-cover h-full absolute"
-                                fill
-                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            />
-                        </div>
+                        <Image src={profile?.profilePicture || "/meme.jpg"} alt="" className="object-cover rounded-full" width={100} height={100} />
                         <div className="">
                             <div className="flex flex-col">
                                 <div className="flex gap-1 items-center">
@@ -98,7 +88,7 @@ export default function ProfileUID({ params }) {
                     {token === undefined ? (
                         ""
                     ) : (
-                        <button onClick={() => handleCreateAndCheckRoomChat(params.slug)} className="flex gap-2 items-center mt-2" disabled={token === undefined}>
+                        <button onClick={() => handleCreateAndCheckRoomChat(params.slug)} className="btn btn-primary flex gap-2 items-center mt-2" disabled={token === undefined}>
                             <FaFacebookMessenger />
                             Nhắn tin
                         </button>

@@ -36,6 +36,7 @@ export default function EditTool({ params }) {
             const req = await GET_API(`/admin/suboutline/${slug}`, token);
             setQuiz(req);
             setQuest(req.quest.data_so);
+            console.log(req);
             setSo_id(req.quest._id);
         };
         fetchAPI();

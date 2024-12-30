@@ -47,22 +47,6 @@ export default function Notice() {
         setLoadingSwitch(false);
     };
 
-    const handleAddNotice = async () => {
-        setConfirmLoading(true);
-        console.log(newNotice);
-        const req = await POST_API(`/notice`, newNotice, "POST", token);
-        const data = req.json();
-        if (req.ok) {
-            setConfirmLoading(false);
-            setNotice([...notice, data.notice]);
-            setNewData(defaultNotice);
-            messageApi.success(data.message);
-        } else {
-            messageApi.error(data.message);
-        }
-        setConfirmLoading(false);
-    };
-
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const defaultNotice = { title: "", content: "", image: "", link: "", status: true };
@@ -89,6 +73,22 @@ export default function Notice() {
         } else {
             messageApi.error(data.message);
         }
+    };
+
+    const handleAddNotice = async () => {
+        setConfirmLoading(true);
+        const req = await POST_API(`/notice`, newNotice, "POST", token);
+        const data = await req.json();
+        if (req.ok) {
+            setConfirmLoading(false);
+            setNotice([...notice, data.notice]);
+            messageApi.success(data.message);
+        } else {
+            messageApi.error(data.message);
+        }
+        setConfirmLoading(false);
+        setOpen(false);
+        setNewData(defaultNotice);
     };
     return (
         <div className="">
@@ -163,7 +163,7 @@ export default function Notice() {
                                             <p>{item?.title}</p>
                                         </td>
                                         <td className="px-6 py-4">{item?.content}</td>
-                                        <td className="px-6 py-4">{item?.link}</td>
+                                        <td className="px-6 py-4 w-[200px] line-clamp-1">{item?.link}</td>
 
                                         <td className="px-6 py-4">
                                             <Switch loading={loadingSwitch} checked={item?.status} onClick={() => handleUpdateNotice(item?._id, item?.status)} />
@@ -173,7 +173,7 @@ export default function Notice() {
                                             <button className="mr-1 btn btn-primary ">
                                                 <BiEdit />
                                             </button>
-                                            <button className="btn btn-primary !bg-red-500" onClick={() => handleDelete(item._id)}>
+                                            <button className="btn btn-primary !bg-red-500" onClick={() => handleDelete(item?._id)}>
                                                 <CiTrash />
                                             </button>
                                         </td>

@@ -36,11 +36,9 @@ export default function CHome({ quizData, toolData }) {
                 <div className="my-2 flex gap-5 items-center justify-center">
                     {notice &&
                         notice.map((item) => (
-                            <div className="bg-secondary px-3 py-1 rounded-md text-white" key={item?._id}>
+                            <Link href={item?.link || "#"} className="bg-third px-3 py-1 rounded-md text-white" key={item?._id}>
                                 <p>{item?.title}</p>
-
-                                <Link href={item?.link || "#"}>Tải ở đây</Link>
-                            </div>
+                            </Link>
                         ))}
                 </div>
                 <div className="mt-10 flex flex-wrap gap-5 text-third">

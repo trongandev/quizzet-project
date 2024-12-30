@@ -19,6 +19,8 @@ export default function History() {
             const req = await GET_API("/history/admin", token);
             if (req.ok) {
                 setLoading(true);
+                console.log(req);
+
                 setHistory(req.history);
                 messageApi.success("Lấy thành công lịch sử làm bài!");
             } else {
@@ -67,31 +69,31 @@ export default function History() {
                                         {index + 1}
                                     </th>
                                     <td className="px-6 py-4">
-                                        <Link href={`/profile/${item.uid._id}`}>
+                                        <Link href={`/profile/${item?.user_id?._id}`}>
                                             <div className="w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden relative">
                                                 <Image
                                                     unoptimized
-                                                    src={item.uid.profilePicture}
+                                                    src={item?.user_id?.profilePicture || "/meme.jpg"}
                                                     alt=""
                                                     className="object-cover h-full w-full absolute"
                                                     fill
                                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                 />
                                             </div>
-                                            <p>{item.uid.displayName}</p>
+                                            <p>{item?.user_id?.displayName}</p>
                                         </Link>
-                                    </td>
+                                </td>
                                     <td className="px-6 py-4 hover:text-red-500 hover:underline">
-                                        <Link target="_blank" href={`/dapan/${item._id}`} rel="noreferrer">
-                                            {item.title}
+                                        <Link target="_blank" href={`/dapan/${item?._id}`} rel="noreferrer">
+                                            {item?.title || item?.quiz_id?.title}
                                         </Link>
                                     </td>
-                                    <td className="px-6 py-4">{item.content}</td>
+                                    <td className="px-6 py-4">{item?.content || item?.quiz_id?.content}</td>
 
-                                    <td className="px-6 py-4">{handleCompareDate(item.date)}</td>
+                                    <td className="px-6 py-4">{handleCompareDate(item?.date)}</td>
                                     <td className="px-6 py-4">
                                         <p>
-                                            {item.score}/{item.lenght}
+                                            {item?.score}/{item?.length}
                                         </p>
                                     </td>
                                 </tr>
