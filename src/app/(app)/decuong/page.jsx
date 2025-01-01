@@ -62,7 +62,7 @@ export default function DeCuong() {
         fileList,
     };
     return (
-        <div className="px-3 md:px-0 text-third">
+        <div className="px-3 md:px-0 text-third h-screen">
             <h1 className="text-primary text-2xl font-bold">Đề cương</h1>
             <p>Khu vực hiển thị các đề cương mà mọi người share cũng như mình sưu tầm</p>
             <p className="text-secondary">Hiện đang làm tính năng này...</p>

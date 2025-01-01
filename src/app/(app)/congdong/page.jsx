@@ -1,7 +1,7 @@
 "use client";
 import { useSocket } from "@/context/socketContext";
 import { useUser } from "@/context/userContext";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import Cookies from "js-cookie";
 import { GET_API, POST_API } from "@/lib/fetchAPI";
 import Image from "next/image";
@@ -18,6 +18,19 @@ import { FaRegImage } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 import { TbSendOff } from "react-icons/tb";
 import handleCompareDate from "@/lib/CompareDate";
+
+const debounce = (func, wait) => {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+};
+
 export default function CongDong() {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
@@ -36,24 +49,28 @@ export default function CongDong() {
     const [loading, setLoading] = useState(false);
     const [replyingTo, setReplyingTo] = useState(null);
     const [loadingIcon, setLoadingIcon] = useState(false);
-    const scrollContainerRef = useRef(null);
     const [messageApi, contextHolder] = message.useMessage();
-
+    const [hasScrolled, setHasScrolled] = useState(false);
     useEffect(() => {
         const fetchAPI = async () => {
             const req = await GET_API(`/chatcommu?skip=${skip}&limit=50`, token);
             if (req) {
-                setMessages(req.messages);
-                setHasMore(req.hasMore);
-                setSkip((prevSkip) => prevSkip + 50);
+                const sort = req.messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+                setMessages(sort);
+                setHasMore(req?.hasMore);
+                setSkip(50);
             }
         };
         fetchAPI();
     }, []);
 
     useEffect(() => {
-        if (lastMessageRef.current) {
-            lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
+        // Chỉ cuộn lần đầu sau khi nhận messages
+        if (!hasScrolled && messages.length > 0) {
+            if (lastMessageRef.current) {
+                lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
+            }
+            setHasScrolled(true); // Đánh dấu đã cuộn
         }
     }, [messages]);
 
@@ -67,18 +84,21 @@ export default function CongDong() {
         }, 3000);
     }, [messages]);
 
+    // Optimized message handler
+    const handleNewMessage = useCallback((message) => {
+        setMessages((prev) => [...prev, message]);
+    }, []);
+
     useEffect(() => {
         if (!socket) return;
 
-        socket.on("newMessageCommu", (message) => {
-            setMessages((prevMessages) => [...prevMessages, message]);
-        });
+        socket.on("newMessageCommu", handleNewMessage);
 
         return () => {
             socket.emit("userDisconnect", userId);
-            socket.off();
+            socket.off("newMessageCommu", handleNewMessage);
         };
-    }, [socket, userId, token]);
+    }, [socket, userId, handleNewMessage]);
 
     const loadMoreMessages = async () => {
         setLoading(true);
@@ -97,38 +117,43 @@ export default function CongDong() {
         }
     };
 
-    useEffect(() => {
-        // Giữ vị trí cuộn khi tải thêm tin nhắn
-        if (scrollContainerRef.current) {
-            scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
-        }
-    }, [messages]);
+    const handleSendMessage = useCallback(async () => {
+        if (!newMessage.trim() && !image) return;
 
-    const handleSendMessage = async () => {
         setLoading(true);
-        let imageUrl = "";
+        try {
+            let imageUrl = "";
+            if (image) {
+                const formData = new FormData();
+                formData.append("image", image);
+                const response = await axios.post(process.env.API_ENDPOINT + "/upload", formData, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "multipart/form-data",
+                    },
+                });
+                imageUrl = response.data.originalUrl;
+            }
 
-        if (image) {
-            const formData = new FormData();
-            formData.append("image", image);
-            const response = await axios.post(process.env.API_ENDPOINT + "/upload", formData, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    "Content-Type": "multipart/form-data", // Định dạng bắt buộc
-                },
-            });
-            imageUrl = response.data.originalUrl;
-        }
-        if (newMessage.trim() || image) {
-            const messageData = { userId: user, message: newMessage, image: imageUrl, token, replyTo: replyingTo };
+            const messageData = {
+                userId: user,
+                message: newMessage,
+                image: imageUrl,
+                token,
+                replyTo: replyingTo,
+            };
             socket.emit("sendMessageCommu", messageData);
+
             setNewMessage("");
             setImage(null);
             setImageReview(null);
             setReplyingTo(null);
+        } catch (error) {
+            messageApi.error("Failed to send message", error);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
-    };
+    }, [newMessage, image, user, token, replyingTo, socket, messageApi]);
 
     const handlePaste = (event) => {
         const items = event.clipboardData.items;
@@ -155,11 +180,22 @@ export default function CongDong() {
         setOpen(newOpen);
     };
 
-    const handleSearchEmoji = (e) => {
-        setSearchEmoji(e.target.value);
-        const filteredData = emoji.filter((item) => item.unicodeName.includes(e.target.value));
-        setEmojiData(filteredData);
-    };
+    const debouncedSearchEmoji = useCallback(
+        debounce((searchTerm) => {
+            const filteredData = emoji.filter((item) => item.unicodeName.toLowerCase().includes(searchTerm.toLowerCase()));
+            setEmojiData(filteredData);
+        }, 300),
+        [emoji]
+    );
+
+    const handleSearchEmoji = useCallback(
+        (e) => {
+            const searchTerm = e.target.value;
+            setSearchEmoji(searchTerm);
+            debouncedSearchEmoji(searchTerm);
+        },
+        [debouncedSearchEmoji]
+    );
 
     const handleUnsend = async (messageId) => {
         setLoading(true);
@@ -195,14 +231,17 @@ export default function CongDong() {
         setLoadingIcon(false);
     };
 
-    const reactIconList = [
-        "https://static.xx.fbcdn.net/images/emoji.php/v9/tb6/1/32/1f44d.png",
-        "https://static.xx.fbcdn.net/images/emoji.php/v9/t72/1/32/2764.png",
-        "https://static.xx.fbcdn.net/images/emoji.php/v9/t8e/1/32/1f606.png",
-        "https://static.xx.fbcdn.net/images/emoji.php/v9/t7b/1/32/1f62e.png",
-        "https://static.xx.fbcdn.net/images/emoji.php/v9/tc8/1/32/1f622.png",
-        "https://static.xx.fbcdn.net/images/emoji.php/v9/t47/1/32/1f621.png",
-    ];
+    const reactIconList = useMemo(
+        () => [
+            "https://static.xx.fbcdn.net/images/emoji.php/v9/tb6/1/32/1f44d.png",
+            "https://static.xx.fbcdn.net/images/emoji.php/v9/t72/1/32/2764.png",
+            "https://static.xx.fbcdn.net/images/emoji.php/v9/t8e/1/32/1f606.png",
+            "https://static.xx.fbcdn.net/images/emoji.php/v9/t7b/1/32/1f62e.png",
+            "https://static.xx.fbcdn.net/images/emoji.php/v9/tc8/1/32/1f622.png",
+            "https://static.xx.fbcdn.net/images/emoji.php/v9/t47/1/32/1f621.png",
+        ],
+        []
+    );
 
     const [isModalOpen, setIsModalOpen] = useState(null);
 
@@ -247,12 +286,13 @@ export default function CongDong() {
         setEditMess(msg);
         showModalEditMess(msg._id);
     };
+
     return (
-        <div className="text-third flex gap-5 flex-wrap px-3 md:px-0">
+        <div className="text-third flex gap-5 flex-wrap px-3 md:px-0 h-[85vh]">
             {contextHolder}
 
-            <div className="my-5 w-full md:w-[700px] p-3 md:p-5  border border-primary  rounded-md">
-                <div className="h-[400px] overflow-y-scroll flex flex-col pr-3 scroll-smooth" ref={scrollContainerRef}>
+            <div className=" w-full md:w-[700px] p-3 md:p-5  border border-primary  rounded-md">
+                <div className="h-[550px] overflow-y-scroll flex flex-col pr-3 scroll-smooth">
                     {!loading && hasMore && (
                         <button onClick={loadMoreMessages} className="mb-5 btn btn-primary">
                             Load More Messages
@@ -551,10 +591,10 @@ export default function CongDong() {
             </div>
             <div className="flex-1">
                 <h3>Các thành viên đang online: {onlineUsers?.length}</h3>
-                <div className="grid grid-cols-3 xl:grid-cols-4 gap-3 mt-2">
+                <div className="grid grid-cols-3 xl:grid-cols-4 gap-3 mt-2 h-[180px] overflow-y-scroll">
                     {onlineUsers?.map((onl_user) => (
                         <Link
-                            className={`flex flex-col items-center  ${
+                            className={`flex flex-col items-center h-[90px]  ${
                                 onl_user._id ? "group bg-linear-item-2 text-secondary " : "border border-purple-900 text-purple-900 cursor-default"
                             } rounded-md py-2`}
                             key={onl_user?.socketId}
@@ -569,7 +609,9 @@ export default function CongDong() {
                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                 />
                             </div>
-                            <p className="text-sm group-hover:underline  mt-1">{onl_user?.displayName || "Guest"}</p>
+                            <p className="text-sm group-hover:underline  mt-1 line-clamp-1" title={onl_user?.displayName || "Guest"}>
+                                {onl_user?.displayName || "Guest"}
+                            </p>
                         </Link>
                     ))}
                 </div>

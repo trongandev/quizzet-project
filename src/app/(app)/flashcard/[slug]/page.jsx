@@ -9,7 +9,7 @@ import { FaBrain, FaTrash } from "react-icons/fa6";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { LoadingOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { HiMiniSpeakerWave } from "react-icons/hi2";
-import { IoMdAdd } from "react-icons/io";
+import { IoIosArrowBack, IoMdAdd } from "react-icons/io";
 import { MdEdit, MdOutlineQuestionMark } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -32,6 +32,7 @@ export default function FlashCardDetail({ params }) {
     const router = useRouter();
     useEffect(() => {
         const fetchFlashCard = async () => {
+            setLoading(true);
             const req = await GET_API(`/flashcards/${params?.slug}`, token);
             if (req.ok) {
                 const sortedFlashcards = sortFlashcards(req?.listFlashCards?.flashcards);
@@ -43,6 +44,7 @@ export default function FlashCardDetail({ params }) {
                     content: req.message,
                 });
             }
+            setLoading(false);
         };
         fetchFlashCard();
     }, []);
@@ -261,10 +263,12 @@ note, // ghi chú về từ bằng tiếng việt
     };
 
     const { user } = useUser();
-    console.log(user);
     return (
         <div className="text-third px-3 md:px-0">
             {contextHolder}
+            <Link href="/flashcard" className="hover:text-primary hover:underline flex items-center gap-1">
+                <IoIosArrowBack /> Quay lại
+            </Link>
             <div className="flex items-center gap-2 md:gap-5 md:flex-row flex-col">
                 <h1 className="text-2xl font-bold text-primary">Flashcard: {flashcard?.title}</h1>
                 {user?._id == flashcard?.userId?._id ? (
@@ -363,7 +367,7 @@ note, // ghi chú về từ bằng tiếng việt
                                     onKeyDown={handleKeyPress}
                                 />
                             </div>
-                            <button className="btn btn-primary items-center gap-2 " onClick={handleSendPrompt}>
+                            <button className="btn btn-primary flex items-center gap-2 " onClick={handleSendPrompt}>
                                 {loading ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ color: "blue" }} /> : <FaBrain />}
                                 AI Generate
                             </button>
@@ -422,7 +426,7 @@ note, // ghi chú về từ bằng tiếng việt
             <div className="flex items-center gap-2 mt-2">
                 <p>Người chia sẻ:</p>
                 <div className="w-[40px] h-[40px] overflow-hidden relative">
-                    <Image src={flashcard?.userId?.profilePicture} alt="" className="rounded-full w-full h-full absolute object-cover" fill />
+                    <Image src={flashcard?.userId?.profilePicture || "/meme.jpg"} alt="" className="rounded-full w-full h-full absolute object-cover" fill />
                 </div>
                 <Link href={`/profile/${flashcard?.userId?._id}`} className="hover:underline">
                     <p title={flashcard?.userId?.displayName} className="line-clamp-1">
@@ -627,6 +631,8 @@ note, // ghi chú về từ bằng tiếng việt
                         </div>
                     ))}
                 </div>
+                {!loading && !flashcard && <Spin indicator={<LoadingOutlined spin />} size="default" className="h-[400px] flex items-center justify-center" />}
+                {flashcard?.flashcards?.length === 0 && <p className="h-[400px] flex items-center justify-center">Không có từ nào trong list</p>}
             </div>
         </div>
     );

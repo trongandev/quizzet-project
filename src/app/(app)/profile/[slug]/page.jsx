@@ -11,7 +11,8 @@ import Link from "next/link";
 import handleCompareDate from "@/lib/CompareDate";
 import { IoArrowForwardCircleOutline } from "react-icons/io5";
 import { FaRegEye } from "react-icons/fa";
-import { message, Image } from "antd";
+import { message, Image as Images } from "antd";
+import Image from "next/image";
 
 export default function ProfileUID({ params }) {
     const { slug } = params;
@@ -66,6 +67,7 @@ export default function ProfileUID({ params }) {
             });
         }
     };
+    console.log(quiz);
 
     return (
         <div className="px-3 md:px-0">
@@ -73,7 +75,7 @@ export default function ProfileUID({ params }) {
             {profile ? (
                 <>
                     <div className="flex gap-3 items-center">
-                        <Image src={profile?.profilePicture || "/meme.jpg"} alt="" className="object-cover rounded-full" width={100} height={100} />
+                        <Images src={profile?.profilePicture || "/meme.jpg"} alt="" className="object-cover rounded-full" width={100} height={100} />
                         <div className="">
                             <div className="flex flex-col">
                                 <div className="flex gap-1 items-center">
@@ -85,10 +87,8 @@ export default function ProfileUID({ params }) {
                             </div>
                         </div>
                     </div>
-                    {token === undefined ? (
-                        ""
-                    ) : (
-                        <button onClick={() => handleCreateAndCheckRoomChat(params.slug)} className="btn btn-primary flex gap-2 items-center mt-2" disabled={token === undefined}>
+                    {token && (
+                        <button onClick={() => handleCreateAndCheckRoomChat(params.slug)} className="btn btn-primary flex gap-2 items-center mt-2" disabled={!token}>
                             <FaFacebookMessenger />
                             Nhắn tin
                         </button>
@@ -96,8 +96,8 @@ export default function ProfileUID({ params }) {
 
                     <hr className="my-5" />
                     <div className="">
-                        <h1 className="text-2xl font-bold text-primary" key={profile._id}>
-                            Các bài đăng của {profile.displayName || profile.email}
+                        <h1 className="text-2xl font-bold text-primary" key={profile?._id}>
+                            Các bài đăng của {profile?.displayName}
                         </h1>
                         <div className=" mt-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             {quiz &&
@@ -105,30 +105,28 @@ export default function ProfileUID({ params }) {
                                     <div key={item._id} className="rounded-[12px]  shadow-md h-[400px]">
                                         <div className="overflow-hidden relative h-full rounded-[8px]">
                                             <Image
-                                                src={item.img}
-                                                alt={item.title}
-                                                className="absolute h-full w-full object-cover hover:scale-110 duration-300  brightness-75"
+                                                src={item?.img || "/meme.jpg"}
+                                                alt={item?.title}
+                                                className="absolute h-full w-full object-cover hover:scale-110 duration-300  brightness-90"
                                                 fill
                                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                priority
-                                                unoptimized
                                             />
                                             <div className="p-3 absolute z-1 text-white bottom-0 w-full bg-linear-item">
-                                                <h1 className="text-lg font-bold">{item.title}</h1>
-                                                <p className="line-clamp-2 text-sm text-[#D9D9D9]">{item.content}</p>
+                                                <h1 className="text-lg font-bold">{item?.title}</h1>
+                                                <p className="line-clamp-2 text-sm text-[#D9D9D9]">{item?.content}</p>
 
                                                 <div className="flex justify-between items-center mt-2">
                                                     <div className="flex flex-col">
                                                         <p className="text-[#D9D9D9] text-[10px] flex gap-1 items-center">
-                                                            <FaRegEye /> Lượt làm: {item.noa}
+                                                            <FaRegEye /> Lượt làm: {item?.noa}
                                                         </p>
                                                         <p className="text-[#D9D9D9] text-[10px] flex gap-1 items-center">
-                                                            <CiTimer color="#D9D9D9" /> {handleCompareDate(item.date)}
+                                                            <CiTimer color="#D9D9D9" /> {handleCompareDate(item?.date)}
                                                         </p>
                                                     </div>
 
-                                                    <Link href={`/quiz/${item.slug}`} className="block">
-                                                        <button className="flex gap-1 items-center text-sm">
+                                                    <Link href={`/quiz/${item?.slug}`} className="block">
+                                                        <button className="btn btn-primary flex gap-1 items-center text-sm">
                                                             Làm bài <IoArrowForwardCircleOutline />
                                                         </button>
                                                     </Link>

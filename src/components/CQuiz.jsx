@@ -103,14 +103,14 @@ export default function CQuiz({ quizData }) {
                         ))}
                     </select>
                 </div>
-                <div className="flex items-center gap-3 flex-1 flex-wrap justify-end">
+                <div className="flex items-center gap-3 flex-1 flex-col md:flex-row ">
                     <input type="text" placeholder="Tìm tên câu hỏi mà bạn cần..." className="flex-1 w-full" onChange={(e) => handleSearch(e.target.value)} />
-                    <div className="flex-1 flex gap-3 md:justify-end">
+                    <div className="flex-1 flex gap-3 w-full">
                         <Link href="/quiz/themcauhoi" className="block flex-1">
-                            <button className="btn btn-second w-full lg:w-[170px]">Thêm câu hỏi</button>
+                            <button className="btn btn-second w-full">Thêm câu hỏi</button>
                         </Link>
-                        <Link href="/quiz/nganhang" className="block ">
-                            <button className="btn btn-primary w-full lg:w-[170px]">Thi thử</button>
+                        <Link href="/quiz/nganhang" className="block flex-1 ">
+                            <button className="btn btn-primary w-full">Thi thử</button>
                         </Link>
                     </div>
                 </div>
@@ -122,7 +122,7 @@ export default function CQuiz({ quizData }) {
                             <Image
                                 src={item.img}
                                 alt={item.title}
-                                className="absolute h-full w-full object-cover hover:scale-110 duration-300  brightness-75"
+                                className="absolute h-full w-full object-cover hover:scale-110 duration-300  brightness-90"
                                 fill
                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                 priority

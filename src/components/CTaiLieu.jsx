@@ -112,10 +112,10 @@ export default function CTaiLieu({ toolData }) {
                     <input type="text" placeholder="Tìm tên tài liệu mà bạn cần..." className="w-full md:w-[250px]" onChange={(e) => handleSearch(e.target.value)} />
                     <div className="flex gap-3 flex-1 items-center">
                         <Link href="/tailieu/themtailieu" className="block flex-1">
-                            <button className="w-full md:w-[170px] btn btn-second">Thêm tài liệu</button>
+                            <button className="w-full btn btn-second">Thêm tài liệu</button>
                         </Link>
-                        <Link href="/flashcard" className="block flex-1">
-                            <button className="w-full flex gap-2 items-center btn btn-primary">
+                        <Link href="/flashcard" className="block flex-1 ">
+                            <button className="w-full flex gap-2 items-center btn btn-primary justify-center">
                                 <GiCardPick size={20} />
                                 Flashcard
                             </button>

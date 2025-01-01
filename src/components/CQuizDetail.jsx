@@ -166,7 +166,7 @@ export default function CQuizDetail({ QuizData, QuestData }) {
                             <Switch checkedChildren="Bật" unCheckedChildren="Tắt" defaultChecked={checkAns} onChange={() => handleChangeCheckAns(!checkAns)} />
                         </div>
                     </div>
-                    <form action="" onSubmit={handleQuiz} className="relative flex flex-col  mt-1">
+                    <form action="" onSubmit={handleQuiz} className="relative flex gap-5 flex-row  mt-1">
                         <div className="w-full md:w-2/3">
                             <div className=" h-[500px] overflow-y-auto scroll-smooth">
                                 {QuestData?.map((item, index) => (
@@ -176,12 +176,12 @@ export default function CQuizDetail({ QuizData, QuestData }) {
                                         </h1>
                                         <div className="flex items-center gap-3 my-3">
                                             {checkAns && (
-                                                <button className="text-[10px] btn-small flex items-center gap-1" onClick={(e) => handleCheckAns(e, item)}>
+                                                <button className="text-[10px] btn-small !bg-secondary flex items-center gap-1" onClick={(e) => handleCheckAns(e, item)}>
                                                     <BiCheck /> Check answer
                                                 </button>
                                             )}
-                                            <button className=" flex items-center gap-1 btn-small" onClick={(e) => handleExplaneAns(e, item)}>
-                                                <BsQuestion /> Giải thích
+                                            <button className=" flex items-center gap-1 btn-small !bg-secondary" onClick={(e) => handleExplaneAns(e, item)}>
+                                                <BsQuestion /> Giải thích bằng AI
                                             </button>
                                         </div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -197,12 +197,12 @@ export default function CQuizDetail({ QuizData, QuestData }) {
                                                     />
                                                     <label
                                                         htmlFor={`${index}ans${idx}`}
-                                                        className={`absolute  h-full font-bold p-3 flex items-center justify-center ${
+                                                        className={`absolute  h-full font-bold px-3 flex items-center justify-center rounded-md ${
                                                             selectedAnswers[item.id] === idx ? "bg-primary text-white" : ""
                                                         }`}>
                                                         {idx === 0 ? "A" : idx === 1 ? "B" : idx === 2 ? "C" : "D"}
                                                     </label>
-                                                    <label htmlFor={`${index}ans${idx}`} className="block w-full ml-7 p-3">
+                                                    <label htmlFor={`${index}ans${idx}`} className="block w-full ml-8 p-2">
                                                         {answer}
                                                     </label>
                                                 </div>
@@ -226,15 +226,15 @@ export default function CQuizDetail({ QuizData, QuestData }) {
                         </div>
                         {/* desktop */}
                         <div className="hidden md:block">
-                            <div className="fixed md:w-1/4 p-5 right-5 bottom-[25%]">
-                                <div className="w-[240px] bg-gray-200 p-5">
+                            <div className="w-full h-full">
+                                <div className="w-full h-[500px] bg-gray-200 p-5  ">
                                     <h1 className="text-lg font-bold text-primary text-center mb-3">Danh sách câu hỏi</h1>
-                                    <div className="grid grid-cols-5 gap-2 h-[300px] overflow-y-scroll">
+                                    <div className="grid grid-cols-5 gap-2 h-[420px] overflow-y-scroll pr-2">
                                         {QuestData?.map((item, index) => (
                                             <a
                                                 href={`#${item.id}`}
                                                 key={index}
-                                                className={`flex items-center justify-center w-full h-[45px] ${
+                                                className={`flex items-center justify-center w-[45px] h-[45px] rounded-md ${
                                                     selectedAnswers[item.id] !== undefined ? "bg-primary text-green-100 font-bold" : "bg-red-500 text-red-100"
                                                 }`}>
                                                 <p>{index + 1}</p>

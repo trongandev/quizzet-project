@@ -1,15 +1,16 @@
 "use client";
 import { GET_API, GET_API_WITHOUT_COOKIE, POST_API } from "@/lib/fetchAPI";
-import { message, Modal } from "antd";
+import { message, Modal, Spin } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { IoCopyOutline } from "react-icons/io5";
-import { MdKeyboardDoubleArrowRight, MdPublic } from "react-icons/md";
+import { MdPublic } from "react-icons/md";
 import Cookies from "js-cookie";
 import handleCompareDate from "@/lib/CompareDate";
 import { RiGitRepositoryPrivateFill } from "react-icons/ri";
+import { LoadingOutlined } from "@ant-design/icons";
 export default function FlashCard() {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -22,21 +23,18 @@ export default function FlashCard() {
 
     useEffect(() => {
         const fetchListFlashCard = async () => {
+            setLoading(true);
             const req = await GET_API("/list-flashcards", token);
             const req1 = await GET_API_WITHOUT_COOKIE("/list-flashcards/public");
 
             if (req.ok) {
                 setListFlashCard(req.listFlashCards);
-            } else {
-                messageApi.open({
-                    type: "error",
-                    content: req.message,
-                });
             }
 
             if (req1.ok) {
                 setPublicFlashcards(req1?.publicFlashcards);
             }
+            setLoading(false);
         };
         fetchListFlashCard();
     }, []);
@@ -71,9 +69,9 @@ export default function FlashCard() {
         <div className="text-third px-3 md:px-0">
             {contextHolder}
 
-            <div className="flex gap-5 md:h-[70px] flex-col md:flex-row ">
+            <div className="flex gap-5 md:h-[70px] flex-col md:flex-row items-center">
                 <h1 className="text-2xl font-bold text-primary flex-1">Flashcard</h1>
-                {/* <div className="py-3 md:py-0 h-full bg-white border shadow-md rounded-md flex flex-1">
+                <div className="py-3 md:py-0 h-full bg-white border shadow-md rounded-md flex flex-1">
                     <div className="flex-1 flex items-center justify-center flex-col">
                         <h1 className="text-primary font-bold text-2xl">0</h1>
                         <p className="text-gray-500">Đã học</p>
@@ -86,48 +84,11 @@ export default function FlashCard() {
                         <h1 className="text-red-500 font-bold text-2xl">0</h1>
                         <p className="text-gray-500">Cần ôn tập</p>
                     </div>
-                </div> */}
-            </div>
-            {/* <div className="my-5">
-                <div className="">
-                    <h3 className="text-xl mb-2 text-primary">Đang học</h3>
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 h-[248px]">
-                        {listFlashCard?.flashcards &&
-                            listFlashCard?.flashcards.map((item) => (
-                                <Link href={`#`} key={item._id} className="w-full h-full bg-gray-200 rounded-xl block shadow-sm p-3 border hover:shadow-md transition-all duration-300">
-                                    <h1 className="font-bold line-clamp-1" title="TOEIC">
-                                        {item?.title}
-                                    </h1>
-                                    <h1 className="flex items-center gap-1">
-                                        <IoCopyOutline />
-                                        {item} từ
-                                    </h1>
-                                    <p className="text-sm line-clamp-2 italic" title="CÁC TỪ VỰNG VỀ TOIEC TRONG STUDY4">
-                                        CÁC TỪ VỰNG VỀ TOIEC TRONG STUDY4
-                                    </p>
-                                    <div className="flex items-center gap-2 my-2">
-                                        <Image src="https://placehold.co/35x35" alt="" width={35} height={35} className="rounded-full" />
-                                        <p className="line-clamp-1" title="">
-                                            Tỏng An
-                                        </p>
-                                    </div>
-                                    <div className="text-sm text-gray-700">
-                                        <p>Cần ôn tập: 0</p>
-                                        <p>Cần nhớ: 0</p>
-                                    </div>
-                                    <button className="w-full mt-2">Học tiếp</button>
-                                </Link>
-                            ))}
-                    </div>
-
-                    <div className="flex items-center gap-1 text-primary mt-2">
-                        Xem tất cả <MdKeyboardDoubleArrowRight />
-                    </div>
                 </div>
-            </div> */}
+            </div>
             <div className="">
                 <h3 className="text-xl mb-2 text-primary">List từ đã tạo</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 h-[334px] overflow-y-scroll">
                     <div
                         onClick={showModal}
                         className="w-full text-primary cursor-pointer hover:border-primary bg-gray-100 rounded-xl shadow-sm p-3 border hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 flex-col  h-[161px]">
@@ -203,13 +164,14 @@ export default function FlashCard() {
                                 </div>
                             </Link>
                         ))}
-                    {listFlashCard.length === 0 && <div className="flex items-center justify-center">Nothing...</div>}
+                    {loading && !listFlashCard && <Spin indicator={<LoadingOutlined spin />} size="default" className="h-full flex items-center justify-center" />}
+                    {!token && <div className=" flex items-center justify-center text-secondary">Bạn cần đăng nhập để thực hiện</div>}
                 </div>
             </div>
 
-            <div className="mt-5">
+            <div className="mt-10">
                 <h3 className="text-xl mb-2 text-primary">Khám phá từ cộng đồng chúng tôi</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 h-[334px] overflow-y-scroll">
                     {publicFlashcards &&
                         publicFlashcards.map((item) => (
                             <Link
@@ -242,7 +204,7 @@ export default function FlashCard() {
                                 </div>
                             </Link>
                         ))}
-                    {listFlashCard.length === 0 && <div className="flex items-center justify-center">Nothing...</div>}
+                    {loading && !listFlashCard && <Spin indicator={<LoadingOutlined spin />} size="default" className="h-full flex items-center justify-center" />}
                 </div>
             </div>
         </div>

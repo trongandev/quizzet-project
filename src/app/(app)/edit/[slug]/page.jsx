@@ -213,33 +213,33 @@ export default function Edit({ params }) {
                         <h1 className="text-md text-primary font-bold line-clamp-1 h-[24px]">{quiz?.title || "Chưa có tiêu đề?"}</h1>
                         <p className="text-gray-500 line-clamp-1 text-sm h-[20px]">{quiz?.content || "Chưa có nội dung"}</p>
                     </div>
-                    <Button className="text-orange-500 cursor-pointer hover:text-red-500 flex items-center gap-1" onClick={showModal}>
+                    <button className="btn btn-primary hover:text-red-500 flex items-center gap-1" onClick={showModal}>
                         <FaRegEdit size={20} />
                         Bấm vào để sửa
-                    </Button>
+                    </button>
                     <Modal title="Thêm hình ảnh" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
                         <p className="text-gray-500 text-[12px]">* Nhập tiêu đề xong bấm tìm hình ảnh</p>
                         <div className="mt-b flex items-center justify-between gap-1">
-                            <Input type="text" className="rounded-none" onChange={(e) => handleTitle(e)} name="title" id="title" placeholder="Nhập tiêu đề..." value={quiz?.title} />
+                            <input type="text" className="rounded-none" onChange={(e) => handleTitle(e)} name="title" id="title" placeholder="Nhập tiêu đề..." value={quiz?.title} />
                             <Link href={`https://www.google.com/search?q=${quiz?.title}&udm=2`} target="_black">
-                                <Button className="rounded-none">Tìm hình ảnh này</Button>
+                                <button className="btn btn-primary">Tìm hình ảnh này</button>
                             </Link>
                         </div>
                         <div className="mt-3">
                             <Input type="text" onChange={(e) => handleContent(e)} name="content" id="content" placeholder="Nhập nội dung..." value={quiz?.content} />
                         </div>
                         <div className="flex items-center gap-1 mt-3 h-[32px]">
-                            <Button className="rounded-none" onClick={handlePaste}>
+                            <button className="btn btn-primary" onClick={handlePaste}>
                                 <MdContentPaste />
-                            </Button>
-                            <Input type="text" className="rounded-none h-full" onChange={(e) => handleImage(e)} name="image" id="image" placeholder="Dán URL hình ảnh ở đây..." value={quiz?.img} />
+                            </button>
+                            <input type="text" className="rounded-none h-full" onChange={(e) => handleImage(e)} name="image" id="image" placeholder="Dán URL hình ảnh ở đây..." value={quiz?.img} />
                             <Popover
                                 content={<Image width={400} src="./guide4.png" alt="" className="" />}
                                 title="Cách lấy đường đẫn hình ảnh (Image Address)"
                                 trigger="click"
                                 open={open}
                                 onOpenChange={handleOpenChange}>
-                                <Button className="text-gray-500 font-bold rounded-none">?</Button>
+                                <button className="btn btn-second text-gray-500 font-bold">?</button>
                             </Popover>
                         </div>
                         <Select
@@ -263,10 +263,10 @@ export default function Edit({ params }) {
                                     Câu {index + 1}: {item.question}
                                 </h1>
                                 <div className="flex items-center gap-1">
-                                    <button onClick={() => handleUpdateQuest(item.id)} className="btn-outline hover:text-white hover:border-white">
-                                        <MdEdit size={20} />
+                                    <button onClick={() => handleUpdateQuest(item.id)} className="btn btn-primary hover:text-white hover:border-white">
+                                        <MdEdit size={18} />
                                     </button>
-                                    <button className="" onClick={handleDelete(index)}>
+                                    <button className="btn btn-primary !bg-red-500" onClick={handleDelete(index)}>
                                         <IoIosClose size={20} />
                                     </button>
                                 </div>
@@ -298,11 +298,13 @@ export default function Edit({ params }) {
                 </div>
                 <div className="mt-5">
                     <div className="flex justify-between items-center">
-                        <button className="flex gap-2 items-center btn-outline" onClick={showModalAddQuest}>
+                        <button className="flex gap-2 items-center btn btn-second" onClick={showModalAddQuest}>
                             <CiCirclePlus size={20} />
                             Thêm câu hỏi
                         </button>
-                        <button onClick={handlePost}>Cập nhật bài</button>
+                        <button onClick={handlePost} className="btn btn-primary">
+                            Cập nhật bài
+                        </button>
                     </div>
                     <Modal
                         title="Thêm câu hỏi"
@@ -310,10 +312,10 @@ export default function Edit({ params }) {
                         onOk={handleOkAddQuest}
                         onCancel={handleCancelAddQuest}
                         footer={[
-                            <button key="back" className="btn-outline mr-3" onClick={handleClearField}>
+                            <button key="back" className="btn btn-primary mr-3 !bg-red-500" onClick={handleClearField}>
                                 Xoá
                             </button>,
-                            <button key="submit" type="primary" onClick={handleOkAddQuest}>
+                            <button key="submit" type="primary" className="btn btn-primary " onClick={handleOkAddQuest}>
                                 Thêm/Cập nhật
                             </button>,
                         ]}>

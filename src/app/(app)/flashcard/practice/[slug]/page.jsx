@@ -261,6 +261,8 @@ export default function PractiveFlashcard({ params }) {
                                                 {loadingAudio === flashcards[index]?._id ? <Spin indicator={<LoadingOutlined spin />} /> : <HiMiniSpeakerWave size={24} />}
                                             </button>
                                         </div>
+                                        <p className="text-gray-500 text-lg font-bold">{flashcards[index]?.transcription}</p>
+
                                         <p className="text-gray-500 text-sm">(Click to flip)</p>
                                     </div>
 
@@ -275,8 +277,14 @@ export default function PractiveFlashcard({ params }) {
                                         {flashcards[index]?.example && (
                                             <div className="mt-4 p-4 bg-gray-50 rounded-lg w-full">
                                                 <p className="font-medium mb-2">Ví dụ:</p>
-                                                <p className="italic text-gray-600">{flashcards[index].example[0]?.en}</p>
-                                                <p className="italic text-gray-600">{flashcards[index].example[0]?.vi}</p>
+                                                <div className="mb-2">
+                                                    <p className="font-bold italic text-gray-600">{flashcards[index].example[0]?.en}</p>
+                                                    <p className="italic text-gray-600">{flashcards[index].example[0]?.vi}</p>
+                                                </div>
+                                                <div className="mb-2">
+                                                    <p className="font-bold italic text-gray-600">{flashcards[index].example[1]?.en}</p>
+                                                    <p className="italic text-gray-600">{flashcards[index].example[1]?.vi}</p>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
