@@ -1,26 +1,18 @@
 "use client";
 import handleCompareDate from "@/lib/CompareDate";
-import { GET_API_WITHOUT_COOKIE } from "@/lib/fetchAPI";
 import { subjectOption } from "@/lib/subjectOption";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Spin, Tooltip } from "antd";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import React, { useCallback, useState } from "react";
 import { FaRegEye, FaRegQuestionCircle, FaSortAlphaDown, FaSortAlphaDownAlt } from "react-icons/fa";
 import { GiCardPick } from "react-icons/gi";
 import { TbSortAscendingNumbers, TbSortDescendingNumbers } from "react-icons/tb";
 
 export default function CTaiLieu({ toolData }) {
-    const router = useRouter();
     const [toggleBtnSortAlpha, setToggleBtnSortAlpha] = useState(true);
     const [toggleBtnSortNumber, setToggleBtnSortNumber] = useState(true);
-
-    const handleChangeRouterDeCuong = async (item) => {
-        await GET_API_WITHOUT_COOKIE(`/admin/suboutline/view/${item._id}`);
-        router.push(`/tailieu/${item.slug}`);
-    };
 
     const [data, setData] = useState(toolData);
 
@@ -159,9 +151,9 @@ export default function CTaiLieu({ toolData }) {
                             </div>
                             <div className="">
                                 <p className="text-[12px]">{handleCompareDate(item.date)}</p>
-                                <button onClick={() => handleChangeRouterDeCuong(item)} className="text-sm w-full btn btn-primary">
-                                    Xem ngay
-                                </button>
+                                <Link href={`/tailieu/${item.slug}`}>
+                                    <button className="text-sm w-full btn btn-primary">Xem ngay</button>
+                                </Link>
                             </div>
                         </div>
                     </div>

@@ -1,7 +1,7 @@
 import React from "react";
 import { unstable_cache } from "next/cache";
 import { GET_API } from "@/lib/fetchAPI";
-import CDeCuong from "@/components/CDecuong";
+import CTaiLieuDetail from "@/components/CTaiLieuDetail";
 
 const getCachedDecuong = (slug) =>
     unstable_cache(
@@ -33,5 +33,5 @@ export default async function Decuong({ params }) {
     const { slug } = params;
 
     const decuong = await getCachedDecuong(slug)();
-    return <CDeCuong DeCuongData={decuong} />;
+    return <CTaiLieuDetail DeCuongData={decuong} />;
 }

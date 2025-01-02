@@ -14,7 +14,7 @@ pre {
     font-family: "Maven Pro", sans-serif;
 }
 
-button.btn {
+.btn {
     padding: 6px 16px;
     border-radius: 16px;
     transition: all 0.1s;
@@ -23,28 +23,28 @@ button.btn {
     color: white;
 }
 
-button.btn-primary {
+.btn-primary {
     background-color: #2187d5;
     color: white;
 }
 
-button.btn-primary:hover {
+.btn-primary:hover {
     background-color: #0e5a8a;
 }
 
-button.btn-second {
+.btn-second {
     padding: 5px 15px;
     border-radius: 15px;
     border: 1px solid #2187d5;
     color: #2187d5;
 }
 
-button.btn-second:hover {
+.btn-second:hover {
     background-color: #2187d5;
     color: white;
 }
 
-button.btn-small {
+.btn-small {
     padding: 2px 12px;
     border-radius: 12px;
     font-size: 10px;
@@ -52,7 +52,7 @@ button.btn-small {
     background-color: #2187d5;
 }
 
-button.btn-small-outline {
+.btn-small-outline {
     padding: 1px 11px;
     border-radius: 11px;
     font-size: 10px;
@@ -159,4 +159,72 @@ mark {
 }
 .backface-hidden {
     backface-visibility: hidden;
+}
+
+.shake {
+    animation: shake 0.5s;
+}
+
+.tada {
+    animation: tada 0.5s;
+}
+
+@keyframes shake {
+    0% {
+        transform: translate(1px, 1px) rotate(0deg);
+    }
+    10% {
+        transform: translate(-1px, -2px) rotate(-1deg);
+    }
+    20% {
+        transform: translate(-3px, 0px) rotate(1deg);
+    }
+    30% {
+        transform: translate(3px, 2px) rotate(0deg);
+    }
+    40% {
+        transform: translate(1px, -1px) rotate(1deg);
+    }
+    50% {
+        transform: translate(-1px, 2px) rotate(-1deg);
+    }
+    60% {
+        transform: translate(-3px, 1px) rotate(0deg);
+    }
+    70% {
+        transform: translate(3px, 1px) rotate(-1deg);
+    }
+    80% {
+        transform: translate(-1px, -1px) rotate(1deg);
+    }
+    90% {
+        transform: translate(1px, 2px) rotate(0deg);
+    }
+    100% {
+        transform: translate(1px, -2px) rotate(-1deg);
+    }
+}
+
+@keyframes tada {
+    0% {
+        transform: scale(1);
+    }
+    10%,
+    20% {
+        transform: scale(0.9) rotate(-3deg);
+    }
+    30%,
+    50%,
+    70%,
+    90% {
+        transform: scale(1.1) rotate(3deg);
+    }
+    40%,
+    60%,
+    80% {
+        transform: scale(1.1) rotate(-3deg);
+    }
+    100% {
+        transform: scale(1) rotate(0);
+    }
 }

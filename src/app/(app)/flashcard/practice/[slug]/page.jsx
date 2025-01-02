@@ -6,9 +6,8 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { Spin, Switch, message } from "antd";
 import { HiMiniSpeakerWave } from "react-icons/hi2";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
-import { CiCircleCheck } from "react-icons/ci";
-import { IoIosCloseCircleOutline } from "react-icons/io";
 import { BiSlideshow } from "react-icons/bi";
+import { IoSend } from "react-icons/io5";
 
 const FEATURES = {
     FLASHCARD: 1,
@@ -32,6 +31,9 @@ export default function PractiveFlashcard({ params }) {
     // random moder
     const [isRandomMode, setIsRandomMode] = useState(false);
     const [isRandomFeature, setIsRandomFeature] = useState(false);
+    const [selectedAnswers, setSelectedAnswers] = useState({});
+    const [isCorrectAns, setIsCorrectAns] = useState(null);
+    const [language, setLanguage] = useState({});
     // Fetch flashcards data
     useEffect(() => {
         const fetchFlashCards = async () => {
@@ -39,6 +41,7 @@ export default function PractiveFlashcard({ params }) {
             const req = await GET_API(`/flashcards/${params?.slug}`, token);
             if (req.ok) {
                 const result = req?.listFlashCards?.flashcards;
+                setLanguage(req?.listFlashCards?.language);
                 setFlashcards(result);
                 generateQuizOptions(result[0]);
             } else {
@@ -105,19 +108,25 @@ export default function PractiveFlashcard({ params }) {
 
     // Handle audio playback
     const speakWord = async (text, type, id) => {
-        try {
-            setLoadingAudio(id);
+        setLoadingAudio(id);
+        if (language == "english") {
             const req = await fetch(`${process.env.API_ENDPOINT}/proxy?audio=${text}&type=${type}`);
             const blob = await req.blob();
             const url = URL.createObjectURL(blob);
             const audio = new Audio(url);
-            audio.onended = () => URL.revokeObjectURL(url); // Clean up
-            await audio.play();
-        } catch (error) {
-            messageApi.error("Failed to play audio", error);
-        } finally {
-            setLoadingAudio(null);
+            audio.play();
+        } else {
+            if ("speechSynthesis" in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                if (language == "japan") utterance.lang = "ja-JP"; // Thiết lập ngôn ngữ tiếng Nhật
+                if (language == "korea") utterance.lang = "ko-KR"; // Thiết lập ngôn ngữ tiếng Hàn
+                if (language == "chinese") utterance.lang = "zh-CN"; // Thiết lập ngôn ngữ tiếng Trung
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("Trình duyệt của bạn không hỗ trợ Text-to-Speech.");
+            }
         }
+        setLoadingAudio(null);
     };
 
     // Navigation handlers
@@ -176,12 +185,38 @@ export default function PractiveFlashcard({ params }) {
         [index, flashcards]
     );
 
+    const handlePlayAudio = (method) => {
+        if (method == "correct") {
+            const audio = new Audio("/audio/correct.mp3");
+            audio.play();
+        } else if (method == "wrong") {
+            const audio = new Audio("/audio/wrong.mp3");
+            audio.play();
+        }
+    };
+
     // Quiz answer handler
-    const handleQuizAnswer = (selectedAnswer) => {
+    const handleQuizAnswer = (selectedAnswer, idx) => {
         const isCorrect = selectedAnswer === flashcards[index].title;
         messageApi[isCorrect ? "success" : "error"](isCorrect ? "Chính xác, giỏi quá" : "Sai rồi, thử lại nhé! ^^");
+        setSelectedAnswers({
+            ...selectedAnswers,
+            [idx]: isCorrect ? "correct" : "incorrect",
+        });
         if (isCorrect) {
-            handleProgress("known");
+            handlePlayAudio("correct");
+            setTimeout(() => {
+                handleProgress("known");
+                setSelectedAnswers({});
+            }, 1000);
+        } else {
+            handlePlayAudio("wrong");
+            setTimeout(() => {
+                setSelectedAnswers((prev) => ({
+                    ...prev,
+                    [idx]: null,
+                }));
+            }, 820);
         }
     };
 
@@ -189,8 +224,18 @@ export default function PractiveFlashcard({ params }) {
     const checkListeningAnswer = useCallback(() => {
         const isCorrect = inputAnswer.toLowerCase() === flashcards[index].title.toLowerCase();
         messageApi[isCorrect ? "success" : "error"](isCorrect ? "Chính xác, giỏi quá" : "Sai rồi, thử lại nhé! ^^");
+        setIsCorrectAns(isCorrect ? "correct" : "incorrect");
         if (isCorrect) {
-            handleProgress("known");
+            handlePlayAudio("correct");
+            setTimeout(() => {
+                handleProgress("known");
+                setIsCorrectAns(null); // Reset về null thay vì false
+            }, 1000);
+        } else {
+            handlePlayAudio("wrong");
+            setTimeout(() => {
+                setIsCorrectAns(null);
+            }, 820);
         }
     }, [inputAnswer, flashcards, index, messageApi, handleProgress]);
 
@@ -246,7 +291,7 @@ export default function PractiveFlashcard({ params }) {
                             {/* Flashcard Feature */}
                             {feature === FEATURES.FLASHCARD && (
                                 <div
-                                    className={`absolute inset-0 w-full h-full transition-transform duration-500 transform ${isFlipped ? "rotate-y-180" : ""}`}
+                                    className={`cursor-pointer absolute inset-0 w-full h-full transition-transform duration-500 transform ${isFlipped ? "rotate-y-180" : ""}`}
                                     style={{ transformStyle: "preserve-3d" }}>
                                     {/* Front Side */}
                                     <div className="absolute inset-0 bg-white flex flex-col items-center justify-center backface-hidden p-5" style={{ backfaceVisibility: "hidden" }}>
@@ -295,7 +340,10 @@ export default function PractiveFlashcard({ params }) {
                             {feature === FEATURES.QUIZ && (
                                 <div className="p-5 h-full flex flex-col">
                                     <div className="flex items-center justify-between mb-4">
-                                        <h1 className="text-xl font-bold text-gray-700">Chọn đáp án đúng</h1>
+                                        <div className="flex items-center gap-1">
+                                            <h1 className="text-xl font-bold text-gray-700">Chọn đáp án đúng</h1>
+                                            <p> (nếu không có đáp án đúng vui lòng bấm bỏ qua)</p>
+                                        </div>
                                         <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">Quiz</span>
                                     </div>
                                     <p className="text-lg mb-6">{flashcards[index]?.define}</p>
@@ -303,12 +351,26 @@ export default function PractiveFlashcard({ params }) {
                                         {quizOptions.map((option, idx) => (
                                             <button
                                                 key={idx}
-                                                onClick={() => handleQuizAnswer(option)}
-                                                className="flex items-center h-full border rounded-lg group hover:border-primary hover:bg-blue-50 transition-colors">
-                                                <div className="w-[50px] h-full flex items-center justify-center border-r group-hover:border-r-primary transition-colors">{idx + 1}</div>
+                                                onClick={() => handleQuizAnswer(option, idx)}
+                                                className={`
+                                              flex items-center h-full border rounded-lg group 
+                                              hover:border-primary transition-colors
+                                              ${selectedAnswers[idx] === "correct" ? "!border-green-500 border-2 tada" : ""}
+                                              ${selectedAnswers[idx] === "incorrect" ? "!border-red-500 border-2 shake" : ""}
+                                            `}>
+                                                <div
+                                                    className={`
+                                              w-[50px] h-full flex items-center justify-center border-r
+                                              group-hover:border-r-primary transition-colors
+                                              ${selectedAnswers[idx] === "correct" ? "!border-r-green-500" : ""}
+                                              ${selectedAnswers[idx] === "incorrect" ? "!border-r-red-500" : ""}
+                                            `}>
+                                                    {idx + 1}
+                                                </div>
                                                 <p className="flex-1 text-center px-2">{option}</p>
                                             </button>
                                         ))}
+                                        {quizOptions.length < 4 && <p className="text-red-500">Cảnh báo: Chưa đủ đáp án để trộn ngẫu nhiên (Yêu cầu trên 4)</p>}
                                     </div>
                                 </div>
                             )}
@@ -344,8 +406,16 @@ export default function PractiveFlashcard({ params }) {
                                             onKeyDown={(e) => e.key === "Enter" && checkListeningAnswer()}
                                             placeholder="Điền từ bạn nghe được"
                                             autoFocus
-                                            className="w-full p-3"
+                                            className={`w-full p-3 border transition-colors
+            ${isCorrectAns === "correct" ? "!border-green-500 border-2" : ""}
+            ${isCorrectAns === "incorrect" ? "!border-red-500 border-2 shake" : ""}
+        `}
                                         />
+                                        <div className="flex justify-end">
+                                            <button className="btn btn-primary mt-3 flex items-center  gap-2" onClick={checkListeningAnswer}>
+                                                <IoSend /> Gửi
+                                            </button>
+                                        </div>
                                     </div>
                                     <button onClick={() => setInputAnswer(flashcards[index].title)} className="flex items-center gap-2 text-gray-600 hover:text-primary mt-4">
                                         <BiSlideshow />
@@ -376,8 +446,16 @@ export default function PractiveFlashcard({ params }) {
                                             onKeyDown={(e) => e.key === "Enter" && checkListeningAnswer()}
                                             placeholder="Điền từ còn thiếu..."
                                             autoFocus
-                                            className="w-full p-3 border rounded-lg focus:outline-none focus:border-blue-500"
+                                            className={`w-full p-3 border transition-colors
+                                                ${isCorrectAns === "correct" ? "!border-green-500 border-2" : ""}
+                                                ${isCorrectAns === "incorrect" ? "!border-red-500 border-2 shake" : ""}
+                                            `}
                                         />
+                                        <div className="flex justify-end">
+                                            <button className="btn btn-primary mt-3 flex items-center  gap-2" onClick={checkListeningAnswer}>
+                                                <IoSend /> Gửi
+                                            </button>
+                                        </div>
                                     </div>
                                     <button onClick={() => setShowAns(!showAns)} className="flex items-center gap-2 text-blue-500 hover:text-blue-600 mt-4">
                                         <BiSlideshow />
@@ -415,7 +493,7 @@ export default function PractiveFlashcard({ params }) {
 
                     {/* Feature Selection Panel */}
                     <div className="w-full md:w-auto flex flex-col gap-4">
-                        {feature === FEATURES.FLASHCARD && (
+                        {feature === FEATURES.FLASHCARD && language == "english" && (
                             <div className="space-y-2">
                                 <div className="flex items-center gap-2">
                                     <HiMiniSpeakerWave size={20} />

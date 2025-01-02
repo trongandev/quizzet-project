@@ -34,7 +34,8 @@
         "src/app/(app)/page.jsx",
         "src/app/(whatheo)/whatheo/users/page.jsx",
         "src/app/(app)/quiz/themcauhoi/gui/page.jsx",
-        "src/app/(app)/edit-tool/[slug]/page.jsx"
+        "src/app/(app)/edit-tool/[slug]/page.jsx",
+        "src/components/CTaiLieuDetail.jsx"
     ],
     "exclude": ["node_modules"]
 }

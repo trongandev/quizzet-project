@@ -229,7 +229,6 @@ export default function PostGUI() {
     };
 
     const [promptValue, setPromptValue] = useState("");
-    const [responePrompt, setResponePrompt] = useState([]);
     const [loading, setLoading] = useState(false);
     const genAI = new GoogleGenerativeAI(process.env.API_KEY_AI);
 
@@ -270,11 +269,9 @@ trả về kiểu dữ liệu json, không giải thích hay nói bất cứ th�
             .text()
             .replace(/```json/g, "")
             .replace(/```/g, "");
-
-        setResponePrompt(JSON.parse(parse));
+        setQuest([...quest, ...JSON.parse(parse)]);
         setLoading(false);
         handleCancelAI();
-        setQuest([...quest, ...responePrompt]);
     };
     return (
         <div className="flex items-center justify-center gap-5 flex-col md:flex-row">
@@ -348,7 +345,7 @@ trả về kiểu dữ liệu json, không giải thích hay nói bất cứ th�
                             <Modal
                                 title="AI Generate Quiz"
                                 open={isModalOpenAI}
-                                onOk={handleOkAI}
+                                onOk={handleSendPrompt}
                                 onCancel={handleCancelAI}
                                 footer={[
                                     <Button key="back" onClick={handleCancelAI}>

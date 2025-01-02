@@ -252,17 +252,18 @@ export default function CQuizDetail({ QuizData, QuestData }) {
                             <Modal title="Danh sách câu hỏi" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
                                 <div className="">
                                     <div className="grid grid-cols-5 gap-3">
-                                        {QuestData.map((item, index) => (
-                                            <a
-                                                href={`#${item.id}`}
-                                                key={index}
-                                                onClick={handleCancel}
-                                                className={`flex items-center justify-center w-full h-[55px] ${
-                                                    selectedAnswers[item.id] !== undefined ? "bg-primary text-white font-bold" : "bg-red-500 text-red-100"
-                                                }`}>
-                                                <p>{index + 1}</p>
-                                            </a>
-                                        ))}
+                                        {QuestData &&
+                                            QuestData.map((item, index) => (
+                                                <a
+                                                    href={`#${item.id}`}
+                                                    key={index}
+                                                    onClick={handleCancel}
+                                                    className={`flex items-center justify-center w-full h-[55px] ${
+                                                        selectedAnswers[item.id] !== undefined ? "bg-primary text-white font-bold" : "bg-red-500 text-red-100"
+                                                    }`}>
+                                                    <p>{index + 1}</p>
+                                                </a>
+                                            ))}
                                     </div>
                                 </div>
                             </Modal>

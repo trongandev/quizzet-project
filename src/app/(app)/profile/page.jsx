@@ -269,7 +269,7 @@ export default function CProfile() {
                 {loading && quiz?.length === 0 && (
                     <div>
                         <p>Bạn chưa đăng bài nào</p>
-                        <Link href="/post">
+                        <Link href="/quiz/themcauhoi">
                             <button className="mt-2 btn btn-second">Tạo bài trắc nghiệm mới thôi</button>
                         </Link>
                     </div>
