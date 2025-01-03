@@ -51,7 +51,6 @@ export default function CongDong() {
     const [replyingTo, setReplyingTo] = useState(null);
     const [loadingIcon, setLoadingIcon] = useState(false);
     const [messageApi, contextHolder] = message.useMessage();
-    const [hasScrolled, setHasScrolled] = useState(false);
     useEffect(() => {
         const fetchAPI = async () => {
             const req = await GET_API(`/chatcommu?skip=${skip}&limit=50`, token);
