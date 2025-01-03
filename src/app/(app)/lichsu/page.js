@@ -61,6 +61,8 @@ export default function History() {
                                 </div>
                             </div>
                         ))}
+
+                    {historyData && historyData.length === 0 && <div>Bạn chưa có lịch sử làm bài</div>}
                 </div>
                 {!loading && (
                     <div className="h-[400px] flex items-center justify-center w-full">

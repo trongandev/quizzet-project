@@ -33,6 +33,7 @@ const debounce = (func, wait) => {
 
 export default function CongDong() {
     const [messages, setMessages] = useState([]);
+    const [sendMess, setSendMess] = useState(false);
     const [newMessage, setNewMessage] = useState("");
     const { socket, onlineUsers } = useSocket();
     const { user } = useUser();
@@ -66,13 +67,22 @@ export default function CongDong() {
 
     useEffect(() => {
         // Chỉ cuộn lần đầu sau khi nhận messages
-        if (!hasScrolled && messages.length > 0) {
-            if (lastMessageRef.current) {
-                lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
-            }
-            setHasScrolled(true); // Đánh dấu đã cuộn
+        if (lastMessageRef.current) {
+            lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
         }
+        // if (!hasScrolled && messages.length > 0) {
+        //     setHasScrolled(true); // Đánh dấu đã cuộn
+        // }
     }, [messages]);
+
+    // useEffect(() => {
+    //     if (sendMess) {
+    //         if (lastMessageRef.current) {
+    //             lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
+    //         }
+    //         setSendMess(false);
+    //     }
+    // }, [sendMess, messages]);
 
     useEffect(() => {
         setTimeout(async () => {
@@ -148,6 +158,7 @@ export default function CongDong() {
             setImage(null);
             setImageReview(null);
             setReplyingTo(null);
+            setSendMess(true);
         } catch (error) {
             messageApi.error("Failed to send message", error);
         } finally {

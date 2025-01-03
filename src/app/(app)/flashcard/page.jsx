@@ -28,12 +28,12 @@ export default function FlashCard() {
             const req1 = await GET_API_WITHOUT_COOKIE("/list-flashcards/public");
 
             if (req.ok) {
-                setListFlashCard(req.listFlashCards);
+                console.log(req);
+                setListFlashCard(req?.listFlashCards);
             }
 
-            if (req1.ok) {
-                setPublicFlashcards(req1?.publicFlashcards);
-            }
+            console.log(req1);
+            setPublicFlashcards(req1);
             setLoading(false);
         };
         fetchListFlashCard();
@@ -68,9 +68,12 @@ export default function FlashCard() {
         <div className="text-third px-3 md:px-0">
             {contextHolder}
 
-            <div className="flex gap-5 md:h-[70px] flex-col md:flex-row items-center">
-                <h1 className="text-2xl font-bold text-primary flex-1">Flashcard</h1>
-                <div className="py-3 md:py-0 h-full bg-white border shadow-md rounded-md flex flex-1">
+            <div className="flex gap-5 flex-col md:flex-row md:h-[80px]">
+                <div className=" flex-1">
+                    <h1 className="text-2xl font-bold text-primary">Flashcard</h1>
+                    <p className="text-gray-500">Flashcard là một trong những cách tốt nhất để ghi nhớ những kiến thức quan trọng. Hãy cùng Quizzet tham khảo và tạo những bộ flashcards bạn nhé!</p>
+                </div>
+                <div className=" h-full bg-white border shadow-md rounded-md flex flex-1">
                     <div className="flex-1 flex items-center justify-center flex-col">
                         <h1 className="text-primary font-bold text-2xl">0</h1>
                         <p className="text-gray-500">Đã học</p>
@@ -86,10 +89,10 @@ export default function FlashCard() {
                 </div>
             </div>
 
-            {token ? (
-                <div className="">
-                    <h3 className="text-xl mb-2 text-primary">List từ đã tạo</h3>
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 h-[362px] overflow-y-scroll">
+            {token !== undefined ? (
+                <div className="mt-5">
+                    <h4 className="text-xl mb-2 text-primary">List từ đã tạo</h4>
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 max-h-[300px] overflow-y-scroll">
                         <div
                             onClick={showModal}
                             className="w-full text-primary cursor-pointer hover:border-primary bg-gray-100 rounded-xl shadow-sm p-3 border hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 flex-col  h-[181px]">
@@ -175,7 +178,7 @@ export default function FlashCard() {
 
             <div className="mt-10">
                 <h3 className="text-xl mb-2 text-primary">Khám phá từ cộng đồng chúng tôi</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 h-[362px] overflow-y-scroll">
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 max-h-[300px] overflow-y-scroll">
                     {publicFlashcards &&
                         publicFlashcards.map((item) => (
                             <Link

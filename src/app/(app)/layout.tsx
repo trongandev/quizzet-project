@@ -56,11 +56,6 @@ export default function RootLayout({ children }: any) {
                                         </Link>
                                     </li>
                                     <li className="flex-1">
-                                        <Link href="/decuong" className={`flex items-center h-full justify-center ${pathname.startsWith("/decuong") ? "active" : ""}`}>
-                                            <IoFolderOpenSharp size={25} />
-                                        </Link>
-                                    </li>
-                                    <li className="flex-1">
                                         <Link href="/congdong" className={`flex items-center h-full justify-center ${pathname.startsWith("/congdong") ? "active" : ""}`}>
                                             <FaPeopleGroup size={25} />
                                         </Link>

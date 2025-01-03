@@ -1,12 +1,25 @@
-[
-    {
-        "question": "Câu hỏi 1",
-        "answers": ["Đáp án 1", "Đáp án 2", "Đáp án 3", "Đáp án 4"],
-        "correct": 0
-    },
-    {
-        "question": "Câu hỏi 2",
-        "answers": ["Đáp án 1", "Đáp án 2", "Đáp án 3", "Đáp án 4"],
-        "correct": 0
-    }
-]
+{
+    "title": "最高に気持ちいい (saikou ni kimochi ii)",
+    "define": "Cực kỳ sướng, sung sướng tột độ",
+    "type_of_word": "Cụm từ",
+    "transcription": "/saɪkoː ni kimoti iː/",
+    "example": [
+      {
+        "en": "このマッサージは最高に気持ちいい！",
+        "vi": "Buổi massage này sướng quá!"
+      },
+      {
+        "en": "温泉につかって、最高に気持ちよかったです。",
+        "vi": "Ngâm mình trong suối nước nóng, sướng quá!"
+      },
+      {
+        "en": "美味しい料理を食べて、最高に気持ちいい！",
+        "vi": "Ăn món ăn ngon, sướng quá!"
+      },
+      {
+        "en": "やっと休みが取れて、最高に気持ちいい！",
+        "vi": "Cuối cùng cũng được nghỉ ngơi, sướng quá!"
+      }
+    ],
+    "note": "Cụm từ này thể hiện cảm giác thoải mái, dễ chịu ở mức độ cao.  Có thể thay đổi "最高に (saikou ni)" bằng các từ khác như "すごく (sugoku)" để thể hiện mức độ sướng khác nhau.  "気持ちいい (kimochi ii)"  có nghĩa là "thấy dễ chịu, thoải mái".  Lưu ý ngữ cảnh sử dụng để tránh hiểu lầm."
+  }

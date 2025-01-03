@@ -61,11 +61,6 @@ export default function CHeader({ token }: { token: string }) {
                         </Link>
                     </li>
                     <li className="">
-                        <Link href="/decuong" className={`block  ${pathname == "/decuong" ? "active" : ""}`}>
-                            Đề cương
-                        </Link>
-                    </li>
-                    <li className="">
                         <Link href="/congdong" className={`block ${pathname.startsWith("/congdong") ? "active" : ""}`}>
                             Cộng đồng
                         </Link>

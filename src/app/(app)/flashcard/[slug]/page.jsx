@@ -87,35 +87,57 @@ export default function FlashCardDetail({ params }) {
     const handleSendPrompt = async (method) => {
         setLoading(true);
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        var defaultPrompt = `
-tạo giúp tôi 1 flashcard với ngôn ngữ ${flashcard.language} và từ như trên yêu cầu trả ra kiểu json và không giải thích bất kì điều gì với cấu trúc như bên dưới
-{
-title // ghi ngôn ngữ khác thì dịch thành ngôn ngữ tiếng ${flashcard.language},
-define, // định nghĩa dịch ra tiếng việt
-type_of_word,
-transcription,
-example: [
-{
-        en,
-        vi,
-} // ví dụ trên 4 câu và key "en" bằng ngôn ngữ ${flashcard.language}
-] 
 
-note, // ghi chú về từ bằng tiếng việt
-}
-   `;
-        const promp = method === 1 ? editWord.title : newFlashcard.title;
-        const result = await model.generateContent(promp + defaultPrompt);
+        const word = method === 1 ? editWord.title : newFlashcard.title;
+        const optimizedPrompt = `
+                Bạn là một chuyên gia ngôn ngữ có khả năng tạo flashcard chất lượng cao. Hãy tạo flashcard cho từ "${word}" với ngôn ngữ ${flashcard?.language}.
+                
+                Yêu cầu:
+                1. Phải cung cấp thông tin chính xác và đầy đủ
+                2. Ví dụ phải thực tế và dễ hiểu
+                3. Ghi chú phải hữu ích cho việc ghi nhớ
+                4. Định dạng JSON phải chính xác
+                
+                Trả về kết quả theo cấu trúc JSON sau và KHÔNG kèm theo bất kỳ giải thích nào:
+                
+                {
+                "title": "", // Từ gốc bằng ${flashcard?.language}
+                "define": "", // Định nghĩa bằng tiếng Việt, ngắn gọn và dễ hiểu
+                "type_of_word": "", // Loại từ (danh từ, động từ, tính từ, etc.)
+                "transcription": "", // Phiên âm chuẩn IPA
+                "example": [
+                    {
+                    "en": "", // Câu ví dụ bằng ${flashcard?.language}
+                    "vi": ""  // Dịch nghĩa tiếng Việt
+                    },
+                    {
+                    "en": "",
+                    "vi": ""
+                    },
+                    {
+                    "en": "",
+                    "vi": ""
+                    },
+                    {
+                    "en": "",
+                    "vi": ""
+                    }
+                ],
+                "note": "" // Tips ghi nhớ, cách dùng đặc biệt, hoặc các lưu ý quan trọng bằng tiếng Việt. Các dấu nháy đôi "" thay bằng dấu ngoặc () để tránh lỗi JSON
+                }
+                `;
+        const result = await model.generateContent(optimizedPrompt);
         const parse = result.response
             .text()
             .replace(/```json/g, "")
             .replace(/```/g, "");
-
+        console.log(parse);
         if (method === 1) {
             setEditWord({ ...editWord, ...JSON.parse(parse) });
         } else {
             setNewFlashcard(JSON.parse(parse));
         }
+
         setLoading(false);
     };
 

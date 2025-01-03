@@ -196,7 +196,7 @@ export default function PractiveFlashcard({ params }) {
     };
 
     // Quiz answer handler
-    const handleQuizAnswer = (selectedAnswer, idx) => {
+    const handleQuizAnswer = async (selectedAnswer, idx) => {
         const isCorrect = selectedAnswer === flashcards[index].title;
         messageApi[isCorrect ? "success" : "error"](isCorrect ? "Chính xác, giỏi quá" : "Sai rồi, thử lại nhé! ^^");
         setSelectedAnswers({
@@ -205,6 +205,8 @@ export default function PractiveFlashcard({ params }) {
         });
         if (isCorrect) {
             handlePlayAudio("correct");
+            await speakWord(flashcards[index].title, speakLang, flashcards[index]._id);
+
             setTimeout(() => {
                 handleProgress("known");
                 setSelectedAnswers({});
@@ -339,13 +341,13 @@ export default function PractiveFlashcard({ params }) {
                             {/* Quiz Feature */}
                             {feature === FEATURES.QUIZ && (
                                 <div className="p-5 h-full flex flex-col">
-                                    <div className="flex items-center justify-between mb-4">
+                                    <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-1">
                                             <h1 className="text-xl font-bold text-gray-700">Chọn đáp án đúng</h1>
-                                            <p> (nếu không có đáp án đúng vui lòng bấm bỏ qua)</p>
                                         </div>
                                         <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">Quiz</span>
                                     </div>
+                                    <p className=" mb-4 text-gray-500"> (nếu không có đáp án đúng vui lòng bấm bỏ qua)</p>
                                     <p className="text-lg mb-6">{flashcards[index]?.define}</p>
                                     <div className="grid grid-cols-2 gap-5 flex-1">
                                         {quizOptions.map((option, idx) => (
@@ -403,7 +405,6 @@ export default function PractiveFlashcard({ params }) {
                                             type="text"
                                             value={inputAnswer}
                                             onChange={(e) => setInputAnswer(e.target.value)}
-                                            onKeyDown={(e) => e.key === "Enter" && checkListeningAnswer()}
                                             placeholder="Điền từ bạn nghe được"
                                             autoFocus
                                             className={`w-full p-3 border transition-colors
@@ -443,7 +444,6 @@ export default function PractiveFlashcard({ params }) {
                                             type="text"
                                             value={inputAnswer}
                                             onChange={(e) => setInputAnswer(e.target.value)}
-                                            onKeyDown={(e) => e.key === "Enter" && checkListeningAnswer()}
                                             placeholder="Điền từ còn thiếu..."
                                             autoFocus
                                             className={`w-full p-3 border transition-colors
