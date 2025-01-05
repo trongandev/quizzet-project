@@ -132,14 +132,16 @@ export default function CQuizMobile({ quizData }) {
                     <SwiperSlide key={item.id}>
                         <div className=" rounded-xl  shadow-md h-[400px]">
                             <div className="overflow-hidden relative h-full rounded-[8px]">
-                                <Image
-                                    src={item.img}
-                                    alt={item.title}
-                                    className="absolute h-full w-full object-cover hover:scale-110 duration-300  brightness-75"
-                                    fill
-                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                    priority
-                                />
+                                <Link className="block" href={`/quiz/detail/${item.slug}`}>
+                                    <Image
+                                        src={item.img}
+                                        alt={item.title}
+                                        className="absolute h-full w-full object-cover hover:scale-110 duration-300  brightness-75"
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                        priority
+                                    />
+                                </Link>
                                 <div className="p-3 absolute z-1 text-white bottom-0 w-full bg-linear-item">
                                     <h1 className="text-lg font-bold">{item.title}</h1>
                                     <p className="line-clamp-2 text-sm text-[#D9D9D9]">{item.content}</p>

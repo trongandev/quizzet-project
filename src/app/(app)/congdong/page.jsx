@@ -292,13 +292,20 @@ export default function CongDong() {
     };
 
     const handleEditMess = async (msg) => {
-        console.log(msg);
         setEditMess(msg);
         showModalEditMess(msg._id);
     };
 
+    if (!messages.length) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <Spin size="large" />
+            </div>
+        );
+    }
+
     return (
-        <div className="text-third flex gap-5 flex-wrap px-3 md:px-0 h-[85vh]">
+        <div className="text-third flex gap-5 flex-wrap px-3 md:px-0 min-h-[85vh]">
             {contextHolder}
 
             <div className=" w-full md:w-[700px] p-3 md:p-5  border border-primary  rounded-md">

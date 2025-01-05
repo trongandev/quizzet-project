@@ -33,8 +33,6 @@ export default function Notice() {
     }, []);
 
     const handleUpdateNotice = async (id, status) => {
-        setLoadingSwitch(true);
-        console.log(id, status);
         const req = await POST_API(`/notice/${id}`, { status: !status }, "PATCH", token);
         const data = req.json();
         if (req.ok) {

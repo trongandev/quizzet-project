@@ -168,7 +168,7 @@ export default function CQuizDetail({ QuizData, QuestData }) {
                     </div>
                     <form action="" onSubmit={handleQuiz} className="relative flex gap-5 flex-row  mt-1">
                         <div className="w-full md:w-2/3">
-                            <div className=" h-[500px] overflow-y-auto scroll-smooth">
+                            <div className="h-[500px] overflow-y-auto scroll-smooth">
                                 {QuestData?.map((item, index) => (
                                     <div className="bg-linear-item-2 p-5 mt-2 rounded-xl" key={index} id={item.id}>
                                         <h1 className="text-lg font-bold text-primary">
@@ -229,7 +229,7 @@ export default function CQuizDetail({ QuizData, QuestData }) {
                             <div className="w-full h-full">
                                 <div className="w-full h-[500px] bg-gray-200 p-5  ">
                                     <h1 className="text-lg font-bold text-primary text-center mb-3">Danh sách câu hỏi</h1>
-                                    <div className="grid grid-cols-5 gap-2 h-[420px] overflow-y-scroll pr-2">
+                                    <div className="grid grid-cols-5 gap-2 max-h-[420px] overflow-y-scroll pr-2">
                                         {QuestData?.map((item, index) => (
                                             <a
                                                 href={`#${item.id}`}
@@ -245,7 +245,7 @@ export default function CQuizDetail({ QuizData, QuestData }) {
                             </div>
                         </div>
                         {/* mobile */}
-                        <div className="fixed right-[10px] bottom-[60px] md:hidden">
+                        <div className="fixed right-[10px] bottom-[130px] md:hidden">
                             <div onClick={showModal} className="w-[50px] h-[50px] px-2 bg-red-500 flex items-center justify-center rounded-full text-white animate-bounce">
                                 <IoIosArrowUp />
                             </div>

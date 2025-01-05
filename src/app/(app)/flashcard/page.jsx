@@ -28,11 +28,9 @@ export default function FlashCard() {
             const req1 = await GET_API_WITHOUT_COOKIE("/list-flashcards/public");
 
             if (req.ok) {
-                console.log(req);
                 setListFlashCard(req?.listFlashCards);
             }
 
-            console.log(req1);
             setPublicFlashcards(req1);
             setLoading(false);
         };
@@ -73,18 +71,18 @@ export default function FlashCard() {
                     <h1 className="text-2xl font-bold text-primary">Flashcard</h1>
                     <p className="text-gray-500">Flashcard là một trong những cách tốt nhất để ghi nhớ những kiến thức quan trọng. Hãy cùng Quizzet tham khảo và tạo những bộ flashcards bạn nhé!</p>
                 </div>
-                <div className=" h-full bg-white border shadow-md rounded-md flex flex-1">
-                    <div className="flex-1 flex items-center justify-center flex-col">
-                        <h1 className="text-primary font-bold text-2xl">0</h1>
-                        <p className="text-gray-500">Đã học</p>
+                <div className=" h-full flex flex-1 text-right gap-3">
+                    <div className="flex-1 flex flex-col bg-[#75d37d] rounded-lg p-3 text-white">
+                        <p className="text-left">Đã học</p>
+                        <h1 className="font-bold text-3xl text-right">0</h1>
                     </div>
-                    <div className="flex-1 flex items-center justify-center flex-col">
-                        <h1 className="text-primary font-bold text-2xl">0</h1>
-                        <p className="text-gray-500">Đã nhớ</p>
+                    <div className="flex-1 flex flex-col bg-[#75c1d3] rounded-lg p-3 text-white">
+                        <p className="text-left">Đã nhớ</p>
+                        <h1 className="font-bold text-3xl text-right">0</h1>
                     </div>
-                    <div className="flex-1 flex items-center justify-center flex-col">
-                        <h1 className="text-red-500 font-bold text-2xl">0</h1>
-                        <p className="text-gray-500">Cần ôn tập</p>
+                    <div className="flex-1 flex flex-col bg-[#d37a75] rounded-lg p-3 text-white">
+                        <p className="text-left">Cần ôn tập</p>
+                        <h1 className="font-bold text-3xl text-right">0</h1>
                     </div>
                 </div>
             </div>

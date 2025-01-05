@@ -19,7 +19,6 @@ export default function History() {
             const req = await GET_API("/history/admin", token);
             if (req.ok) {
                 setLoading(true);
-                console.log(req);
 
                 setHistory(req.history);
                 messageApi.success("Lấy thành công lịch sử làm bài!");
@@ -82,7 +81,7 @@ export default function History() {
                                             </div>
                                             <p>{item?.user_id?.displayName}</p>
                                         </Link>
-                                </td>
+                                    </td>
                                     <td className="px-6 py-4 hover:text-red-500 hover:underline">
                                         <Link target="_blank" href={`/dapan/${item?._id}`} rel="noreferrer">
                                             {item?.title || item?.quiz_id?.title}

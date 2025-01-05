@@ -1,10 +1,10 @@
 "use client";
 import handleCompareDate from "@/lib/CompareDate";
 import { GET_API_WITHOUT_COOKIE, POST_API } from "@/lib/fetchAPI";
-import { message, Rate, Spin } from "antd";
+import { message, Modal, Rate, Spin } from "antd";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { CiTimer } from "react-icons/ci";
 import { FaFileCircleQuestion, FaRegEye, FaRegFlag } from "react-icons/fa6";
 import { IoIosArrowUp } from "react-icons/io";
@@ -12,7 +12,7 @@ import { IoArrowForwardCircleOutline, IoShareSocial } from "react-icons/io5";
 import { MdKeyboardArrowLeft, MdOutlineVerified } from "react-icons/md";
 import Cookies from "js-cookie";
 import { RiTimeLine } from "react-icons/ri";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useUser } from "@/context/userContext";
 export default function QuizDetail({ params }) {
     const [data, setData] = useState({});
@@ -23,6 +23,11 @@ export default function QuizDetail({ params }) {
     const token = Cookies.get("token");
     const [messageApi, contextHolder] = message.useMessage();
     const { user } = useUser();
+    const [open, setOpen] = useState(false);
+    const [confirmLoading, setConfirmLoading] = useState(false);
+    const defaultReport = { type_of_violation: "spam", content: "" };
+    const [report, setReport] = useState(defaultReport);
+    const router = useRouter();
     useEffect(() => {
         const fetchData = async () => {
             const res = await GET_API_WITHOUT_COOKIE(`/quiz/${params.slug}`);
@@ -33,7 +38,16 @@ export default function QuizDetail({ params }) {
         };
         fetchData();
     }, []);
-    console.log(comment);
+    useEffect(() => {
+        const hash = window.location.hash; // Lấy hash từ URL
+        if (hash) {
+            const id = hash.replace("#", "");
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: "smooth" });
+            }
+        }
+    }, [data]); // Theo dõi thay đổi của data
 
     if (data.length === 0) {
         return (
@@ -50,7 +64,7 @@ export default function QuizDetail({ params }) {
             quiz_id: data?._id,
             review,
             rating: value,
-            created_at: Date.now,
+            created_at: new Date(),
             user_id: {
                 _id: user?._id,
                 displayName: user?.displayName,
@@ -59,33 +73,73 @@ export default function QuizDetail({ params }) {
         };
         const req = await POST_API(`/quiz/comment`, newComment, "POST", token);
         const res = await req.json();
-        if (req.ok) {
+        if (res.ok) {
+            if (res.exist) {
+                setComment((item) => item.map((i) => (i._id == res?.id ? { ...i, review, created_at: new Date() } : i)));
+            } else {
+                setComment([...comment, newComment]);
+            }
             messageApi.success(res.message);
-            setComment([...comment, newComment]);
         } else {
             messageApi.error(res.message);
         }
     };
-    const router = useRouter();
     const handlePrev = () => {
         router.back();
     };
 
     function calAvg(arr) {
         let sum = 0;
+        if (arr.length == 0) return 0;
         for (let i = 0; i < arr.length; i++) {
             sum += arr[i]?.rating;
         }
         return sum / arr.length;
     }
-    const [selectedAnswers, setSelectedAnswers] = useState({});
 
-    const handleSelect = (questionId, answerIndex) => {
-        setSelectedAnswers({
-            ...selectedAnswers,
-            [questionId]: answerIndex,
-        });
+    function Round(num) {
+        return Math.round(num * 10) / 10;
+    }
+
+    if (!quiz?.length) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <Spin size="large" />
+            </div>
+        );
+    }
+
+    const showModal = () => {
+        setOpen(true);
     };
+
+    const handleOk = () => {
+        handleSendReport();
+    };
+
+    const handleCancel = () => {
+        setOpen(false);
+    };
+
+    const handleSendReport = async () => {
+        setConfirmLoading(true);
+        const newReport = {
+            type_of_violation: report.type_of_violation,
+            content: report.content,
+            link: `/quiz/detail/${data?.slug}`,
+        };
+        const req = await POST_API(`/report`, { ...newReport }, "POST", token);
+        const res = await req.json();
+        if (res.ok) {
+            messageApi.success(res.message);
+            handleCancel();
+            setReport(defaultReport);
+        } else {
+            messageApi.error(res.message);
+        }
+        setConfirmLoading(false);
+    };
+
     return (
         <div className="text-third relative px-3 md:px-0">
             {contextHolder}
@@ -135,7 +189,7 @@ export default function QuizDetail({ params }) {
                                         <div className="text-sm">
                                             <div className="flex justify-end items-center gap-1 ">
                                                 <FaFileCircleQuestion />
-                                                <p className="">Số câu hỏi {data?.questions?.data_quiz.length}</p>
+                                                <p className="">Số câu hỏi {quiz?.length}</p>
                                             </div>
                                             <div className="flex justify-end items-center gap-1">
                                                 <FaRegEye />
@@ -149,21 +203,23 @@ export default function QuizDetail({ params }) {
                         <div className="flex-1 flex flex-col justify-between">
                             <div className="">
                                 <div className="flex items-center gap-2 flex-wrap">
-                                    <button className="btn-small !bg-secondary">{data?.subject}</button>
-                                    <button className="btn-small !bg-secondary">Xã hội</button>
-                                    <button className="btn-small !bg-secondary">Tất cả</button>
+                                    <button className="btn-small !bg-secondary !px-4 !py-1">{data?.subject}</button>
+                                    <button className="btn-small !bg-secondary !px-4 !py-1">Xã hội</button>
+                                    <button className="btn-small !bg-secondary !px-4 !py-1">Tất cả</button>
                                 </div>
                                 <div className="flex gap-3 items-center my-3 flex-wrap">
-                                    <h1 className="text-3xl font-bold">{Math.round(calAvg(comment) * 10) / 10}</h1>
+                                    <h1 className="text-3xl font-bold">{Round(calAvg(comment))}</h1>
                                     <div className="">
-                                        <div className="flex items-center gap-1 text-yellow-500">
-                                            <Rate disabled defaultValue={Math.round(calAvg(comment) * 10) / 10} />
-                                        </div>
+                                        <Rate disabled defaultValue={Round(calAvg(comment))} />
                                         <p>{data?.comment?.length} đánh giá</p>
                                     </div>
-                                    <div className="space-y-1">
-                                        <FaRegFlag className="hover:text-primary cursor-pointer" />
-                                        <IoShareSocial className="hover:text-primary cursor-pointer" />
+                                    <div className="flex items-center gap-2 xl:block h-[35px]">
+                                        <div className="mb-0 xl:mb-1 hover:text-primary cursor-pointer bg-gray-200 w-[35px] h-full flex items-center justify-center rounded-lg" onClick={showModal}>
+                                            <FaRegFlag />
+                                        </div>
+                                        <div className="hover:text-primary cursor-pointer bg-gray-200 w-[35px] h-full flex items-center justify-center rounded-lg">
+                                            <IoShareSocial size={15} />
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="">
@@ -181,29 +237,15 @@ export default function QuizDetail({ params }) {
                             {quiz.length > 0 &&
                                 quiz?.map((item, index) => (
                                     <div className="bg-gray-100 rounded-md px-3 py-2 text-sm" key={index}>
-                                        <h1 className="font-bold text-second">{item?.question}</h1>
+                                        <h1 className="font-bold text-gray-500">{item?.question}</h1>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-1 text-gray-500">
                                             {item.answers.map((answer, idx) => (
-                                                <div
-                                                    key={idx}
-                                                    title={answer}
-                                                    className={`text-[12px] h-[36px] line-clamp-1 relative flex items-center ${selectedAnswers[item.id] === idx ? " text-primary font-bold" : ""}`}>
-                                                    <input
-                                                        type="radio"
-                                                        name={item.id}
-                                                        className="w-1 invisible"
-                                                        id={`${index}ans${idx}`}
-                                                        checked={selectedAnswers[item.id] === index}
-                                                        onChange={() => handleSelect(item.id, idx)}
-                                                    />
-                                                    <label
-                                                        htmlFor={`${index}ans${idx}`}
-                                                        className={`absolute  h-full font-bold px-3 flex items-center justify-center rounded-md ${
-                                                            selectedAnswers[item.id] === idx ? "bg-primary text-white" : ""
-                                                        }`}>
+                                                <div key={idx} title={answer} className={`text-[12px] h-[36px] line-clamp-1 relative flex items-center cursor-pointer`}>
+                                                    <input type="radio" className="w-1 invisible" />
+                                                    <label htmlFor="" className={`absolute  h-full font-bold px-3 flex items-center justify-center rounded-md`}>
                                                         {idx === 0 ? "A" : idx === 1 ? "B" : idx === 2 ? "C" : "D"}
                                                     </label>
-                                                    <label htmlFor={`${index}ans${idx}`} className="block w-full ml-8 p-2 ">
+                                                    <label htmlFor="" className="block w-full ml-8 p-2 ">
                                                         {answer}
                                                     </label>
                                                 </div>
@@ -215,27 +257,47 @@ export default function QuizDetail({ params }) {
                     </div>
                 </div>
             </div>
-            <div className="mt-5">
+            <Modal title="Báo cáo vi phạm" open={open} onOk={handleOk} okText="Gửi yêu cầu" confirmLoading={confirmLoading} onCancel={handleCancel}>
+                <div>
+                    <p>Loại báo cáo</p>
+                    <select value={report.type_of_violation} onChange={(e) => setReport({ ...report, type_of_violation: e.target.value })}>
+                        <option value="spam">Spam</option>
+                        <option value="không phù hợp">Không phù hợp</option>
+                        <option value="khác">Khác</option>
+                    </select>
+                    <textarea
+                        placeholder="Nhập nôi dung cần báo cáo..."
+                        className="mt-3 h-[200px]"
+                        value={report.content}
+                        onChange={(e) => setReport({ ...report, content: e.target.value })}></textarea>
+                </div>
+            </Modal>
+            <div className="mt-5 w-full">
                 <div className="flex gap-5 items-start flex-col-reverse lg:flex-row ">
-                    <div className="flex-1 bg-white rounded-lg shadow-sm p-5">
+                    <div className="flex-1 bg-white rounded-lg shadow-sm p-5 w-full">
                         <h1 className="text-primary text-3xl font-bold">Đánh giá</h1>
                         <div className="flex gap-5 items-center my-5">
-                            <h1 className="text-3xl font-bold">{Math.round(calAvg(comment) * 10) / 10}</h1>
+                            <h1 className="text-3xl font-bold">{Round(calAvg(comment))}</h1>
                             <div className="">
-                                <div className="flex items-center gap-1 text-yellow-500">
-                                    <Rate disabled defaultValue={Math.round(calAvg(comment) * 10) / 10} />
-                                </div>
+                                <Rate disabled defaultValue={Round(calAvg(comment))} className="text-3xl" />
                                 <p className="text-gray-500 text-sm mt-1">{data?.comment?.length} đánh giá</p>
                             </div>
-                            <div className="space-y-1">
-                                <FaRegFlag className="hover:text-primary cursor-pointer" />
-                                <IoShareSocial className="hover:text-primary cursor-pointer" />
+                            <div className="flex items-center gap-2 h-[35px]">
+                                <div className="mb-0 xl:mb-1 hover:text-primary cursor-pointer bg-gray-200 w-[35px] h-full flex items-center justify-center rounded-lg" onClick={showModal}>
+                                    <FaRegFlag />
+                                </div>
+                                <Link
+                                    href={`https://www.facebook.com/share.php?u=https://www.trongan.site/quiz/detail/${params?.id}`}
+                                    target="_blank"
+                                    className="hover:text-primary cursor-pointer bg-gray-200 w-[35px] h-full flex items-center justify-center rounded-lg">
+                                    <IoShareSocial size={15} />
+                                </Link>
                             </div>
                         </div>
-                        <div className="space-y-3 h-[350px] overflow-y-scroll pr-3">
+                        <div className="space-y-3 h-[350px] overflow-y-scroll">
                             {comment.length > 0 &&
                                 comment?.map((item, index) => (
-                                    <div className="bg-gray-100 rounded-lg shadow-sm px-5 py-3" key={index}>
+                                    <div className="bg-gray-100 rounded-lg shadow-sm px-5 py-3" key={index} id={item?.user_id?._id}>
                                         <div className="flex items-center gap-2">
                                             <div className="relative w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden">
                                                 <Image
@@ -256,7 +318,7 @@ export default function QuizDetail({ params }) {
                                                     )}
                                                 </div>
                                                 <div className="flex-1 flex justify-end items-center gap-1 text-yellow-500">
-                                                    <Rate disabled defaultValue={item?.rating} />
+                                                    <Rate disabled defaultValue={item?.rating} className="text-sm" />
                                                 </div>
                                             </div>
                                         </div>
@@ -266,7 +328,7 @@ export default function QuizDetail({ params }) {
                             {comment.length === 0 && <p className="text-gray-500">Chưa có lượt đánh giá nào...</p>}
                         </div>
                     </div>
-                    <div className="flex-1 bg-white rounded-lg shadow-sm p-5 space-y-2">
+                    <div className="flex-1 bg-white rounded-lg shadow-sm p-5 space-y-2 w-full">
                         <h1 className="text-secondary text-3xl font-bold">Bình luận</h1>
                         <p className="text-gray-500">Hãy để lại bình luận cũng như số sao của bạn dưới đây:</p>
                         <Rate defaultValue={5} tooltips={desc} onChange={setValue} value={value} />

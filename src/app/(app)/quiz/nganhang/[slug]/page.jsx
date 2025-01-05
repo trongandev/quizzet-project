@@ -16,8 +16,6 @@ export default function NganHangDeCuong({ params }) {
         fetch();
     }, []);
 
-    console.log(subject);
-
     return (
         <div className="text-third">
             <CQuizDetail QuestData={subject} />

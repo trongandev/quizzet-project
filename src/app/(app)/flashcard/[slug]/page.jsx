@@ -28,6 +28,8 @@ export default function FlashCardDetail({ params }) {
     const [isSimple, setIsSimple] = useState(1); // 1: từ chi tiết, 2 đơn giản
     const defaultFlashcard = { _id: "", title: "", define: "", type_of_word: "", transcription: "", example: [], note: "" };
     const [newFlashcard, setNewFlashcard] = useState(defaultFlashcard);
+    const [choose, setChoose] = useState(0); // 0 tất cả, 1 đã học, 2 đã nhớ, 3 cần ôn
+
     const token = Cookies.get("token");
     const [messageApi, contextHolder] = message.useMessage();
     const router = useRouter();
@@ -131,7 +133,6 @@ export default function FlashCardDetail({ params }) {
             .text()
             .replace(/```json/g, "")
             .replace(/```/g, "");
-        console.log(parse);
         if (method === 1) {
             setEditWord({ ...editWord, ...JSON.parse(parse) });
         } else {
@@ -305,13 +306,17 @@ export default function FlashCardDetail({ params }) {
 
     const { user } = useUser();
 
-    if (!flashcard) {
+    if (!flashcard?.flashcards) {
         return (
             <div className="flex items-center justify-center h-screen">
                 <Spin size="large" />
             </div>
         );
     }
+
+    const handleSetChoose = (choose) => {
+        setChoose(choose);
+    };
     return (
         <div className="text-third px-3 md:px-0">
             {contextHolder}
@@ -319,7 +324,7 @@ export default function FlashCardDetail({ params }) {
                 <IoIosArrowBack /> Quay lại
             </Link>
             <div className="flex items-center gap-2 md:gap-5 md:flex-row flex-col">
-                <h1 className="text-2xl font-bold text-primary">Flashcard: {flashcard?.title}</h1>
+                <h1 className="text-2xl font-bold text-primary text-left w-full">Flashcard: {flashcard?.title}</h1>
                 {user?._id == flashcard?.userId?._id ? (
                     <div className="flex-1 flex justify-between gap-2 items-center">
                         <div className="flex gap-2 items-center">
@@ -497,31 +502,41 @@ export default function FlashCardDetail({ params }) {
                     <p>Dừng học</p>
                 </div>
             </div>
-            <div className="h-[100px] bg-gray-100 border shadow-md rounded-md flex my-5">
-                <div className="flex-1 flex items-center justify-center flex-col">
-                    <h1 className="text-primary font-bold text-2xl">0</h1>
-                    <p className="text-gray-500">Đã học</p>
+            <div className=" h-[80px] my-3 flex flex-1 text-right gap-3 ">
+                <div
+                    className={`flex-1 flex flex-col rounded-lg p-3 cursor-pointer border-2 border-gray-500 ${choose === 0 ? "bg-gray-500 text-white" : "text-gray-500 bg-gray-100  "}`}
+                    onClick={() => handleSetChoose(0)}>
+                    <p className="text-left">Tất cả</p>
+                    <div className="flex justify-between items-end">
+                        <Switch
+                            checkedChildren={isSimple === 1 && "Chi tiết "}
+                            unCheckedChildren={isSimple === 2 && "Đơn giản"}
+                            checked={isSimple === 1}
+                            onChange={(checked) => setIsSimple(checked ? 1 : 2)}
+                        />
+                        <h1 className="font-bold text-3xl text-right">{flashcard?.flashcards?.length}</h1>
+                    </div>
                 </div>
-                <div className="flex-1 flex items-center justify-center flex-col">
-                    <h1 className="text-primary font-bold text-2xl">0</h1>
-                    <p className="text-gray-500">Đã nhớ</p>
+                <div
+                    className={`flex-1 flex flex-col  rounded-lg p-3 text-[#75d37d] cursor-pointer border-2 border-[#75d37d] ${choose === 1 ? "bg-[#75d37d] text-white" : "  bg-gray-100 "}`}
+                    onClick={() => handleSetChoose(1)}>
+                    <p className="text-left">Đã học</p>
+                    <h1 className="font-bold text-3xl text-right">0</h1>
                 </div>
-                <div className="flex-1 flex items-center justify-center flex-col">
-                    <h1 className="text-red-500 font-bold text-2xl">0</h1>
-                    <p className="text-gray-500">Cần ôn tập</p>
+                <div
+                    className={`flex-1 flex flex-col rounded-lg p-3 text-[#75c1d3] cursor-pointer border-2 border-[#75c1d3] ${choose === 2 ? "bg-[#75c1d3] text-white" : "  bg-gray-100 "}`}
+                    onClick={() => handleSetChoose(2)}>
+                    <p className="text-left">Đã nhớ</p>
+                    <h1 className="font-bold text-3xl text-right">0</h1>
+                </div>
+                <div
+                    className={`flex-1 flex flex-col border-2 border-[#d37a75] rounded-lg p-3 text-[#d37a75]  cursor-pointer ${choose === 3 ? "bg-[#d37a75] text-white" : "bg-gray-100 "}`}
+                    onClick={() => handleSetChoose(3)}>
+                    <p className="text-left">Cần ôn tập</p>
+                    <h1 className="font-bold text-3xl text-right">0</h1>
                 </div>
             </div>
             <div className="">
-                <div className="flex gap-3 items-center">
-                    <h3>List có {flashcard?.flashcards?.length} từ</h3>
-
-                    <Switch
-                        checkedChildren={isSimple === 1 && "Chi tiết "}
-                        unCheckedChildren={isSimple === 2 && "Đơn giản"}
-                        checked={isSimple === 1}
-                        onChange={(checked) => setIsSimple(checked ? 1 : 2)}
-                    />
-                </div>
                 {isSimple === 1 && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-5 ">
                         {flashcard?.flashcards?.map((item, index) => (

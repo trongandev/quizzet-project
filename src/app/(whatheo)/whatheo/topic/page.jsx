@@ -34,22 +34,16 @@ export default function TopicManager() {
 
     const handleChangeStatus = async (id, status) => {
         setLoadingSwitch(true);
-        const req = await POST_API(`/quiz/${id}`, { status: !status }, "PATCH", token);
+        const req = await POST_API(`/quiz/review/${id}`, { status: !status }, "PATCH", token);
         const data = await req.json();
         if (req.ok) {
-            setLoadingSwitch(false);
-
-            const newTopic = topic.map((item) => {
-                if (item._id === id) {
-                    item.status = !item.status;
-                }
-                return item;
-            });
+            const newTopic = topic.map((item) => (item._id === id ? { ...item, status: !status } : item));
             setTopic(newTopic);
             messageApi.success(data.message);
         } else {
             messageApi.error(data.message);
         }
+        setLoadingSwitch(false);
     };
 
     const removeDoc = async (id) => {

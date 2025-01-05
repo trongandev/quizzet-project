@@ -10,6 +10,8 @@ import { BsClockHistory } from "react-icons/bs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BiNotification } from "react-icons/bi";
+import { TbMessageReportFilled } from "react-icons/tb";
+import { GiCardRandom } from "react-icons/gi";
 
 export default function Nav() {
     const pathname = usePathname();
@@ -46,6 +48,18 @@ export default function Nav() {
                     <Link href="/whatheo/tool" className={`p-3 flex items-center gap-2 ${pathname == "/whatheo/tool" ? "active" : ""}`}>
                         <FaTools />
                         Tool
+                    </Link>
+                </li>
+                <li>
+                    <Link href="/whatheo/report" className={`p-3 flex items-center gap-2 ${pathname == "/whatheo/report" ? "active" : ""}`}>
+                        <TbMessageReportFilled />
+                        Report
+                    </Link>
+                </li>
+                <li>
+                    <Link href="/whatheo/flashcard" className={`p-3 flex items-center gap-2 ${pathname == "/whatheo/flashcard" ? "active" : ""}`}>
+                        <GiCardRandom />
+                        Flashcard
                     </Link>
                 </li>
                 <li>

@@ -20,8 +20,6 @@ export default function Answer({ params }) {
         fetchAPI();
     }, [slug, token]);
 
-    console.log(quiz);
-
     return (
         <>
             {loading ? (

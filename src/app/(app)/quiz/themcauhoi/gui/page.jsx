@@ -274,19 +274,31 @@ trả về kiểu dữ liệu json, không giải thích hay nói bất cứ th�
         handleCancelAI();
     };
     return (
-        <div className="flex items-center justify-center gap-5 flex-col md:flex-row">
+        <div className="flex items-center justify-center gap-5 flex-col md:flex-row px-3 md:px-0">
             <div className="w-full md:w-[1000px]  overflow-y-auto frm-post">
-                <div className="flex items-center flex-row my-3 bg-white ">
-                    <div className="w-[150px] h-[100px] overflow-hidden group relative">
-                        {quiz.img && <Image unoptimized src={quiz.img} alt="" className="absolute w-full h-full object-cover" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />}
-                    </div>
-
-                    <div className="flex items-center justify-between w-full p-3">
-                        <div className="flex items-center ">
-                            <div className="mr-5">
-                                <h1 className="text-md text-primary font-bold line-clamp-1 h-[24px]">{quiz.title || "Chưa có tiêu đề?"}</h1>
-                                <p className="text-gray-500 line-clamp-1 text-sm h-[20px]">{quiz.content || "Chưa có nội dung"}</p>
+                <div className="flex items-center flex-row my-3 bg-white rounded-lg">
+                    <div className="flex items-center justify-between w-full gap-3 p-3 md:flex-row flex-col">
+                        <div className="flex items-center gap-3">
+                            <div className="w-[150px] h-[100px] overflow-hidden group relative">
+                                {quiz.img && (
+                                    <Image
+                                        unoptimized
+                                        src={quiz.img}
+                                        alt=""
+                                        className="absolute w-full h-full object-cover rounded-lg"
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                    />
+                                )}
                             </div>
+                            <div className="flex items-center ">
+                                <div className="mr-5">
+                                    <h1 className="text-md text-primary font-bold line-clamp-1 h-[24px]">{quiz.title || "Chưa có tiêu đề?"}</h1>
+                                    <p className="text-gray-500 line-clamp-1 text-sm h-[20px]">{quiz.content || "Chưa có nội dung"}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex-1 flex justify-between gap-3 items-center">
                             <Button className="text-orange-500 cursor-pointer hover:text-red-500 flex items-center gap-1" onClick={showModal}>
                                 <FaRegEdit size={20} />
                                 Bấm vào để sửa
@@ -336,8 +348,6 @@ trả về kiểu dữ liệu json, không giải thích hay nói bất cứ th�
                                     onChange={onChange}
                                 />
                             </Modal>
-                        </div>
-                        <div className="flex-1 flex justify-end">
                             <Button className="text-primary cursor-pointer flex items-center gap-1" onClick={showModalAI}>
                                 <FaBrain size={20} />
                                 AI Generate
@@ -370,7 +380,7 @@ trả về kiểu dữ liệu json, không giải thích hay nói bất cứ th�
                     </div>
                 </div>
 
-                <div className="h-[500px] overflow-y-scroll text-third">
+                <div className="max-h-[500px] overflow-y-scroll text-third">
                     {quest.map((item, index) => (
                         <div className="bg-linear-item-2 p-5 mt-5 rounded-xl" key={index}>
                             <div className="flex justify-between items-center mb-3">
@@ -399,7 +409,7 @@ trả về kiểu dữ liệu json, không giải thích hay nói bất cứ th�
                                         />
                                         <label
                                             htmlFor={`${item.id}ans${idx}`}
-                                            className={`absolute h-full font-bold p-3 flex items-center justify-center ${item.correct === idx ? "bg-primary text-white" : ""}`}>
+                                            className={`absolute h-full font-bold rounded-lg p-3 flex items-center justify-center ${item.correct === idx ? "bg-primary text-white" : ""}`}>
                                             {idx === 0 ? "A" : idx === 1 ? "B" : idx === 2 ? "C" : "D"}
                                         </label>
                                         <label htmlFor={`${item.id}ans${idx}`} className="block w-full ml-7 p-3">

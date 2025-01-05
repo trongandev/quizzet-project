@@ -36,7 +36,6 @@ export default function EditTool({ params }) {
             const req = await GET_API(`/admin/suboutline/${slug}`, token);
             setQuiz(req);
             setQuest(req.quest.data_so);
-            console.log(req);
             setSo_id(req.quest._id);
         };
         fetchAPI();
@@ -159,6 +158,8 @@ export default function EditTool({ params }) {
         updatedQuest[index] = { ...updatedQuest[index], [field]: value };
         setQuest(updatedQuest);
     };
+
+    console.log(quest);
 
     return (
         <div className="flex items-center justify-center gap-5 flex-col md:flex-row">

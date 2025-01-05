@@ -30,7 +30,6 @@ export default function History() {
             });
         }
     }, []);
-    console.log(historyData);
     return (
         <>
             {contextHolder}
