@@ -304,8 +304,6 @@ export default function CongDong() {
         );
     }
 
-    const items = Array.from({ length: 100 });
-
     return (
         <div className="text-third flex gap-5 flex-wrap px-3 md:px-0 min-h-[85vh]">
             {contextHolder}
@@ -611,7 +609,7 @@ export default function CongDong() {
             <div className="flex-1 h-full">
                 <h3>Các thành viên đang online: {onlineUsers?.length}</h3>
                 <div className="grid grid-cols-3 xl:grid-cols-4 gap-3 mt-2 max-h-[180px] md:max-h-[85vh] overflow-y-scroll">
-                    {/* {onlineUsers?.map((onl_user) => (
+                    {onlineUsers?.map((onl_user) => (
                         <Link
                             className={`flex flex-col items-center h-[90px]  ${
                                 onl_user._id ? "group bg-linear-item-2 text-secondary " : "border border-purple-900 text-purple-900 cursor-default"
@@ -630,22 +628,6 @@ export default function CongDong() {
                             </div>
                             <p className="text-sm group-hover:underline  mt-1 line-clamp-1" title={onl_user?.displayName || "Guest"}>
                                 {onl_user?.displayName || "Guest"}
-                            </p>
-                        </Link>
-                    ))} */}
-                    {items?.map((_, index) => (
-                        <Link className={`flex flex-col items-center h-[90px] group bg-linear-item-2 text-secondary  rounded-md py-2`} key={index} href="#" passHref>
-                            <div className="w-[50px] h-[50px] overflow-hidden relative rounded-full">
-                                <Image
-                                    src={"https://github.com/angutboiz/quiz/blob/master/public/meme.jpg?raw=true"}
-                                    alt=""
-                                    className={`w-full h-full object-cover absolute  border   rounded-full`}
-                                    fill
-                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                />
-                            </div>
-                            <p className="text-sm group-hover:underline  mt-1 line-clamp-1" title={"Guest"}>
-                                {"Guest"}
                             </p>
                         </Link>
                     ))}
