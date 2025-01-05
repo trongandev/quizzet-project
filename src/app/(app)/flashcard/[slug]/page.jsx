@@ -502,12 +502,14 @@ export default function FlashCardDetail({ params }) {
                     <p>Dừng học</p>
                 </div>
             </div>
-            <div className=" h-[80px] my-3 flex flex-1 text-right gap-3 ">
+            <div className=" h-[80px] my-3 flex flex-1 text-right gap-1 md:gap-3 text-[12px]">
                 <div
-                    className={`flex-1 flex flex-col rounded-lg p-3 cursor-pointer border-2 border-gray-500 ${choose === 0 ? "bg-gray-500 text-white" : "text-gray-500 bg-gray-100  "}`}
+                    className={`flex-1 flex  flex-col rounded-lg justify-between p-2 md:p-3 cursor-pointer border-2 border-gray-500 ${
+                        choose === 0 ? "bg-gray-500 text-white" : "text-gray-500 bg-gray-100  "
+                    }`}
                     onClick={() => handleSetChoose(0)}>
                     <p className="text-left">Tất cả</p>
-                    <div className="flex justify-between items-end">
+                    <div className="flex justify-between items-end gap-1">
                         <Switch
                             checkedChildren={isSimple === 1 && "Chi tiết "}
                             unCheckedChildren={isSimple === 2 && "Đơn giản"}
@@ -518,21 +520,27 @@ export default function FlashCardDetail({ params }) {
                     </div>
                 </div>
                 <div
-                    className={`flex-1 flex flex-col  rounded-lg p-3 text-[#75d37d] cursor-pointer border-2 border-[#75d37d] ${choose === 1 ? "bg-[#75d37d] text-white" : "  bg-gray-100 "}`}
+                    className={`flex-1 flex flex-col  rounded-lg justify-between p-2 md:p-3 text-[#75d37d] cursor-pointer border-2 border-[#75d37d] ${
+                        choose === 1 ? "bg-[#75d37d] text-white" : "  bg-gray-100 "
+                    }`}
                     onClick={() => handleSetChoose(1)}>
                     <p className="text-left">Đã học</p>
                     <h1 className="font-bold text-3xl text-right">0</h1>
                 </div>
                 <div
-                    className={`flex-1 flex flex-col rounded-lg p-3 text-[#75c1d3] cursor-pointer border-2 border-[#75c1d3] ${choose === 2 ? "bg-[#75c1d3] text-white" : "  bg-gray-100 "}`}
+                    className={`flex-1 flex flex-col rounded-lg justify-between p-2 md:p-3 text-[#75c1d3] cursor-pointer border-2 border-[#75c1d3] ${
+                        choose === 2 ? "bg-[#75c1d3] text-white" : "  bg-gray-100 "
+                    }`}
                     onClick={() => handleSetChoose(2)}>
                     <p className="text-left">Đã nhớ</p>
                     <h1 className="font-bold text-3xl text-right">0</h1>
                 </div>
                 <div
-                    className={`flex-1 flex flex-col border-2 border-[#d37a75] rounded-lg p-3 text-[#d37a75]  cursor-pointer ${choose === 3 ? "bg-[#d37a75] text-white" : "bg-gray-100 "}`}
+                    className={`flex-1 flex flex-col border-2 border-[#d37a75] rounded-lg justify-between p-2 md:p-3 text-[#d37a75]  cursor-pointer ${
+                        choose === 3 ? "bg-[#d37a75] text-white" : "bg-gray-100 "
+                    }`}
                     onClick={() => handleSetChoose(3)}>
-                    <p className="text-left">Cần ôn tập</p>
+                    <p className="text-left">Ôn tập</p>
                     <h1 className="font-bold text-3xl text-right">0</h1>
                 </div>
             </div>
