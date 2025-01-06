@@ -35,7 +35,7 @@ export const getCachedFlashcardPublic = unstable_cache(
         return response;
     },
     ["flashcard_public"], // Key cache
-    { revalidate: 60 * 60 * 24 } // TTL =24 tieng
+    { revalidate: 60 } // TTL =24 tieng
 );
 
 export const getCachedFlashcardUser = (token: string) =>
@@ -45,7 +45,7 @@ export const getCachedFlashcardUser = (token: string) =>
             return response;
         },
         [`flashcard_${token}`], // Key cache
-        { revalidate: 60 * 60 * 24 } // TTL = 24 giờ
+        { revalidate: 30 } // TTL = 24 giờ
     );
 
 export const getCachedFlashcardDetail = (id: string) =>
@@ -55,7 +55,7 @@ export const getCachedFlashcardDetail = (id: string) =>
             return response;
         },
         [`flashcard_${id}`], // Key cache
-        { revalidate: 60 * 60 * 24 } // TTL = 24 giờ
+        { revalidate: 30 } // TTL = 24 giờ
     );
 
 export const getEmoji = unstable_cache(

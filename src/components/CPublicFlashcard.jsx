@@ -10,15 +10,13 @@ import { MdPublic } from "react-icons/md";
 import handleCompareDate from "@/lib/CompareDate";
 import { RiGitRepositoryPrivateFill } from "react-icons/ri";
 import { LoadingOutlined } from "@ant-design/icons";
-import { useRouter } from "next/navigation";
-export default function CPublicFlashCard({ publicFlashcards, listFlashCards, token, refreshCache }) {
+export default function CPublicFlashCard({ publicFlashcards, listFlashCards, token }) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const defaultListFlashCard = { title: "", desc: "", language: "english", public: false };
     const [listFlashCard, setListFlashCard] = useState(listFlashCards);
     const [newListFlashCard, setNewListFlashCard] = useState(defaultListFlashCard);
     const [messageApi, contextHolder] = message.useMessage();
-    const router = useRouter();
     const showModal = () => {
         setOpen(true);
     };
@@ -31,8 +29,6 @@ export default function CPublicFlashCard({ publicFlashcards, listFlashCards, tok
             setOpen(false);
             setListFlashCard([...listFlashCard, res.listFlashCard]);
             setNewListFlashCard(defaultListFlashCard);
-            await refreshCache(token);
-            router.refresh();
         } else {
             messageApi.open({
                 type: "error",
