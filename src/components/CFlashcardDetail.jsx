@@ -1,5 +1,5 @@
 "use client";
-import { POST_API } from "@/lib/fetchAPI";
+import { GET_API_WITHOUT_COOKIE, POST_API } from "@/lib/fetchAPI";
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { GiStopSign } from "react-icons/gi";
@@ -19,7 +19,7 @@ import { TiEdit } from "react-icons/ti";
 import { useUser } from "@/context/userContext";
 import Image from "next/image";
 
-export default function CFlashcardDetail({ listFlashCards, id_flashcard }) {
+export default function CFlashcardDetail({ id_flashcard }) {
     const [open, setOpen] = useState(false);
     const [openConfirm, setOpenConfirm] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -30,14 +30,30 @@ export default function CFlashcardDetail({ listFlashCards, id_flashcard }) {
     const defaultFlashcard = { _id: "", title: "", define: "", type_of_word: "", transcription: "", example: [], note: "" };
     const [newFlashcard, setNewFlashcard] = useState(defaultFlashcard);
     const [choose, setChoose] = useState(0); // 0 tất cả, 1 đã học, 2 đã nhớ, 3 cần ôn
-
+    const [disableAudio, setDisableAudio] = useState(false);
+    const [openTrick, setOpenTrick] = useState(false);
+    // chỉnh sửa list flashcard
+    const [openEdit, setOpenEdit] = useState(false);
+    const [newListFlashCard, setNewListFlashCard] = useState({});
     const token = Cookies.get("token");
     const [messageApi, contextHolder] = message.useMessage();
+    // cập nhật từ trong flashcard
+    const [openEditWord, setOpenEditWord] = useState(null);
+    const [editWord, setEditWord] = useState({});
     const router = useRouter();
+    const { user } = useUser();
+
     useEffect(() => {
-        const sortedFlashcards = sortFlashcards(listFlashCards?.flashcards);
-        setFlashcard({ ...listFlashCards, flashcards: sortedFlashcards });
-        setNewListFlashCard({ title: listFlashCards?.title, language: listFlashCards?.language, desc: listFlashCards?.desc, public: listFlashCards?.public });
+        const fetchAPI = async () => {
+            const req = await GET_API_WITHOUT_COOKIE(`/flashcards/${id_flashcard}`);
+            if (req.ok) {
+                console.log(req);
+                const sortedFlashcards = sortFlashcards(req?.listFlashCards?.flashcards);
+                setFlashcard({ ...req?.listFlashCards, flashcards: sortedFlashcards });
+                setNewListFlashCard({ title: req?.listFlashCards?.title, language: req?.listFlashCards?.language, desc: req?.listFlashCards?.desc, public: req?.listFlashCards?.public });
+            }
+        };
+        fetchAPI();
     }, []);
 
     const sortFlashcards = (flashcards) => {
@@ -45,6 +61,16 @@ export default function CFlashcardDetail({ listFlashCards, id_flashcard }) {
             return new Date(b.created_at) - new Date(a.created_at);
         });
     };
+
+    if (!flashcard?.flashcards) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <Spin size="large" />
+            </div>
+        );
+    }
+
+    console.log(flashcard);
 
     // showw modal thêm mới từ trong flashcard
     const showModal = () => {
@@ -129,7 +155,6 @@ export default function CFlashcardDetail({ listFlashCards, id_flashcard }) {
 
         setLoading(false);
     };
-    const [disableAudio, setDisableAudio] = useState(false);
 
     const speakWord = async (text, type, id) => {
         if (disableAudio) return;
@@ -206,15 +231,9 @@ export default function CFlashcardDetail({ listFlashCards, id_flashcard }) {
         }
     };
 
-    const [openTrick, setOpenTrick] = useState(false);
-
     const handleOpenChangeTrick = (newOpen) => {
         setOpenTrick(newOpen);
     };
-
-    // chỉnh sửa list flashcard
-    const [openEdit, setOpenEdit] = useState(false);
-    const [newListFlashCard, setNewListFlashCard] = useState({});
 
     const showModalEdit = () => {
         setOpenEdit(true);
@@ -263,9 +282,6 @@ export default function CFlashcardDetail({ listFlashCards, id_flashcard }) {
         }
         setLoadingConfirm(false);
     };
-    // cập nhật từ trong flashcard
-    const [openEditWord, setOpenEditWord] = useState(null);
-    const [editWord, setEditWord] = useState({});
 
     const handleEditWord = (item) => {
         setEditWord(item);
@@ -300,8 +316,6 @@ export default function CFlashcardDetail({ listFlashCards, id_flashcard }) {
     const handleCancelEditWord = () => {
         setOpenEditWord(null);
     };
-
-    const { user } = useUser();
 
     const handleSetChoose = (choose) => {
         setChoose(choose);

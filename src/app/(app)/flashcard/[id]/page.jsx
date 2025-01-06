@@ -18,13 +18,5 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function page({ params }) {
-    const listFlashCards = await GET_API_WITHOUT_COOKIE(`/flashcards/${params.id}`);
-    if (!listFlashCards) {
-        return (
-            <div className="flex items-center justify-center h-screen">
-                <Spin size="large" />
-            </div>
-        );
-    }
-    return <CFlashcardDetail listFlashCards={listFlashCards.listFlashCards} id_flashcard={params.id} />;
+    return <CFlashcardDetail id_flashcard={params.id} />;
 }

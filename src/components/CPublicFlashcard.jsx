@@ -1,25 +1,35 @@
 "use client";
-import { POST_API } from "@/lib/fetchAPI";
+import { GET_API, POST_API } from "@/lib/fetchAPI";
 import { message, Modal, Spin } from "antd";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { IoCopyOutline } from "react-icons/io5";
 import { MdPublic } from "react-icons/md";
 import handleCompareDate from "@/lib/CompareDate";
 import { RiGitRepositoryPrivateFill } from "react-icons/ri";
 import { LoadingOutlined } from "@ant-design/icons";
-export default function CPublicFlashCard({ publicFlashcards, listFlashCards, token }) {
+import Cookies from "js-cookie";
+export default function CPublicFlashCard({ publicFlashcards }) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const defaultListFlashCard = { title: "", desc: "", language: "english", public: false };
-    const [listFlashCard, setListFlashCard] = useState(listFlashCards);
+    const [listFlashCard, setListFlashCard] = useState([]);
     const [newListFlashCard, setNewListFlashCard] = useState(defaultListFlashCard);
     const [messageApi, contextHolder] = message.useMessage();
+    const token = Cookies.get("token");
     const showModal = () => {
         setOpen(true);
     };
+
+    useEffect(() => {
+        const fetchListFlashCard = async () => {
+            const res = await GET_API("/list-flashcards", token);
+            setListFlashCard(res?.listFlashCards);
+        };
+        fetchListFlashCard();
+    }, []);
 
     const handleOk = async () => {
         setLoading(true);
@@ -42,7 +52,7 @@ export default function CPublicFlashCard({ publicFlashcards, listFlashCards, tok
         setOpen(false);
     };
 
-    if (!publicFlashcards.length && !listFlashCard.length) {
+    if (!publicFlashcards && !listFlashCard) {
         return (
             <div className="flex items-center justify-center h-screen">
                 <Spin size="large" />

@@ -1,7 +1,6 @@
 import CPublicFlashcard from "@/components/CPublicFlashcard";
-import { getCachedFlashcardUser, getCachedFlashcardPublic } from "@/lib/cacheData";
+import { getCachedFlashcardPublic } from "@/lib/cacheData";
 import React from "react";
-import { cookies } from "next/headers";
 export async function generateMetadata() {
     return {
         title: `Quizzet | Flashcard trắc nghiệm trực tuyến`,
@@ -16,9 +15,6 @@ export async function generateMetadata() {
 }
 
 export default async function page() {
-    const cookieStore = await cookies();
-    const token = cookieStore.get("token");
     const publicFlashcards = await getCachedFlashcardPublic();
-    const listFlashCard = token ? await getCachedFlashcardUser(token.value)() : null;
-    return <CPublicFlashcard publicFlashcards={publicFlashcards} listFlashCards={listFlashCard?.listFlashCards} token={token?.value} />;
+    return <CPublicFlashcard publicFlashcards={publicFlashcards} />;
 }

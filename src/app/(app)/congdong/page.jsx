@@ -375,7 +375,7 @@ export default function CongDong() {
                                                         )}
                                                         {msg?.replyTo?.message !== "" && (
                                                             <Link href={`#${msg?.replyTo._id}`} className={`block ${isCurrentUser ? "w-full text-end" : ""}`}>
-                                                                <p className={` inline-block bg-gray-400 rounded-full px-3 py-2 mb-[-10px]`}>
+                                                                <p className={` inline-block bg-gray-400 rounded-lg px-3 py-2 mb-[-10px]`}>
                                                                     {msg?.replyTo?.unsend ? "Tin nhắn đã bị gỡ" : msg?.replyTo?.message}
                                                                 </p>
                                                             </Link>
