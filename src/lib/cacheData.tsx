@@ -1,5 +1,5 @@
 import { unstable_cache } from "next/cache";
-import { GET_API_WITHOUT_COOKIE } from "./fetchAPI";
+import { GET_API, GET_API_WITHOUT_COOKIE } from "./fetchAPI";
 
 export const getCachedQuizzet = unstable_cache(
     async () => {
@@ -7,7 +7,7 @@ export const getCachedQuizzet = unstable_cache(
         return response?.quiz;
     },
     ["quizzet"], // Key cache
-    { revalidate: 30 } // TTL = 1 giờ
+    { revalidate: 60 * 60 * 8 } // TTL = 8 giờ
 );
 
 export const getCachedQuiz = (slug: string) =>
@@ -17,7 +17,7 @@ export const getCachedQuiz = (slug: string) =>
             return response?.quiz;
         },
         [`quiz_${slug}`], // Key cache
-        { revalidate: 30 } // TTL = 1 giờ
+        { revalidate: 60 * 60 * 24 } // TTL = 24 giờ
     );
 
 export const getCachedTool = unstable_cache(
@@ -26,8 +26,37 @@ export const getCachedTool = unstable_cache(
         return response;
     },
     ["tool"], // Key cache
-    { revalidate: 30 } // TTL = 30 giây
+    { revalidate: 60 * 60 * 24 } // TTL = 24 tiếng
 );
+
+export const getCachedFlashcardPublic = unstable_cache(
+    async () => {
+        const response = await GET_API_WITHOUT_COOKIE("/list-flashcards/public");
+        return response;
+    },
+    ["flashcard_public"], // Key cache
+    { revalidate: 60 * 60 * 24 } // TTL =24 tieng
+);
+
+export const getCachedFlashcardUser = (token: string) =>
+    unstable_cache(
+        async () => {
+            const response = await GET_API(`/list-flashcards`, token);
+            return response;
+        },
+        [`flashcard_${token}`], // Key cache
+        { revalidate: 60 * 60 * 24 } // TTL = 24 giờ
+    );
+
+export const getCachedFlashcardDetail = (id: string) =>
+    unstable_cache(
+        async () => {
+            const response = await GET_API_WITHOUT_COOKIE(`/flashcards/${id}`);
+            return response;
+        },
+        [`flashcard_${id}`], // Key cache
+        { revalidate: 60 * 60 * 24 } // TTL = 24 giờ
+    );
 
 export const getEmoji = unstable_cache(
     async () => {

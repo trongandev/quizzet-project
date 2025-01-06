@@ -1,42 +1,24 @@
 "use client";
-import { GET_API, GET_API_WITHOUT_COOKIE, POST_API } from "@/lib/fetchAPI";
+import { POST_API } from "@/lib/fetchAPI";
 import { message, Modal, Spin } from "antd";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { IoCopyOutline } from "react-icons/io5";
 import { MdPublic } from "react-icons/md";
-import Cookies from "js-cookie";
 import handleCompareDate from "@/lib/CompareDate";
 import { RiGitRepositoryPrivateFill } from "react-icons/ri";
 import { LoadingOutlined } from "@ant-design/icons";
-export default function FlashCard() {
+import { useRouter } from "next/navigation";
+export default function CPublicFlashCard({ publicFlashcards, listFlashCards, token, refreshCache }) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const defaultListFlashCard = { title: "", desc: "", language: "english", public: false };
-    const [listFlashCard, setListFlashCard] = useState([]);
-    const [publicFlashcards, setPublicFlashcards] = useState([]);
+    const [listFlashCard, setListFlashCard] = useState(listFlashCards);
     const [newListFlashCard, setNewListFlashCard] = useState(defaultListFlashCard);
-    const token = Cookies.get("token");
     const [messageApi, contextHolder] = message.useMessage();
-
-    useEffect(() => {
-        const fetchListFlashCard = async () => {
-            setLoading(true);
-            const req = await GET_API("/list-flashcards", token);
-            const req1 = await GET_API_WITHOUT_COOKIE("/list-flashcards/public");
-
-            if (req.ok) {
-                setListFlashCard(req?.listFlashCards);
-            }
-
-            setPublicFlashcards(req1);
-            setLoading(false);
-        };
-        fetchListFlashCard();
-    }, []);
-
+    const router = useRouter();
     const showModal = () => {
         setOpen(true);
     };
@@ -49,6 +31,8 @@ export default function FlashCard() {
             setOpen(false);
             setListFlashCard([...listFlashCard, res.listFlashCard]);
             setNewListFlashCard(defaultListFlashCard);
+            await refreshCache(token);
+            router.refresh();
         } else {
             messageApi.open({
                 type: "error",
@@ -61,6 +45,14 @@ export default function FlashCard() {
     const handleCancel = () => {
         setOpen(false);
     };
+
+    if (!publicFlashcards.length && !listFlashCard.length) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <Spin size="large" />
+            </div>
+        );
+    }
 
     return (
         <div className="text-third px-3 md:px-0">

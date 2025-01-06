@@ -105,28 +105,35 @@ export default function PractiveFlashcard({ params }) {
         },
         [flashcards]
     );
+    const [disableAudio, setDisableAudio] = useState(false);
 
     // Handle audio playback
     const speakWord = async (text, type, id) => {
-        setLoadingAudio(id);
-        if (language == "english") {
-            const req = await fetch(`${process.env.API_ENDPOINT}/proxy?audio=${text}&type=${type}`);
-            const blob = await req.blob();
-            const url = URL.createObjectURL(blob);
-            const audio = new Audio(url);
-            audio.play();
-        } else {
-            if ("speechSynthesis" in window) {
-                const utterance = new SpeechSynthesisUtterance(text);
-                if (language == "japan") utterance.lang = "ja-JP"; // Thiết lập ngôn ngữ tiếng Nhật
-                if (language == "korea") utterance.lang = "ko-KR"; // Thiết lập ngôn ngữ tiếng Hàn
-                if (language == "chinese") utterance.lang = "zh-CN"; // Thiết lập ngôn ngữ tiếng Trung
-                window.speechSynthesis.speak(utterance);
+        if (disableAudio) return;
+        else {
+            setLoadingAudio(id);
+            setDisableAudio(true);
+
+            if (language == "english") {
+                const req = await fetch(`${process.env.API_ENDPOINT}/proxy?audio=${text}&type=${type}`);
+                const blob = await req.blob();
+                const url = URL.createObjectURL(blob);
+                const audio = new Audio(url);
+                audio.play();
             } else {
-                alert("Trình duyệt của bạn không hỗ trợ Text-to-Speech.");
+                if ("speechSynthesis" in window) {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    if (language == "japan") utterance.lang = "ja-JP"; // Thiết lập ngôn ngữ tiếng Nhật
+                    if (language == "korea") utterance.lang = "ko-KR"; // Thiết lập ngôn ngữ tiếng Hàn
+                    if (language == "chinese") utterance.lang = "zh-CN"; // Thiết lập ngôn ngữ tiếng Trung
+                    window.speechSynthesis.speak(utterance);
+                } else {
+                    alert("Trình duyệt của bạn không hỗ trợ Text-to-Speech.");
+                }
             }
+            setLoadingAudio(null);
+            setDisableAudio(false);
         }
-        setLoadingAudio(null);
     };
 
     // Navigation handlers
@@ -156,9 +163,7 @@ export default function PractiveFlashcard({ params }) {
                 await speakWord(flashcards[newIndex].title, speakLang, flashcards[newIndex]._id);
             }
 
-            if (feature === FEATURES.QUIZ) {
-                generateQuizOptions(flashcards[newIndex]);
-            }
+            generateQuizOptions(flashcards[newIndex]);
         },
         [index, flashcards, feature, speakLang, isRandomMode, isRandomFeature, randomizeFeature]
     );
@@ -287,7 +292,7 @@ export default function PractiveFlashcard({ params }) {
                     <div className="w-full flex flex-col gap-5">
                         {/* Main Flashcard Container */}
                         <div
-                            className="relative w-full h-[500px] border rounded-xl shadow-md overflow-hidden bg-white"
+                            className="relative w-full h-[500px] border  shadow-md bg-white"
                             style={{ perspective: "1000px" }}
                             onClick={feature === FEATURES.FLASHCARD ? () => setIsFlipped(!isFlipped) : undefined}>
                             {/* Flashcard Feature */}
@@ -320,18 +325,24 @@ export default function PractiveFlashcard({ params }) {
                                             backfaceVisibility: "hidden",
                                             transform: "rotateY(180deg)",
                                         }}>
-                                        <p className="text-lg text-gray-700">{flashcards[index]?.define}</p>
+                                        {isFlipped && <p className="text-lg text-gray-700">{flashcards[index]?.define}</p>}
+
                                         {flashcards[index]?.example && (
                                             <div className="mt-4 p-4 bg-gray-50 rounded-lg w-full">
-                                                <p className="font-medium mb-2">Ví dụ:</p>
-                                                <div className="mb-2">
-                                                    <p className="font-bold italic text-gray-600">{flashcards[index].example[0]?.en}</p>
-                                                    <p className="italic text-gray-600">{flashcards[index].example[0]?.vi}</p>
-                                                </div>
-                                                <div className="mb-2">
-                                                    <p className="font-bold italic text-gray-600">{flashcards[index].example[1]?.en}</p>
-                                                    <p className="italic text-gray-600">{flashcards[index].example[1]?.vi}</p>
-                                                </div>
+                                                {isFlipped && (
+                                                    <>
+                                                        {" "}
+                                                        <p className="font-medium mb-2">Ví dụ:</p>
+                                                        <div className="mb-2">
+                                                            <p className="font-bold italic text-gray-600">{flashcards[index].example[0]?.en}</p>
+                                                            <p className="italic text-gray-600">{flashcards[index].example[0]?.vi}</p>
+                                                        </div>
+                                                        <div className="mb-2">
+                                                            <p className="font-bold italic text-gray-600">{flashcards[index].example[1]?.en}</p>
+                                                            <p className="italic text-gray-600">{flashcards[index].example[1]?.vi}</p>
+                                                        </div>
+                                                    </>
+                                                )}
                                             </div>
                                         )}
                                     </div>

@@ -91,7 +91,7 @@ export default function Flashcard() {
                                             {index + 1}
                                         </th>
                                         <td className="px-6 py-4">
-                                            <Link href={`/profile/${item._id}`}>
+                                            <Link href={`/profile/${item?.userId?._id}`}>
                                                 <div className="w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden relative">
                                                     <Image
                                                         src={item?.userId?.profilePicture}
@@ -104,7 +104,9 @@ export default function Flashcard() {
                                                 <p>{item?.userId?.displayName}</p>
                                             </Link>
                                         </td>
-                                        <td className="px-6 py-4">{item?.title}</td>
+                                        <td className="px-6 py-4">
+                                            <Link href={`/flashcard/${item?._id}`}>{item?.title}</Link>
+                                        </td>
                                         <td className="px-6 py-4">{item?.language}</td>
                                         <td className="px-6 py-4">{item?.desc}</td>
                                         <td className="px-6 py-4">
