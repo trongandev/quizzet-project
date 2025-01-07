@@ -16,6 +16,7 @@ import { FaPeopleGroup } from "react-icons/fa6";
 import { AiFillHome } from "react-icons/ai";
 import { FaFileAlt } from "react-icons/fa";
 import { GiCardPick } from "react-icons/gi";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export default function RootLayout({ children }: any) {
     const pathname = usePathname();
@@ -67,6 +68,7 @@ export default function RootLayout({ children }: any) {
                         <CFooter />
                         <Analytics />
                         <GoogleAnalytics gaId="G-L681038P5E" />
+                        <SpeedInsights />
                     </body>
                 </SocketProvider>
             </UserProvider>
