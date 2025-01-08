@@ -25,7 +25,7 @@ export default function PostGUI() {
     });
     const [quest, setQuest] = useState([
         {
-            id: 1,
+            id: 0,
             question: "Ví dụ Hàng hóa là gì?",
             answers: ["Sản phẩm của lao động", "Tất cả những gì có ích", "Những gì có thể mua bán", "Sản phẩm của lao động, có thể thỏa mãn nhu cầu nào đó của con người thông qua trao đổi mua bán"],
             correct: 3,
@@ -81,6 +81,8 @@ export default function PostGUI() {
     const handleCancelAI = () => {
         setIsModalOpenAI(false);
     };
+    const [loading, setLoading] = useState(false);
+    const [loadingSubmit, setLoadingSubmit] = useState(false);
 
     const pushData = async () => {
         const newQuiz = {
@@ -98,6 +100,7 @@ export default function PostGUI() {
         const req = await POST_API("/quiz", newQuiz, "POST", token);
         const data = await req.json();
         if (req.ok) {
+            setLoadingSubmit(true);
             Swal.fire({
                 icon: "success",
                 title: "Thêm bài viết thành công",
@@ -229,7 +232,6 @@ export default function PostGUI() {
     };
 
     const [promptValue, setPromptValue] = useState("");
-    const [loading, setLoading] = useState(false);
     const genAI = new GoogleGenerativeAI(process.env.API_KEY_AI);
 
     const handleSendPrompt = async () => {
@@ -242,7 +244,7 @@ trả về kiểu dữ liệu json, không giải thích hay nói bất cứ th�
 [
 
 {
-"id": Math.random(),
+"id": 1, //tăng dần
 
 "question": "Câu hỏi 1",
 
@@ -253,7 +255,7 @@ trả về kiểu dữ liệu json, không giải thích hay nói bất cứ th�
 },
 
 {
-"id": Math.random(),
+"id": 2,
 
 "question": "Câu hỏi 2",
 
@@ -269,6 +271,7 @@ trả về kiểu dữ liệu json, không giải thích hay nói bất cứ th�
             .text()
             .replace(/```json/g, "")
             .replace(/```/g, "");
+
         setQuest([...quest, ...JSON.parse(parse)]);
         setLoading(false);
         handleCancelAI();
@@ -427,7 +430,9 @@ trả về kiểu dữ liệu json, không giải thích hay nói bất cứ th�
                             <CiCirclePlus size={20} />
                             Thêm câu hỏi
                         </Button>
-                        <Button onClick={handlePost}>Đăng bài</Button>
+                        <Button disabled={loadingSubmit} onClick={handlePost}>
+                            Đăng bài
+                        </Button>
                     </div>
                     <Modal
                         title="Thêm câu hỏi"

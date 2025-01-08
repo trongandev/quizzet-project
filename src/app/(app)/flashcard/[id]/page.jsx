@@ -1,7 +1,6 @@
 import CFlashcardDetail from "@/components/CFlashcardDetail";
 import React from "react";
 import { GET_API_WITHOUT_COOKIE } from "@/lib/fetchAPI";
-import { Spin } from "antd";
 
 export async function generateMetadata({ params }) {
     const listFlashCards = await GET_API_WITHOUT_COOKIE(`/flashcards/${params.id}`);

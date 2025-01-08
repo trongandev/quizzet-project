@@ -386,7 +386,7 @@ export default function CongDong() {
                                                 <div className={` ${isCurrentUser ? "w-full text-end" : ""} `} id={msg?._id}>
                                                     {msg?.message && (
                                                         <p
-                                                            className={` ${isCurrentUser ? " bg-primary text-white" : "bg-gray-200 "} ${
+                                                            className={`max-w-[350px] ${isCurrentUser ? " bg-primary text-white" : "bg-gray-200 "} ${
                                                                 msg?.unsend ? "!bg-white border border-primary !text-primary text-[12px]" : ""
                                                             } rounded-lg px-3 py-2 inline-block`}>
                                                             {msg?.unsend ? "Tin nhắn đã bị gỡ" : msg?.message}

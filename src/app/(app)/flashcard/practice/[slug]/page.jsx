@@ -8,7 +8,6 @@ import { HiMiniSpeakerWave } from "react-icons/hi2";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import { BiSlideshow } from "react-icons/bi";
 import { IoSend } from "react-icons/io5";
-
 const FEATURES = {
     FLASHCARD: 1,
     QUIZ: 2,
@@ -63,25 +62,12 @@ export default function PractiveFlashcard({ params }) {
         setFeature(features[randomIndex]);
     }, []);
 
-    // Generate quiz options
-    // const generateQuizOptions = useCallback(
-    //     (currentCard) => {
-    //         if (!currentCard || flashcards.length < 4) return;
-
-    //         const options = [currentCard];
-    //         const availableCards = flashcards.filter((card) => card._id !== currentCard._id);
-
-    //         while (options.length < 4 && availableCards.length > 0) {
-    //             const randomIndex = Math.floor(Math.random() * availableCards.length);
-    //             options.push(availableCards[randomIndex]);
-    //             availableCards.splice(randomIndex, 1);
-    //         }
-
-    //         // Shuffle options
-    //         setQuizOptions(options.sort(() => Math.random() - 0.5));
-    //     },
-    //     [flashcards]
-    // );
+    useEffect(() => {
+        return () => {
+            // Code này sẽ chạy khi component bị unmount (user rời trang)
+            console.log("User đã rời khỏi trang flashcard");
+        };
+    }, []);
 
     const generateQuizOptions = useCallback(
         (currentCard) => {
@@ -400,13 +386,13 @@ export default function PractiveFlashcard({ params }) {
                                             onClick={() => speakWord(flashcards[index]?.title, 1, flashcards[index]?._id)}
                                             className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-primary">
                                             <HiMiniSpeakerWave />
-                                            <span>US</span>
+                                            <span>UK</span>
                                         </button>
                                         <button
                                             onClick={() => speakWord(flashcards[index]?.title, 2, flashcards[index]?._id)}
                                             className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-primary">
                                             <HiMiniSpeakerWave />
-                                            <span>UK</span>
+                                            <span>US</span>
                                         </button>
                                     </div>
                                     <div className="flex-1">
@@ -511,8 +497,8 @@ export default function PractiveFlashcard({ params }) {
                                     <span>Phát âm giọng UK, US</span>
                                 </div>
                                 <Switch
-                                    checkedChildren={speakLang === 1 && "US"}
-                                    unCheckedChildren={speakLang === 2 && "UK"}
+                                    checkedChildren={speakLang === 1 && "UK"}
+                                    unCheckedChildren={speakLang === 2 && "US"}
                                     checked={speakLang === 1}
                                     onChange={(checked) => setSpeakLang(checked ? 1 : 2)}
                                 />

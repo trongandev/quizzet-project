@@ -84,9 +84,8 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                     </div>
                 </div>
             </div>
-
             {token !== undefined ? (
-                <div className="mt-5">
+                <div className="mt-10">
                     <h4 className="text-xl mb-2 text-primary">List từ đã tạo</h4>
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 max-h-[300px] overflow-y-scroll">
                         <div
@@ -148,7 +147,10 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                                     <p className="text-sm line-clamp-2 italic h-[40px]" title={item.desc}>
                                         {item.desc || "Không có mô tả"}
                                     </p>
-                                    <p className="text-sm line-clamp-2 italic">Ngôn ngữ: {item.language}</p>
+                                    <div className="flex gap-2 items-center">
+                                        <p className="text-sm line-clamp-2 italic">Ngôn ngữ: </p>
+                                        <Image src={`/flag/${item.language}.svg`} alt="" width={25} height={25} className="rounded-sm"></Image>
+                                    </div>
                                     <div className="flex items-center gap-2 mt-2">
                                         <div className="w-[40px] h-[40px] overflow-hidden relative">
                                             <Image src={item?.userId?.profilePicture} alt="" className="rounded-full w-full h-full absolute object-cover" fill />
@@ -191,7 +193,10 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                                 <p className="text-sm line-clamp-2 italic  h-[40px]" title={item.desc}>
                                     {item.desc || "Không có mô tả"}
                                 </p>
-                                <p className="text-sm line-clamp-2 italic">Ngôn ngữ: {item.language}</p>
+                                <div className="flex gap-2 items-center">
+                                    <p className="text-sm line-clamp-2 italic">Ngôn ngữ: </p>
+                                    <Image src={`/flag/${item.language}.svg`} alt="" width={25} height={25} className="rounded-sm"></Image>
+                                </div>
                                 <div className="flex items-center gap-2 mt-2">
                                     <div className="w-[40px] h-[40px] overflow-hidden relative">
                                         <Image src={item?.userId?.profilePicture} alt="" className="rounded-full w-full h-full absolute object-cover" fill />

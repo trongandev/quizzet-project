@@ -146,6 +146,8 @@ export default function CQuizDetail({ QuizData, QuestData }) {
             icon: "info",
         });
     };
+
+    console.log(QuestData);
     return (
         <>
             {contextHolder}
