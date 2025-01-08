@@ -1,5 +1,5 @@
 "use client";
-import { GET_API } from "@/lib/fetchAPI";
+import { GET_API, POST_API } from "@/lib/fetchAPI";
 import React, { useEffect, useState, useCallback } from "react";
 import Cookies from "js-cookie";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -8,6 +8,8 @@ import { HiMiniSpeakerWave } from "react-icons/hi2";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import { BiSlideshow } from "react-icons/bi";
 import { IoSend } from "react-icons/io5";
+import { TbConfetti } from "react-icons/tb";
+import { BsCheckCircleFill, BsEmojiAstonished, BsEmojiFrown, BsEmojiLaughing, BsXCircleFill } from "react-icons/bs";
 const FEATURES = {
     FLASHCARD: 1,
     QUIZ: 2,
@@ -15,46 +17,69 @@ const FEATURES = {
     FILL_BLANK: 4,
 };
 
+const KNOWLEDGE_LEVELS = {
+    UNKNOWN: "unknown", // Need 3 more reviews
+    FAMILIAR: "familiar", // Need 2 more reviews
+    KNOWN: "known", // Mastered
+};
+
 export default function PractiveFlashcard({ params }) {
-    const [isFlipped, setIsFlipped] = useState(false);
-    const [index, setIndex] = useState(0);
-    const [loadingAudio, setLoadingAudio] = useState(null);
-    const [speakLang, setSpeakLang] = useState(1);
-    const [feature, setFeature] = useState(FEATURES.FLASHCARD);
-    const [showAns, setShowAns] = useState(false);
     const [flashcards, setFlashcards] = useState([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const [feature, setFeature] = useState(FEATURES.FLASHCARD);
+    const [isFlipped, setIsFlipped] = useState(false);
     const [inputAnswer, setInputAnswer] = useState("");
-    const [progress, setProgress] = useState({ known: [], unknown: [] });
+    const [showAns, setShowAns] = useState(false);
     const [quizOptions, setQuizOptions] = useState([]);
-    const [messageApi, contextHolder] = message.useMessage();
-    // random moder
-    const [isRandomMode, setIsRandomMode] = useState(false);
-    const [isRandomFeature, setIsRandomFeature] = useState(false);
-    const [selectedAnswers, setSelectedAnswers] = useState({});
     const [isCorrectAns, setIsCorrectAns] = useState(null);
-    const [language, setLanguage] = useState({});
-    // Fetch flashcards data
+    const [messageApi, contextHolder] = message.useMessage();
+    const [loadingAudio, setLoadingAudio] = useState(false);
+    const [language, setLanguage] = useState(false);
+    const [selectedAnswers, setSelectedAnswers] = useState({});
+    const [speakLang, setSpeakLang] = useState(1);
+    const [isCheckAns, setIsCheckAns] = useState(false);
+
+    const [sessionData, setSessionData] = useState({
+        reviewQueue: [],
+        masteredWords: new Set(),
+        wordStatus: {},
+        startTime: new Date(),
+    });
+
     useEffect(() => {
-        const fetchFlashCards = async () => {
+        const fetchAndInitialize = async () => {
             const token = Cookies.get("token");
             const req = await GET_API(`/flashcards/${params?.slug}`, token);
             if (req.ok) {
-                const result = req?.listFlashCards?.flashcards;
-                setLanguage(req?.listFlashCards?.language);
-                setFlashcards(result);
-                generateQuizOptions(result[0]);
+                const shuffledCards = [...req.listFlashCards.flashcards].sort(() => Math.random() - 0.5);
+                setFlashcards(shuffledCards);
+                setLanguage(req.listFlashCards.language);
+                generateQuizOptions(shuffledCards[0]);
+                // Initialize word status
+                const initialStatus = {};
+                shuffledCards.forEach((card) => {
+                    initialStatus[card._id] = {
+                        reviewsNeeded: 0,
+                        correctAnswers: 0,
+                        incorrectAnswers: 0,
+                    };
+                });
+                setSessionData((prev) => ({
+                    ...prev,
+                    wordStatus: initialStatus,
+                }));
             } else {
                 messageApi.error(req.message);
             }
         };
-        fetchFlashCards();
+        fetchAndInitialize();
     }, [params?.slug]);
 
-    useEffect(() => {
-        if (flashcards.length > 0) {
-            generateQuizOptions(flashcards[0]);
-        }
-    }, [flashcards]);
+    // useEffect(() => {
+    //     if (flashcards.length > 0) {
+    //         generateQuizOptions(flashcards[0]);
+    //     }
+    // }, [flashcards]);
 
     const randomizeFeature = useCallback(() => {
         const features = [FEATURES.FLASHCARD, FEATURES.QUIZ, FEATURES.LISTENING, FEATURES.FILL_BLANK];
@@ -84,6 +109,97 @@ export default function PractiveFlashcard({ params }) {
         },
         [flashcards]
     );
+
+    // khi người dùng rời khỏi trang cũng là lúc gửi dữ liệu lên server
+    useEffect(() => {
+        return async () => {
+            const progressData = {
+                listId: params?.slug,
+                cardsProgress: Object.entries(sessionData.wordStatus).map(([cardId, status]) => ({
+                    flashcardId: cardId,
+                    sessionData: {
+                        correctAnswers: status.correctAnswers,
+                        incorrectAnswers: status.incorrectAnswers,
+                        timeSpent: new Date() - sessionData.startTime,
+                        masteryLevel: status.correctAnswers >= 2 ? "known" : status.correctAnswers >= 1 ? "familiar" : "unknown",
+                    },
+                })),
+            };
+            console.log(progressData);
+            // try {
+            //     await fetch('/api/flashcards/bulk-update', {
+            //         method: 'POST',
+            //         headers: {
+            //             'Content-Type': 'application/json',
+            //             'Authorization': `Bearer ${Cookies.get("token")}`
+            //         },
+            //         body: JSON.stringify(progressData)
+            //     });
+            // } catch (error) {
+            //     console.error('Failed to save progress:', error);
+            // }
+        };
+    }, [sessionData, params?.slug]);
+
+    // Handle knowledge level selection
+    const handleKnowledgeLevel = (level) => {
+        const currentCard = flashcards[currentIndex];
+        const status = sessionData.wordStatus[currentCard._id];
+
+        // Update word status
+        const newStatus = {
+            ...status,
+            lastReviewTime: new Date(),
+            reviewsNeeded: level === KNOWLEDGE_LEVELS.UNKNOWN ? 3 : level === KNOWLEDGE_LEVELS.FAMILIAR ? 2 : 0,
+        };
+
+        setSessionData((prev) => ({
+            ...prev,
+            wordStatus: {
+                ...prev.wordStatus,
+                [currentCard._id]: newStatus,
+            },
+        }));
+
+        // Determine next feature and card
+        let nextFeature = feature;
+        if (feature === FEATURES.FLASHCARD) {
+            nextFeature = Math.floor(Math.random() * 3) + 2; // Random between QUIZ, LISTENING, FILL_BLANK
+        }
+
+        // Move to next card or review queue
+        if (currentIndex < flashcards.length - 1) {
+            setCurrentIndex((prev) => prev + 1);
+            setFeature(nextFeature);
+        } else {
+            // Check for words needing review
+            const reviewWords = Object.entries(sessionData.wordStatus)
+                .filter(([_, status]) => status.reviewsNeeded > 0)
+                .map(([id]) => id);
+
+            if (reviewWords.length > 0) {
+                setSessionData((prev) => ({
+                    ...prev,
+                    reviewQueue: reviewWords.sort(() => Math.random() - 0.5),
+                }));
+                setCurrentIndex(0);
+                setFeature(FEATURES.FLASHCARD);
+                messageApi.info(`${reviewWords.length} từ cần xem lại!`);
+            } else {
+                messageApi.success({
+                    content: "Chúc mừng bạn đã hoàn thành bài học!",
+                    icon: <TbConfetti className="text-2xl" />,
+                });
+            }
+        }
+
+        // Reset states
+        setIsFlipped(false);
+        setInputAnswer("");
+        setShowAns(false);
+        setIsCorrectAns(null);
+    };
+
     const [disableAudio, setDisableAudio] = useState(false);
 
     // Handle audio playback
@@ -115,60 +231,6 @@ export default function PractiveFlashcard({ params }) {
         }
     };
 
-    // Navigation handlers
-    const handleChangeIndex = useCallback(
-        async (type) => {
-            let newIndex;
-
-            if (isRandomMode) {
-                // Generate random index different from current
-                do {
-                    newIndex = Math.floor(Math.random() * flashcards.length);
-                } while (newIndex === index && flashcards.length > 1);
-            } else {
-                newIndex = type === "next" ? (index < flashcards.length - 1 ? index + 1 : 0) : index > 0 ? index - 1 : flashcards.length - 1;
-            }
-
-            setIndex(newIndex);
-            setIsFlipped(false);
-            setInputAnswer("");
-            setShowAns(false);
-
-            if (isRandomFeature) {
-                randomizeFeature();
-            }
-
-            if (feature === FEATURES.FLASHCARD || feature === FEATURES.LISTENING) {
-                await speakWord(flashcards[newIndex].title, speakLang, flashcards[newIndex]._id);
-            }
-
-            generateQuizOptions(flashcards[newIndex]);
-        },
-        [index, flashcards, feature, speakLang, isRandomMode, isRandomFeature, randomizeFeature]
-    );
-
-    // Progress tracking
-    const handleProgress = useCallback(
-        (type) => {
-            const currentId = flashcards[index]._id;
-            if (type === "known") {
-                setProgress((prev) => ({
-                    ...prev,
-                    known: [...new Set([...prev.known, currentId])],
-                    unknown: prev.unknown.filter((id) => id !== currentId),
-                }));
-            } else {
-                setProgress((prev) => ({
-                    ...prev,
-                    unknown: [...new Set([...prev.unknown, currentId])],
-                    known: prev.known.filter((id) => id !== currentId),
-                }));
-            }
-            handleChangeIndex("next");
-        },
-        [index, flashcards]
-    );
-
     const handlePlayAudio = (method) => {
         if (method == "correct") {
             const audio = new Audio("/audio/correct.mp3");
@@ -179,80 +241,84 @@ export default function PractiveFlashcard({ params }) {
         }
     };
 
-    // Quiz answer handler
-    const handleQuizAnswer = async (selectedAnswer, idx) => {
-        const isCorrect = selectedAnswer === flashcards[index].title;
-        messageApi[isCorrect ? "success" : "error"](isCorrect ? "Chính xác, giỏi quá" : "Sai rồi, thử lại nhé! ^^");
-        setSelectedAnswers({
-            ...selectedAnswers,
-            [idx]: isCorrect ? "correct" : "incorrect",
-        });
-        if (isCorrect) {
-            handlePlayAudio("correct");
-            await speakWord(flashcards[index].title, speakLang, flashcards[index]._id);
+    // Handle answer checking
+    const checkAnswer = useCallback(
+        (givenAnswer, idx = null) => {
+            setIsCheckAns(true);
 
-            setTimeout(() => {
-                handleProgress("known");
-                setSelectedAnswers({});
-            }, 1000);
-        } else {
-            handlePlayAudio("wrong");
-            setTimeout(() => {
-                setSelectedAnswers((prev) => ({
-                    ...prev,
-                    [idx]: null,
-                }));
-            }, 820);
-        }
-    };
+            const currentCard = flashcards[currentIndex];
+            const isCorrect = givenAnswer.toLowerCase() === currentCard.title.toLowerCase();
+            const status = sessionData.wordStatus[currentCard._id];
 
-    // Listening practice handler
-    const checkListeningAnswer = useCallback(() => {
-        const isCorrect = inputAnswer.toLowerCase() === flashcards[index].title.toLowerCase();
-        messageApi[isCorrect ? "success" : "error"](isCorrect ? "Chính xác, giỏi quá" : "Sai rồi, thử lại nhé! ^^");
-        setIsCorrectAns(isCorrect ? "correct" : "incorrect");
-        if (isCorrect) {
-            handlePlayAudio("correct");
-            setTimeout(() => {
-                handleProgress("known");
-                setIsCorrectAns(null); // Reset về null thay vì false
-            }, 1000);
-        } else {
-            handlePlayAudio("wrong");
-            setTimeout(() => {
-                setIsCorrectAns(null);
-            }, 820);
-        }
-    }, [inputAnswer, flashcards, index, messageApi, handleProgress]);
+            if (idx != null) {
+                setSelectedAnswers({
+                    ...selectedAnswers,
+                    [idx]: isCorrect ? "correct" : "incorrect",
+                });
+            }
+            // Update status
+            const newStatus = {
+                ...status,
+                correctAnswers: status.correctAnswers + (isCorrect ? 1 : 0),
+                incorrectAnswers: status.incorrectAnswers + (isCorrect ? 0 : 1),
+            };
 
-    // Keyboard navigation
-    const handleKeyDown = useCallback(
-        (e) => {
-            switch (e.key.toLowerCase()) {
-                case "arrowleft":
-                    handleChangeIndex("prev");
-                    break;
-                case "arrowright":
-                    handleChangeIndex("next");
-                    break;
-                case " ":
-                    e.preventDefault();
-                    if (feature === FEATURES.FLASHCARD) {
-                        setIsFlipped((prev) => !prev);
-                    }
-                    break;
-                case "enter":
-                    if (feature === FEATURES.LISTENING || feature === FEATURES.FILL_BLANK) {
-                        checkListeningAnswer();
-                    }
-                    break;
-                case "shift":
-                    // Phát âm thanh với accent đang được chọn
-                    speakWord(flashcards[index]?.title, speakLang, flashcards[index]?._id);
-                    break;
+            setSessionData((prev) => ({
+                ...prev,
+                wordStatus: {
+                    ...prev.wordStatus,
+                    [currentCard._id]: newStatus,
+                },
+            }));
+
+            setIsCorrectAns(isCorrect ? "correct" : "incorrect");
+            messageApi[isCorrect ? "success" : "error"]({
+                content: isCorrect ? " Đúng rồi, tốt lắm" : " Sai rồi hãy thử lại",
+                icon: isCorrect ? <BsCheckCircleFill className="text-green-500" /> : <BsXCircleFill className="text-red-500" />,
+            });
+
+            if (isCorrect) {
+                handlePlayAudio("correct");
+                if (feature !== FEATURES.LISTENING || feature !== FEATURES.FLASHCARD) speakWord(givenAnswer, speakLang, 1);
+                setTimeout(() => {
+                    handleKnowledgeLevel(KNOWLEDGE_LEVELS.KNOWN);
+                    setSelectedAnswers({});
+                    setIsCheckAns(false);
+                }, 1000);
+            } else {
+                handlePlayAudio("wrong");
+
+                setTimeout(() => {
+                    handleKnowledgeLevel(KNOWLEDGE_LEVELS.UNKNOWN);
+                    setIsCheckAns(false);
+                    setSelectedAnswers((prev) => ({
+                        ...prev,
+                        [idx]: null,
+                    }));
+                }, 820);
             }
         },
-        [feature, handleChangeIndex, checkListeningAnswer, handleProgress]
+        [currentIndex, flashcards, sessionData]
+    );
+
+    // Keyboard handlers
+    const handleKeyDown = useCallback(
+        (e) => {
+            if (e.key === "Enter") {
+                if (feature !== FEATURES.FLASHCARD && !isCheckAns) {
+                    checkAnswer(inputAnswer);
+                }
+            } else if (e.key === "Shift") {
+                const currentCard = flashcards[currentIndex];
+                if (currentCard) {
+                    speakWord(currentCard.title);
+                }
+            } else if (e.key === " " && feature === FEATURES.FLASHCARD) {
+                e.preventDefault();
+                setIsFlipped((prev) => !prev);
+            }
+        },
+        [feature, checkAnswer, inputAnswer, currentIndex, flashcards]
     );
 
     if (!flashcards.length) {
@@ -262,7 +328,8 @@ export default function PractiveFlashcard({ params }) {
             </div>
         );
     }
-
+    const currentCard = flashcards[currentIndex];
+    const progress = sessionData.wordStatus[currentCard._id];
     return (
         <div className="px-3 md:px-0 focus-visible:outline-none" onKeyDown={handleKeyDown} tabIndex={0}>
             {contextHolder}
@@ -271,7 +338,7 @@ export default function PractiveFlashcard({ params }) {
                     <div className="w-full flex flex-col gap-5">
                         {/* Main Flashcard Container */}
                         <div
-                            className="relative w-full h-[500px] border  shadow-md bg-white"
+                            className="relative w-full h-[500px] border  shadow-md bg-white rounded-md"
                             style={{ perspective: "1000px" }}
                             onClick={feature === FEATURES.FLASHCARD ? () => setIsFlipped(!isFlipped) : undefined}>
                             {/* Flashcard Feature */}
@@ -282,17 +349,18 @@ export default function PractiveFlashcard({ params }) {
                                     {/* Front Side */}
                                     <div className="absolute inset-0 bg-white flex flex-col items-center justify-center backface-hidden p-5" style={{ backfaceVisibility: "hidden" }}>
                                         <div className="flex items-center gap-2 mb-4">
-                                            <p className="text-2xl font-semibold">{flashcards[index]?.title}</p>
+                                            <p className="text-2xl font-semibold">{currentCard.title}</p>
                                             <button
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    speakWord(flashcards[index]?.title, speakLang, flashcards[index]?._id);
+                                                    speakWord(currentCard?.title, speakLang, currentCard?._id);
                                                 }}
-                                                className="p-2 hover:bg-gray-100 rounded-full">
-                                                {loadingAudio === flashcards[index]?._id ? <Spin indicator={<LoadingOutlined spin />} /> : <HiMiniSpeakerWave size={24} />}
+                                                className="p-2 hover:bg-gray-100 rounded-full"
+                                                disabled={loadingAudio}>
+                                                {loadingAudio === currentCard?._id ? <Spin indicator={<LoadingOutlined spin />} /> : <HiMiniSpeakerWave size={24} />}
                                             </button>
                                         </div>
-                                        <p className="text-gray-500 text-lg font-bold">{flashcards[index]?.transcription}</p>
+                                        <p className="text-gray-500 text-lg font-bold">{currentCard?.transcription}</p>
 
                                         <p className="text-gray-500 text-sm">(Click to flip)</p>
                                     </div>
@@ -304,21 +372,21 @@ export default function PractiveFlashcard({ params }) {
                                             backfaceVisibility: "hidden",
                                             transform: "rotateY(180deg)",
                                         }}>
-                                        {isFlipped && <p className="text-lg text-gray-700">{flashcards[index]?.define}</p>}
+                                        {isFlipped && <p className="text-lg text-gray-700">{currentCard?.define}</p>}
 
-                                        {flashcards[index]?.example && (
+                                        {currentCard?.example && (
                                             <div className="mt-4 p-4 bg-gray-50 rounded-lg w-full">
                                                 {isFlipped && (
                                                     <>
                                                         {" "}
                                                         <p className="font-medium mb-2">Ví dụ:</p>
                                                         <div className="mb-2">
-                                                            <p className="font-bold italic text-gray-600">{flashcards[index].example[0]?.en}</p>
-                                                            <p className="italic text-gray-600">{flashcards[index].example[0]?.vi}</p>
+                                                            <p className="font-bold italic text-gray-600">{currentCard?.example[0]?.en}</p>
+                                                            <p className="italic text-gray-600">{currentCard?.example[0]?.vi}</p>
                                                         </div>
                                                         <div className="mb-2">
-                                                            <p className="font-bold italic text-gray-600">{flashcards[index].example[1]?.en}</p>
-                                                            <p className="italic text-gray-600">{flashcards[index].example[1]?.vi}</p>
+                                                            <p className="font-bold italic text-gray-600">{currentCard?.example[1]?.en}</p>
+                                                            <p className="italic text-gray-600">{currentCard?.example[1]?.vi}</p>
                                                         </div>
                                                     </>
                                                 )}
@@ -338,12 +406,12 @@ export default function PractiveFlashcard({ params }) {
                                         <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">Quiz</span>
                                     </div>
                                     <p className=" mb-4 text-gray-500"> (nếu không có đáp án đúng vui lòng bấm bỏ qua)</p>
-                                    <p className="text-lg mb-6">{flashcards[index]?.define}</p>
+                                    <p className="text-lg mb-6">{currentCard?.define}</p>
                                     <div className="grid grid-cols-2 gap-5 flex-1">
                                         {quizOptions.map((option, idx) => (
                                             <button
                                                 key={idx}
-                                                onClick={() => handleQuizAnswer(option, idx)}
+                                                onClick={() => checkAnswer(option, idx)}
                                                 disabled={selectedAnswers[idx]}
                                                 className={`
                                               flex items-center h-full border rounded-lg group 
@@ -377,13 +445,13 @@ export default function PractiveFlashcard({ params }) {
                                     </div>
                                     <div className="flex gap-4 mb-6">
                                         <button
-                                            onClick={() => speakWord(flashcards[index]?.title, 1, flashcards[index]?._id)}
+                                            onClick={() => speakWord(currentCard?.title, 1, currentCard?._id)}
                                             className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-primary">
                                             <HiMiniSpeakerWave />
                                             <span>UK</span>
                                         </button>
                                         <button
-                                            onClick={() => speakWord(flashcards[index]?.title, 2, flashcards[index]?._id)}
+                                            onClick={() => speakWord(currentCard?.title, 2, currentCard?._id)}
                                             className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-primary">
                                             <HiMiniSpeakerWave />
                                             <span>US</span>
@@ -391,7 +459,7 @@ export default function PractiveFlashcard({ params }) {
                                     </div>
                                     <div className="flex-1">
                                         <p className="text-gray-700 mb-2">Định nghĩa:</p>
-                                        <p className="text-gray-600 mb-4">{flashcards[index]?.define}</p>
+                                        <p className="text-gray-600 mb-4">{currentCard?.define}</p>
                                         <input
                                             type="text"
                                             value={inputAnswer}
@@ -404,12 +472,12 @@ export default function PractiveFlashcard({ params }) {
         `}
                                         />
                                         <div className="flex justify-end">
-                                            <button className="btn btn-primary mt-3 flex items-center  gap-2" onClick={checkListeningAnswer}>
+                                            <button className="btn btn-primary mt-3 flex items-center  gap-2" onClick={() => checkAnswer(inputAnswer)}>
                                                 <IoSend /> Gửi
                                             </button>
                                         </div>
                                     </div>
-                                    <button onClick={() => setInputAnswer(flashcards[index].title)} className="flex items-center gap-2 text-gray-600 hover:text-primary mt-4">
+                                    <button onClick={() => setInputAnswer(currentCard.title)} className="flex items-center gap-2 text-gray-600 hover:text-primary mt-4">
                                         <BiSlideshow />
                                         <span>Hiển thị đáp án</span>
                                     </button>
@@ -424,12 +492,10 @@ export default function PractiveFlashcard({ params }) {
                                         <span className="px-3 py-1 bg-purple-100 text-purple-600 rounded-full text-sm">Practice</span>
                                     </div>
                                     <div className="flex-1">
-                                        <p className="text-gray-700 mb-4">{flashcards[index]?.define}</p>
+                                        <p className="text-gray-700 mb-4">{currentCard?.define}</p>
                                         <div className="bg-gray-50 p-4 rounded-lg mb-4">
                                             <p className="text-gray-600 font-medium mb-2">Ví dụ:</p>
-                                            <p className="text-lg">
-                                                {showAns ? flashcards[index]?.example?.[0]?.en : flashcards[index]?.example?.[0]?.en.replace(new RegExp(flashcards[index]?.title, "gi"), "______")}
-                                            </p>
+                                            <p className="text-lg">{currentCard.example?.[0]?.en.replace(currentCard.title, "_".repeat(currentCard.title.length))}</p>
                                         </div>
                                         <input
                                             type="text"
@@ -443,7 +509,7 @@ export default function PractiveFlashcard({ params }) {
                                             `}
                                         />
                                         <div className="flex justify-end">
-                                            <button className="btn btn-primary mt-3 flex items-center  gap-2" onClick={checkListeningAnswer}>
+                                            <button className="btn btn-primary mt-3 flex items-center  gap-2" onClick={() => checkAnswer(inputAnswer)}>
                                                 <IoSend /> Gửi
                                             </button>
                                         </div>
@@ -457,49 +523,46 @@ export default function PractiveFlashcard({ params }) {
                         </div>
 
                         {/* Navigation Controls */}
-
-                        <div className="bg-gray-100 rounded-xl overflow-hidden w-full flex items-center justify-between shadow-md text-2xl">
-                            {/* <div
-                                className="flex-1 p-3 h-full hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer"
-                                onClick={() => handleChangeIndex("prev")}>
-                                <GrFormPrevious />
-
-                                <p className="text-sm">Lùi lại</p>
-                            </div> */}
-                            <div className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer" onClick={() => handleProgress("unknown")}>
-                                <GrFormPrevious />
-                                <p className="text-sm">Chưa biết</p>
+                        {feature === FEATURES.FLASHCARD && (
+                            <div className="bg-[#f3f4f6] rounded-md overflow-hidden w-full flex items-center justify-between shadow-md text-2xl">
+                                <div
+                                    className="flex-1 p-3 hover:bg-[#FFCDD2] text-red-500 flex flex-col gap-1 justify-center items-center cursor-pointer"
+                                    onClick={() => handleKnowledgeLevel("unknown")}>
+                                    <BsEmojiFrown />
+                                    <p className="text-sm">Chưa biết</p>
+                                </div>
+                                <div
+                                    className="flex-1 p-3 hover:bg-[#FFF9C4] text-yellow-500  flex flex-col gap-1 justify-center items-center cursor-pointer"
+                                    onClick={() => handleKnowledgeLevel("familiar")}>
+                                    <BsEmojiAstonished />
+                                    <p className="text-sm">Tương đối</p>
+                                </div>
+                                <div
+                                    className="flex-1 p-3 hover:bg-[#C8E6C9] text-green-500 flex flex-col gap-1 justify-center items-center cursor-pointer"
+                                    onClick={() => handleKnowledgeLevel("known")}>
+                                    <BsEmojiLaughing />
+                                    <p className="text-sm">Đã biết</p>
+                                </div>
                             </div>
-                            <div className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer" onClick={() => handleProgress("known")}>
-                                <GrFormNext />
-                                <p className="text-sm">Đã biết</p>
-                            </div>
-
-                            {/* <div className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer" onClick={() => handleChangeIndex("next")}>
-                                <GrFormNext />
-                                <p className="text-sm">Tiến tới</p>
-                            </div> */}
-                        </div>
+                        )}
                     </div>
 
                     {/* Feature Selection Panel */}
                     <div className="w-full md:w-auto flex flex-col gap-4">
-                        {feature === FEATURES.FLASHCARD && language == "english" && (
-                            <div className="space-y-2">
-                                <div className="flex items-center gap-2">
-                                    <HiMiniSpeakerWave size={20} />
-                                    <span>Phát âm giọng UK, US</span>
-                                </div>
-                                <Switch
-                                    checkedChildren={speakLang === 1 && "UK"}
-                                    unCheckedChildren={speakLang === 2 && "US"}
-                                    checked={speakLang === 1}
-                                    onChange={(checked) => setSpeakLang(checked ? 1 : 2)}
-                                />
-                            </div>
-                        )}
-
                         <div className="space-y-2">
+                            <div className="flex items-center gap-2">
+                                <HiMiniSpeakerWave size={20} />
+                                <span>Phát âm giọng UK, US</span>
+                            </div>
+                            <Switch
+                                checkedChildren={speakLang === 1 && "UK"}
+                                unCheckedChildren={speakLang === 2 && "US"}
+                                checked={speakLang === 1}
+                                onChange={(checked) => setSpeakLang(checked ? 1 : 2)}
+                            />
+                        </div>
+
+                        {/* <div className="space-y-2">
                             <h2 className="font-medium">Cài đặt Random</h2>
                             <div className="bg-gray-100 p-4 rounded-lg space-y-3">
                                 <div className="flex items-center justify-between">
@@ -515,7 +578,7 @@ export default function PractiveFlashcard({ params }) {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
 
                         <div className="space-y-2">
                             <h2 className="font-medium">Chế độ học</h2>
@@ -526,10 +589,7 @@ export default function PractiveFlashcard({ params }) {
                                     Listening: FEATURES.LISTENING,
                                     "Fill Blank": FEATURES.FILL_BLANK,
                                 }).map(([name, value]) => (
-                                    <button
-                                        key={value}
-                                        onClick={() => setFeature(value)}
-                                        className={`px-4 py-2 rounded-lg transition-colors ${feature === value ? "bg-primary text-white" : "bg-gray-100 hover:bg-gray-200"}`}>
+                                    <button key={value} className={`px-4 py-2 rounded-lg transition-colors cursor-default ${feature === value ? "bg-primary text-white" : "bg-gray-100"}`}>
                                         {name}
                                     </button>
                                 ))}
@@ -541,20 +601,29 @@ export default function PractiveFlashcard({ params }) {
                             <h2 className="font-medium">Tiến trình</h2>
                             <div className="bg-gray-100 p-4 rounded-lg">
                                 <div className="flex justify-between mb-2">
-                                    <span>Hiểu:</span>
-                                    <span>{progress.known.length}</span>
+                                    <span>Tổng số câu</span>
+                                    <span>{`${currentIndex + 1}/${flashcards.length}`}</span>
                                 </div>
-                                <div className="flex justify-between">
-                                    <span>Chưa hiểu:</span>
-                                    <span>{progress.unknown.length}</span>
+                                <div className="h-2 bg-gray-200 rounded-full">
+                                    <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${((currentIndex + 1) / flashcards.length) * 100}%` }} />
                                 </div>
-                                <div className="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-primary"
-                                        style={{
-                                            width: `${(progress.known.length / flashcards.length) * 100}%`,
-                                        }}
-                                    />
+                            </div>
+                            <div className="bg-gray-100 p-4 rounded-lg">
+                                <div className="flex justify-between mb-2">
+                                    <span>Biết</span>
+                                    <span>{`${progress.correctAnswers}/${flashcards.length}`}</span>
+                                </div>
+                                <div className="h-2 bg-gray-200 rounded-full">
+                                    <div className="h-full bg-green-500 rounded-full transition-all" style={{ width: `${(progress.correctAnswers / flashcards.length) * 100}%` }} />
+                                </div>
+                            </div>
+                            <div className="bg-gray-100 p-4 rounded-lg">
+                                <div className="flex justify-between mb-2">
+                                    <span>Cần ôn lại</span>
+                                    <span>{`${progress.reviewsNeeded}/${flashcards.length}`}</span>
+                                </div>
+                                <div className="h-2 bg-gray-200 rounded-full">
+                                    <div className="h-full bg-yellow-500 rounded-full transition-all" style={{ width: `${(progress.reviewsNeeded / flashcards.length) * 100}%` }} />
                                 </div>
                             </div>
                         </div>
@@ -563,14 +632,6 @@ export default function PractiveFlashcard({ params }) {
                         <div className="space-y-2">
                             <h2 className="font-medium">Phím tắt</h2>
                             <div className="bg-gray-100 p-4 rounded-lg space-y-3">
-                                <div className="flex items-center gap-2">
-                                    <kbd className="px-2 py-1 bg-white rounded shadow text-sm">→</kbd>
-                                    <span className="text-gray-600">Hiểu</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <kbd className="px-2 py-1 bg-white rounded shadow text-sm">←</kbd>
-                                    <span className="text-gray-600">Không biết</span>
-                                </div>
                                 <div className="flex items-center gap-2">
                                     <kbd className="px-2 py-1 bg-white rounded shadow text-sm">Space</kbd>
                                     <span className="text-gray-600">Lật thẻ </span>

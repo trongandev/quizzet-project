@@ -213,7 +213,7 @@ export default function QuizDetail({ params }) {
                                         <Rate disabled defaultValue={Round(calAvg(comment))} />
                                         <p>{data?.comment?.length} đánh giá</p>
                                     </div>
-                                    <div className="flex items-center gap-2 xl:block h-[35px]">
+                                    <div className="flex items-center gap-2  h-[35px]">
                                         <div className="mb-0 xl:mb-1 hover:text-primary cursor-pointer bg-gray-200 w-[35px] h-full flex items-center justify-center rounded-lg" onClick={showModal}>
                                             <FaRegFlag />
                                         </div>

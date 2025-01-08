@@ -60,18 +60,18 @@ export default function CTaiLieu({ toolData }) {
             <div className="flex justify-center md:justify-between items-center mb-4 gap-3 flex-wrap ">
                 <div className="flex gap-3 items-center">
                     <Tooltip placement="top" title="Sắp xếp theo lượt xem giảm dần">
-                        <button onClick={() => handleDefault()} className="text-[11px] btn btn-primary">
+                        <button onClick={() => handleDefault()} className="text-[11px] btn btn-primary !rounded-md">
                             Default
                         </button>
                     </Tooltip>
                     {toggleBtnSortAlpha ? (
-                        <Tooltip placement="top" title="Sắp xếp theo tên tài liệu từ A -> Z" className="btn btn-primary">
+                        <Tooltip placement="top" title="Sắp xếp theo tên tài liệu từ A -> Z" className="btn btn-primary !rounded-md">
                             <button onClick={() => handleSort("title", "asc")}>
                                 <FaSortAlphaDown />
                             </button>
                         </Tooltip>
                     ) : (
-                        <Tooltip placement="top" title="Sắp xếp theo tên tài liệu từ Z -> A" className="btn btn-primary">
+                        <Tooltip placement="top" title="Sắp xếp theo tên tài liệu từ Z -> A" className="btn btn-primary !rounded-md">
                             <button onClick={() => handleSort("title", "desc")}>
                                 <FaSortAlphaDownAlt />
                             </button>
@@ -79,20 +79,20 @@ export default function CTaiLieu({ toolData }) {
                     )}
 
                     {toggleBtnSortNumber ? (
-                        <Tooltip placement="top" title="Sắp xếp theo số câu hỏi tăng dần" className="btn btn-primary">
+                        <Tooltip placement="top" title="Sắp xếp theo số câu hỏi tăng dần" className="btn btn-primary !rounded-md">
                             <button onClick={() => handleSortByNumber("lenght", "asc")}>
                                 <TbSortAscendingNumbers />
                             </button>
                         </Tooltip>
                     ) : (
-                        <Tooltip placement="top" title="Sắp xếp theo số câu hỏi giảm dần" className="btn btn-primary">
+                        <Tooltip placement="top" title="Sắp xếp theo số câu hỏi giảm dần" className="btn btn-primary !rounded-md">
                             <button onClick={() => handleSortByNumber("lenght", "desc")}>
                                 <TbSortDescendingNumbers />
                             </button>
                         </Tooltip>
                     )}
 
-                    <select onChange={(e) => handleSearchSubject(e.target.value)}>
+                    <select onChange={(e) => handleSearchSubject(e.target.value)} className="h-full">
                         {subjectOption.map((item, index) => (
                             <option key={index} value={item.value}>
                                 {item.label}
@@ -103,14 +103,12 @@ export default function CTaiLieu({ toolData }) {
                 <div className="flex items-center gap-3 flex-1 flex-wrap justify-end">
                     <input type="text" placeholder="Tìm tên tài liệu mà bạn cần..." className="w-full md:w-[250px]" onChange={(e) => handleSearch(e.target.value)} />
                     <div className="flex gap-3 flex-1 items-center">
-                        <Link href="/tailieu/themtailieu" className="block flex-1">
-                            <button className="w-full btn btn-second">Thêm tài liệu</button>
+                        <Link href="/tailieu/themtailieu" className="block flex-1 text-center w-full btn btn-second !rounded-md">
+                            Thêm tài liệu
                         </Link>
-                        <Link href="/flashcard" className="block flex-1 ">
-                            <button className="w-full flex gap-2 items-center btn btn-primary justify-center">
-                                <GiCardPick size={20} />
-                                Flashcard
-                            </button>
+                        <Link href="/flashcard" className="flex-1 w-full flex gap-2 items-center btn btn-primary !rounded-md justify-center">
+                            <GiCardPick size={20} />
+                            Flashcard
                         </Link>
                     </div>
                 </div>{" "}
@@ -152,7 +150,7 @@ export default function CTaiLieu({ toolData }) {
                             <div className="">
                                 <p className="text-[12px]">{handleCompareDate(item.date)}</p>
                                 <Link href={`/tailieu/${item.slug}`}>
-                                    <button className="text-sm w-full btn btn-primary">Xem ngay</button>
+                                    <button className="text-sm w-full btn btn-primary !rounded-md">Xem ngay</button>
                                 </Link>
                             </div>
                         </div>

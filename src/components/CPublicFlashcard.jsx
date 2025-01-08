@@ -149,7 +149,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                                     </p>
                                     <div className="flex gap-2 items-center">
                                         <p className="text-sm line-clamp-2 italic">Ngôn ngữ: </p>
-                                        <Image src={`/flag/${item.language}.svg`} alt="" width={25} height={25} className="rounded-sm"></Image>
+                                        <Image src={`/flag/${item.language}.svg`} alt="" width={25} height={25} className="rounded-sm border border-gray-400"></Image>
                                     </div>
                                     <div className="flex items-center gap-2 mt-2">
                                         <div className="w-[40px] h-[40px] overflow-hidden relative">
@@ -195,7 +195,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                                 </p>
                                 <div className="flex gap-2 items-center">
                                     <p className="text-sm line-clamp-2 italic">Ngôn ngữ: </p>
-                                    <Image src={`/flag/${item.language}.svg`} alt="" width={25} height={25} className="rounded-sm"></Image>
+                                    <Image src={`/flag/${item.language}.svg`} alt="" width={25} height={25} className="rounded-sm border border-gray-400"></Image>
                                 </div>
                                 <div className="flex items-center gap-2 mt-2">
                                     <div className="w-[40px] h-[40px] overflow-hidden relative">

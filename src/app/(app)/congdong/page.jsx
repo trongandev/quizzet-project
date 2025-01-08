@@ -375,7 +375,7 @@ export default function CongDong() {
                                                         )}
                                                         {msg?.replyTo?.message !== "" && (
                                                             <Link href={`#${msg?.replyTo._id}`} className={`block ${isCurrentUser ? "w-full text-end" : ""}`}>
-                                                                <p className={` inline-block bg-gray-400 rounded-lg px-3 py-2 mb-[-10px]`}>
+                                                                <p className={` inline-block bg-gray-400 rounded-lg px-3 py-2 mb-[-10px] line-clamp-2`}>
                                                                     {msg?.replyTo?.unsend ? "Tin nhắn đã bị gỡ" : msg?.replyTo?.message}
                                                                 </p>
                                                             </Link>
@@ -535,19 +535,19 @@ export default function CongDong() {
                                         <IoMdClose />
                                     </div>
                                     <h1 className="text-secondary font-bold">Bạn đang trả lời{replyingTo?.userId?._id == userId ? " chính bạn" : ": " + replyingTo?.userId.displayName}</h1>
-                                    <p>{replyingTo?.message}</p>
+                                    <p className="line-clamp-2">{replyingTo?.message}</p>
                                     {replyingTo?.image && <Image src={replyingTo?.image} alt="" width={120} height={100} className="object-cover rounded-lg mt-2" />}
                                 </label>
                             )}
-                            <div className="flex gap-2">
-                                <label htmlFor="image" className=" bg-primary px-3  rounded-xl flex items-center justify-center text-white">
+                            <div className="flex gap-1">
+                                <label htmlFor="image" className=" bg-primary px-3  rounded-md flex items-center justify-center text-white ">
                                     <FaRegImage />{" "}
                                 </label>
                                 <input id="image" type="file" className="hidden" onChange={(e) => handleImageChange(e)} />
                                 <input
                                     type="text"
                                     id="message"
-                                    className="rounded-full"
+                                    className=""
                                     value={newMessage}
                                     onChange={(e) => setNewMessage(e.target.value)}
                                     placeholder="Nhập tin nhắn bạn muốn gửi... ctrl + v để dán ảnh"
@@ -582,11 +582,11 @@ export default function CongDong() {
                                     trigger="click"
                                     open={open}
                                     onOpenChange={handleOpenChange}>
-                                    <button className="btn btn-primary">
+                                    <button className="btn btn-primary !rounded-md">
                                         <MdOutlineInsertEmoticon size={20} />
                                     </button>
                                 </Popover>
-                                <button type="submit" disabled={loading} onClick={handleSendMessage} className="btn btn-primary">
+                                <button type="submit" disabled={loading} onClick={handleSendMessage} className="btn btn-primary !rounded-md">
                                     {loading ? <Spin indicator={<LoadingOutlined spin />} size="default" /> : <IoSend />}
                                 </button>
                             </div>

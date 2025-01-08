@@ -63,19 +63,19 @@ export default function CQuiz({ quizData }) {
             <div className="flex justify-center md:justify-between items-center mb-4 gap-3 flex-wrap ">
                 <div className="flex gap-3 items-center">
                     <Tooltip placement="top" title="Sắp xếp theo thời gian">
-                        <button onClick={() => handleDefault()} className="btn btn-primary text-[11px]">
+                        <button onClick={() => handleDefault()} className="btn btn-primary !rounded-md text-[11px]">
                             Default
                         </button>
                     </Tooltip>
                     {toggleBtnSortAlpha ? (
                         <Tooltip placement="top" title="Sắp xếp theo tên tài liệu từ A -> Z">
-                            <button onClick={() => handleSort("title", "asc")} className="btn btn-primary">
+                            <button onClick={() => handleSort("title", "asc")} className="btn btn-primary !rounded-md">
                                 <FaSortAlphaDown />
                             </button>
                         </Tooltip>
                     ) : (
                         <Tooltip placement="top" title="Sắp xếp theo tên tài liệu từ Z -> A">
-                            <button onClick={() => handleSort("title", "desc")} className="btn btn-primary">
+                            <button onClick={() => handleSort("title", "desc")} className="btn btn-primary !rounded-md">
                                 <FaSortAlphaDownAlt />
                             </button>
                         </Tooltip>
@@ -83,12 +83,12 @@ export default function CQuiz({ quizData }) {
 
                     {toggleBtnSortNumber ? (
                         <Tooltip placement="top" title="Sắp xếp theo số lượt làm tăng dần">
-                            <button onClick={() => handleSortByNumber("noa", "asc")} className="btn btn-primary">
+                            <button onClick={() => handleSortByNumber("noa", "asc")} className="btn btn-primary !rounded-md">
                                 <TbSortAscendingNumbers />
                             </button>
                         </Tooltip>
                     ) : (
-                        <Tooltip placement="top" title="Sắp xếp theo số lượt làm giảm dần" className="btn btn-primary">
+                        <Tooltip placement="top" title="Sắp xếp theo số lượt làm giảm dần" className="btn btn-primary !rounded-md">
                             <button onClick={() => handleSortByNumber("noa", "desc")}>
                                 <TbSortDescendingNumbers />
                             </button>
@@ -107,10 +107,10 @@ export default function CQuiz({ quizData }) {
                     <input type="text" placeholder="Tìm tên câu hỏi mà bạn cần..." className="flex-1 w-full" onChange={(e) => handleSearch(e.target.value)} />
                     <div className="flex-1 flex gap-3 w-full">
                         <Link href="/quiz/themcauhoi" className="block flex-1">
-                            <button className="btn btn-second w-full">Thêm câu hỏi</button>
+                            <button className="btn btn-second w-full !rounded-md">Thêm câu hỏi</button>
                         </Link>
                         <Link href="/quiz/nganhang" className="block flex-1 ">
-                            <button className="btn btn-primary w-full">Thi thử</button>
+                            <button className="btn btn-primary w-full !rounded-md">Thi thử</button>
                         </Link>
                     </div>
                 </div>
@@ -160,10 +160,8 @@ export default function CQuiz({ quizData }) {
                                         </div>
                                     </Link>
 
-                                    <Link href={`/quiz/${item.slug}`} className="block">
-                                        <button className="flex gap-1 items-center text-sm btn btn-primary">
-                                            Làm bài <IoArrowForwardCircleOutline />
-                                        </button>
+                                    <Link href={`/quiz/${item.slug}`} className="flex gap-1 items-center text-sm btn btn-primary !rounded-md">
+                                        Làm bài <IoArrowForwardCircleOutline />
                                     </Link>
                                 </div>
                             </div>

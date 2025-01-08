@@ -103,9 +103,9 @@ export default function CFlashcardDetail({ id_flashcard }) {
         const req = await POST_API("/flashcards", { ...newFlashcard, list_flashcard_id: listFlashcard._id }, "POST", token);
         const res = await req.json();
         if (req.ok) {
-            console.log(res);
             setOpen(false);
             setFlashcard([res?.flashcard, ...flashcard]);
+            setFilteredFlashcards([res?.flashcard, ...flashcard]);
             setNewFlashcard(defaultFlashcard);
         } else {
             messageApi.open({
@@ -170,25 +170,29 @@ export default function CFlashcardDetail({ id_flashcard }) {
                 Trả về kết quả theo cấu trúc JSON sau và KHÔNG kèm theo bất kỳ giải thích nào:
                 
                 {
-                "title": "", // Từ gốc bằng ${listFlashcard?.language}
+                "title": "", // Từ gốc bằng tiếng ${listFlashcard?.language} (không ghi phiên âm)
                 "define": "", // Định nghĩa bằng tiếng Việt, ngắn gọn và dễ hiểu
                 "type_of_word": "", // Loại từ (danh từ, động từ, tính từ, etc.)
                 "transcription": "", // Phiên âm chuẩn theo từng ngôn ngữ
                 "example": [
                     {
-                    "en": "", // Câu ví dụ bằng ${listFlashcard?.language}, thêm phiên âm 
+                    "en": "", // Câu ví dụ bằng ${listFlashcard?.language}
+                    "trans": "",// phiên âm theo ví dụ
                     "vi": ""  // Dịch nghĩa tiếng Việt
                     },
                     {
                     "en": "",
+                    "trans": "",
                     "vi": ""
                     },
                     {
                     "en": "",
+                    "trans": "",
                     "vi": ""
                     },
                     {
                     "en": "",
+                    "trans": "",
                     "vi": ""
                     }
                 ],
@@ -200,6 +204,8 @@ export default function CFlashcardDetail({ id_flashcard }) {
             .text()
             .replace(/```json/g, "")
             .replace(/```/g, "");
+
+        console.log(JSON.parse(parse));
         if (method === 1) {
             setEditWord({ ...editWord, ...JSON.parse(parse) });
         } else {
@@ -224,21 +230,24 @@ export default function CFlashcardDetail({ id_flashcard }) {
                 Trả về kết quả theo cấu trúc mảng JSON sau và KHÔNG kèm theo bất kỳ giải thích nào:
                 
                 [{
-                "title": "", // Từ gốc bằng ${listFlashcard?.language}
+                "title": "", // Từ gốc bằng tiếng ${listFlashcard?.language} (không ghi phiên âm)
                 "define": "", // Định nghĩa bằng tiếng Việt, ngắn gọn và dễ hiểu
                 "type_of_word": "", // Loại từ (danh từ, động từ, tính từ, etc.)
                 "transcription": "", // Phiên âm chuẩn theo từng ngôn ngữ
                  "example": [
                     {
                     "en": "", // Câu ví dụ bằng ${listFlashcard?.language}, thêm phiên âm 
+                    "trans": "",// phiên âm theo ví dụ
                     "vi": "" // Dịch nghĩa tiếng Việt
                     },
                     {
                     "en": "",
+                    "trans": "",
                     "vi": ""
                     },
                     {
                     "en": "",
+                    "trans": "",
                     "vi": ""
                     }
                 ],
@@ -428,6 +437,10 @@ export default function CFlashcardDetail({ id_flashcard }) {
         setFilteredFlashcards(filteredFlashcards);
     };
 
+    const handlePracticeScience = () => {
+        router.push(`/flashcard/practice-science/${listFlashcard?._id}`);
+    };
+
     return (
         <div className="text-third px-3 md:px-0">
             {contextHolder}
@@ -439,13 +452,13 @@ export default function CFlashcardDetail({ id_flashcard }) {
                 {user?._id == listFlashcard?.userId?._id ? (
                     <div className="flex-1 flex justify-between gap-2 items-center">
                         <div className="flex gap-2 items-center h-[36px]">
-                            <button className="btn btn-primary h-full" onClick={showModalEdit}>
+                            <button className="btn btn-primary h-full !rounded-md" onClick={showModalEdit}>
                                 <MdEdit />
                             </button>
-                            <button className="btn btn-primary h-full" onClick={showModal}>
+                            <button className="btn btn-primary h-full !rounded-md" onClick={showModal}>
                                 <IoMdAdd />
                             </button>
-                            <button className="btn btn-primary flex items-center gap-1" onClick={showModalAddMore}>
+                            <button className="btn btn-primary flex items-center gap-1 !rounded-md" onClick={showModalAddMore}>
                                 <AiOutlineAppstoreAdd /> Thêm nhiều
                             </button>
                         </div>
@@ -543,7 +556,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
                                     onKeyDown={handleKeyPress}
                                 />
                             </div>
-                            <button className="btn btn-primary flex items-center gap-2 " disabled={loading} onClick={handleSendPrompt}>
+                            <button className="btn btn-primary flex items-center gap-2 !rounded-md" disabled={loading} onClick={handleSendPrompt}>
                                 {loading ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ color: "blue" }} /> : <FaBrain />}
                                 AI Generate
                             </button>
@@ -579,19 +592,13 @@ export default function CFlashcardDetail({ id_flashcard }) {
                                 <textarea
                                     placeholder="Ví dụ (tối đa 10 câu)"
                                     className="h-32"
-                                    value={newFlashcard?.example?.map((ex) => `EN: ${ex.en}\nVI: ${ex.vi}`).join("\n\n")}
-                                    onChange={(e) => {
-                                        const updatedExamples = e.target.value.split("\n\n").map((sentence) => {
-                                            const [en, vi] = sentence.split("\n").map((line) => line.replace(/^EN: |^VI: /, "").trim());
-                                            return { en, vi };
-                                        });
-                                        setNewFlashCard({ ...newFlashcard, example: updatedExamples });
-                                    }}
+                                    disabled
+                                    value={newFlashcard?.example?.map((ex) => `LANG: ${ex.en}\nTRANS: ${ex.trans}\nVIE: ${ex.vi}`).join("\n\n")}
                                 />
                             </div>
                             <div className="">
                                 <p className="ml-2">Ghi chú</p>
-                                <textarea className="h-20" placeholder="Ghi chú" value={newFlashcard.note} onChange={(e) => setNewFlashCard({ ...newFlashcard, note: e.target.value })} />
+                                <textarea className="h-20" disabled placeholder="Ghi chú" value={newFlashcard?.note} />
                             </div>
                         </div>
                     </div>
@@ -616,7 +623,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
                             </button>
                         </div>
                         <div className="space-y-3 max-h-[300px] overflow-y-scroll">
-                            {!loading && <p className="text-gray-500 font-bold">Generate thành công {addMore.length} từ</p>}
+                            {addMore.length != 0 && <p className="text-gray-500 font-bold">Generate thành công {addMore.length} từ</p>}
                             {loading && <Spin indicator={<LoadingOutlined spin />} className="h-[300px] flex items-center justify-center" style={{ color: "blue" }} />}
                             {addMore.map((item, index) => (
                                 <div className="border border-secondary  p-2 rounded-md space-y-2 relative" key={index}>
@@ -663,7 +670,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
             <p className="text-gray-500 italic">{listFlashcard?.desc || "Không có mô tả"}</p>
             <div className="flex gap-2 items-center">
                 <p className="text-sm line-clamp-2 italic">Ngôn ngữ: </p>
-                <Image src={`/flag/${listFlashcard?.language}.svg`} alt="" width={25} height={25} className="rounded-sm"></Image>
+                <Image src={`/flag/${listFlashcard?.language}.svg`} alt="" width={25} height={25} className="rounded-sm border border-gray-400"></Image>
                 <p className="hover:underline cursor-pointer" onClick={showModalEdit}>
                     (sửa tiếng phát)
                 </p>
@@ -679,9 +686,14 @@ export default function CFlashcardDetail({ id_flashcard }) {
                     </p>
                 </Link>
             </div>
-            <Link href={`/flashcard/practice/${listFlashcard?._id}`} className="py-5 block flex-1">
-                <button className="w-full btn btn-primary !rounded-lg">Luyện tập Flashcards</button>
-            </Link>
+            <div className="flex items-center gap-3">
+                <Link href={`/flashcard/practice/${listFlashcard?._id}`} className="py-5 block flex-1">
+                    <button className="w-full btn btn-primary !rounded-lg">Luyện tập </button>
+                </Link>
+                <button className="w-full btn bg-secondary !rounded-lg py-5 block flex-1" onClick={handlePracticeScience} disabled={flashcard?.length < 4} title="Phải trên 4 từ mới có thể thực hiện">
+                    Luyện tập theo khoa học
+                </button>
+            </div>
 
             {/* <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1 text-secondary">
@@ -883,11 +895,13 @@ export default function CFlashcardDetail({ id_flashcard }) {
                                                     <textarea
                                                         placeholder="Ví dụ (tối đa 10 câu)"
                                                         className="h-32"
-                                                        value={editWord?.example?.map((ex) => `EN: ${ex.en}\nVI: ${ex.vi}`).join("\n\n")}
                                                         onChange={(e) => {
                                                             const updatedExamples = e.target.value.split("\n\n").map((sentence) => {
-                                                                const [en, vi] = sentence.split("\n").map((line) => line.replace(/^EN: |^VI: /, "").trim());
-                                                                return { en, vi };
+                                                                const [enLine, transLine, viLine] = sentence.split("\n");
+                                                                const en = enLine?.replace(/^LANG: /, "").trim();
+                                                                const trans = transLine?.replace(/^TRANS: /, "").trim();
+                                                                const vi = viLine?.replace(/^VIE: /, "").trim();
+                                                                return { en, trans, vi };
                                                             });
                                                             setEditWord({ ...editWord, example: updatedExamples });
                                                         }}
@@ -922,6 +936,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
                                                         <HiMiniSpeakerWave className="cursor-pointer hover:text-primary" onClick={() => speakWord(ex.en, 2, item?._id + idx)} />
                                                     )}
                                                 </div>
+                                                <p className="text-gray-600  font-bold">{ex?.trans}</p>
                                                 <div className="text-xs text-gray-500 flex">
                                                     {listFlashcard?.language == "english" && (
                                                         <>
@@ -945,7 +960,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
                                                     )}
                                                 </div>
                                             </div>
-                                            <p className="text-sm text-gray-600 italic">({ex.vi})</p>
+                                            <p className="text-sm text-gray-600 italic">{ex.vi}</p>
                                         </div>
                                     ))}
                                     {item?.example?.length === 0 && <p className="text-gray-500 text-sm">Không có ví dụ...</p>}
