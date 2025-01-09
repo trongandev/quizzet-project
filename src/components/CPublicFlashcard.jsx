@@ -1,6 +1,6 @@
 "use client";
 import { GET_API, POST_API } from "@/lib/fetchAPI";
-import { message, Modal, Spin } from "antd";
+import { message, Modal, Select, Spin } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -10,6 +10,7 @@ import { MdPublic } from "react-icons/md";
 import handleCompareDate from "@/lib/CompareDate";
 import { RiGitRepositoryPrivateFill } from "react-icons/ri";
 import { LoadingOutlined } from "@ant-design/icons";
+import { languageOption } from "@/lib/languageOption";
 import Cookies from "js-cookie";
 export default function CPublicFlashCard({ publicFlashcards }) {
     const [open, setOpen] = useState(false);
@@ -104,13 +105,17 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                                     value={newListFlashCard.title}
                                     onChange={(e) => setNewListFlashCard({ ...newListFlashCard, title: e.target.value })}
                                 />
-                                <select name="" id="" value={newListFlashCard.language} onChange={(e) => setNewListFlashCard({ ...newListFlashCard, language: e.target.value })}>
-                                    <option value="english">Tiếng Anh-Mỹ</option>
-                                    <option value="chinese">Tiếng Trung</option>
-                                    <option value="korea">Tiếng Hàn</option>
-                                    <option value="japan">Tiếng Nhật</option>
-                                </select>
-
+                                <Select
+                                    className="w-full mt-3 rounded-none"
+                                    showSearch
+                                    placeholder="Tìm kiếm ngôn ngữ"
+                                    optionFilterProp="children"
+                                    filterOption={(input, option) => (option?.label ?? "").includes(input)}
+                                    filterSort={(optionA, optionB) => (optionA?.label ?? "").toLowerCase().localeCompare((optionB?.label ?? "").toLowerCase())}
+                                    options={languageOption}
+                                    value={newListFlashCard.language}
+                                    onChange={(value) => setNewListFlashCard({ ...newListFlashCard, language: value })}
+                                />
                                 <textarea
                                     placeholder="Mô tả"
                                     className="w-full p-3 border rounded-md"
@@ -149,7 +154,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                                     </p>
                                     <div className="flex gap-2 items-center">
                                         <p className="text-sm line-clamp-2 italic">Ngôn ngữ: </p>
-                                        <Image src={`/flag/${item.language}.svg`} alt="" width={25} height={25} className="rounded-sm border border-gray-400"></Image>
+                                        <Image src={`/flag/${item.language}.svg`} alt="" width={25} height={15} className="rounded-sm border border-gray-400"></Image>
                                     </div>
                                     <div className="flex items-center gap-2 mt-2">
                                         <div className="w-[40px] h-[40px] overflow-hidden relative">

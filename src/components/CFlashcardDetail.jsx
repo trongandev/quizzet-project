@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { GiStopSign } from "react-icons/gi";
 import { CiShuffle } from "react-icons/ci";
-import { message, Modal, Popconfirm, Popover, Spin, Switch } from "antd";
+import { message, Modal, Popconfirm, Popover, Select, Spin, Switch } from "antd";
 import { FaBrain, FaTrash } from "react-icons/fa6";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { CloseOutlined, LoadingOutlined, QuestionCircleOutlined } from "@ant-design/icons";
@@ -19,6 +19,7 @@ import { TiEdit } from "react-icons/ti";
 import { useUser } from "@/context/userContext";
 import Image from "next/image";
 import { AiOutlineAppstoreAdd } from "react-icons/ai";
+import { languageOption } from "@/lib/languageOption";
 
 export default function CFlashcardDetail({ id_flashcard }) {
     const [open, setOpen] = useState(false);
@@ -254,14 +255,18 @@ export default function CFlashcardDetail({ id_flashcard }) {
                 "note": "" // Tips ghi nhớ, cách dùng đặc biệt, hoặc các lưu ý quan trọng bằng tiếng Việt. Các dấu nháy đôi "" thay bằng dấu ngoặc () để tránh lỗi JSON
                 }]
                 `;
-        const result = await model.generateContent(optimizedPrompt);
-        const parse = result.response
-            .text()
-            .replace(/```json/g, "")
-            .replace(/```/g, "");
-        console.log(JSON.parse(parse));
-        setAddMore(JSON.parse(parse));
-        setLoading(false);
+        try {
+            const result = await model.generateContent(optimizedPrompt);
+            const parse = result.response
+                .text()
+                .replace(/```json/g, "")
+                .replace(/```/g, "");
+            setAddMore(JSON.parse(parse));
+        } catch (error) {
+            messageApi.error(error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleRemoveAddMore = (item) => {
@@ -496,12 +501,17 @@ export default function CFlashcardDetail({ id_flashcard }) {
                         </div>
                         <div className="">
                             <p>Tiếng phát</p>
-                            <select name="" id="" value={newListFlashCard?.language} onChange={(e) => setNewListFlashCard({ ...newListFlashCard, language: e.target.value })}>
-                                <option value="english">Tiếng Anh-Mỹ</option>
-                                <option value="chinese">Tiếng Trung</option>
-                                <option value="korea">Tiếng Hàn</option>
-                                <option value="japan">Tiếng Nhật</option>
-                            </select>
+                            <Select
+                                className="w-full mt-3 rounded-none"
+                                showSearch
+                                placeholder="Tìm kiếm ngôn ngữ"
+                                optionFilterProp="children"
+                                filterOption={(input, option) => (option?.label ?? "").includes(input)}
+                                filterSort={(optionA, optionB) => (optionA?.label ?? "").toLowerCase().localeCompare((optionB?.label ?? "").toLowerCase())}
+                                options={languageOption}
+                                value={newListFlashCard?.language}
+                                onChange={(value) => setNewListFlashCard({ ...newListFlashCard, language: value })}
+                            />
                         </div>
                         <div className="">
                             <p>Mô tả</p>
@@ -671,9 +681,11 @@ export default function CFlashcardDetail({ id_flashcard }) {
             <div className="flex gap-2 items-center">
                 <p className="text-sm line-clamp-2 italic">Ngôn ngữ: </p>
                 <Image src={`/flag/${listFlashcard?.language}.svg`} alt="" width={25} height={25} className="rounded-sm border border-gray-400"></Image>
-                <p className="hover:underline cursor-pointer" onClick={showModalEdit}>
-                    (sửa tiếng phát)
-                </p>
+                {listFlashcard?.userId?._id == user?._id && (
+                    <p className="hover:underline cursor-pointer" onClick={showModalEdit}>
+                        (sửa tiếng phát)
+                    </p>
+                )}
             </div>
             <div className="flex items-center gap-2 mt-2">
                 <p>Người chia sẻ:</p>
@@ -691,20 +703,10 @@ export default function CFlashcardDetail({ id_flashcard }) {
                     <button className="w-full btn btn-primary !rounded-lg">Luyện tập </button>
                 </Link>
                 <button className="w-full btn bg-secondary !rounded-lg py-5 block flex-1" onClick={handlePracticeScience} disabled={flashcard?.length < 4} title="Phải trên 4 từ mới có thể thực hiện">
-                    Luyện tập theo khoa học
+                    Luyện tập theo khoa học (beta)
                 </button>
             </div>
 
-            {/* <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1 text-secondary">
-                    <CiShuffle />
-                    <p>Xem ngẫu nhiên</p>
-                </div>
-                <div className="flex items-center gap-1 text-red-500">
-                    <GiStopSign />
-                    <p>Dừng học</p>
-                </div>
-            </div> */}
             <p className="text-gray-700">
                 Dựa trên nghiên cứu về{" "}
                 <Link className="underline text-blue-900 font-bold" target="_blank" href="https://vmptraining.com/ung-dung-duong-cong-lang-quen-ebbinghaus-de-hoc-tap-hieu-qua/">

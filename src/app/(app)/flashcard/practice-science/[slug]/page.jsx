@@ -38,7 +38,8 @@ export default function PractiveFlashcard({ params }) {
     const [selectedAnswers, setSelectedAnswers] = useState({});
     const [speakLang, setSpeakLang] = useState(1);
     const [isCheckAns, setIsCheckAns] = useState(false);
-
+    const [remainingFeatures, setRemainingFeatures] = useState({});
+    const [wordRepetitions, setWordRepetitions] = useState({});
     const [sessionData, setSessionData] = useState({
         reviewQueue: [],
         masteredWords: new Set(),
@@ -46,50 +47,53 @@ export default function PractiveFlashcard({ params }) {
         startTime: new Date(),
     });
 
-    useEffect(() => {
-        const fetchAndInitialize = async () => {
-            const token = Cookies.get("token");
-            const req = await GET_API(`/flashcards/${params?.slug}`, token);
-            if (req.ok) {
-                const shuffledCards = [...req.listFlashCards.flashcards].sort(() => Math.random() - 0.5);
-                setFlashcards(shuffledCards);
-                setLanguage(req.listFlashCards.language);
-                generateQuizOptions(shuffledCards[0]);
-                // Initialize word status
-                const initialStatus = {};
-                shuffledCards.forEach((card) => {
-                    initialStatus[card._id] = {
-                        reviewsNeeded: 0,
-                        correctAnswers: 0,
-                        incorrectAnswers: 0,
-                    };
-                });
-                setSessionData((prev) => ({
-                    ...prev,
-                    wordStatus: initialStatus,
-                }));
-            } else {
-                messageApi.error(req.message);
+    const fetchAndInitialize = async () => {
+        const token = Cookies.get("token");
+        const req = await GET_API(`/flashcards/${params?.slug}`, token);
+        if (req.ok) {
+            const shuffledCards = [...req?.listFlashCards?.flashcards].sort(() => Math.random() - 0.5);
+
+            // Initialize all state objects first
+            const initialStatus = {};
+            const initialFeatures = {};
+            const initialRepetitions = {};
+
+            // Then populate them
+            shuffledCards.forEach((card) => {
+                initialStatus[card._id] = {
+                    reviewsNeeded: 0,
+                    correctAnswers: 0,
+                    incorrectAnswers: 0,
+                    featuresCompleted: [],
+                };
+                initialFeatures[card._id] = [FEATURES.QUIZ, FEATURES.LISTENING, FEATURES.FILL_BLANK];
+                initialRepetitions[card._id] = 0;
+            });
+
+            // Now set all states
+            setFlashcards(shuffledCards);
+            setLanguage(req?.listFlashCards?.language);
+            setSessionData((prev) => ({
+                ...prev,
+                wordStatus: initialStatus,
+            }));
+            setRemainingFeatures(initialFeatures);
+            setWordRepetitions(initialRepetitions);
+            setFeature(FEATURES.FLASHCARD);
+            generateQuizOptions(shuffledCards[0]);
+
+            // Auto-play audio for first card if it's flashcard
+            if (shuffledCards[0]) {
+                await speakWord(shuffledCards[0].title, speakLang, shuffledCards[0]._id);
             }
-        };
-        fetchAndInitialize();
-    }, [params?.slug]);
-
-    // useEffect(() => {
-    //     if (flashcards.length > 0) {
-    //         generateQuizOptions(flashcards[0]);
-    //     }
-    // }, [flashcards]);
-
-    const randomizeFeature = useCallback(() => {
-        const features = [FEATURES.FLASHCARD, FEATURES.QUIZ, FEATURES.LISTENING, FEATURES.FILL_BLANK];
-        const randomIndex = Math.floor(Math.random() * features.length);
-        setFeature(features[randomIndex]);
-    }, []);
+        } else {
+            messageApi.error(req.message);
+        }
+    };
 
     const generateQuizOptions = useCallback(
         (currentCard) => {
-            if (!currentCard || flashcards.length < 4) return;
+            if (!currentCard || flashcards?.length < 4) return;
 
             // Đáp án đúng
             const correctOption = currentCard.title;
@@ -110,6 +114,16 @@ export default function PractiveFlashcard({ params }) {
         [flashcards]
     );
 
+    useEffect(() => {
+        if (flashcards.length > 0) {
+            generateQuizOptions(flashcards[0]);
+        }
+    }, [flashcards]);
+    // Add this to useEffect
+    useEffect(() => {
+        fetchAndInitialize();
+    }, [params?.slug]);
+
     // khi người dùng rời khỏi trang cũng là lúc gửi dữ liệu lên server
     useEffect(() => {
         return async () => {
@@ -126,31 +140,33 @@ export default function PractiveFlashcard({ params }) {
                 })),
             };
             console.log(progressData);
-            // try {
-            //     await fetch('/api/flashcards/bulk-update', {
-            //         method: 'POST',
-            //         headers: {
-            //             'Content-Type': 'application/json',
-            //             'Authorization': `Bearer ${Cookies.get("token")}`
-            //         },
-            //         body: JSON.stringify(progressData)
-            //     });
-            // } catch (error) {
-            //     console.error('Failed to save progress:', error);
-            // }
         };
-    }, [sessionData, params?.slug]);
+    }, []);
 
     // Handle knowledge level selection
-    const handleKnowledgeLevel = (level) => {
+    const handleKnowledgeLevel = async (level) => {
         const currentCard = flashcards[currentIndex];
         const status = sessionData.wordStatus[currentCard._id];
+
+        // Set repetitions based on knowledge level
+        const repetitionsNeeded = {
+            [KNOWLEDGE_LEVELS.UNKNOWN]: 3,
+            [KNOWLEDGE_LEVELS.FAMILIAR]: 2,
+            [KNOWLEDGE_LEVELS.KNOWN]: 1,
+        }[level];
+
+        setWordRepetitions((prev) => ({
+            ...prev,
+            [currentCard._id]: repetitionsNeeded,
+        }));
+
+        generateQuizOptions(currentCard);
 
         // Update word status
         const newStatus = {
             ...status,
             lastReviewTime: new Date(),
-            reviewsNeeded: level === KNOWLEDGE_LEVELS.UNKNOWN ? 3 : level === KNOWLEDGE_LEVELS.FAMILIAR ? 2 : 0,
+            reviewsNeeded: repetitionsNeeded,
         };
 
         setSessionData((prev) => ({
@@ -161,36 +177,12 @@ export default function PractiveFlashcard({ params }) {
             },
         }));
 
-        // Determine next feature and card
-        let nextFeature = feature;
-        if (feature === FEATURES.FLASHCARD) {
-            nextFeature = Math.floor(Math.random() * 3) + 2; // Random between QUIZ, LISTENING, FILL_BLANK
-        }
-
-        // Move to next card or review queue
-        if (currentIndex < flashcards.length - 1) {
-            setCurrentIndex((prev) => prev + 1);
+        // Randomly select next feature (excluding FLASHCARD)
+        const availableFeatures = remainingFeatures[currentCard._id];
+        if (availableFeatures.length > 0) {
+            const randomIndex = Math.floor(Math.random() * availableFeatures.length);
+            const nextFeature = availableFeatures[randomIndex];
             setFeature(nextFeature);
-        } else {
-            // Check for words needing review
-            const reviewWords = Object.entries(sessionData.wordStatus)
-                .filter(([_, status]) => status.reviewsNeeded > 0)
-                .map(([id]) => id);
-
-            if (reviewWords.length > 0) {
-                setSessionData((prev) => ({
-                    ...prev,
-                    reviewQueue: reviewWords.sort(() => Math.random() - 0.5),
-                }));
-                setCurrentIndex(0);
-                setFeature(FEATURES.FLASHCARD);
-                messageApi.info(`${reviewWords.length} từ cần xem lại!`);
-            } else {
-                messageApi.success({
-                    content: "Chúc mừng bạn đã hoàn thành bài học!",
-                    icon: <TbConfetti className="text-2xl" />,
-                });
-            }
         }
 
         // Reset states
@@ -241,64 +233,83 @@ export default function PractiveFlashcard({ params }) {
         }
     };
 
-    // Handle answer checking
     const checkAnswer = useCallback(
         (givenAnswer, idx = null) => {
             setIsCheckAns(true);
-
             const currentCard = flashcards[currentIndex];
             const isCorrect = givenAnswer.toLowerCase() === currentCard.title.toLowerCase();
-            const status = sessionData.wordStatus[currentCard._id];
-
-            if (idx != null) {
-                setSelectedAnswers({
-                    ...selectedAnswers,
-                    [idx]: isCorrect ? "correct" : "incorrect",
-                });
-            }
-            // Update status
-            const newStatus = {
-                ...status,
-                correctAnswers: status.correctAnswers + (isCorrect ? 1 : 0),
-                incorrectAnswers: status.incorrectAnswers + (isCorrect ? 0 : 1),
-            };
-
-            setSessionData((prev) => ({
-                ...prev,
-                wordStatus: {
-                    ...prev.wordStatus,
-                    [currentCard._id]: newStatus,
-                },
-            }));
-
             setIsCorrectAns(isCorrect ? "correct" : "incorrect");
-            messageApi[isCorrect ? "success" : "error"]({
-                content: isCorrect ? " Đúng rồi, tốt lắm" : " Sai rồi hãy thử lại",
-                icon: isCorrect ? <BsCheckCircleFill className="text-green-500" /> : <BsXCircleFill className="text-red-500" />,
-            });
+            messageApi[isCorrect ? "success" : "error"](isCorrect ? "Chính xác, giỏi quá" : "Sai rồi, thử lại nhé! ^^");
 
+            setSelectedAnswers({
+                ...selectedAnswers,
+                [idx]: isCorrect ? "correct" : "incorrect",
+            });
             if (isCorrect) {
                 handlePlayAudio("correct");
-                if (feature !== FEATURES.LISTENING || feature !== FEATURES.FLASHCARD) speakWord(givenAnswer, speakLang, 1);
+                if (feature === FEATURES.QUIZ) {
+                    speakWord(currentCard.title, speakLang, currentCard._id);
+                }
+                const currentFeature = feature;
+                const updatedFeatures = remainingFeatures[currentCard._id].filter((f) => f !== currentFeature);
+                setRemainingFeatures((prev) => ({
+                    ...prev,
+                    [currentCard._id]: updatedFeatures,
+                }));
+                // Update word status
+                setSessionData((prev) => ({
+                    ...prev,
+                    wordStatus: {
+                        ...prev.wordStatus,
+                        [currentCard._id]: {
+                            ...prev.wordStatus[currentCard._id],
+                            correctAnswers: prev.wordStatus[currentCard._id].correctAnswers + 1,
+                            featuresCompleted: [...prev.wordStatus[currentCard._id].featuresCompleted, currentFeature],
+                        },
+                    },
+                }));
+
+                // Move to next word or feature
                 setTimeout(() => {
-                    handleKnowledgeLevel(KNOWLEDGE_LEVELS.KNOWN);
-                    setSelectedAnswers({});
+                    if (updatedFeatures.length > 0) {
+                        // Still has features to complete, randomly select next
+                        const nextFeatureIndex = Math.floor(Math.random() * updatedFeatures.length);
+                        setFeature(updatedFeatures[nextFeatureIndex]);
+                    } else {
+                        // All features completed for this word
+                        setWordRepetitions((prev) => ({
+                            ...prev,
+                            [currentCard._id]: Math.max(0, prev[currentCard._id] - 1),
+                        }));
+
+                        // Move to next word if available
+                        if (currentIndex < flashcards.length - 1) {
+                            setCurrentIndex((prev) => prev + 1);
+                            setFeature(FEATURES.FLASHCARD);
+                        }
+                    }
                     setIsCheckAns(false);
+                    setSelectedAnswers({});
+                    setIsCorrectAns(null);
+                    setInputAnswer("");
                 }, 1000);
             } else {
                 handlePlayAudio("wrong");
-
+                // Reset progress for current feature
                 setTimeout(() => {
-                    handleKnowledgeLevel(KNOWLEDGE_LEVELS.UNKNOWN);
                     setIsCheckAns(false);
-                    setSelectedAnswers((prev) => ({
-                        ...prev,
-                        [idx]: null,
-                    }));
+                    setInputAnswer("");
+                    setIsCorrectAns(null);
+                    if (idx !== null) {
+                        setSelectedAnswers((prev) => ({
+                            ...prev,
+                            [idx]: null,
+                        }));
+                    }
                 }, 820);
             }
         },
-        [currentIndex, flashcards, sessionData]
+        [currentIndex, flashcards, feature, remainingFeatures, sessionData]
     );
 
     // Keyboard handlers
@@ -320,6 +331,15 @@ export default function PractiveFlashcard({ params }) {
         },
         [feature, checkAnswer, inputAnswer, currentIndex, flashcards]
     );
+    const currentCard = flashcards[currentIndex];
+
+    useEffect(() => {
+        if (currentCard && feature === FEATURES.FLASHCARD) {
+            setTimeout(() => {
+                speakWord(currentCard.title, speakLang, currentCard._id);
+            }, 500);
+        }
+    }, [feature, currentIndex]);
 
     if (!flashcards.length) {
         return (
@@ -328,8 +348,7 @@ export default function PractiveFlashcard({ params }) {
             </div>
         );
     }
-    const currentCard = flashcards[currentIndex];
-    const progress = sessionData.wordStatus[currentCard._id];
+
     return (
         <div className="px-3 md:px-0 focus-visible:outline-none" onKeyDown={handleKeyDown} tabIndex={0}>
             {contextHolder}
@@ -495,7 +514,9 @@ export default function PractiveFlashcard({ params }) {
                                         <p className="text-gray-700 mb-4">{currentCard?.define}</p>
                                         <div className="bg-gray-50 p-4 rounded-lg mb-4">
                                             <p className="text-gray-600 font-medium mb-2">Ví dụ:</p>
-                                            <p className="text-lg">{currentCard.example?.[0]?.en.replace(currentCard.title, "_".repeat(currentCard.title.length))}</p>
+                                            <p className="text-lg">
+                                                {showAns ? currentCard.example?.[0]?.en : currentCard.example?.[0]?.en.replace(currentCard.title.toLowerCase(), "_".repeat(currentCard.title.length))}
+                                            </p>
                                         </div>
                                         <input
                                             type="text"
@@ -561,25 +582,6 @@ export default function PractiveFlashcard({ params }) {
                                 onChange={(checked) => setSpeakLang(checked ? 1 : 2)}
                             />
                         </div>
-
-                        {/* <div className="space-y-2">
-                            <h2 className="font-medium">Cài đặt Random</h2>
-                            <div className="bg-gray-100 p-4 rounded-lg space-y-3">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-gray-600">Random câu hỏi</span>
-                                        <Switch checked={isRandomMode} onChange={(checked) => setIsRandomMode(checked)} className="bg-gray-300" />
-                                    </div>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-gray-600">Random chế độ học</span>
-                                        <Switch checked={isRandomFeature} onChange={(checked) => setIsRandomFeature(checked)} className="bg-gray-300" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div> */}
-
                         <div className="space-y-2">
                             <h2 className="font-medium">Chế độ học</h2>
                             <div className="flex flex-wrap gap-2">
@@ -608,24 +610,6 @@ export default function PractiveFlashcard({ params }) {
                                     <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${((currentIndex + 1) / flashcards.length) * 100}%` }} />
                                 </div>
                             </div>
-                            <div className="bg-gray-100 p-4 rounded-lg">
-                                <div className="flex justify-between mb-2">
-                                    <span>Biết</span>
-                                    <span>{`${progress.correctAnswers}/${flashcards.length}`}</span>
-                                </div>
-                                <div className="h-2 bg-gray-200 rounded-full">
-                                    <div className="h-full bg-green-500 rounded-full transition-all" style={{ width: `${(progress.correctAnswers / flashcards.length) * 100}%` }} />
-                                </div>
-                            </div>
-                            <div className="bg-gray-100 p-4 rounded-lg">
-                                <div className="flex justify-between mb-2">
-                                    <span>Cần ôn lại</span>
-                                    <span>{`${progress.reviewsNeeded}/${flashcards.length}`}</span>
-                                </div>
-                                <div className="h-2 bg-gray-200 rounded-full">
-                                    <div className="h-full bg-yellow-500 rounded-full transition-all" style={{ width: `${(progress.reviewsNeeded / flashcards.length) * 100}%` }} />
-                                </div>
-                            </div>
                         </div>
 
                         {/* Keyboard Shortcuts Guide */}
@@ -646,6 +630,9 @@ export default function PractiveFlashcard({ params }) {
                                     <span className="text-gray-600">Phát âm thanh</span>
                                 </div>
                             </div>
+                        </div>
+                        <div className="">
+                            <p className="font-medium">Đây là phiên bản beta còn rất nhiều bất cập mong bạn thông cảm</p>
                         </div>
                     </div>
                 </div>
