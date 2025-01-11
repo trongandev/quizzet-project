@@ -7,7 +7,6 @@ import { IoCloseSharp } from "react-icons/io5";
 import { MdOutlineReport } from "react-icons/md";
 
 export default function CNotify({ notify, handleRouter }) {
-    console.log(notify);
     return (
         <>
             {notify?.length > 0 ? (

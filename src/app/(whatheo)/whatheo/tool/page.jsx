@@ -200,7 +200,7 @@ export default function NewPostTool() {
                                         </td>
                                         <td className="px-6 py-4">{item.slug}</td>
                                         <td className="px-6 py-4">
-                                            <Link href={`/decuong/${item.slug}`}>{item.title}</Link>
+                                            <Link href={`/tailieu/${item.slug}`}>{item.title}</Link>
                                         </td>
 
                                         <td className="px-6 py-4">{handleCompareDate(item?.date)}</td>

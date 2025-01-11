@@ -4,7 +4,6 @@ import { Popover, Badge } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { FiLogOut } from "react-icons/fi";
 import { IoMdNotificationsOutline } from "react-icons/io";
-import { RiMessengerLine } from "react-icons/ri";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import Image from "next/image";
@@ -13,13 +12,15 @@ import { useUser } from "../context/userContext";
 import { MdOutlineHistory } from "react-icons/md";
 import { GET_API } from "@/lib/fetchAPI";
 import CNotify from "./CNotify";
+import CChat from "./CChat";
 export default function CHeader({ token }: { token: string }) {
     const [open, setOpen] = useState(false);
     const [openNoti, setOpenNoti] = useState(false);
     const [notify, setNotify] = useState([]);
-    const [unreadCount, setUnreadCount] = useState<number>(0);
+    const [unreadCountNotify, setUnreadCountNotify] = useState<number>(0);
     const pathname = usePathname();
     const router = useRouter();
+
     const handleOpenChange = (newOpen: boolean) => {
         setOpen(newOpen);
     };
@@ -43,7 +44,7 @@ export default function CHeader({ token }: { token: string }) {
             const req = await GET_API("/notify", token);
             if (req) {
                 setNotify(req?.notifications);
-                setUnreadCount(req?.unreadCount || 0);
+                setUnreadCountNotify(req?.unreadCount || 0);
             }
         };
 
@@ -52,10 +53,10 @@ export default function CHeader({ token }: { token: string }) {
         }
     }, [user, token]);
 
-    const handleRouter = async (item: any) => {
+    const handleRouterNotify = async (item: any) => {
         const req = await GET_API(`/notify/${item?._id}`, token);
         if (req.ok) {
-            setUnreadCount(req?.unreadCount || 0);
+            setUnreadCountNotify(req?.unreadCount || 0);
             router.push(item?.link);
             setOpenNoti(false);
         }
@@ -74,6 +75,11 @@ export default function CHeader({ token }: { token: string }) {
                         </Link>
                     </li>
                     <li className="">
+                        <Link href="/flashcard" className={`block  ${pathname.startsWith("/flashcard") ? "active" : ""}`}>
+                            Flashcard
+                        </Link>
+                    </li>
+                    <li className="">
                         <Link href="/quiz" className={`block ${pathname.startsWith("/quiz") ? "active" : ""}`}>
                             Quiz
                         </Link>
@@ -83,11 +89,7 @@ export default function CHeader({ token }: { token: string }) {
                             Tài liệu
                         </Link>
                     </li>
-                    <li className="">
-                        <Link href="/flashcard" className={`block  ${pathname.startsWith("/flashcard") ? "active" : ""}`}>
-                            Flashcard
-                        </Link>
-                    </li>
+
                     <li className="">
                         <Link href="/congdong" className={`block ${pathname.startsWith("/congdong") ? "active" : ""}`}>
                             Cộng đồng
@@ -106,23 +108,20 @@ export default function CHeader({ token }: { token: string }) {
                         <div className="flex gap-3 items-center">
                             <Popover
                                 content={
-                                    <div className="w-full md:w-[400px] h-[500px] overflow-y-scroll">
-                                        <CNotify notify={notify} handleRouter={handleRouter} />
+                                    <div className="w-full md:w-[400px] max-h-[600px] overflow-y-scroll">
+                                        <CNotify notify={notify} handleRouter={handleRouterNotify} />
                                     </div>
                                 }
                                 trigger="click"
                                 open={openNoti}
                                 onOpenChange={handleOpenNoti}
                                 title="Thông báo">
-                                <Badge count={unreadCount} offset={[-5, 5]} size="small" className="text-primary">
+                                <Badge count={unreadCountNotify} offset={[-5, 5]} size="small" className="text-primary hover:text-secondary cursor-pointer">
                                     <IoMdNotificationsOutline size={30} />
                                 </Badge>
                             </Popover>
-                            <Badge count={1} offset={[-5, 5]} size="small" className="text-primary">
-                                <Link href={`/chat`}>
-                                    <RiMessengerLine size={26} />
-                                </Link>
-                            </Badge>
+                            <CChat token={token} user={user} router={router} />
+
                             <Popover
                                 content={
                                     <>

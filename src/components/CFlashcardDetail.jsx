@@ -131,11 +131,9 @@ export default function CFlashcardDetail({ id_flashcard }) {
         const req = await POST_API("/flashcards/list", { flashcards: addMore, list_flashcard_id: listFlashcard._id }, "POST", token);
         const res = await req.json();
         if (req.ok) {
-            console.log(res);
             setOpenAddMore(false);
             setFlashcard([...res?.flashcards, ...flashcard]);
             setFilteredFlashcards([...res?.flashcards, ...flashcard]);
-            console.log(flashcard);
             setAddMore([]);
             setPrompt("");
             setNewFlashcard(defaultFlashcard);
@@ -206,7 +204,6 @@ export default function CFlashcardDetail({ id_flashcard }) {
             .replace(/```json/g, "")
             .replace(/```/g, "");
 
-        console.log(JSON.parse(parse));
         if (method === 1) {
             setEditWord({ ...editWord, ...JSON.parse(parse) });
         } else {

@@ -19,10 +19,7 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function Quiz({ params }) {
-    const { slug } = params;
-
-    const quiz = await getCachedQuiz(slug)();
-    const question = quiz?.questions.data_quiz;
-    delete quiz?.questions;
+    const quiz = await getCachedQuiz(params.slug)();
+    const question = quiz?.questions?.data_quiz;
     return <CQuizDetail QuizData={quiz} QuestData={question} />;
 }

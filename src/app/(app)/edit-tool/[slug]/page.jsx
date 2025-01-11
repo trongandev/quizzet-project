@@ -159,8 +159,6 @@ export default function EditTool({ params }) {
         setQuest(updatedQuest);
     };
 
-    console.log(quest);
-
     return (
         <div className="flex items-center justify-center gap-5 flex-col md:flex-row">
             <div className="w-full md:w-[1000px]  overflow-y-auto frm-post ">

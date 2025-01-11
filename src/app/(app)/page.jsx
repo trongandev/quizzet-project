@@ -1,5 +1,5 @@
 import CHome from "@/components/CHome";
-import { getCachedQuizzet, getCachedTool } from "@/lib/cacheData";
+import { getCachedFlashcardPublic, getCachedQuizzet, getCachedTool } from "@/lib/cacheData";
 import React from "react";
 
 export async function generateMetadata() {
@@ -30,5 +30,6 @@ export async function generateMetadata() {
 export default async function HomePage() {
     const quizzet = await getCachedQuizzet();
     const tool = await getCachedTool();
-    return <CHome quizData={quizzet} toolData={tool} />;
+    const publicFlashcards = await getCachedFlashcardPublic();
+    return <CHome quizData={quizzet} toolData={tool} publicFlashcards={publicFlashcards} />;
 }

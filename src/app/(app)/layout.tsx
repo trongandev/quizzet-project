@@ -17,7 +17,7 @@ import { AiFillHome } from "react-icons/ai";
 import { FaFileAlt } from "react-icons/fa";
 import { GiCardPick } from "react-icons/gi";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-
+import CShowMessage from "@/components/CShowMessage";
 export default function RootLayout({ children }: any) {
     const pathname = usePathname();
     const [token, setToken] = useState<string | null>(null);
@@ -33,7 +33,7 @@ export default function RootLayout({ children }: any) {
                 <SocketProvider>
                     <body className="bg-linear">
                         <CHeader token={token || ""} />
-                        <div className="flex items-center justify-center">
+                        <div className="flex items-center justify-center relative">
                             <div className="w-[800px] md:w-[1000px] xl:w-[1200px] py-5 pt-20">{children}</div>
                             <div className="fixed bottom-0 bg-gray-100 text-black h-[48px] w-full block md:hidden z-10">
                                 <ul className="flex h-full">

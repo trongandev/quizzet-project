@@ -47,7 +47,6 @@ export default function AddSO() {
             }
         });
 
-        console.log(result); // Hiển thị kết quả
         setQuest(result);
         // Xử lý kết quả JSON tại đây (ví dụ: lưu vào state hoặc gửi lên server)
     };
@@ -95,7 +94,6 @@ export default function AddSO() {
             .text()
             .replace(/```json/g, "")
             .replace(/```/g, "");
-        console.log(replace);
         setLoading(false);
         hhandleChangeJSON({ target: { value: replace } });
     };

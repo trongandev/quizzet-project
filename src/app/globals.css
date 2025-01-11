@@ -134,6 +134,10 @@ mark {
     background: linear-gradient(140deg, rgba(199, 208, 228, 1) 12%, rgba(233, 222, 229, 1) 71%, rgba(218, 215, 229, 1) 100%);
 }
 
+.bg-linear-item-purple {
+    background: linear-gradient(140deg, rgba(65, 84, 253, 0.7596288515406162) 14%, rgba(137, 144, 219, 0.8940826330532213) 92%);
+}
+
 .bg-linear-item-blue {
     background: linear-gradient(140deg, rgba(101, 159, 210, 1) 39%, rgba(144, 178, 208, 1) 74%);
 }

@@ -62,7 +62,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
     }
 
     return (
-        <div className="text-third px-3 md:px-0">
+        <div className="text-third px-3 md:px-0 min-h-screen">
             {contextHolder}
 
             <div className="flex gap-5 flex-col md:flex-row md:h-[80px]">
