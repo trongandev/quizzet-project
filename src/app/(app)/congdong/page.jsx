@@ -55,7 +55,7 @@ export default function CongDong() {
         const fetchAPI = async () => {
             const req = await GET_API(`/chatcommu?skip=${skip}&limit=50`, token);
             if (req.ok) {
-                const sort = req.messages.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+                const sort = req.messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
                 setMessages(sort);
                 setHasMore(req?.hasMore);
                 // setSkip(50);
@@ -63,7 +63,6 @@ export default function CongDong() {
         };
         fetchAPI();
     }, []);
-
     useEffect(() => {
         if (lastMessageRef.current) {
             lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
@@ -89,9 +88,9 @@ export default function CongDong() {
         }, 3000);
     }, [messages]);
 
-    // Optimized message handler
-    const handleNewMessage = useCallback((message) => {
-        setMessages((prev) => [...prev, message]);
+    // Optimized text handler
+    const handleNewMessage = useCallback((text) => {
+        setMessages((prev) => [...prev, text]);
     }, []);
 
     const handleUnsendMessage = useCallback((messageId) => {
@@ -148,8 +147,8 @@ export default function CongDong() {
             }
 
             const messageData = {
-                sender: user?._id,
-                text: newMessage,
+                userId: user?._id,
+                message: newMessage,
                 image: imageUrl,
                 token,
                 replyTo: replyingTo,
@@ -162,7 +161,7 @@ export default function CongDong() {
             setReplyingTo(null);
             setSendMess(true);
         } catch (error) {
-            messageApi.error("Failed to send message", error);
+            messageApi.error("Failed to send text", error);
         } finally {
             setLoading(false);
         }
@@ -212,19 +211,19 @@ export default function CongDong() {
 
     const handleUnsend = async (messageId) => {
         setLoading(true);
-        socket.emit("unsendMessageCommu", { messageId, sender: user?._id, token });
-        // const req = await POST_API(`/chatcommu/unsend`, { messageId, sender: user._id }, "POST", token);
+        socket.emit("unsendMessageCommu", { messageId, userId: user?._id, token });
+        // const req = await POST_API(`/chatcommu/unsend`, { messageId, userId: user._id }, "POST", token);
         // const res = await req.json();
         // if (res.ok) {
         //     setMessages((prevMessages) => prevMessages.map((msg) => (msg._id === messageId ? { ...msg, unsend: true } : msg)));
         //     messageApi.open({
         //         type: "success",
-        //         content: res.message,
+        //         content: res.text,
         //     });
         // } else {
         //     messageApi.open({
         //         type: "error",
-        //         content: res.message,
+        //         content: res.text,
         //     });
         // }
         setLoading(false);
@@ -239,7 +238,7 @@ export default function CongDong() {
         } else {
             messageApi.open({
                 type: "error",
-                content: res.message,
+                content: res.text,
             });
         }
         setLoadingIcon(false);
@@ -275,7 +274,7 @@ export default function CongDong() {
     };
 
     const handleOkEditMess = async () => {
-        const newMess = { messageId: editMess._id, sender: user._id, newMessage: editMess.text };
+        const newMess = { messageId: editMess._id, userId: user._id, newMessage: editMess.text };
         setLoading(true);
         const req = await POST_API(`/chatcommu/editmess`, newMess, "PUT", token);
         const res = await req.json();
@@ -284,7 +283,7 @@ export default function CongDong() {
         } else {
             messageApi.open({
                 type: "error",
-                content: res.message,
+                content: res.text,
             });
         }
         handleCancelEditMess();
@@ -322,22 +321,22 @@ export default function CongDong() {
                     )}
                     {messages &&
                         messages?.map((msg, index) => {
-                            const isSameUser = index > 0 && messages[index - 1]?.sender?._id === msg?.sender?._id;
-                            const isCurrentUser = msg?.sender?._id === user?._id;
+                            const isSameUser = index > 0 && messages[index - 1]?.userId?._id === msg?.userId?._id;
+                            const isCurrentUser = msg?.userId?._id === user?._id;
                             const isLastMessage = index === messages?.length - 1;
 
                             return (
                                 <div key={index} ref={isLastMessage ? lastMessageRef : null}>
                                     {/* Hiển thị tên người dùng trên đầu nhóm */}
-                                    {!isSameUser && !isCurrentUser && <p className="ml-[45px] text-gray-500 text-sm mb-1 pl-1">{msg?.sender?.displayName}</p>}
+                                    {!isSameUser && !isCurrentUser && <p className="ml-[45px] text-gray-500 text-sm mb-1 pl-1">{msg?.userId?.displayName}</p>}
 
                                     {/* Tin nhắn */}
                                     <div className={`flex items-start ${isCurrentUser ? "justify-end" : "justify-start"} mb-[4px] group min-h-[40px] items-center`}>
                                         {/* Avatar của người khác */}
                                         {!isCurrentUser && !isSameUser && (
-                                            <Link href={`/profile/${msg?.sender?._id}`} className="w-[40px] h-[40px] relative mr-[-40px]">
+                                            <Link href={`/profile/${msg?.userId?._id}`} className="w-[40px] h-[40px] relative mr-[-40px]">
                                                 <Image
-                                                    src={msg?.sender?.profilePicture || "/meme.jpg"}
+                                                    src={msg?.userId?.profilePicture || "/meme.jpg"}
                                                     alt=""
                                                     unoptimized
                                                     className="w-full h-full object-cover absolute border-2 border-primary rounded-full"
@@ -349,14 +348,14 @@ export default function CongDong() {
 
                                         {/* Nội dung tin nhắn */}
                                         <div className={`flex items-center w-full gap-3 ${isCurrentUser ? "flex-row-reverse" : ""}`}>
-                                            <div className={`max-w-[70%]  ${isCurrentUser ? "" : "ml-[45px]"}`}>
+                                            <div className={`max-w-[60%]  ${isCurrentUser ? "" : "ml-[45px]"}`}>
                                                 {msg?.replyTo && (
                                                     <div className="text-[12px]">
                                                         {isCurrentUser ? (
                                                             <div className="">
                                                                 <p className="flex items-center gap-1">
                                                                     <MdOutlineReply />
-                                                                    Bạn đã trả lời {msg?.replyTo?.sender?._id == userId ? "chính bạn" : ":" + msg?.replyTo?.sender?.displayName}
+                                                                    Bạn đã trả lời {msg?.replyTo?.userId?._id == userId ? "chính bạn" : ":" + msg?.replyTo?.userId?.displayName}
                                                                 </p>
 
                                                                 {msg?.replyTo?.image && (
@@ -369,7 +368,7 @@ export default function CongDong() {
                                                             <div className="">
                                                                 <p className="flex items-center gap-1">
                                                                     <MdOutlineReply />
-                                                                    {msg?.sender?.displayName} đã trả lời bạn
+                                                                    {msg?.userId?.displayName} đã trả lời bạn
                                                                 </p>
                                                                 {msg?.replyTo?.image && (
                                                                     <Link href={`#${msg?.replyTo._id}`} className={`mb-1 flex justify-start`}>
@@ -381,7 +380,7 @@ export default function CongDong() {
                                                         {msg?.replyTo?.text !== "" && (
                                                             <Link href={`#${msg?.replyTo._id}`} className={`block ${isCurrentUser ? "w-full text-end" : ""}`}>
                                                                 <p className={` inline-block bg-gray-400 rounded-lg px-3 py-2 mb-[-10px] line-clamp-2`}>
-                                                                    {msg?.replyTo?.unsend ? "Tin nhắn đã bị gỡ" : msg?.replyTo?.text}
+                                                                    {msg?.replyTo?.unsend ? "Tin nhắn đã bị gỡ" : msg?.replyTo?.message}
                                                                 </p>
                                                             </Link>
                                                         )}
@@ -389,12 +388,12 @@ export default function CongDong() {
                                                 )}
                                                 {msg?.isEdit && <span className={`text-xs text-gray-600 ${isCurrentUser ? "text-end mr-5" : "text-start ml-5"} block `}>Đã chỉnh sửa</span>}
                                                 <div className={` ${isCurrentUser ? "w-full text-end" : ""} `} id={msg?._id}>
-                                                    {msg?.text && (
+                                                    {msg?.message && (
                                                         <p
                                                             className={`max-w-[350px] ${isCurrentUser ? " bg-primary text-white" : "bg-gray-200 "} ${
                                                                 msg?.unsend ? "!bg-white border border-primary !text-primary text-[12px]" : ""
                                                             } rounded-lg px-3 py-2 inline-block`}>
-                                                            {msg?.unsend ? "Tin nhắn đã bị gỡ" : msg?.text}
+                                                            {msg?.unsend ? "Tin nhắn đã bị gỡ" : msg?.message}
                                                         </p>
                                                     )}
 
@@ -434,15 +433,15 @@ export default function CongDong() {
                                                                 <div className="mt-3">
                                                                     {msg?.reactions?.map((react, index) => (
                                                                         <Link
-                                                                            href={`/profile/${react?.sender?._id}`}
+                                                                            href={`/profile/${react?.userId?._id}`}
                                                                             className="flex items-center justify-between hover:bg-gray-200 cursor-pointer px-3 py-2 rounded-md"
                                                                             key={index}>
                                                                             <div className="flex gap-3 items-center">
                                                                                 <div className="w-[40px] h-[40px] relative">
-                                                                                    <Image src={react?.sender?.profilePicture} alt="Reaction" fill className="rounded-full object-cover absolute" />
+                                                                                    <Image src={react?.userId?.profilePicture} alt="Reaction" fill className="rounded-full object-cover absolute" />
                                                                                 </div>
                                                                                 <div className="">
-                                                                                    <p className="text-md font-medium">{react?.sender?.displayName}</p>
+                                                                                    <p className="text-md font-medium">{react?.userId?.displayName}</p>
                                                                                     <span className="text-sm">Bấm vào để xem profile</span>
                                                                                 </div>
                                                                             </div>
@@ -462,7 +461,7 @@ export default function CongDong() {
                                                         {!msg?.unsend && (
                                                             <Tooltip placement="top" title="Trả lời">
                                                                 <label
-                                                                    htmlFor="message"
+                                                                    htmlFor="text"
                                                                     className=" h-full text-white cursor-pointer bg-gray-400 p-2 rounded-full hover:bg-secondary"
                                                                     onClick={() => setReplyingTo(msg)}>
                                                                     <MdOutlineReply />
@@ -518,15 +517,15 @@ export default function CongDong() {
                                                             <input
                                                                 type="text"
                                                                 placeholder="Nhập thông tin bạn muốn sửa"
-                                                                value={editMess?.text}
-                                                                onChange={(e) => setEditMess({ ...editMess, text: e.target.value })}
+                                                                value={editMess?.message}
+                                                                onChange={(e) => setEditMess({ ...editMess, message: e.target.value })}
                                                             />
                                                         </Modal>
                                                     </div>
                                                 </div>
                                             )}
 
-                                            {isSameUser && <p className="text-gray-500 text-xs ">{handleCompareDate(msg?.created_at)}</p>}
+                                            {isSameUser && <p className="text-gray-500 text-xs ">{msg?.timestamp && handleCompareDate(msg?.timestamp)}</p>}
                                         </div>
                                     </div>
                                 </div>
@@ -542,12 +541,12 @@ export default function CongDong() {
                     ) : (
                         <div className="">
                             {replyingTo && (
-                                <label htmlFor="message" className="block replying-to relative bg-linear-item-blue px-3 py-1 rounded-lg mb-2 text-secondary ">
+                                <label htmlFor="text" className="block replying-to relative bg-linear-item-blue px-3 py-1 rounded-lg mb-2 text-secondary ">
                                     <div className="absolute top-2 right-3 cursor-pointer hover:text-red-500" onClick={() => setReplyingTo(null)}>
                                         <IoMdClose />
                                     </div>
-                                    <h1 className="text-secondary font-bold">Bạn đang trả lời{replyingTo?.sender?._id == userId ? " chính bạn" : ": " + replyingTo?.sender.displayName}</h1>
-                                    <p className="line-clamp-2">{replyingTo?.text}</p>
+                                    <h1 className="text-secondary font-bold">Bạn đang trả lời{replyingTo?.userId?._id == userId ? " chính bạn" : ": " + replyingTo?.userId.displayName}</h1>
+                                    <p className="line-clamp-2">{replyingTo?.message}</p>
                                     {replyingTo?.image && <Image src={replyingTo?.image} alt="" width={120} height={100} className="object-cover rounded-lg mt-2" />}
                                 </label>
                             )}
@@ -558,7 +557,7 @@ export default function CongDong() {
                                 <input id="image" type="file" className="hidden" onChange={(e) => handleImageChange(e)} />
                                 <input
                                     type="text"
-                                    id="message"
+                                    id="text"
                                     className=""
                                     value={newMessage}
                                     onChange={(e) => setNewMessage(e.target.value)}

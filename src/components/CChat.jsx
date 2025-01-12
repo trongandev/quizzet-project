@@ -34,6 +34,7 @@ export default function CChat({ token, user, router }) {
     const [chat, setChat] = useState([]);
     const [chatMessId, setChatMessId] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [loadingChat, setLoadingChat] = useState(null);
     const [search, setSearch] = useState([]);
     const [isSearch, setIsSearch] = useState(false);
     const { socket, onlineUsers } = useSocket();
@@ -73,14 +74,14 @@ export default function CChat({ token, user, router }) {
         }
     }, [debouncedSearchTerm]);
 
-    const handleRouterChat = async (item) => {
-        const req = await GET_API(`/notify/${item?._id}`, token);
-        if (req.ok) {
-            setUnreadCountNotify(req?.unreadCount || 0);
-            router.push(item?.link);
-            setOpenNoti(false);
-        }
-    };
+    // const handleRouterChat = async (item) => {
+    //     const req = await GET_API(`/notify/${item?._id}`, token);
+    //     if (req.ok) {
+    //         setUnreadCountNotify(req?.unreadCount || 0);
+    //         router.push(item?.link);
+    //         setOpenNoti(false);
+    //     }
+    // };
 
     useEffect(() => {
         if (input === "") {
@@ -88,7 +89,8 @@ export default function CChat({ token, user, router }) {
         }
     }, [input, chat]);
 
-    const handleCreateAndCheckRoomChat = async (id_another_user) => {
+    const handleCreateAndCheckRoomChat = async (id_another_user, index) => {
+        setLoadingChat(index);
         const req = await POST_API(
             "/chat/create-chat",
             {
@@ -103,6 +105,7 @@ export default function CChat({ token, user, router }) {
             setChatMessId(res?.chatId);
             setOpenChat(false);
         }
+        setLoadingChat(null);
     };
 
     const handleDeleteChat = () => {
@@ -145,7 +148,7 @@ export default function CChat({ token, user, router }) {
                             {!isSearch &&
                                 chat?.map((item, index) => (
                                     <div
-                                        onClick={() => handleCreateAndCheckRoomChat(user?._id === item?.participants[1]?.userId ? item?.participants[0]?.userId : item?.participants[1]?.userId)}
+                                        onClick={() => handleCreateAndCheckRoomChat(user?._id === item?.participants[1]?.userId ? item?.participants[0]?.userId : item?.participants[1]?.userId, index)}
                                         key={index}
                                         className="p-2 hover:bg-gray-200 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
                                         <div className="w-[56px] h-[56px] relative">
@@ -180,13 +183,15 @@ export default function CChat({ token, user, router }) {
                                                 <p className="text-gray-500 text-[12px]">Chưa có tin nhắn!</p>
                                             )}
                                         </div>
-                                        {item?.is_read && <div className="w-3 h-3 rounded-full bg-primary"></div>}
+                                        {loadingChat === index && <Spin indicator={<LoadingOutlined spin />} size="default" />}
+
+                                        {!loadingChat === index && item?.is_read && <div className="w-3 h-3 rounded-full bg-primary"></div>}
                                     </div>
                                 ))}
                             {isSearch &&
                                 search?.map((item, index) => (
                                     <div
-                                        onClick={() => handleCreateAndCheckRoomChat(item?._id)}
+                                        onClick={() => handleCreateAndCheckRoomChat(item?._id, index)}
                                         key={index}
                                         className="p-2 hover:bg-gray-200 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
                                         <div className="w-[56px] h-[56px] relative">
@@ -197,7 +202,7 @@ export default function CChat({ token, user, router }) {
                                                 fill
                                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                             />
-                                            {!item.is_read && <div className="absolute z-1 right-1 bottom-0 w-3 h-3 rounded-full bg-[#3fbb46]" />}
+                                            {checkOnline(user?._id === item?._id ? item?._id : item?._id) && <div className="absolute z-1 right-1 bottom-0 w-3 h-3 rounded-full bg-[#3fbb46]" />}
                                         </div>
 
                                         <div className="flex-1">
@@ -209,6 +214,7 @@ export default function CChat({ token, user, router }) {
                                             </p>
                                             <p className="text-gray-500 text-[12px]">Tham gia {item?.created_at && handleCompareDate(item?.created_at)}</p>
                                         </div>
+                                        {loadingChat === index && <Spin indicator={<LoadingOutlined spin />} size="default" />}
                                     </div>
                                 ))}
 

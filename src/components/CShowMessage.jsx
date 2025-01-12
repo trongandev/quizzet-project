@@ -191,10 +191,10 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
                         <div className="h-[320px]  overflow-y-scroll p-3">
                             {chats &&
                                 chats?.map((msg, index) => {
-                                    const isSameUser = index > 0 && chats[index - 1]?.sender === msg?.sender;
-                                    const isCurrentUser = msg?.sender === user?._id;
+                                    const isSameUser = index > 0 && chats[index - 1]?.userId === msg?.userId;
+                                    const isCurrentUser = msg?.userId === user?._id;
                                     const isLastMessage = index === chats?.length - 1;
-                                    const image_another_user = user?._id === msg?.sender ? messages?.participants[0]?.userId?.profilePicture : messages?.participants[1]?.userId?.profilePicture;
+                                    const image_another_user = user?._id === msg?.userId ? messages?.participants[0]?.userId?.profilePicture : messages?.participants[1]?.userId?.profilePicture;
                                     return (
                                         <div key={index} ref={isLastMessage ? lastMessageRef : null}>
                                             {/* Tin nhắn */}
@@ -203,7 +203,7 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
                                             <div className={`flex items-start ${isCurrentUser ? "justify-end" : "justify-start"} mb-[4px] group min-h-[40px] items-center`}>
                                                 {/* Avatar của người khác */}
                                                 {!isCurrentUser && !isSameUser && (
-                                                    <Link href={`/profile/${msg?.sender}`} className="w-[35px] h-[35px] relative mr-[-35px]">
+                                                    <Link href={`/profile/${msg?.userId}`} className="w-[35px] h-[35px] relative mr-[-35px]">
                                                         <Image
                                                             src={image_another_user || "/meme.jpg"}
                                                             alt=""
@@ -246,10 +246,10 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
                                                                         )}
                                                                     </div>
                                                                 )}
-                                                                {msg?.replyTo?.text !== "" && (
+                                                                {msg?.replyTo?.message !== "" && (
                                                                     <Link href={`#${msg?.replyTo._id}`} className={`block ${isCurrentUser ? "w-full text-end" : ""}`}>
                                                                         <p className={` inline-block bg-gray-400 rounded-lg px-3 py-2 mb-[-10px] line-clamp-2`}>
-                                                                            {msg?.replyTo?.unsend ? "Tin nhắn đã bị gỡ" : msg?.replyTo?.text}
+                                                                            {msg?.replyTo?.unsend ? "Tin nhắn đã bị gỡ" : msg?.replyTo?.message}
                                                                         </p>
                                                                     </Link>
                                                                 )}
@@ -257,12 +257,12 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
                                                         )}
                                                         {msg?.isEdit && <span className={`text-xs text-gray-600 ${isCurrentUser ? "text-end mr-5" : "text-start ml-5"} block `}>Đã chỉnh sửa</span>}
                                                         <div className={` ${isCurrentUser ? "w-full" : ""} `} id={msg?._id}>
-                                                            {msg?.text && (
+                                                            {msg?.message && (
                                                                 <p
                                                                     className={`max-w-[350px] ${isCurrentUser ? " bg-primary text-white" : "bg-gray-200 "} ${
                                                                         msg?.unsend ? "!bg-white border border-primary !text-primary text-[12px]" : ""
                                                                     } rounded-lg px-3 py-2 inline-block`}>
-                                                                    {msg?.unsend ? "Tin nhắn đã bị gỡ" : msg?.text}
+                                                                    {msg?.unsend ? "Tin nhắn đã bị gỡ" : msg?.message}
                                                                 </p>
                                                             )}
 
@@ -351,7 +351,7 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
                                                             </Modal>
                                                         </div>
                                                     </div> */}
-                                                    {isSameUser && <p className="text-gray-500 text-xs ">{msg?.created_at && handleCompareDate(msg?.created_at)}</p>}
+                                                    {isSameUser && <p className="text-gray-500 text-xs ">{msg?.timestamp && handleCompareDate(msg?.timestamp)}</p>}
                                                 </div>
                                             </div>
                                         </div>
