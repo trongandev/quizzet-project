@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { GiStopSign } from "react-icons/gi";
 import { CiShuffle } from "react-icons/ci";
-import { message, Modal, Popconfirm, Popover, Select, Spin, Switch } from "antd";
+import { Button, message, Modal, Popconfirm, Popover, Select, Spin, Switch } from "antd";
 import { FaBrain, FaTrash } from "react-icons/fa6";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { CloseOutlined, LoadingOutlined, QuestionCircleOutlined } from "@ant-design/icons";
@@ -97,6 +97,12 @@ export default function CFlashcardDetail({ id_flashcard }) {
     // showw modal thêm mới từ trong flashcard
     const showModal = () => {
         setOpen(true);
+    };
+
+    const handleAIAndCreate = async () => {
+        setLoading(true);
+        await handleSendPrompt();
+        await handleOk();
     };
 
     const handleOk = async () => {
@@ -534,7 +540,25 @@ export default function CFlashcardDetail({ id_flashcard }) {
                     </div>
                 </Modal>
                 {/* thêm từ mới */}
-                <Modal title="Thêm từ mới" open={open} onOk={handleOk} confirmLoading={loading} okText="Tạo" onCancel={handleCancel}>
+                <Modal
+                    title="Thêm từ mới"
+                    open={open}
+                    onOk={handleOk}
+                    confirmLoading={loading}
+                    okText="Tạo"
+                    onCancel={handleCancel}
+                    footer={[
+                        <Button key="back" onClick={handleCancel}>
+                            Cancel
+                        </Button>,
+                        <Button key="submit" type="primary" loading={loading} onClick={handleAIAndCreate}>
+                            AI + Tạo
+                        </Button>,
+                        <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
+                            Tạo
+                        </Button>,
+                        ,
+                    ]}>
                     <div className="space-y-3">
                         <div className="flex gap-3 items-end">
                             <div className="flex-1">

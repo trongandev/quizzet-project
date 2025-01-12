@@ -84,17 +84,13 @@ export default function Answer({ params }) {
                     </div>
                     <div className="flex gap-5 text-center justify-center">
                         <div className="">
-                            <Progress
-                                type="circle"
-                                percent={Math.floor((1 / quiz.questions?.data_history?.length) * (quiz.questions?.data_history?.length - quiz?.score) * 100)}
-                                strokeColor="#ff4d4f"
-                            />
-                            <p className="text-gray-600 mt-1">Câu sai: {quiz.questions?.data_history?.length - quiz.score}</p>
+                            <Progress type="circle" percent={Math.floor((1 / question.length) * (question.length - quiz?.score) * 100)} strokeColor="#ff4d4f" />
+                            <p className="text-gray-600 mt-1">Câu sai: {question.length - quiz.score}</p>
                         </div>
 
                         <div className="">
-                            <Progress type="circle" strokeColor="#2187d5" percent={Math.floor((quiz.score / quiz.questions?.data_history?.length) * 100)} />
-                            <p className="text-gray-600 mt-1">Tỉ lệ đúng</p>
+                            <Progress type="circle" strokeColor="#2187d5" percent={Math.floor((quiz.score / question.length) * 100)} />
+                            <p className="text-gray-600 mt-1">Câu đúng: {quiz.score}</p>
                         </div>
                     </div>
                 </div>

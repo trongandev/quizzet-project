@@ -88,7 +88,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
             {token !== undefined ? (
                 <div className="mt-10">
                     <h4 className="text-xl mb-2 text-primary">List từ đã tạo</h4>
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 max-h-[300px] overflow-y-scroll">
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 max-h-[350px] overflow-y-scroll">
                         <div
                             onClick={showModal}
                             className="w-full text-primary cursor-pointer hover:border-primary bg-gray-100 rounded-xl shadow-sm p-3 border hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 flex-col  h-[181px]">
@@ -181,7 +181,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
 
             <div className="mt-10">
                 <h3 className="text-xl mb-2 text-primary">Khám phá từ cộng đồng chúng tôi</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 max-h-[300px] overflow-y-scroll">
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 max-h-[350px] overflow-y-scroll">
                     {publicFlashcards &&
                         publicFlashcards.map((item) => (
                             <Link

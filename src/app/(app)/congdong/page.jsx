@@ -273,16 +273,17 @@ export default function CongDong() {
     };
 
     const handleOkEditMess = async () => {
-        const newMess = { messageId: editMess._id, userId: user._id, newMessage: editMess.text };
+        if (!editMess.message) return;
+        const newMess = { messageId: editMess._id, userId: user._id, newMessage: editMess.message };
         setLoading(true);
         const req = await POST_API(`/chatcommu/editmess`, newMess, "PUT", token);
         const res = await req.json();
         if (res.ok) {
-            setMessages((prevMessages) => prevMessages.map((msg) => (msg._id === editMess._id ? { ...msg, text: editMess.text, isEdit: true } : msg)));
+            setMessages((prevMessages) => prevMessages.map((msg) => (msg._id === editMess._id ? { ...msg, message: editMess.message, isEdit: true } : msg)));
         } else {
             messageApi.open({
                 type: "error",
-                content: res.text,
+                content: res.message,
             });
         }
         handleCancelEditMess();

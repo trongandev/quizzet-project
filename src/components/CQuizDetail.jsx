@@ -49,8 +49,8 @@ export default function CQuizDetail({ QuizData, QuestData }) {
         }
 
         let score = 0;
-        QuestData.map((item) => {
-            if (item.correct === selectedAnswers[item.id]) {
+        QuestData.map((item, index) => {
+            if (item.correct === selectedAnswers[index]) {
                 score++;
             }
         });
