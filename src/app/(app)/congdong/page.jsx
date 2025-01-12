@@ -94,7 +94,6 @@ export default function CongDong() {
     }, []);
 
     const handleUnsendMessage = useCallback((messageId) => {
-        console.log(messageId);
         setMessages((prevMessages) => prevMessages.map((msg) => (msg._id === messageId ? { ...msg, unsend: true } : msg)));
     }, []);
 
