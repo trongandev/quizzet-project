@@ -159,7 +159,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                                     </h1>
                                     <h1 className="flex items-center gap-1">
                                         <IoCopyOutline />
-                                        {item?.flashcards.length} từ
+                                        {item?.flashcards?.length} từ
                                     </h1>
                                     <p className="text-sm line-clamp-2 italic h-[40px]" title={item.desc}>
                                         {item.desc || "Không có mô tả"}
@@ -224,7 +224,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                                 </h1>
                                 <h1 className="flex items-center gap-1">
                                     <IoCopyOutline />
-                                    {item?.flashcards.length} từ
+                                    {item?.flashcards?.length} từ
                                 </h1>
                                 <p className="text-sm line-clamp-2 italic  h-[40px]" title={item.desc}>
                                     {item.desc || "Không có mô tả"}
@@ -249,7 +249,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                                 </div>
                             </Link>
                         ))}
-                    {filterLanguage.length <= 0 && <div className="h-[350px] col-span-12 flex items-center justify-center">Không có dữ liệu...</div>}
+                    {filterLanguage?.length <= 0 && <div className="h-[350px] col-span-12 flex items-center justify-center">Không có dữ liệu...</div>}
                 </div>
             </div>
         </div>
