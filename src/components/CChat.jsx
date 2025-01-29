@@ -146,48 +146,45 @@ export default function CChat({ token, user, router }) {
                                 </div>
                             </div>
                             {!isSearch &&
-                                chat?.map((item, index) => (
-                                    <div
-                                        onClick={() => handleCreateAndCheckRoomChat(user?._id === item?.participants[1]?.userId ? item?.participants[0]?.userId : item?.participants[1]?.userId, index)}
-                                        key={index}
-                                        className="p-2 hover:bg-gray-200 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
-                                        <div className="w-[56px] h-[56px] relative">
-                                            <Image
-                                                src={
-                                                    user?._id === item?.participants[1]?.userId
-                                                        ? item?.participants[0]?.userId?.profilePicture
-                                                        : item?.participants[1]?.userId?.profilePicture || "/avatar.jpg"
-                                                }
-                                                alt=""
-                                                className="object-cover h-full absolute overflow-hidden rounded-full"
-                                                fill
-                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                            />
-                                            {checkOnline(user?._id === item?.participants[1]?.userId ? item?.participants[0]?.userId?._id : item?.participants[1]?.userId?._id) && (
-                                                <div className="absolute z-1 right-1 bottom-0 w-3 h-3 rounded-full bg-[#3fbb46]" />
-                                            )}
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className="text-gray-700 line-clamp-2">
-                                                <label htmlFor="" className="font-bold">
-                                                    {user?._id === item?.participants[1]?.userId ? item?.participants[0]?.userId?.displayName : item?.participants[1]?.userId?.displayName}
-                                                </label>
-                                                {item?.content}
-                                            </p>
-                                            {item?.last_message ? (
-                                                <div className="text-gray-500 text-[12px] ">
-                                                    <p className="line-clamp-1"> {item?.last_message} </p>
-                                                    <p className="font-medium">{item?.last_message_date && handleCompareDate(item?.last_message_date)}</p>
-                                                </div>
-                                            ) : (
-                                                <p className="text-gray-500 text-[12px]">Chưa có tin nhắn!</p>
-                                            )}
-                                        </div>
-                                        {loadingChat === index && <Spin indicator={<LoadingOutlined spin />} size="default" />}
+                                chat?.map((item, index) => {
+                                    const otherParticipant = item?.participants.find((p) => p?.userId?._id !== user?._id);
+                                    return (
+                                        <div
+                                            onClick={() => handleCreateAndCheckRoomChat(otherParticipant?.userId?._id, index)}
+                                            key={index}
+                                            className="p-2 hover:bg-gray-200 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
+                                            <div className="w-[56px] h-[56px] relative">
+                                                <Image
+                                                    src={otherParticipant?.userId?.profilePicture || "/avatar.jpg"}
+                                                    alt=""
+                                                    className="object-cover h-full absolute overflow-hidden rounded-full"
+                                                    fill
+                                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                />
+                                                {checkOnline(otherParticipant?.userId?._id) && <div className="absolute z-1 right-1 bottom-0 w-3 h-3 rounded-full bg-[#3fbb46]" />}
+                                            </div>
+                                            <div className="flex-1">
+                                                <p className="text-gray-700 line-clamp-2">
+                                                    <label htmlFor="" className="font-bold">
+                                                        {otherParticipant?.userId?.displayName}
+                                                    </label>
+                                                    {item?.content}
+                                                </p>
+                                                {item?.last_message ? (
+                                                    <div className="text-gray-500 text-[12px] ">
+                                                        <p className="line-clamp-1"> {item?.last_message} </p>
+                                                        <p className="font-medium">{item?.last_message_date && handleCompareDate(item?.last_message_date)}</p>
+                                                    </div>
+                                                ) : (
+                                                    <p className="text-gray-500 text-[12px]">Chưa có tin nhắn!</p>
+                                                )}
+                                            </div>
+                                            {loadingChat === index && <Spin indicator={<LoadingOutlined spin />} size="default" />}
 
-                                        {!loadingChat === index && item?.is_read && <div className="w-3 h-3 rounded-full bg-primary"></div>}
-                                    </div>
-                                ))}
+                                            {!loadingChat === index && item?.is_read && <div className="w-3 h-3 rounded-full bg-primary"></div>}
+                                        </div>
+                                    );
+                                })}
                             {isSearch &&
                                 search?.map((item, index) => (
                                     <div

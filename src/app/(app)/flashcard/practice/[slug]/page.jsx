@@ -33,15 +33,28 @@ export default function PractiveFlashcard({ params }) {
     const [selectedAnswers, setSelectedAnswers] = useState({});
     const [isCorrectAns, setIsCorrectAns] = useState(null);
     const [language, setLanguage] = useState({});
+
+    const shuffle = (array) => {
+        let currentIndex = array.length,
+            randomIndex;
+        while (currentIndex != 0) {
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+        }
+        return array;
+    };
     // Fetch flashcards data
+
     useEffect(() => {
         const fetchFlashCards = async () => {
             const token = Cookies.get("token");
             const req = await GET_API(`/flashcards/${params?.slug}`, token);
             if (req.ok) {
                 const result = req?.listFlashCards?.flashcards;
+
                 setLanguage(req?.listFlashCards?.language);
-                setFlashcards(result);
+                setFlashcards(shuffle(result));
                 generateQuizOptions(result[0]);
             } else {
                 messageApi.error(req.message);
@@ -55,12 +68,6 @@ export default function PractiveFlashcard({ params }) {
             generateQuizOptions(flashcards[0]);
         }
     }, [flashcards]);
-
-    const randomizeFeature = useCallback(() => {
-        const features = [FEATURES.FLASHCARD, FEATURES.QUIZ, FEATURES.LISTENING, FEATURES.FILL_BLANK];
-        const randomIndex = Math.floor(Math.random() * features.length);
-        setFeature(features[randomIndex]);
-    }, []);
 
     const generateQuizOptions = useCallback(
         (currentCard) => {
@@ -84,35 +91,29 @@ export default function PractiveFlashcard({ params }) {
         },
         [flashcards]
     );
-    const [disableAudio, setDisableAudio] = useState(false);
 
     // Handle audio playback
     const speakWord = async (text, type, id) => {
-        if (disableAudio) return;
-        else {
-            setLoadingAudio(id);
-            setDisableAudio(true);
+        setLoadingAudio(id);
 
-            if (language == "english") {
-                const req = await fetch(`${process.env.API_ENDPOINT}/proxy?audio=${text}&type=${type}`);
-                const blob = await req.blob();
-                const url = URL.createObjectURL(blob);
-                const audio = new Audio(url);
-                audio.play();
+        if (language == "english") {
+            const req = await fetch(`${process.env.API_ENDPOINT}/proxy?audio=${text}&type=${type}`);
+            const blob = await req.blob();
+            const url = URL.createObjectURL(blob);
+            const audio = new Audio(url);
+            audio.play();
+        } else {
+            if ("speechSynthesis" in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                if (language == "japan") utterance.lang = "ja-JP"; // Thiết lập ngôn ngữ tiếng Nhật
+                if (language == "korea") utterance.lang = "ko-KR"; // Thiết lập ngôn ngữ tiếng Hàn
+                if (language == "chinese") utterance.lang = "zh-CN"; // Thiết lập ngôn ngữ tiếng Trung
+                window.speechSynthesis.speak(utterance);
             } else {
-                if ("speechSynthesis" in window) {
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    if (language == "japan") utterance.lang = "ja-JP"; // Thiết lập ngôn ngữ tiếng Nhật
-                    if (language == "korea") utterance.lang = "ko-KR"; // Thiết lập ngôn ngữ tiếng Hàn
-                    if (language == "chinese") utterance.lang = "zh-CN"; // Thiết lập ngôn ngữ tiếng Trung
-                    window.speechSynthesis.speak(utterance);
-                } else {
-                    alert("Trình duyệt của bạn không hỗ trợ Text-to-Speech.");
-                }
+                alert("Trình duyệt của bạn không hỗ trợ Text-to-Speech.");
             }
-            setLoadingAudio(null);
-            setDisableAudio(false);
         }
+        setLoadingAudio(null);
     };
 
     // Navigation handlers
@@ -120,23 +121,19 @@ export default function PractiveFlashcard({ params }) {
         async (type) => {
             let newIndex;
 
-            if (isRandomMode) {
-                // Generate random index different from current
-                do {
-                    newIndex = Math.floor(Math.random() * flashcards.length);
-                } while (newIndex === index && flashcards.length > 1);
-            } else {
-                newIndex = type === "next" ? (index < flashcards.length - 1 ? index + 1 : 0) : index > 0 ? index - 1 : flashcards.length - 1;
-            }
+            // if (isRandomMode) {
+            //     // Generate random index different from current
+            //     do {
+            //         newIndex = Math.floor(Math.random() * flashcards.length);
+            //     } while (newIndex === index && flashcards.length > 1);
+            // } else {
+            // }
+            newIndex = type === "next" ? (index < flashcards.length - 1 ? index + 1 : 0) : index > 0 ? index - 1 : flashcards.length - 1;
 
             setIndex(newIndex);
             setIsFlipped(false);
             setInputAnswer("");
             setShowAns(false);
-
-            if (isRandomFeature) {
-                randomizeFeature();
-            }
 
             if (feature === FEATURES.FLASHCARD || feature === FEATURES.LISTENING) {
                 await speakWord(flashcards[newIndex].title, speakLang, flashcards[newIndex]._id);
@@ -144,7 +141,7 @@ export default function PractiveFlashcard({ params }) {
 
             generateQuizOptions(flashcards[newIndex]);
         },
-        [index, flashcards, feature, speakLang, isRandomMode, isRandomFeature, randomizeFeature]
+        [index, flashcards, feature, speakLang, isRandomMode, isRandomFeature]
     );
 
     // Progress tracking
@@ -157,14 +154,15 @@ export default function PractiveFlashcard({ params }) {
                     known: [...new Set([...prev.known, currentId])],
                     unknown: prev.unknown.filter((id) => id !== currentId),
                 }));
+                handleChangeIndex("next");
             } else {
                 setProgress((prev) => ({
                     ...prev,
                     unknown: [...new Set([...prev.unknown, currentId])],
                     known: prev.known.filter((id) => id !== currentId),
                 }));
+                handleChangeIndex("prev");
             }
-            handleChangeIndex("next");
         },
         [index, flashcards]
     );
@@ -271,16 +269,16 @@ export default function PractiveFlashcard({ params }) {
                     <div className="w-full flex flex-col gap-5">
                         {/* Main Flashcard Container */}
                         <div
-                            className="relative w-full h-[500px] border  shadow-md bg-white"
+                            className=" relative w-full h-[500px] border rounded-lg  shadow-md bg-white"
                             style={{ perspective: "1000px" }}
                             onClick={feature === FEATURES.FLASHCARD ? () => setIsFlipped(!isFlipped) : undefined}>
                             {/* Flashcard Feature */}
                             {feature === FEATURES.FLASHCARD && (
                                 <div
-                                    className={`cursor-pointer absolute inset-0 w-full h-full transition-transform duration-500 transform ${isFlipped ? "rotate-y-180" : ""}`}
+                                    className={`rounded-lg  cursor-pointer absolute inset-0 w-full h-full transition-transform duration-500 transform ${isFlipped ? "rotate-y-180" : ""}`}
                                     style={{ transformStyle: "preserve-3d" }}>
                                     {/* Front Side */}
-                                    <div className="absolute inset-0 bg-white flex flex-col items-center justify-center backface-hidden p-5" style={{ backfaceVisibility: "hidden" }}>
+                                    <div className="rounded-lg  absolute inset-0 bg-white flex flex-col items-center justify-center backface-hidden p-5" style={{ backfaceVisibility: "hidden" }}>
                                         <div className="flex items-center gap-2 mb-4">
                                             <p className="text-2xl font-semibold">{flashcards[index]?.title}</p>
                                             <button
@@ -299,7 +297,7 @@ export default function PractiveFlashcard({ params }) {
 
                                     {/* Back Side */}
                                     <div
-                                        className="absolute inset-0 bg-white flex flex-col items-center justify-center p-5 backface-hidden"
+                                        className="rounded-lg  absolute inset-0 bg-white flex flex-col items-center justify-center p-5 backface-hidden"
                                         style={{
                                             backfaceVisibility: "hidden",
                                             transform: "rotateY(180deg)",
@@ -459,26 +457,14 @@ export default function PractiveFlashcard({ params }) {
                         {/* Navigation Controls */}
 
                         <div className="bg-gray-100 rounded-xl overflow-hidden w-full flex items-center justify-between shadow-md text-2xl">
-                            {/* <div
-                                className="flex-1 p-3 h-full hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer"
-                                onClick={() => handleChangeIndex("prev")}>
-                                <GrFormPrevious />
-
-                                <p className="text-sm">Lùi lại</p>
-                            </div> */}
                             <div className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer" onClick={() => handleProgress("unknown")}>
                                 <GrFormPrevious />
-                                <p className="text-sm">Chưa biết</p>
+                                <p className="text-sm">Lùi lại</p>
                             </div>
                             <div className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer" onClick={() => handleProgress("known")}>
                                 <GrFormNext />
-                                <p className="text-sm">Đã biết</p>
-                            </div>
-
-                            {/* <div className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer" onClick={() => handleChangeIndex("next")}>
-                                <GrFormNext />
                                 <p className="text-sm">Tiến tới</p>
-                            </div> */}
+                            </div>
                         </div>
                     </div>
 
@@ -508,12 +494,6 @@ export default function PractiveFlashcard({ params }) {
                                         <Switch checked={isRandomMode} onChange={(checked) => setIsRandomMode(checked)} className="bg-gray-300" />
                                     </div>
                                 </div>
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-gray-600">Random chế độ học</span>
-                                        <Switch checked={isRandomFeature} onChange={(checked) => setIsRandomFeature(checked)} className="bg-gray-300" />
-                                    </div>
-                                </div>
                             </div>
                         </div>
 
@@ -541,13 +521,10 @@ export default function PractiveFlashcard({ params }) {
                             <h2 className="font-medium">Tiến trình</h2>
                             <div className="bg-gray-100 p-4 rounded-lg">
                                 <div className="flex justify-between mb-2">
-                                    <span>Hiểu:</span>
+                                    <span>Đã học:</span>
                                     <span>{progress.known.length}</span>
                                 </div>
-                                <div className="flex justify-between">
-                                    <span>Chưa hiểu:</span>
-                                    <span>{progress.unknown.length}</span>
-                                </div>
+
                                 <div className="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
                                     <div
                                         className="h-full bg-primary"
@@ -565,11 +542,11 @@ export default function PractiveFlashcard({ params }) {
                             <div className="bg-gray-100 p-4 rounded-lg space-y-3">
                                 <div className="flex items-center gap-2">
                                     <kbd className="px-2 py-1 bg-white rounded shadow text-sm">→</kbd>
-                                    <span className="text-gray-600">Hiểu</span>
+                                    <span className="text-gray-600">Tiến tới</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <kbd className="px-2 py-1 bg-white rounded shadow text-sm">←</kbd>
-                                    <span className="text-gray-600">Không biết</span>
+                                    <span className="text-gray-600">Lùi lại</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <kbd className="px-2 py-1 bg-white rounded shadow text-sm">Space</kbd>

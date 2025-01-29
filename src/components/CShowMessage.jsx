@@ -111,6 +111,7 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
             }
 
             const messageData = {
+                displayName: user?.displayName,
                 chatRoomId: messages?._id,
                 userId: user?._id,
                 message: newMessage,
@@ -119,7 +120,6 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
                 replyTo: replyingTo,
             };
             socket.emit("sendMessage", messageData);
-
             setNewMessage("");
             setImage(null);
             setImageReview(null);
@@ -139,6 +139,9 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
 
         socket.on("message", (data) => {
             setChats((prevData) => [...prevData, data.newMessage]);
+            if (data.newMessage.userId !== userId) {
+                handleSendNoti(data.displayName, data.newMessage.message);
+            }
         });
 
         return () => {
@@ -147,6 +150,37 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
         };
     }, [messages?._id, socket]);
 
+    const handleSendNoti = (displayName, message) => {
+        if (!window.Notification) {
+            console.log("Browser does not support notifications.");
+        } else {
+            // check if permission is already granted
+            if (Notification.permission === "granted") {
+                // show notification here
+                var notify = new Notification(displayName, {
+                    body: message,
+                    icon: "./favicon.ico",
+                });
+            } else {
+                // request permission from user
+                Notification.requestPermission()
+                    .then(function (p) {
+                        if (p === "granted") {
+                            // show notification here
+                            var notify = new Notification(displayName, {
+                                body: message,
+                                icon: "./favicon.ico",
+                            });
+                        } else {
+                            console.log("User blocked notifications.");
+                        }
+                    })
+                    .catch(function (err) {
+                        console.error(err);
+                    });
+            }
+        }
+    };
     return (
         <>
             {contextHolder}
@@ -194,18 +228,19 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
                                     const isSameUser = index > 0 && chats[index - 1]?.userId === msg?.userId;
                                     const isCurrentUser = msg?.userId === user?._id;
                                     const isLastMessage = index === chats?.length - 1;
-                                    const image_another_user = user?._id === msg?.userId ? messages?.participants[0]?.userId?.profilePicture : messages?.participants[1]?.userId?.profilePicture;
+                                    // const image_another_user = user?._id === msg?.userId?._id ? messages?.participants[0]?.userId?.profilePicture : messages?.participants[1]?.userId?.profilePicture;
+                                    const otherParticipant = messages?.participants.find((p) => p?.userId?._id !== user?._id);
                                     return (
                                         <div key={index} ref={isLastMessage ? lastMessageRef : null}>
                                             {/* Tin nhắn */}
-                                            {!isSameUser && isCurrentUser && <p className="mb-5"></p>}
+                                            {!isSameUser && <p className="mb-5"></p>}
 
                                             <div className={`flex items-start ${isCurrentUser ? "justify-end" : "justify-start"} mb-[4px] group min-h-[40px] items-center`}>
                                                 {/* Avatar của người khác */}
                                                 {!isCurrentUser && !isSameUser && (
                                                     <Link href={`/profile/${msg?.userId}`} className="w-[35px] h-[35px] relative mr-[-35px]">
                                                         <Image
-                                                            src={image_another_user || "/meme.jpg"}
+                                                            src={otherParticipant?.userId?.profilePicture || "/meme.jpg"}
                                                             alt=""
                                                             unoptimized
                                                             className="w-full h-full object-cover absolute rounded-full"
@@ -259,8 +294,8 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
                                                         <div className={` ${isCurrentUser ? "w-full" : ""} `} id={msg?._id}>
                                                             {msg?.message && (
                                                                 <p
-                                                                    className={`max-w-[350px] ${isCurrentUser ? " bg-primary text-white" : "bg-gray-200 "} ${
-                                                                        msg?.unsend ? "!bg-white border border-primary !text-primary text-[12px]" : ""
+                                                                    className={`max-w-[350px] ${isCurrentUser ? " bg-primary text-white" : "bg-gray-200 text-gray-500"} ${
+                                                                        msg?.unsend ? "!bg-white border border-primary  text-[12px]" : ""
                                                                     } rounded-lg px-3 py-2 inline-block`}>
                                                                     {msg?.unsend ? "Tin nhắn đã bị gỡ" : msg?.message}
                                                                 </p>

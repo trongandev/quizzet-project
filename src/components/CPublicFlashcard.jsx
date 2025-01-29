@@ -15,6 +15,8 @@ import Cookies from "js-cookie";
 export default function CPublicFlashCard({ publicFlashcards }) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [language, setLanguage] = useState("all");
+    const [filterLanguage, setFilterLanguage] = useState(publicFlashcards);
     const defaultListFlashCard = { title: "", desc: "", language: "english", public: false };
     const [listFlashCard, setListFlashCard] = useState([]);
     const [newListFlashCard, setNewListFlashCard] = useState(defaultListFlashCard);
@@ -60,6 +62,16 @@ export default function CPublicFlashCard({ publicFlashcards }) {
             </div>
         );
     }
+
+    const handleNavLanguage = (value) => {
+        setLanguage(value);
+        if (value === "all") {
+            setFilterLanguage(publicFlashcards);
+            return;
+        }
+        const filter = publicFlashcards.filter((item) => item.language === value);
+        setFilterLanguage(filter);
+    };
 
     return (
         <div className="text-third px-3 md:px-0 min-h-screen">
@@ -180,10 +192,29 @@ export default function CPublicFlashCard({ publicFlashcards }) {
             )}
 
             <div className="mt-10">
-                <h3 className="text-xl mb-2 text-primary">Khám phá từ cộng đồng chúng tôi</h3>
+                <h3 className="text-xl  text-primary">Khám phá từ cộng đồng chúng tôi</h3>
+                <div className="flex gap-3 py-3 items-center flex-wrap">
+                    <h3>Lọc theo ngôn ngữ:</h3>
+                    <button
+                        className={`border border-gray-400 px-5 py-2 rounded-full w-36 h-10 flex items-center justify-center  ${language === "all" ? "bg-secondary border-none text-white" : ""}`}
+                        value="all"
+                        onClick={(e) => handleNavLanguage(e.target.value)}>
+                        <MdPublic className="mr-1" /> Tất cả
+                    </button>
+                    {languageOption.map((item) => (
+                        <button
+                            key={item.value}
+                            className={`transition-colors duration-200 border border-gray-400 px-5 py-2 rounded-full w-36 h-10 flex items-center justify-center ${
+                                item.value === language ? "bg-secondary border-none" : ""
+                            }`}
+                            onClick={() => handleNavLanguage(item.value)}>
+                            <Image src={`/flag/${item.value}.svg`} alt="" width={25} height={25} className="rounded-sm border border-gray-400"></Image>
+                        </button>
+                    ))}
+                </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 max-h-[350px] overflow-y-scroll">
-                    {publicFlashcards &&
-                        publicFlashcards.map((item) => (
+                    {filterLanguage &&
+                        filterLanguage.map((item) => (
                             <Link
                                 href={`/flashcard/${item?._id}`}
                                 className="w-full h-[181px] bg-gray-100 rounded-xl block shadow-sm p-3 border hover:shadow-md transition-all duration-300"
@@ -218,7 +249,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                                 </div>
                             </Link>
                         ))}
-                    {loading && <Spin indicator={<LoadingOutlined spin />} size="default" className="h-full flex items-center justify-center" />}
+                    {filterLanguage.length <= 0 && <div className="h-[350px] col-span-12 flex items-center justify-center">Không có dữ liệu...</div>}
                 </div>
             </div>
         </div>

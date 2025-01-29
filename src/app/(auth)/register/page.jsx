@@ -143,7 +143,7 @@ export default function RegisterForm() {
                     <div className="mb-5">
                         <button type="submit" className="btn btn-primary w-full flex gap-5 items-center justify-center" disabled={loading}>
                             {loading && <Spin className="text-white" indicator={<LoadingOutlined spin />} size="default" />}
-                            Đăng nhập
+                            Đăng ký ngay
                         </button>
                     </div>
                     <div className="my-5 text-sm">
