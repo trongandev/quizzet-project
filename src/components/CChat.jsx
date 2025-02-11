@@ -46,7 +46,7 @@ export default function CChat({ token, user, router }) {
         const fetchAPI = async () => {
             const req = await GET_API("/chat", token);
             if (req.ok) {
-                setChat(req.data?.chats);
+                setChat(req?.data?.chats);
                 setUnreadCountChat(req?.data.unreadCount || 0);
             }
         };
@@ -63,7 +63,7 @@ export default function CChat({ token, user, router }) {
             if (req.ok) {
                 setSearch(req?.data.users);
             } else {
-                message.error(req.data.message);
+                message.error(req?.data.message);
             }
             setLoading(false);
         };

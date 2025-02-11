@@ -31,8 +31,8 @@ export default function ProfileUID({ params }) {
     useEffect(() => {
         const fetchAPI = async () => {
             const req = await GET_API(`/profile/${slug}`, token);
-            setProfile(req.data.user);
-            setQuiz(req.data.quiz);
+            setProfile(req?.data.user);
+            setQuiz(req?.data.quiz);
         };
 
         fetchAPI();

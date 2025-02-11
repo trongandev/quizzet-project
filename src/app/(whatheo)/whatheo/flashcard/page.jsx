@@ -21,7 +21,7 @@ export default function Flashcard() {
         setLoading(true);
         const fetchUser = async () => {
             const req = await GET_API("/list-flashcards/admin", token);
-            setFlashcard(req.data);
+            setFlashcard(req?.data);
             setLoading(false);
         };
         fetchUser();

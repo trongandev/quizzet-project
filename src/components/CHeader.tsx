@@ -44,8 +44,8 @@ export default function CHeader({ token }: { token: string }) {
         const fetchAPI = async () => {
             const req = await GET_API("/notify", token);
             if (req.ok) {
-                setNotify(req.data?.notifications);
-                setUnreadCountNotify(req.data?.unreadCount || 0);
+                setNotify(req?.data?.notifications);
+                setUnreadCountNotify(req?.data?.unreadCount || 0);
             }
         };
 
@@ -57,7 +57,7 @@ export default function CHeader({ token }: { token: string }) {
     const handleRouterNotify = async (item: any) => {
         const req = await GET_API(`/notify/${item?._id}`, token);
         if (req.ok) {
-            setUnreadCountNotify(req.data?.unreadCount || 0);
+            setUnreadCountNotify(req?.data?.unreadCount || 0);
             router.push(item?.link);
             setOpenNoti(false);
         }

@@ -417,8 +417,8 @@ export default function CFlashcardDetail({ id_flashcard }) {
         const res = await req.json();
         if (req.ok) {
             setOpenEditWord(false);
-            setFlashcard((prev) => prev.map((flashcard) => (flashcard._id === res.data._id ? res.data : flashcard)));
-            setFilteredFlashcards((prev) => prev.map((flashcard) => (flashcard._id === res.data._id ? res.data : flashcard)));
+            setFlashcard((prev) => prev.map((flashcard) => (flashcard._id === res?.data._id ? res?.data : flashcard)));
+            setFilteredFlashcards((prev) => prev.map((flashcard) => (flashcard._id === res?.data._id ? res?.data : flashcard)));
 
             setEditWord(defaultFlashcard);
             handleCancelEditWord();

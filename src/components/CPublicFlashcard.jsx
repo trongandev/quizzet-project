@@ -42,7 +42,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
         const res = await req.json();
         if (req.ok) {
             setOpen(false);
-            setListFlashCard([...listFlashCard, res.data]);
+            setListFlashCard([...listFlashCard, res?.data]);
             setNewListFlashCard(defaultListFlashCard);
         } else {
             messageApi.open({

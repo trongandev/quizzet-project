@@ -33,7 +33,7 @@ export default function QuizDetail({ params }) {
             const res = await GET_API_WITHOUT_COOKIE(`/quiz/${params.slug}`);
             setComment(res?.data?.comment);
             setQuiz(res?.data?.questions?.data_quiz.slice(0, 6));
-            delete res.data?.questions;
+            delete res?.data?.questions;
             setData(res?.data);
         };
         fetchData();
@@ -74,7 +74,7 @@ export default function QuizDetail({ params }) {
         const req = await POST_API(`/quiz/comment`, newComment, "POST", token);
         const res = await req.json();
         if (res.ok) {
-            if (res.data.exist) {
+            if (res?.data.exist) {
                 setComment((item) => item.map((i) => (i._id == res?.data.id ? { ...i, review, created_at: new Date() } : i)));
             } else {
                 setComment([...comment, newComment]);

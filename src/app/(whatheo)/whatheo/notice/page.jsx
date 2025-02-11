@@ -22,7 +22,7 @@ export default function Notice() {
         const fetchNotice = async () => {
             const req = await GET_API("/notice", token);
             if (req.ok) {
-                setNotice(req.data);
+                setNotice(req?.data);
                 messageApi.success(req.message);
             } else {
                 messageApi.error(req.message);

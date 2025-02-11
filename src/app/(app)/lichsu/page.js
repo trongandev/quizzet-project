@@ -15,7 +15,7 @@ export default function History() {
     const [messageApi, contextHolder] = message.useMessage();
     const fetchHistory = async () => {
         const req = await GET_API("/history", token);
-        setHistoryData(req.data);
+        setHistoryData(req?.data);
         setLoading(true);
     };
 

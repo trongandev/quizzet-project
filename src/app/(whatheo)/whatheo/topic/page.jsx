@@ -23,7 +23,7 @@ export default function TopicManager() {
             const req = await GET_API("/quiz/admin", token);
             if (req.ok) {
                 messageApi.success("Fetch chủ đề thành công!");
-                setTopic(req.data);
+                setTopic(req?.data);
                 setLoading(true);
             } else {
                 messageApi.error(req.message);
