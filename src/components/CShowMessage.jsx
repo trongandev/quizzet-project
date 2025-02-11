@@ -37,9 +37,9 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
         const fetchAPI = async () => {
             const req = await GET_API(`/chat/${chatMessId}`, token);
             if (req.ok) {
-                setChats(req?.chat?.messages);
-                delete req?.chat?.messages;
-                setMessages(req?.chat);
+                setChats(req?.data.chat?.messages);
+                delete req?.data.chat?.messages;
+                setMessages(req?.data.chat);
             }
         };
         if (chatMessId !== null) {
@@ -111,6 +111,7 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
             }
 
             const messageData = {
+                profilePicture: user?.profilePicture,
                 displayName: user?.displayName,
                 chatRoomId: messages?._id,
                 userId: user?._id,
@@ -140,7 +141,7 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
         socket.on("message", (data) => {
             setChats((prevData) => [...prevData, data.newMessage]);
             if (data.newMessage.userId !== userId) {
-                handleSendNoti(data.displayName, data.newMessage.message);
+                handleSendNoti(data.displayName, data.newMessage.message, data.profilePicture);
             }
         });
 
@@ -150,7 +151,7 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
         };
     }, [messages?._id, socket]);
 
-    const handleSendNoti = (displayName, message) => {
+    const handleSendNoti = (displayName, message, profilePicture) => {
         if (!window.Notification) {
             console.log("Browser does not support notifications.");
         } else {
@@ -159,7 +160,7 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
                 // show notification here
                 var notify = new Notification(displayName, {
                     body: message,
-                    icon: "./favicon.ico",
+                    icon: profilePicture,
                 });
             } else {
                 // request permission from user
@@ -169,7 +170,7 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
                             // show notification here
                             var notify = new Notification(displayName, {
                                 body: message,
-                                icon: "./favicon.ico",
+                                icon: profilePicture,
                             });
                         } else {
                             console.log("User blocked notifications.");

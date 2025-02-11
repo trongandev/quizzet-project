@@ -33,8 +33,9 @@ export default function CHeader({ token }: { token: string }) {
 
     const handleLogout = async () => {
         const req = await GET_API("/auth/logout", token);
-        if (req) {
+        if (req.ok) {
             Cookies.remove("token");
+            localStorage.removeItem("listFlashCards");
             clearUser();
         }
     };
@@ -42,9 +43,9 @@ export default function CHeader({ token }: { token: string }) {
     useEffect(() => {
         const fetchAPI = async () => {
             const req = await GET_API("/notify", token);
-            if (req) {
-                setNotify(req?.notifications);
-                setUnreadCountNotify(req?.unreadCount || 0);
+            if (req.ok) {
+                setNotify(req.data?.notifications);
+                setUnreadCountNotify(req.data?.unreadCount || 0);
             }
         };
 
@@ -56,7 +57,7 @@ export default function CHeader({ token }: { token: string }) {
     const handleRouterNotify = async (item: any) => {
         const req = await GET_API(`/notify/${item?._id}`, token);
         if (req.ok) {
-            setUnreadCountNotify(req?.unreadCount || 0);
+            setUnreadCountNotify(req.data?.unreadCount || 0);
             router.push(item?.link);
             setOpenNoti(false);
         }
@@ -149,7 +150,7 @@ export default function CHeader({ token }: { token: string }) {
                                 <div className="w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden relative">
                                     <Image
                                         unoptimized
-                                        src={user?.profilePicture || "/avatar.png"}
+                                        src={user?.profilePicture || "/avatar.jpg"}
                                         alt=""
                                         className="object-cover h-full absolute"
                                         fill

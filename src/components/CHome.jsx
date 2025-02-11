@@ -28,7 +28,6 @@ export default function CHome({ quizData, toolData, publicFlashcards }) {
                     <div className="">
                         <p className="">Quizzet là một cộng đồng chia sẻ tài liệu cho sinh viên Đại học Công nghệ Đồng Nai</p>
                         <p>Trang web này giúp bạn tạo ra các bài quiz online đồng thời cũng là nơi chia sẻ tài liệu các môn đại cương hoặc chuyên ngành một cách dễ dàng và nhanh chóng.</p>
-                        <p>Ngoài ra có 1 tính năng mới là Flashcard AI giúp bạn tự định nghĩa, đưa ra ví dụ, phân loại từ, cách phát âm cũng như một số mẹo nhỏ liên quan về từ.</p>
                     </div>
                 </div>
                 <div className="my-2 flex gap-5 items-center justify-center">
@@ -81,7 +80,7 @@ export default function CHome({ quizData, toolData, publicFlashcards }) {
                     <h1 className="text-3xl font-bold">Flashcard</h1>
                     <p>Flashcard là một trong những cách tốt nhất để ghi nhớ những kiến thức quan trọng. Hãy cùng Quizzet tham khảo và tạo những bộ flashcards bạn nhé!</p>
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 max-h-[300px] overflow-y-scroll">
-                        {publicFlashcards.length > 0 &&
+                        {/* {publicFlashcards.length > 0 &&
                             publicFlashcards.map((item) => (
                                 <Link
                                     href={`/flashcard/${item?._id}`}
@@ -109,14 +108,10 @@ export default function CHome({ quizData, toolData, publicFlashcards }) {
                                             <p title={item?.userId?.displayName} className="line-clamp-1">
                                                 {item?.userId?.displayName}
                                             </p>
-                                            {/* <div className="flex gap-1 items-center text-xs text-gray-500 ">
-                                                {item?.public ? <MdPublic /> : <RiGitRepositoryPrivateFill />}
-                                                <p className="line-clamp-1">{item?.created_at && handleCompareDate(item?.created_at)}</p>
-                                            </div> */}
                                         </div>
                                     </div>
                                 </Link>
-                            ))}
+                            ))} */}
                     </div>
                 </div>
                 {/* {!quizData && (

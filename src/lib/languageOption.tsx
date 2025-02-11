@@ -19,4 +19,8 @@ export const languageOption = [
         value: "france",
         label: "Tiếng Pháp",
     },
+    {
+        value: "germany",
+        label: "Tiếng Đức",
+    },
 ];

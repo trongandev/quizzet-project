@@ -27,9 +27,11 @@ export default function CPublicFlashCard({ publicFlashcards }) {
     };
 
     useEffect(() => {
+        setLoading(true);
         const fetchListFlashCard = async () => {
             const res = await GET_API("/list-flashcards", token);
-            setListFlashCard(res?.listFlashCards);
+            setListFlashCard(res?.data);
+            setLoading(false);
         };
         fetchListFlashCard();
     }, []);
@@ -40,7 +42,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
         const res = await req.json();
         if (req.ok) {
             setOpen(false);
-            setListFlashCard([...listFlashCard, res.listFlashCard]);
+            setListFlashCard([...listFlashCard, res.data]);
             setNewListFlashCard(defaultListFlashCard);
         } else {
             messageApi.open({

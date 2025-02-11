@@ -41,7 +41,7 @@ export default function LoginForm() {
             const res = await POST_API("/auth/login", values, "POST", token);
             const data = await res.json();
             if (res.ok) {
-                Cookies.set("token", data.token, { expires: 1 });
+                Cookies.set("token", data.data.token, { expires: 1 });
                 router.push("/");
             } else {
                 messageApi.open({

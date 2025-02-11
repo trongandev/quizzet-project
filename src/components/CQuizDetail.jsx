@@ -33,6 +33,8 @@ export default function CQuizDetail({ QuizData, QuestData }) {
     }, []);
 
     const handleSelect = (questionId, answerIndex) => {
+        console.log("click", questionId, answerIndex);
+        console.log(":::", selectedAnswers);
         setSelectedAnswers({
             ...selectedAnswers,
             [questionId]: answerIndex,
@@ -81,7 +83,7 @@ export default function CQuizDetail({ QuizData, QuestData }) {
             const data = await req.json();
             if (req.ok) {
                 messageApi.success(data.message);
-                router.push("/dapan/" + data?.id_history);
+                router.push("/dapan/" + data?.data.id_history);
             } else {
                 messageApi.error(data.message);
             }
@@ -145,7 +147,7 @@ export default function CQuizDetail({ QuizData, QuestData }) {
                                                     name={item.id}
                                                     className="w-1 invisible"
                                                     id={`${index}ans${idx}`}
-                                                    checked={selectedAnswers[index] === index}
+                                                    checked={selectedAnswers[index] === idx}
                                                     onChange={() => handleSelect(index, idx)}
                                                 />
                                                 <label

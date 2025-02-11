@@ -5,11 +5,11 @@ import { GET_API_WITHOUT_COOKIE } from "@/lib/fetchAPI";
 export async function generateMetadata({ params }) {
     const listFlashCards = await GET_API_WITHOUT_COOKIE(`/flashcards/${params.id}`);
     return {
-        title: `Quizzet | Flashcard: ${listFlashCards?.listFlashCards?.title}`,
-        description: `${listFlashCards?.listFlashCards?.desc || "Không có mô tả"} | Ngôn ngữ: ${listFlashCards?.listFlashCards?.language}`,
+        title: `Quizzet | Flashcard: ${listFlashCards?.data?.title}`,
+        description: `${listFlashCards?.data?.desc || "Không có mô tả"} | Ngôn ngữ: ${listFlashCards?.data?.language}`,
         openGraph: {
-            title: `Quizzet | Flashcard: ${listFlashCards?.listFlashCards?.title}`,
-            description: listFlashCards?.listFlashCards?.desc + " | " + listFlashCards?.listFlashCards?.language,
+            title: `Quizzet | Flashcard: ${listFlashCards?.data?.title}`,
+            description: listFlashCards?.data?.desc + " | " + listFlashCards?.data?.language,
             type: "website",
             url: "https://trongan.site/flashcard/" + params.id,
         },

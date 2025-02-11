@@ -8,7 +8,7 @@ export const UserProvider = ({ children }) => {
     const token = Cookies.get("token");
     const fetchAPI = async () => {
         const req = await GET_API("/profile", token);
-        setUser(req.user);
+        setUser(req.data.user);
     };
 
     useEffect(() => {

@@ -6,7 +6,6 @@ import { Badge, Popover, Spin } from "antd";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { BiSearch } from "react-icons/bi";
-import { FaComment } from "react-icons/fa6";
 import { RiMessengerLine } from "react-icons/ri";
 import CShowMessage from "./CShowMessage";
 import { FaArrowLeft } from "react-icons/fa";
@@ -46,9 +45,9 @@ export default function CChat({ token, user, router }) {
     useEffect(() => {
         const fetchAPI = async () => {
             const req = await GET_API("/chat", token);
-            if (req) {
-                setChat(req?.chats);
-                setUnreadCountChat(req?.unreadCount || 0);
+            if (req.ok) {
+                setChat(req.data?.chats);
+                setUnreadCountChat(req?.data.unreadCount || 0);
             }
         };
 
@@ -62,9 +61,9 @@ export default function CChat({ token, user, router }) {
             setLoading(true);
             const req = await GET_API(`/profile/findbyname/${input}`, token);
             if (req.ok) {
-                setSearch(req?.users);
+                setSearch(req?.data.users);
             } else {
-                message.error(req.message);
+                message.error(req.data.message);
             }
             setLoading(false);
         };
@@ -102,7 +101,7 @@ export default function CChat({ token, user, router }) {
         const res = await req.json();
 
         if (req.ok) {
-            setChatMessId(res?.chatId);
+            setChatMessId(res?.data.chatId);
             setOpenChat(false);
         }
         setLoadingChat(null);

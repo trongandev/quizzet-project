@@ -32,7 +32,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
     const [flashcard, setFlashcard] = useState([]); // các flashcard
     const [filteredFlashcards, setFilteredFlashcards] = useState(flashcard);
     const [isSimple, setIsSimple] = useState(1); // 1: từ chi tiết, 2 đơn giản
-    const defaultFlashcard = { _id: "", title: "", define: "", type_of_word: "", transcription: "", example: [], note: "" };
+    const defaultFlashcard = { _id: Math.random(), title: "", define: "", type_of_word: "", transcription: "", example: [], note: "" };
     const [newFlashcard, setNewFlashcard] = useState(defaultFlashcard);
     const [choose, setChoose] = useState(0); // 0 tất cả, 1 đã học, 2 đã nhớ, 3 cần ôn, 4 tiến trình ghi nhớ
     const [disableAudio, setDisableAudio] = useState(false);
@@ -51,19 +51,19 @@ export default function CFlashcardDetail({ id_flashcard }) {
 
     const [openAddMore, setOpenAddMore] = useState(false);
     const [addMore, setAddMore] = useState([]);
-
+    console.log(newFlashcard);
     useEffect(() => {
         const fetchAPI = async () => {
             const req = await GET_API_WITHOUT_COOKIE(`/flashcards/${id_flashcard}`);
             if (req.ok) {
-                const sortedFlashcards = sortFlashcards(req?.listFlashCards?.flashcards);
+                const sortedFlashcards = sortFlashcards(req?.data?.flashcards);
                 setFlashcard(sortedFlashcards);
 
                 setFilteredFlashcards(sortedFlashcards);
 
-                // delete req?.listFlashCards?.flashcards;
-                setListFlashcard(req?.listFlashCards);
-                setNewListFlashCard({ title: req?.listFlashCards?.title, language: req?.listFlashCards?.language, desc: req?.listFlashCards?.desc, public: req?.listFlashCards?.public });
+                // delete req?.data?.flashcards;
+                setListFlashcard(req?.data);
+                setNewListFlashCard({ title: req?.data?.title, language: req?.data?.language, desc: req?.data?.desc, public: req?.data?.public });
             }
         };
         fetchAPI();
@@ -111,8 +111,8 @@ export default function CFlashcardDetail({ id_flashcard }) {
         const res = await req.json();
         if (req.ok) {
             setOpen(false);
-            setFlashcard([res?.flashcard, ...flashcard]);
-            setFilteredFlashcards([res?.flashcard, ...flashcard]);
+            setFlashcard([res?.data, ...flashcard]);
+            setFilteredFlashcards([res?.data, ...flashcard]);
             setNewFlashcard(defaultFlashcard);
         } else {
             messageApi.open({
@@ -138,8 +138,8 @@ export default function CFlashcardDetail({ id_flashcard }) {
         const res = await req.json();
         if (req.ok) {
             setOpenAddMore(false);
-            setFlashcard([...res?.flashcards, ...flashcard]);
-            setFilteredFlashcards([...res?.flashcards, ...flashcard]);
+            setFlashcard([...res?.data, ...flashcard]);
+            setFilteredFlashcards([...res?.data, ...flashcard]);
             setAddMore([]);
             setPrompt("");
             setNewFlashcard(defaultFlashcard);
@@ -417,8 +417,8 @@ export default function CFlashcardDetail({ id_flashcard }) {
         const res = await req.json();
         if (req.ok) {
             setOpenEditWord(false);
-            setFlashcard((prev) => prev.map((flashcard) => (flashcard._id === res.flashcard._id ? res.flashcard : flashcard)));
-            setFilteredFlashcards((prev) => prev.map((flashcard) => (flashcard._id === res.flashcard._id ? res.flashcard : flashcard)));
+            setFlashcard((prev) => prev.map((flashcard) => (flashcard._id === res.data._id ? res.data : flashcard)));
+            setFilteredFlashcards((prev) => prev.map((flashcard) => (flashcard._id === res.data._id ? res.data : flashcard)));
 
             setEditWord(defaultFlashcard);
             handleCancelEditWord();
@@ -786,7 +786,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
                 {isSimple === 1 && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-5 ">
                         {filteredFlashcards?.map((item, index) => (
-                            <div className="bg-gray-100 p-5 shadow-sm rounded-xl" key={index}>
+                            <div className="bg-gray-100 p-5 shadow-sm rounded-xl" key={item._id}>
                                 <div className="flex items-center justify-between">
                                     <div
                                         className={`rounded-full text-white text-[12px] px-3 py-[1px] font-bold ${
@@ -944,7 +944,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
                                 </p>
                                 <div className="flex items-center justify-between">
                                     <p className="font-bold text-gray-600">Ví dụ: </p>
-                                    <p className="text-xs text-gray-600">{handleCompareDate(item?.created_at)}</p>
+                                    <p className="text-xs text-gray-600">{handleCompareDate(item?.created_at || new Date())}</p>
                                 </div>
 
                                 <div className=" border border-secondary rounded-lg px-5 py-3 my-3 h-[220px] overflow-y-auto">

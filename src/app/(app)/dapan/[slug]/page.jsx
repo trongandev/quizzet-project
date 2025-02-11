@@ -19,8 +19,8 @@ export default function Answer({ params }) {
     useEffect(() => {
         const fetchAPI = async () => {
             const req = await GET_API("/history/" + slug, token);
-            setQuestion(req?.history?.questions?.data_history);
-            setQuiz(req?.history);
+            setQuestion(req?.data?.questions?.data_history);
+            setQuiz(req?.data);
         };
         fetchAPI();
     }, [slug, token]);

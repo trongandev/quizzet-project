@@ -101,16 +101,16 @@ export default function CTaiLieu({ toolData }) {
                     </select>
                 </div>
                 <div className="flex items-center gap-3 flex-1 flex-wrap justify-end">
-                    <input type="text" placeholder="Tìm tên tài liệu mà bạn cần..." className="w-full md:w-[250px]" onChange={(e) => handleSearch(e.target.value)} />
-                    <div className="flex gap-3 flex-1 items-center">
+                    <input type="text" placeholder="Tìm tên tài liệu mà bạn cần..." className="flex-1 md:w-[250px]" onChange={(e) => handleSearch(e.target.value)} />
+                    {/* <div className="flex gap-3 flex-1 items-center">
                         <Link href="/tailieu/themtailieu" className="block flex-1 text-center w-full btn btn-second !rounded-md">
                             Thêm tài liệu
                         </Link>
-                        <Link href="/flashcard" className="flex-1 w-full flex gap-2 items-center btn btn-primary !rounded-md justify-center">
-                            <GiCardPick size={20} />
-                            Flashcard
-                        </Link>
-                    </div>
+                    </div> */}
+                    <Link href="/flashcard" className="flex-1 w-full flex gap-2 items-center btn btn-primary !rounded-md justify-center">
+                        <GiCardPick size={20} />
+                        Flashcard
+                    </Link>
                 </div>{" "}
             </div>
 
