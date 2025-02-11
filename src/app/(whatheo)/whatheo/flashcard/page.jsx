@@ -21,7 +21,7 @@ export default function Flashcard() {
         setLoading(true);
         const fetchUser = async () => {
             const req = await GET_API("/list-flashcards/admin", token);
-            setFlashcard(req);
+            setFlashcard(req.data);
             setLoading(false);
         };
         fetchUser();
@@ -107,7 +107,9 @@ export default function Flashcard() {
                                         <td className="px-6 py-4">
                                             <Link href={`/flashcard/${item?._id}`}>{item?.title}</Link>
                                         </td>
-                                        <td className="px-6 py-4">{item?.language}</td>
+                                        <td className="px-6 py-4">
+                                            <Image src={`/flag/${item.language}.svg`} alt="" width={25} height={15} className="rounded-sm border border-gray-400"></Image>
+                                        </td>
                                         <td className="px-6 py-4">{item?.desc}</td>
                                         <td className="px-6 py-4">
                                             {item.public ? (

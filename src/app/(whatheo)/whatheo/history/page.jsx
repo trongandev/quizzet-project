@@ -20,7 +20,7 @@ export default function History() {
             if (req.ok) {
                 setLoading(true);
 
-                setHistory(req.history);
+                setHistory(req.data);
                 messageApi.success("Lấy thành công lịch sử làm bài!");
             } else {
                 messageApi.error(req.message);

@@ -15,7 +15,7 @@ export default function History() {
     const [messageApi, contextHolder] = message.useMessage();
     const fetchHistory = async () => {
         const req = await GET_API("/history", token);
-        setHistoryData(req.history);
+        setHistoryData(req.data);
         setLoading(true);
     };
 
@@ -33,7 +33,7 @@ export default function History() {
     return (
         <>
             {contextHolder}
-            <div className=" md:p-0 text-third md:h-screen px-2 md:px-0">
+            <div className=" md:p-0 text-third min-h-screen px-2 md:px-0">
                 <p className="text-2xl font-bold text-primary">Lịch sử làm bài</p>
                 {historyData === undefined ? "Bạn chưa có lịch sử làm bài..." : ""}
                 <div className="grid md:grid-cols-4 gap-5 my-5 relative grid-cols-2 ">

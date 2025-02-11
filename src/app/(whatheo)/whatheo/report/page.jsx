@@ -21,7 +21,7 @@ export default function Report() {
             const req = await GET_API("/report", token);
             if (req.ok) {
                 setLoading(true);
-                setReport(req.result);
+                setReport(req.data);
                 messageApi.success(req.message);
             } else {
                 messageApi.error(req.message);
@@ -38,10 +38,11 @@ export default function Report() {
 
     const handleOk = async () => {
         setConfirmLoading(true);
+        console.log(open);
         const req = await POST_API(`/report/${open}`, { ...violation }, "PATCH", token);
         const res = await req.json();
         if (req.ok) {
-            setReport((prev) => (prev._id == open ? { ...prev, ...res.result } : prev));
+            setReport((prev) => (prev._id == open ? { ...prev, ...res.data } : prev));
             messageApi.success(res.message);
         } else {
             messageApi.error(res.message);

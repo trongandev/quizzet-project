@@ -31,8 +31,8 @@ export default function ProfileUID({ params }) {
     useEffect(() => {
         const fetchAPI = async () => {
             const req = await GET_API(`/profile/${slug}`, token);
-            setProfile(req.user);
-            setQuiz(req.quiz);
+            setProfile(req.data.user);
+            setQuiz(req.data.quiz);
         };
 
         fetchAPI();
@@ -40,36 +40,53 @@ export default function ProfileUID({ params }) {
     const { user } = useUser();
 
     const handleCreateAndCheckRoomChat = async (id_another_user) => {
-        const req = await GET_API(`/chat/check/${id_another_user}`, token);
-        if (req.ok && req.exists) {
-            // Phòng chat đã tồn tại, điều hướng đến phòng chat
-            router.push(`/chat/${req.chatId}`);
-        } else if (req.ok && !req.exists) {
-            // Phòng chat chưa tồn tại, tạo mới
-            const createReq = await POST_API(
-                "/chat/create-chat",
-                {
-                    participants: [user._id, id_another_user],
-                },
-                "POST",
-                token
-            );
-            const reqData = await createReq.json();
-            if (reqData.ok) {
-                router.push(`/chat/${reqData.chat}`);
-            } else {
-                messageApi.open({
-                    type: "error",
-                    content: reqData.message,
-                });
-            }
-        } else {
-            messageApi.open({
-                type: "error",
-                content: reqData.message,
-            });
-        }
+        // const req = await POST_API(
+        //     "/chat/create-chat",
+        //     {
+        //         participants: [user._id, id_another_user],
+        //     },
+        //     "POST",
+        //     token
+        // );
+        // const res = await req.json();
+        // if (req.ok) {
+        //     setChatMessId(res?.data.chatId);
+        //     setOpenChat(false);
+        // }
+        // setLoadingChat(null);
     };
+
+    // const handleCreateAndCheckRoomChat = async (id_another_user) => {
+    //     const req = await GET_API(`/chat/check/${id_another_user}`, token);
+    //     if (req.ok && req.exists) {
+    //         // Phòng chat đã tồn tại, điều hướng đến phòng chat
+    //         router.push(`/chat/${req.chatId}`);
+    //     } else if (req.ok && !req.exists) {
+    //         // Phòng chat chưa tồn tại, tạo mới
+    //         const createReq = await POST_API(
+    //             "/chat/create-chat",
+    //             {
+    //                 participants: [user._id, id_another_user],
+    //             },
+    //             "POST",
+    //             token
+    //         );
+    //         const reqData = await createReq.json();
+    //         if (reqData.ok) {
+    //             router.push(`/chat/${reqData.chat}`);
+    //         } else {
+    //             messageApi.open({
+    //                 type: "error",
+    //                 content: reqData.message,
+    //             });
+    //         }
+    //     } else {
+    //         messageApi.open({
+    //             type: "error",
+    //             content: reqData.message,
+    //         });
+    //     }
+    // };
     if (profile.length) {
         return (
             <div className="flex items-center justify-center h-screen">

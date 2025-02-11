@@ -4,7 +4,7 @@ import { GET_API, GET_API_WITHOUT_COOKIE } from "./fetchAPI";
 export const getCachedQuizzet = unstable_cache(
     async () => {
         const response = await GET_API_WITHOUT_COOKIE("/quiz");
-        return response?.data;
+        return response.data;
     },
     ["quizzet"], // Key cache
     { revalidate: 60 * 60 * 8 } // TTL = 8 giờ
@@ -14,7 +14,7 @@ export const getCachedQuiz = (slug: string) =>
     unstable_cache(
         async () => {
             const response = await GET_API_WITHOUT_COOKIE(`/quiz/${slug}`);
-            return response?.data;
+            return response.data;
         },
         [`quiz_${slug}`], // Key cache
         { revalidate: 60 * 60 * 24 } // TTL = 24 giờ

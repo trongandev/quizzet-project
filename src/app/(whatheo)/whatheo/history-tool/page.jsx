@@ -30,7 +30,7 @@ export default function HistoryTool() {
     useEffect(() => {
         const fetchBook = async () => {
             const fetchTopic = await GET_API("/tool/history", token);
-            setHistory(fetchTopic);
+            setHistory(fetchTopic.data);
         };
         fetchBook();
     }, []);

@@ -21,7 +21,7 @@ export async function generateMetadata() {
             title: `Quizzet | Trang chủ`,
             description: `Quizzet | ${data} ${dataTool}`,
             type: "website",
-            images: "quiz[0]?.img",
+            images: quiz[0]?.img,
             url: "https://trongan.site",
         },
     };

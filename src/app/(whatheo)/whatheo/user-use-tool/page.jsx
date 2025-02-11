@@ -18,7 +18,7 @@ export default function UserUseTool() {
         const fetchTool = async () => {
             const sort = await GET_API("/tool/user", token);
             message.success(sort.message);
-            setTool(sort);
+            setTool(sort.data);
         };
         fetchTool();
     }, [loading]);

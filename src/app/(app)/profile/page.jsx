@@ -27,8 +27,8 @@ export default function CProfile() {
     useEffect(() => {
         const fetchAPI = async () => {
             const req = await GET_API("/profile", token);
-            setUser(req.user);
-            setQuiz(req.quiz);
+            setUser(req.data.user);
+            setQuiz(req.data.quiz);
             setLoading(true);
         };
         fetchAPI();

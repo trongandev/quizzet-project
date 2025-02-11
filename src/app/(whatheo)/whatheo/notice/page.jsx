@@ -22,7 +22,7 @@ export default function Notice() {
         const fetchNotice = async () => {
             const req = await GET_API("/notice", token);
             if (req.ok) {
-                setNotice(req.notice);
+                setNotice(req.data);
                 messageApi.success(req.message);
             } else {
                 messageApi.error(req.message);
@@ -79,7 +79,7 @@ export default function Notice() {
         const data = await req.json();
         if (req.ok) {
             setConfirmLoading(false);
-            setNotice([...notice, data.notice]);
+            setNotice([...notice, data.data]);
             messageApi.success(data.message);
         } else {
             messageApi.error(data.message);

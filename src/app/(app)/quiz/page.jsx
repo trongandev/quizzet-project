@@ -21,7 +21,7 @@ export async function generateMetadata() {
             title: `Quizzet | Trang chủ`,
             description: `Quizzet | ${data} ${dataTool}`,
             type: "website",
-            images: quiz[0]?.img,
+            // images: quiz[0]?.img,
             url: "https://trongan.site",
         },
     };
@@ -29,6 +29,7 @@ export async function generateMetadata() {
 
 export default async function page() {
     const quizData = await getCachedQuizzet();
+
     return (
         <div className="px-3 md:px-0">
             <CQuiz quizData={quizData} />

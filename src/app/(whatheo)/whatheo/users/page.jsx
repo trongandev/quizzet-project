@@ -20,7 +20,7 @@ export default function Users() {
             const req = await GET_API("/profile/admin", token);
             if (req.ok) {
                 setLoading(true);
-                setUser(req.user);
+                setUser(req.data);
                 messageApi.success(req.message);
             } else {
                 messageApi.error(req.message);
