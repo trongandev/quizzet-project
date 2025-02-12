@@ -18,6 +18,7 @@ import { FaFileAlt } from "react-icons/fa";
 import { GiCardPick } from "react-icons/gi";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import CShowMessage from "@/components/CShowMessage";
+
 export default function RootLayout({ children }: any) {
     const pathname = usePathname();
     const [token, setToken] = useState<string | null>(null);
@@ -27,6 +28,22 @@ export default function RootLayout({ children }: any) {
     return (
         <html lang="en">
             <head>
+                <Script
+                    id="hotjar"
+                    strategy="afterInteractive"
+                    dangerouslySetInnerHTML={{
+                        __html: ` (function (c, s, q, u, a, r, e) {
+        c.hj=c.hj||function(){(c.hj.q=c.hj.q||[]).push(arguments)};
+        c._hjSettings = { hjid: a };
+        r = s.getElementsByTagName('head')[0];
+        e = s.createElement('script');
+        e.async = true;
+        e.src = q + c._hjSettings.hjid + u;
+        r.appendChild(e);
+    })(window, document, 'https://static.hj.contentsquare.net/c/csq-', '.js', 5301586);`,
+                    }}
+                />
+
                 <Script async src="https://www.googletagmanager.com/gtag/js?id=G-L681038P5E"></Script>
             </head>
             <UserProvider>
