@@ -1,6 +1,7 @@
 "use client";
 import handleCompareDate from "@/lib/CompareDate";
 import { subjectOption } from "@/lib/subjectOption";
+import { IQuiz } from "@/types/type";
 import { Tooltip } from "antd";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,7 +12,7 @@ import { IoArrowForwardCircleOutline } from "react-icons/io5";
 import { MdOutlineVerified } from "react-icons/md";
 import { TbSortAscendingNumbers, TbSortDescendingNumbers } from "react-icons/tb";
 
-export default function CQuiz({ quizData }) {
+export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
     const [toggleBtnSortAlpha, setToggleBtnSortAlpha] = useState(true);
     const [toggleBtnSortNumber, setToggleBtnSortNumber] = useState(true);
 
@@ -19,11 +20,11 @@ export default function CQuiz({ quizData }) {
 
     // Hàm sắp xếp
     const handleSort = useCallback(
-        (key, direction = "asc") => {
+        (key: keyof IQuiz, direction = "asc") => {
             setToggleBtnSortAlpha(!toggleBtnSortAlpha);
             const sortedData = [...data].sort((a, b) => {
-                if (direction === "asc") return a[key].localeCompare(b[key]);
-                return b[key].localeCompare(a[key]);
+                if (direction === "asc") return String(a[key]).localeCompare(String(b[key]));
+                return String(b[key]).localeCompare(String(a[key]));
             });
             setData(sortedData);
         },
@@ -31,23 +32,23 @@ export default function CQuiz({ quizData }) {
     );
 
     const handleSortByNumber = useCallback(
-        (key, direction = "asc") => {
+        (key: keyof IQuiz, direction = "asc") => {
             setToggleBtnSortNumber(!toggleBtnSortNumber);
             const sortedData = [...data].sort((a, b) => {
-                if (direction === "asc") return a[key] - b[key];
-                return b[key] - a[key];
+                if (direction === "asc") return Number(a[key]) - Number(b[key]);
+                return Number(b[key]) - Number(a[key]);
             });
             setData(sortedData);
         },
         [data]
     );
 
-    const handleSearch = (value) => {
+    const handleSearch = (value: string) => {
         const search = quizData.filter((item) => item.title.toLowerCase().includes(value.toLowerCase()));
         setData(search);
     };
 
-    const handleSearchSubject = (value) => {
+    const handleSearchSubject = (value: string) => {
         if (value === "none") {
             setData(quizData);
             return;
@@ -58,6 +59,7 @@ export default function CQuiz({ quizData }) {
     const handleDefault = () => {
         setData(quizData);
     };
+
     return (
         <div className="">
             <div className="flex justify-center md:justify-between items-center mb-4 gap-3 flex-wrap ">

@@ -10,8 +10,9 @@ import { RiMessengerLine } from "react-icons/ri";
 import CShowMessage from "./CShowMessage";
 import { FaArrowLeft } from "react-icons/fa";
 import { useSocket } from "@/context/socketContext";
+import { IChat, IUser } from "@/types/type";
 
-function useDebounce(value, duration = 300) {
+function useDebounce(value: any, duration = 300) {
     const [debounceValue, setDebounceValue] = useState(value);
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -24,21 +25,21 @@ function useDebounce(value, duration = 300) {
     return debounceValue;
 }
 
-export default function CChat({ token, user, router }) {
+export default function CChat({ token, user, router }: { token: string; user: IUser; router: any }) {
     const [input, setInput] = useState("");
 
     const debouncedSearchTerm = useDebounce(input, 300);
     const [unreadCountChat, setUnreadCountChat] = useState(0);
     const [openChat, setOpenChat] = useState(false);
-    const [chat, setChat] = useState([]);
+    const [chat, setChat] = useState<IChat[]>([]);
     const [chatMessId, setChatMessId] = useState(null);
     const [loading, setLoading] = useState(false);
     const [loadingChat, setLoadingChat] = useState(null);
-    const [search, setSearch] = useState([]);
+    const [search, setSearch] = useState<IUser[]>([]);
     const [isSearch, setIsSearch] = useState(false);
     const { socket, onlineUsers } = useSocket();
 
-    const handleOpenChat = (newOpen) => {
+    const handleOpenChat = (newOpen: any) => {
         setOpenChat(newOpen);
     };
 
@@ -63,7 +64,7 @@ export default function CChat({ token, user, router }) {
             if (req.ok) {
                 setSearch(req?.data.users);
             } else {
-                message.error(req?.data.message);
+                console.error(req?.data.message);
             }
             setLoading(false);
         };
@@ -88,7 +89,7 @@ export default function CChat({ token, user, router }) {
         }
     }, [input, chat]);
 
-    const handleCreateAndCheckRoomChat = async (id_another_user, index) => {
+    const handleCreateAndCheckRoomChat = async (id_another_user: string, index: any) => {
         setLoadingChat(index);
         const req = await POST_API(
             "/chat/create-chat",
@@ -98,11 +99,12 @@ export default function CChat({ token, user, router }) {
             "POST",
             token
         );
-        const res = await req.json();
-
-        if (req.ok) {
-            setChatMessId(res?.data.chatId);
-            setOpenChat(false);
+        if (req) {
+            const res = await req.json();
+            if (req.ok) {
+                setChatMessId(res?.data.chatId);
+                setOpenChat(false);
+            }
         }
         setLoadingChat(null);
     };
@@ -111,8 +113,8 @@ export default function CChat({ token, user, router }) {
         setChatMessId(null);
     };
 
-    const checkOnline = (userId) => {
-        return onlineUsers?.find((item) => item?._id === userId);
+    const checkOnline = (userId: string) => {
+        return onlineUsers?.find((item: any) => item?._id === userId);
     };
     return (
         <>
@@ -146,10 +148,10 @@ export default function CChat({ token, user, router }) {
                             </div>
                             {!isSearch &&
                                 chat?.map((item, index) => {
-                                    const otherParticipant = item?.participants.find((p) => p?.userId?._id !== user?._id);
+                                    const otherParticipant = item?.participants.find((p: any) => p?.userId?._id !== user?._id);
                                     return (
                                         <div
-                                            onClick={() => handleCreateAndCheckRoomChat(otherParticipant?.userId?._id, index)}
+                                            onClick={() => otherParticipant?.userId?._id && handleCreateAndCheckRoomChat(otherParticipant.userId._id, index)}
                                             key={index}
                                             className="p-2 hover:bg-gray-200 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
                                             <div className="w-[56px] h-[56px] relative">
@@ -160,14 +162,16 @@ export default function CChat({ token, user, router }) {
                                                     fill
                                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                 />
-                                                {checkOnline(otherParticipant?.userId?._id) && <div className="absolute z-1 right-1 bottom-0 w-3 h-3 rounded-full bg-[#3fbb46]" />}
+                                                {otherParticipant?.userId?._id && checkOnline(otherParticipant.userId._id) && (
+                                                    <div className="absolute z-1 right-1 bottom-0 w-3 h-3 rounded-full bg-[#3fbb46]" />
+                                                )}
                                             </div>
                                             <div className="flex-1">
                                                 <p className="text-gray-700 line-clamp-2">
                                                     <label htmlFor="" className="font-bold">
                                                         {otherParticipant?.userId?.displayName}
                                                     </label>
-                                                    {item?.content}
+                                                    {/* {item?.content} */}
                                                 </p>
                                                 {item?.last_message ? (
                                                     <div className="text-gray-500 text-[12px] ">
@@ -180,7 +184,7 @@ export default function CChat({ token, user, router }) {
                                             </div>
                                             {loadingChat === index && <Spin indicator={<LoadingOutlined spin />} size="default" />}
 
-                                            {!loadingChat === index && item?.is_read && <div className="w-3 h-3 rounded-full bg-primary"></div>}
+                                            {loadingChat !== index && item?.is_read && <div className="w-3 h-3 rounded-full bg-primary"></div>}
                                         </div>
                                     );
                                 })}
@@ -206,7 +210,7 @@ export default function CChat({ token, user, router }) {
                                                 <label htmlFor="" className="font-bold">
                                                     {item?.displayName}
                                                 </label>{" "}
-                                                {item?.content}
+                                                {/* {item?.content} */}
                                             </p>
                                             <p className="text-gray-500 text-[12px]">Tham gia {item?.created_at && handleCompareDate(item?.created_at)}</p>
                                         </div>

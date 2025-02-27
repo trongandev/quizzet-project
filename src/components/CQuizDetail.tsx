@@ -7,12 +7,12 @@ import { useRouter } from "next/navigation";
 import { POST_API } from "@/lib/fetchAPI";
 import handleCompareDate from "@/lib/CompareDate";
 import { LoadingOutlined } from "@ant-design/icons";
-
-export default function CQuizDetail({ QuizData, QuestData }) {
-    const [selectedAnswers, setSelectedAnswers] = useState({});
+import { IQuiz, IQuestion } from "../types/type";
+export default function CQuizDetail({ QuizData, QuestData }: { QuizData?: IQuiz; QuestData: IQuestion[] }) {
+    const [selectedAnswers, setSelectedAnswers] = useState<{ [key: string]: string }>({});
     const [loading, setLoading] = useState(false);
     const router = useRouter();
-    const token = Cookies.get("token");
+    const token = Cookies.get("token") || "";
     const [messageApi, contextHolder] = message.useMessage();
     const [seconds, setSeconds] = useState(0);
 
@@ -32,15 +32,14 @@ export default function CQuizDetail({ QuizData, QuestData }) {
         return () => clearInterval(interval);
     }, []);
 
-    const handleSelect = (questionId, answerIndex) => {
-        console.log("click", questionId, answerIndex);
-        console.log(":::", selectedAnswers);
+    const handleSelect = (questionId: string, answerIndex: string) => {
         setSelectedAnswers({
             ...selectedAnswers,
             [questionId]: answerIndex,
         });
     };
-    function handleQuiz(e) {
+
+    function handleQuiz(e: any) {
         e.preventDefault();
         if (Object.keys(selectedAnswers).length !== QuestData.length) {
             messageApi.open({
@@ -52,11 +51,10 @@ export default function CQuizDetail({ QuizData, QuestData }) {
 
         let score = 0;
         QuestData.map((item, index) => {
-            if (item.correct === selectedAnswers[index]) {
+            if (item.correct === Number(selectedAnswers[index])) {
                 score++;
             }
         });
-
         const pushData = async () => {
             setLoading(true);
 
@@ -66,7 +64,7 @@ export default function CQuizDetail({ QuizData, QuestData }) {
                 time: seconds,
                 questions: [
                     ...QuestData.map((item, index) => {
-                        var isTrue = item.correct === selectedAnswers[index];
+                        const isTrue = item.correct === Number(selectedAnswers[index]);
 
                         return {
                             question_id: index,
@@ -80,16 +78,18 @@ export default function CQuizDetail({ QuizData, QuestData }) {
                 ],
             };
             const req = await POST_API("/history", historyData, "POST", token);
-            const data = await req.json();
-            if (req.ok) {
-                messageApi.success(data.message);
-                router.push("/dapan/" + data?.data.id_history);
-            } else {
-                messageApi.error(data.message);
+            if (req) {
+                const data = await req.json();
+                if (req.ok) {
+                    messageApi.success(data?.message);
+                    router.push("/dapan/" + data?.data);
+                } else {
+                    messageApi.error(data?.message);
+                }
+                setTimeout(() => {
+                    setLoading(false);
+                }, 1000);
             }
-            setTimeout(() => {
-                setLoading(false);
-            }, 1000);
         };
         pushData();
     }
@@ -107,8 +107,7 @@ export default function CQuizDetail({ QuizData, QuestData }) {
     const handleCancel = () => {
         setIsModalOpen(false);
     };
-
-    if (!QuestData.length) {
+    if (QuestData && QuestData.length <= 0) {
         return (
             <div className="flex items-center justify-center h-screen">
                 <Spin size="large" />
@@ -125,8 +124,8 @@ export default function CQuizDetail({ QuizData, QuestData }) {
                         <div className="">
                             <h1 className="text-xl font-bold text-primary">{QuizData?.title}</h1>
                             <p className="">{QuizData?.content}</p>
-                            <p className="">Tác giả: {QuizData?.uid.displayName}</p>
-                            <p className="">Ngày đăng: {handleCompareDate(QuizData?.date)}</p>
+                            <p className="">Tác giả: {QuizData?.uid?.displayName}</p>
+                            <p className="">Ngày đăng: {QuizData?.date && handleCompareDate(QuizData?.date)}</p>
                         </div>
                     )}
                 </div>
@@ -134,26 +133,26 @@ export default function CQuizDetail({ QuizData, QuestData }) {
                     <div className="w-full md:w-2/3">
                         <div className="h-[80vh] overflow-y-auto scroll-smooth">
                             {QuestData?.map((item, index) => (
-                                <div className="bg-linear-item-2 p-5 mt-2 rounded-xl" key={index} id={index}>
+                                <div className="bg-linear-item-2 p-5 mt-2 rounded-xl" key={index} id={index.toString()}>
                                     <h1 className="text-lg font-bold text-primary">
                                         Câu {index + 1}: {item.question}{" "}
                                     </h1>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                         {item.answers.map((answer, idx) => (
-                                            <div key={idx} className={`relative flex items-center ${selectedAnswers[index] === idx ? " text-primary font-bold" : ""}`}>
+                                            <div key={idx} className={`relative flex items-center ${selectedAnswers[index] === idx.toString() ? " text-primary font-bold" : ""}`}>
                                                 <input
                                                     type="radio"
-                                                    name={item.id}
+                                                    name={item.id.toString()}
                                                     className="w-1 invisible"
                                                     id={`${index}ans${idx}`}
-                                                    checked={selectedAnswers[index] === idx}
-                                                    onChange={() => handleSelect(index, idx)}
+                                                    checked={selectedAnswers[index] === idx.toString()}
+                                                    onChange={() => handleSelect(index.toString(), idx.toString())}
                                                 />
                                                 <label
                                                     htmlFor={`${index}ans${idx}`}
                                                     className={`absolute h-full font-bold px-3 flex items-center justify-center rounded-md ${
-                                                        selectedAnswers[index] === idx ? "bg-primary text-white" : ""
+                                                        selectedAnswers[index] === idx.toString() ? "bg-primary text-white" : ""
                                                     }`}>
                                                     {idx === 0 ? "A" : idx === 1 ? "B" : idx === 2 ? "C" : "D"}
                                                 </label>

@@ -26,16 +26,17 @@
         "**/*.ts",
         "**/*.tsx",
         ".next/types/**/*.ts",
-        "src/context/userContext.jsx",
-        "src/context/userContext.jsx",
+        "src/context/userContext.tsx",
+        "src/context/userContext.tsx",
         "build/types/**/*.ts",
-        "src/components/CHome.jsx",
-        "src/components/CQuiz.jsx",
-        "src/app/(app)/page.jsx",
+        "src/components/CHome.tsx",
+        "src/components/CQuiz.tsx",
+        "src/app/(app)/page.tsx",
         "src/app/(whatheo)/whatheo/users/page.jsx",
         "src/app/(app)/quiz/themcauhoi/gui/page.jsx",
         "src/app/(app)/edit-tool/[slug]/page.jsx",
-        "src/components/CTaiLieuDetail.jsx"
+        "src/components/CTaiLieuDetail.jsx",
+        "src/app/(app)/dapan/[slug]/page.jsx"
     ],
     "exclude": ["node_modules"]
 }

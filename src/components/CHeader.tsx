@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Popover, Badge } from "antd";
+import { Popover, Badge, Modal } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { FiLogOut } from "react-icons/fi";
 import { IoMdNotificationsOutline } from "react-icons/io";
@@ -9,10 +9,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useUser } from "../context/userContext";
-import { MdOutlineHistory } from "react-icons/md";
+import { MdEmail, MdOutlineHistory } from "react-icons/md";
 import { GET_API } from "@/lib/fetchAPI";
 import CNotify from "./CNotify";
 import CChat from "./CChat";
+import { BsDiscord, BsMailbox } from "react-icons/bs";
+import TextArea from "antd/es/input/TextArea";
 export default function CHeader({ token }: { token: string }) {
     const [open, setOpen] = useState(false);
     const [openNoti, setOpenNoti] = useState(false);
@@ -29,14 +31,16 @@ export default function CHeader({ token }: { token: string }) {
         setOpenNoti(newOpen);
     };
 
-    const { user, clearUser } = useUser();
+    const userContext = useUser();
+    const user = userContext?.user;
+    const clearUser = userContext?.clearUser;
 
     const handleLogout = async () => {
         const req = await GET_API("/auth/logout", token);
         if (req.ok) {
             Cookies.remove("token");
             localStorage.removeItem("listFlashCards");
-            clearUser();
+            clearUser?.();
         }
     };
 
@@ -61,6 +65,20 @@ export default function CHeader({ token }: { token: string }) {
             router.push(item?.link);
             setOpenNoti(false);
         }
+    };
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
     };
 
     return (
@@ -136,7 +154,10 @@ export default function CHeader({ token }: { token: string }) {
                                                 <p>Lịch sử làm bài</p>
                                             </Link>
                                         )}
-
+                                        <div onClick={showModal} className="flex gap-2 items-center p-2 hover:bg-gray-100 hover:text-primary cursor-pointer">
+                                            <BsMailbox />
+                                            Góp ý
+                                        </div>
                                         <div onClick={handleLogout} className="flex gap-2 items-center p-2 hover:bg-gray-100 hover:text-red-500 cursor-pointer">
                                             <FiLogOut />
                                             Đăng xuất
@@ -161,6 +182,20 @@ export default function CHeader({ token }: { token: string }) {
                         </div>
                     </div>
                 )}
+                <Modal title="Hòm thư góp ý" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText="Gửi góp ý" cancelText="Hủy">
+                    <div className="">
+                        <p className="text-gray-700 mb-2">Cảm ơn bạn đã viết góp ý, chúng tôi sẽ cố gắng sửa lỗi cũng như thực hiện sớm nhất những tính năng mới</p>
+                        <TextArea placeholder="Nhập góp ý của bạn" autoSize={{ minRows: 5 }} />
+                        <p className="text-gray-500 mt-2">*Nếu bạn muốn phản hồi nhanh nhất hãy gửi qua</p>
+                        <Link href="mailto:trongandev@gmail.com" className="text-gray-500 flex items-center gap-1">
+                            <MdEmail size={20} /> trongandev@gmail.com
+                        </Link>
+                        <p className="text-gray-500 mt-2">Hoặc tham gia động cồng discord</p>
+                        <Link href="https://discord.gg/mUqfzD3u" target="_blank" className="text-gray-500 flex items-center gap-1">
+                            <BsDiscord size={20} /> Bấm vào để tham gia
+                        </Link>
+                    </div>
+                </Modal>
             </div>
         </header>
     );

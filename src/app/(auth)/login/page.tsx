@@ -12,7 +12,7 @@ import { IoIosArrowBack } from "react-icons/io";
 import Image from "next/image";
 export default function LoginForm() {
     const router = useRouter();
-    const token = Cookies.get("token");
+    const token = Cookies.get("token") || "";
     const [loading, setLoading] = React.useState(false);
     const [messageApi, contextHolder] = message.useMessage();
     useEffect(() => {
@@ -36,24 +36,26 @@ export default function LoginForm() {
         },
     });
 
-    const fetchLogin = async (values) => {
+    const fetchLogin = async (values: any) => {
         try {
             const res = await POST_API("/auth/login", values, "POST", token);
-            const data = await res.json();
-            if (res.ok) {
-                Cookies.set("token", data.data.token, { expires: 1 });
-                router.push("/");
-            } else {
-                messageApi.open({
-                    type: "warning",
-                    content: data.message,
-                });
+            if (res) {
+                const data = await res.json();
+                if (res.ok) {
+                    Cookies.set("token", data.token, { expires: 7 });
+                    router.push("/");
+                } else {
+                    messageApi.open({
+                        type: "warning",
+                        content: data.message,
+                    });
+                }
             }
             setLoading(false);
         } catch (error) {
             messageApi.open({
                 type: "error",
-                content: error.message,
+                content: (error as Error).message,
             });
         }
     };
@@ -71,7 +73,7 @@ export default function LoginForm() {
         const token = urlParams.get("token");
 
         if (token) {
-            Cookies.set("token", token, { expires: 1 });
+            Cookies.set("token", token, { expires: 7 });
             const fetchAPI = async () => {
                 await GET_API("/profile", token);
             };

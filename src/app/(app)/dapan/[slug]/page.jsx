@@ -7,6 +7,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { BsQuestion } from "react-icons/bs";
 import Swal from "sweetalert2";
+import { IQuestion } from "@/types/type";
 
 export default function Answer({ params }) {
     const [quiz, setQuiz] = useState([]);
@@ -15,7 +16,7 @@ export default function Answer({ params }) {
     const [messageApi, contextHolder] = message.useMessage();
 
     const { slug } = params;
-    const token = Cookies.get("token");
+    const token = Cookies.get("token") || "";
     useEffect(() => {
         const fetchAPI = async () => {
             const req = await GET_API("/history/" + slug, token);
@@ -30,8 +31,8 @@ export default function Answer({ params }) {
         try {
             setLoading(index);
             const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-            var defaultPrompt = `giải thích lựa chọn câu nào, tại sao lại lựa chọn, ngắn gọn xúc tích dễ hiểu, đúng vào trọng tâm, không lòng vòng, không cần nói tóm lại, không cần nói lại sự kì vọng ở cuối câu,trả ra định dạng html có format rõ ràng `;
-            var promptValue = `Câu hỏi:  + ${item.question} +  \nA:  + ${item.answers[0]}\nB:  + ${item.answers[1]}\nC:  + ${item.answers[2]}\nD:  + ${
+            const defaultPrompt = `giải thích lựa chọn câu nào, tại sao lại lựa chọn, ngắn gọn xúc tích dễ hiểu, đúng vào trọng tâm, không lòng vòng, không cần nói tóm lại, không cần nói lại sự kì vọng ở cuối câu,trả ra định dạng html có format rõ ràng `;
+            const promptValue = `Câu hỏi:  + ${item.question} +  \nA:  + ${item.answers[0]}\nB:  + ${item.answers[1]}\nC:  + ${item.answers[2]}\nD:  + ${
                 item.answers[3]
             }\nĐáp án theo tôi nghĩ là đúng, bạn có thể tham khảo:  + ${item.answers[item.correct]}\n`;
             const result = await model.generateContent(promptValue + defaultPrompt);
@@ -50,7 +51,7 @@ export default function Answer({ params }) {
         }
     };
 
-    if (!question.length) {
+    if (question && !question.length) {
         return (
             <div className="flex items-center justify-center h-screen">
                 <Spin size="large" />

@@ -1,21 +1,21 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import Cookies from "js-cookie";
 import { GET_API } from "@/lib/fetchAPI";
-
-const UserContext = createContext();
-export const UserProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const token = Cookies.get("token");
+import { IUser } from "@/types/type";
+const UserContext = createContext<{ user: IUser | null; updateUser: (updatedUser: any) => void; clearUser: () => void } | undefined>(undefined);
+export const UserProvider = ({ children }: { children: any }) => {
+    const [user, setUser] = useState<IUser | null>(null);
+    const token = Cookies.get("token") || "";
     const fetchAPI = async () => {
         const req = await GET_API("/profile", token);
-        setUser(req?.data.user);
+        setUser(req?.user);
     };
 
     useEffect(() => {
         if (Cookies.get("token")) fetchAPI();
     }, []);
 
-    const updateUser = (updatedUser) => {
+    const updateUser = (updatedUser: any) => {
         setUser((prevUser) => ({
             ...prevUser,
             ...updatedUser,

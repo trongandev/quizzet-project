@@ -4,7 +4,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 
 export default function NganHang() {
-    const [input, setInput] = useState(10);
+    const [input, setInput] = useState<number>(10);
     return (
         <div className="text-third">
             <div>
@@ -23,10 +23,10 @@ export default function NganHang() {
                         <h1>Lịch sử đảng</h1>
                         <p>Gồm 999 câu hỏi</p>
                         <p>Nhập số lượng câu hỏi bạn muốn làm</p>
-                        <input type="number" value={input} onChange={(e) => setInput(e.target.value)} />
+                        <input type="number" value={input} onChange={(e) => setInput(Number(e.target.value))} />
                     </div>
                     <Link href={`/quiz/nganhang/lsd?limit=${input}`} className="block">
-                        <button className="w-full">Thi thử</button>
+                        <button className="w-full btn btn-primary">Thi thử</button>
                     </Link>
                 </div>
             </div>

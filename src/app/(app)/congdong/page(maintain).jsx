@@ -10,6 +10,7 @@ import axios from "axios";
 
 import MessageList from "./MessageList";
 import ChatArea from "./ChatArea";
+
 import OnlineUsers from "./OnlineUsers";
 import { chatReducer, initialChatState } from "../../../reducers/chatReducer";
 

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -7,19 +7,17 @@ import "@/app/globals.css";
 import CTaiLieu from "@/components/CTaiLieu";
 import CQuizMobile from "./CQuizMobile";
 import CQuiz from "./CQuiz";
-import { GET_API_WITHOUT_COOKIE } from "@/lib/fetchAPI";
-import { MdPublic } from "react-icons/md";
-import { RiGitRepositoryPrivateFill } from "react-icons/ri";
 import { IoCopyOutline } from "react-icons/io5";
-export default function CHome({ quizData, toolData, publicFlashcards }) {
-    const [notice, setNotice] = useState([]);
-    useEffect(() => {
-        const fetchNotice = async () => {
-            const req = await GET_API_WITHOUT_COOKIE("/notice/public");
-            setNotice(req?.notice);
-        };
-        fetchNotice();
-    }, []);
+import { IListFlashcard, IQuiz, ISO } from "@/types/type";
+export default function CHome({ quizData, toolData, publicFlashcards }: { quizData: IQuiz[]; toolData: ISO[]; publicFlashcards: IListFlashcard[] }) {
+    // const [notice, setNotice] = useState([]);
+    // useEffect(() => {
+    //     const fetchNotice = async () => {
+    //         const req = await GET_API_WITHOUT_COOKIE("/notice/public");
+    //         setNotice(req?.notice);
+    //     };
+    //     fetchNotice();
+    // }, []);
     return (
         <div className="px-2">
             <div className="">
@@ -30,14 +28,14 @@ export default function CHome({ quizData, toolData, publicFlashcards }) {
                         <p>Trang web này giúp bạn tạo ra các bài quiz online đồng thời cũng là nơi chia sẻ tài liệu các môn đại cương hoặc chuyên ngành một cách dễ dàng và nhanh chóng.</p>
                     </div>
                 </div>
-                <div className="my-2 flex gap-5 items-center justify-center">
+                {/* <div className="my-2 flex gap-5 items-center justify-center">
                     {notice &&
                         notice.map((item) => (
                             <Link href={item?.link || "#"} className="bg-third px-3 py-1 rounded-md text-white" key={item?._id}>
                                 <p>{item?.title}</p>
                             </Link>
                         ))}
-                </div>
+                </div> */}
                 <div className="mt-10 flex flex-wrap gap-5 text-third">
                     <div className="h-[500px] bg-linear-item-purple flex-1 rounded-3xl flex items-center justify-center flex-col">
                         <div className="w-[250px] h-[280px] overflow-hidden relative">
