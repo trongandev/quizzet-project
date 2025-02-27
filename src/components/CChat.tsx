@@ -47,8 +47,8 @@ export default function CChat({ token, user, router }: { token: string; user: IU
         const fetchAPI = async () => {
             const req = await GET_API("/chat", token);
             if (req.ok) {
-                setChat(req?.data?.chats);
-                setUnreadCountChat(req?.data.unreadCount || 0);
+                setChat(req?.chats);
+                setUnreadCountChat(req.unreadCount || 0);
             }
         };
 
@@ -62,9 +62,9 @@ export default function CChat({ token, user, router }: { token: string; user: IU
             setLoading(true);
             const req = await GET_API(`/profile/findbyname/${input}`, token);
             if (req.ok) {
-                setSearch(req?.data.users);
+                setSearch(req?.users);
             } else {
-                console.error(req?.data.message);
+                console.error(req?.message);
             }
             setLoading(false);
         };
@@ -102,7 +102,7 @@ export default function CChat({ token, user, router }: { token: string; user: IU
         if (req) {
             const res = await req.json();
             if (req.ok) {
-                setChatMessId(res?.data.chatId);
+                setChatMessId(res?.chatId);
                 setOpenChat(false);
             }
         }

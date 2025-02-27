@@ -37,9 +37,9 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
         const fetchAPI = async () => {
             const req = await GET_API(`/chat/${chatMessId}`, token);
             if (req.ok) {
-                setChats(req?.data.chat?.messages);
-                delete req?.data.chat?.messages;
-                setMessages(req?.data.chat);
+                setChats(req?.chat?.messages);
+                delete req?.chat?.messages;
+                setMessages(req?.chat);
             }
         };
         if (chatMessId !== null) {
@@ -107,7 +107,7 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
                         "Content-Type": "multipart/form-data",
                     },
                 });
-                imageUrl = response.data.originalUrl;
+                imageUrl = response.originalUrl;
             }
 
             const messageData = {

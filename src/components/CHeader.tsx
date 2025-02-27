@@ -10,11 +10,12 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useUser } from "../context/userContext";
 import { MdEmail, MdOutlineHistory } from "react-icons/md";
-import { GET_API } from "@/lib/fetchAPI";
+import { GET_API, POST_API } from "@/lib/fetchAPI";
 import CNotify from "./CNotify";
 import CChat from "./CChat";
 import { BsDiscord, BsMailbox } from "react-icons/bs";
 import TextArea from "antd/es/input/TextArea";
+import Swal from "sweetalert2";
 export default function CHeader({ token }: { token: string }) {
     const [open, setOpen] = useState(false);
     const [openNoti, setOpenNoti] = useState(false);
@@ -22,7 +23,8 @@ export default function CHeader({ token }: { token: string }) {
     const [unreadCountNotify, setUnreadCountNotify] = useState<number>(0);
     const pathname = usePathname();
     const router = useRouter();
-
+    const [loading, setLoading] = useState(false);
+    const [feedback, setFeedback] = useState("");
     const handleOpenChange = (newOpen: boolean) => {
         setOpen(newOpen);
     };
@@ -73,7 +75,19 @@ export default function CHeader({ token }: { token: string }) {
         setIsModalOpen(true);
     };
 
-    const handleOk = () => {
+    const handleOk = async () => {
+        setLoading(true);
+        const req = await POST_API("/profile/feedback", { feedback, username: user?.displayName }, "POST", token);
+        if (req) {
+            setFeedback("");
+            Swal.fire({
+                icon: "success",
+                title: "Gửi góp ý thành công, cảm ơn bạn rất nhiều",
+                showConfirmButton: false,
+                timer: 1500,
+            });
+        }
+        setLoading(false);
         setIsModalOpen(false);
     };
 
@@ -182,10 +196,10 @@ export default function CHeader({ token }: { token: string }) {
                         </div>
                     </div>
                 )}
-                <Modal title="Hòm thư góp ý" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText="Gửi góp ý" cancelText="Hủy">
+                <Modal title="Hòm thư góp ý" open={isModalOpen} onOk={handleOk} loading={loading} onCancel={handleCancel} okText="Gửi góp ý" cancelText="Hủy">
                     <div className="">
                         <p className="text-gray-700 mb-2">Cảm ơn bạn đã viết góp ý, chúng tôi sẽ cố gắng sửa lỗi cũng như thực hiện sớm nhất những tính năng mới</p>
-                        <TextArea placeholder="Nhập góp ý của bạn" autoSize={{ minRows: 5 }} />
+                        <TextArea placeholder="Nhập góp ý của bạn" autoSize={{ minRows: 5 }} onChange={(e) => setFeedback(e.target.value)} />
                         <p className="text-gray-500 mt-2">*Nếu bạn muốn phản hồi nhanh nhất hãy gửi qua</p>
                         <Link href="mailto:trongandev@gmail.com" className="text-gray-500 flex items-center gap-1">
                             <MdEmail size={20} /> trongandev@gmail.com

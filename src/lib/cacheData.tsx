@@ -32,7 +32,7 @@ export const getCachedTool = unstable_cache(
 export const getCachedFlashcardPublic = unstable_cache(
     async () => {
         const response = await GET_API_WITHOUT_COOKIE("/list-flashcards/public");
-        return response.data;
+        return response;
     },
     ["flashcard_public"], // Key cache
     { revalidate: 60 } // TTL =24 tieng

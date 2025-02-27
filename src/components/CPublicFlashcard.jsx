@@ -30,7 +30,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
         setLoading(true);
         const fetchListFlashCard = async () => {
             const res = await GET_API("/list-flashcards", token);
-            setListFlashCard(res?.data);
+            setListFlashCard(res?.listFlashCards);
             setLoading(false);
         };
         fetchListFlashCard();
@@ -42,7 +42,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
         const res = await req.json();
         if (req.ok) {
             setOpen(false);
-            setListFlashCard([...listFlashCard, res?.data]);
+            setListFlashCard([...listFlashCard, res?.listFlashCard]);
             setNewListFlashCard(defaultListFlashCard);
         } else {
             messageApi.open({
