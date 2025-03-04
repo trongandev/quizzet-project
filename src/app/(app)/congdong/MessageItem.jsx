@@ -38,8 +38,10 @@ const ReplyContent = memo(({ msg, isCurrentUser, userId }) => {
                 </div>
             )}
             {msg?.replyTo?.text !== "" && (
-                <Link href={`#${msg?.replyTo._id}`} className={`block ${isCurrentUser ? "w-full text-end" : ""}`}>
-                    <p className={` inline-block bg-gray-400 rounded-lg px-3 py-2 mb-[-10px] line-clamp-2`}>{msg?.replyTo?.unsend ? "Tin nhắn đã bị gỡ" : msg?.replyTo?.msg}</p>
+                <Link href={`#${msg?.replyTo._id}`} className={`flex max-w-[350px] justify-end ${isCurrentUser ? "" : ""}`}>
+                    <p className={` inline-block bg-gray-400 dark:bg-gray-500/70 rounded-md border border-white/10 px-3 py-2 mb-[-10px] line-clamp-2`}>
+                        {msg?.replyTo?.unsend ? "Tin nhắn đã bị gỡ" : msg?.replyTo?.message}
+                    </p>
                 </Link>
             )}
         </div>
@@ -47,7 +49,23 @@ const ReplyContent = memo(({ msg, isCurrentUser, userId }) => {
 });
 
 const MessageActions = memo(
-    ({ msg, token, isCurrentUser, loading, loadingIcon, reactIconList, isModalOpenEditMess, handleOkEditMess, handleCancelEditMess, editMess, handleEditMess, setReplyingTo, handleReactIcon }) => {
+    ({
+        msg,
+        token,
+        isCurrentUser,
+        loading,
+        loadingIcon,
+        reactIconList,
+        isModalOpenEditMess,
+        handleOkEditMess,
+        handleCancelEditMess,
+        editMess,
+        handleEditMess,
+        setReplyingTo,
+        handleReactIcon,
+        handleUnsend,
+        setEditMess,
+    }) => {
         if (!token) return null;
         return (
             <div className={`hidden group-hover:block `}>
@@ -96,7 +114,7 @@ const MessageActions = memo(
                         </Tooltip>
                     )}
                     <Modal title="Chỉnh sửa tin nhắn" open={isModalOpenEditMess === msg?._id} onOk={handleOkEditMess} onCancel={handleCancelEditMess} confirmLoading={loading}>
-                        <input type="text" placeholder="Nhập thông tin bạn muốn sửa" value={editMess?.msg} onChange={(e) => setEditMess({ ...editMess, msg: e.target.value })} />
+                        <input type="text" placeholder="Nhập thông tin bạn muốn sửa" value={editMess?.message} onChange={(e) => setEditMess({ ...editMess, message: e.target.value })} />
                     </Modal>
                 </div>
             </div>
@@ -113,7 +131,6 @@ const MessageItem = memo(
         user,
         handleReactIcon,
         setReplyingTo,
-        isLast,
         token,
         isModalOpen,
         isModalOpenEditMess,
@@ -124,12 +141,15 @@ const MessageItem = memo(
         onEdit,
         onModalCancel,
         onModalOpen,
-        onModalOk,
+        handleOkEditMess,
         onOpenChange,
-        onModalCancelEditMess,
-        onModalOpenEditMess,
-        onUnsend,
+        handleCancelEditMess,
+        handleEditMess,
+        handleUnsend,
         onReact,
+        loading,
+        editMess,
+        setEditMess,
     }) => {
         const userId = user?._id;
         const isCurrentUser = useMemo(() => msg?.userId?._id === userId, [msg?.userId?._id, userId]);
@@ -137,14 +157,14 @@ const MessageItem = memo(
             return index > 0 && messages[index - 1]?.userId?._id === msg?.userId?._id;
         }, [msg]);
 
-        const isLastMessage = useMemo(() => isLast, [isLast]);
+        const isLastMessage = useMemo(() => index === messages.length - 1, [index, messages.length]);
 
         const messageClasses = useMemo(
             () => ({
                 container: `flex items-start ${isCurrentUser ? "justify-end" : "justify-start"} mb-[4px] group min-h-[40px] items-center`,
                 content: ` ${isCurrentUser ? "" : "ml-[45px]"}`,
-                msg: `max-w-[350px]  border border-white/10 ${isCurrentUser ? "bg-primary dark:bg-slate-800/50 text-white " : "bg-gray-200 dark:bg-slate-500/50"} ${
-                    msg?.unsend ? "!bg-white border border-primary !text-primary text-[12px]" : ""
+                msg: `max-w-[350px]  border border-white/10  ${isCurrentUser ? "bg-primary dark:bg-slate-800/50 text-white " : "bg-gray-200 dark:bg-slate-500/50"} ${
+                    msg?.unsend ? "!bg-white dark:!bg-slate-800  border border-primary !text-primary text-[12px]" : ""
                 } rounded-lg px-3 py-2 inline-block break-words whitespace-pre-wrap overflow-wrap-anywhere`,
             }),
             [isCurrentUser, msg?.unsend]
@@ -179,7 +199,7 @@ const MessageItem = memo(
                                 {msg?.isEdit && <span className={`text-xs text-gray-600 ${isCurrentUser ? "text-end mr-5" : "text-start ml-5"} block`}>Đã chỉnh sửa</span>}
 
                                 {/* <MessageContent msg={msg} isCurrentUser={isCurrentUser} onReactionClick={onReact} /> */}
-                                {msg?.message && <p className={messageClasses.msg}>{msg?.unsend ? "Tin nhắn đã bị gỡ" : msg?.message}</p>}
+                                <div className="flex justify-end ">{msg?.message && <p className={messageClasses.msg}>{msg?.unsend ? "Tin nhắn đã bị gỡ" : msg?.message}</p>}</div>
                             </div>
 
                             <MessageActions
@@ -187,18 +207,20 @@ const MessageItem = memo(
                                 setReplyingTo={setReplyingTo}
                                 handleReactIcon={handleReactIcon}
                                 token={token}
+                                loading={loading}
                                 isCurrentUser={isCurrentUser}
                                 loadingIcon={loadingIcon}
                                 onReply={onReply}
-                                onUnsend={onUnsend}
+                                handleUnsend={handleUnsend}
                                 onReact={onReact}
                                 onEdit={onEdit}
                                 reactIconList={reactIconList}
                                 isModalOpenEditMess={isModalOpenEditMess}
-                                handleOkEditMess={onModalOk}
-                                handleCancelEditMess={onModalCancelEditMess}
-                                handleEditMess={onModalOpenEditMess}
-                                editMess={msg}
+                                handleOkEditMess={handleOkEditMess}
+                                handleCancelEditMess={handleCancelEditMess}
+                                handleEditMess={handleEditMess}
+                                editMess={editMess}
+                                setEditMess={setEditMess}
                             />
 
                             {isSameUser && <p className="text-gray-500 text-xs">{msg?.timestamp && handleCompareDate(msg?.timestamp)}</p>}

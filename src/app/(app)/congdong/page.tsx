@@ -350,23 +350,29 @@ export default function CongDong() {
                     user={user}
                     token={token}
                     isModalOpen={isModalOpen}
-                    isModalOpenEditMess={isModalOpenEditMess}
                     reactIconList={reactIconList}
                     loadingIcon={loadingIcon}
                     emoji={emojiData}
                     onReply={(id: any) => setReplyingTo(id)}
-                    onEdit={handleEditMess}
-                    onModalCancel={handleCancel}
                     onModalOpen={showModal}
-                    onModalOk={handleOkEditMess}
                     onOpenChange={handleOpenChange}
-                    onModalCancelEditMess={handleCancelEditMess}
+                    onModalCancel={handleCancel}
+                    handleUnsend={handleUnsend}
+                    loading={loading}
+                    handleEditMess={handleEditMess}
+                    isModalOpenEditMess={isModalOpenEditMess}
+                    handleOkEditMess={handleOkEditMess}
+                    setEditMess={setEditMess}
+                    handleCancelEditMess={handleCancelEditMess}
+                    showModalEditMess={showModalEditMess}
+                    editMess={editMess}
+                    onEdit={handleEditMess}
+                    onModalOk={handleOkEditMess}
                     onModalOpenEditMess={showModalEditMess}
-                    onUnsend={handleUnsend}
-                    onReact={handleReactIcon}
                 />
                 <ChatArea
                     user={user}
+                    setReplyingTo={setReplyingTo}
                     handleOpenChange={handleOpenChange}
                     inputRef={inputRef}
                     handleMessageChange={handleMessageChange}

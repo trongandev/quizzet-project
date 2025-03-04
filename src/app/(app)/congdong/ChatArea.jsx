@@ -13,6 +13,7 @@ const ChatArea = ({
     user,
     inputRef,
     replyingTo,
+    setReplyingTo,
     handleImageChange,
     newMessage,
     handleMessageChange,
@@ -31,6 +32,7 @@ const ChatArea = ({
     // image,
     // imagePreview,
 }) => {
+    const userId = user?._id;
     return (
         <div className="mt-5 border-t-2 border-top border-t-primary/10 pt-3">
             {user === null ? (

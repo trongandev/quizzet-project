@@ -9,7 +9,6 @@ const MessageList = ({
     user,
     token,
     isModalOpen,
-    isModalOpenEditMess,
     reactIconList,
     loadingIcon,
     emoji,
@@ -18,11 +17,17 @@ const MessageList = ({
     onModalCancel,
     onModalOpen,
     onModalOk,
+    loading,
     onOpenChange,
-    onModalCancelEditMess,
+    showModalEditMess,
+    handleCancelEditMess,
     onModalOpenEditMess,
-    onUnsend,
-    onReact,
+    handleEditMess,
+    editMess,
+    handleUnsend,
+    isModalOpenEditMess,
+    handleOkEditMess,
+    setEditMess,
 }) => {
     return (
         <div className="h-[550px] overflow-y-scroll flex flex-col pr-3 chatcommu">
@@ -35,11 +40,11 @@ const MessageList = ({
                     setReplyingTo={setReplyingTo}
                     handleReactIcon={handleReactIcon}
                     msg={msg}
+                    loading={loading}
                     user={user}
                     token={token}
                     isLast={index === messages.length - 1}
                     isModalOpen={isModalOpen}
-                    isModalOpenEditMess={isModalOpenEditMess}
                     reactIconList={reactIconList}
                     loadingIcon={loadingIcon}
                     emoji={emoji}
@@ -49,10 +54,15 @@ const MessageList = ({
                     onModalOpen={onModalOpen}
                     onModalOk={onModalOk}
                     onOpenChange={onOpenChange}
-                    onModalCancelEditMess={onModalCancelEditMess}
+                    isModalOpenEditMess={isModalOpenEditMess}
+                    showModalEditMess={showModalEditMess}
+                    handleEditMess={handleEditMess}
                     onModalOpenEditMess={onModalOpenEditMess}
-                    onUnsend={onUnsend}
-                    onReact={onReact}
+                    handleCancelEditMess={handleCancelEditMess}
+                    handleUnsend={handleUnsend}
+                    editMess={editMess}
+                    handleOkEditMess={handleOkEditMess}
+                    setEditMess={setEditMess}
                 />
             ))}
         </div>

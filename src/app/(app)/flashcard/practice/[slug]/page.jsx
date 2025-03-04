@@ -262,7 +262,7 @@ export default function PractiveFlashcard({ params }) {
     }
 
     return (
-        <div className="px-3 md:px-0 focus-visible:outline-none" onKeyDown={handleKeyDown} tabIndex={0}>
+        <div className="px-3 md:px-0 focus-visible:outline-none h-screen" onKeyDown={handleKeyDown} tabIndex={0}>
             {contextHolder}
             <div className="w-full flex items-center justify-center h-[90%] flex-col gap-5">
                 <div className="w-full flex flex-col md:flex-row gap-5 items-start">
@@ -391,14 +391,14 @@ export default function PractiveFlashcard({ params }) {
                                     </div>
                                     <div className="flex-1">
                                         <p className=" mb-2">Định nghĩa:</p>
-                                        <p className="text-gray-600 mb-4">{flashcards[index]?.define}</p>
+                                        <p className="text-gray-600 dark:text-white/70 mb-4">{flashcards[index]?.define}</p>
                                         <input
                                             type="text"
                                             value={inputAnswer}
                                             onChange={(e) => setInputAnswer(e.target.value)}
                                             placeholder="Điền từ bạn nghe được"
                                             autoFocus
-                                            className={`w-full p-3 border transition-colors
+                                            className={`w-full p-3 border transition-colors dark:bg-gray-500/50 text-third dark:text-white
             ${isCorrectAns === "correct" ? "!border-green-500 border-2" : ""}
             ${isCorrectAns === "incorrect" ? "!border-red-500 border-2 shake" : ""}
         `}
@@ -425,8 +425,8 @@ export default function PractiveFlashcard({ params }) {
                                     </div>
                                     <div className="flex-1">
                                         <p className=" mb-4">{flashcards[index]?.define}</p>
-                                        <div className="bg-gray-50 p-4 rounded-lg mb-4">
-                                            <p className="text-gray-600 font-medium mb-2">Ví dụ:</p>
+                                        <div className="bg-gray-50 dark:bg-slate-800/50 p-4 rounded-lg mb-4">
+                                            <p className="text-gray-600 dark:text-white/70 font-medium mb-2">Ví dụ:</p>
                                             <p className="text-lg">
                                                 {showAns ? flashcards[index]?.example?.[0]?.en : flashcards[index]?.example?.[0]?.en.replace(new RegExp(flashcards[index]?.title, "gi"), "______")}
                                             </p>
@@ -435,9 +435,14 @@ export default function PractiveFlashcard({ params }) {
                                             type="text"
                                             value={inputAnswer}
                                             onChange={(e) => setInputAnswer(e.target.value)}
+                                            onKeyDown={(e) => {
+                                                if (e.key === " ") {
+                                                    e.stopPropagation(); // Prevent space key event from bubbling up
+                                                }
+                                            }}
                                             placeholder="Điền từ còn thiếu..."
                                             autoFocus
-                                            className={`w-full p-3 border transition-colors
+                                            className={`w-full p-3 border transition-colors dark:bg-gray-500/50 text-third dark:text-white
                                                 ${isCorrectAns === "correct" ? "!border-green-500 border-2" : ""}
                                                 ${isCorrectAns === "incorrect" ? "!border-red-500 border-2 shake" : ""}
                                             `}
