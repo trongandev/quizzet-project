@@ -41,8 +41,8 @@ export default function CongDong() {
     const [imageReview, setImageReview] = useState<string | null>(null);
     const [skip, setSkip] = useState(0);
     const [hasMore, setHasMore] = useState(false);
-    const [emoji, setEmoji] = useState([]);
-    const [emojiData, setEmojiData] = useState([]);
+    const [emoji, setEmoji] = useState<{ unicodeName: string }[]>([]);
+    const [emojiData, setEmojiData] = useState<{ unicodeName: string }[]>([]);
     const [searchEmoji, setSearchEmoji] = useState("");
     const [loading, setLoading] = useState(false);
     const [replyingTo, setReplyingTo] = useState(null);
@@ -371,17 +371,19 @@ export default function CongDong() {
                     inputRef={inputRef}
                     handleMessageChange={handleMessageChange}
                     handleSendMessage={handleSendMessage}
-                    image={image}
-                    imagePreview={imageReview}
-                    onImageChange={handleImageChange}
+                    // image={image}
+                    imageReview={imageReview}
+                    handleImageChange={handleImageChange}
                     handleSetDefaultImage={handleSetDefaultImage}
                     handleKeyPress={handleKeyPress}
-                    onPaste={handlePaste}
+                    handlePaste={handlePaste}
                     open={open}
-                    onOpenChange={handleOpenChange}
                     emojiData={emojiData}
                     searchEmoji={searchEmoji}
                     handleSearchEmoji={handleSearchEmoji}
+                    replyingTo={replyingTo}
+                    newMessage={newMessage}
+                    loading={loading}
                     onEmojiSelect={(emoji: any) => {
                         if (inputRef.current) {
                             inputRef.current.value += emoji;

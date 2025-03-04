@@ -38,7 +38,8 @@
         "src/components/CTaiLieuDetail.jsx",
         "src/app/(app)/dapan/[slug]/page.jsx",
         "src/app/(app)/congdong/ChatArea.jsx",
-        "src/app/(app)/congdong/ChatArea.jsx"
+        "src/app/(app)/congdong/ChatArea.jsx",
+        "src/app/(app)/congdong/page.jsx"
     ],
     "exclude": ["node_modules"]
 }

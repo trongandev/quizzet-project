@@ -3,7 +3,7 @@ import React, { memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-const OnlineUsers = memo(({ onlineUsers }) => {
+const OnlineUsers = ({ onlineUsers }) => {
     return (
         <div className="flex-1 h-full">
             <h3>Các thành viên đang online: {onlineUsers?.length}</h3>
@@ -34,7 +34,7 @@ const OnlineUsers = memo(({ onlineUsers }) => {
             </div>
         </div>
     );
-});
+};
 
 OnlineUsers.displayName = "OnlineUsers";
 export default OnlineUsers;
