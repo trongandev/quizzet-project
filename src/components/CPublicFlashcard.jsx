@@ -76,7 +76,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
     };
 
     return (
-        <div className="text-third px-3 md:px-0 min-h-screen">
+        <div className="text-third dark:text-white px-3 md:px-0 min-h-screen">
             {contextHolder}
 
             <div className="flex gap-5 flex-col md:flex-row md:h-[80px]">
@@ -85,15 +85,15 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                     <p className="text-gray-500">Flashcard là một trong những cách tốt nhất để ghi nhớ những kiến thức quan trọng. Hãy cùng Quizzet tham khảo và tạo những bộ flashcards bạn nhé!</p>
                 </div>
                 <div className=" h-full flex flex-1 text-right gap-3">
-                    <div className="flex-1 flex flex-col bg-[#75d37d] rounded-lg p-3 text-white">
+                    <div className="flex-1 flex flex-col bg-[#75d37d] dark:bg-[#75d37d]/50  rounded-lg p-3 text-white">
                         <p className="text-left">Đã học</p>
                         <h1 className="font-bold text-3xl text-right">0</h1>
                     </div>
-                    <div className="flex-1 flex flex-col bg-[#75c1d3] rounded-lg p-3 text-white">
+                    <div className="flex-1 flex flex-col bg-[#75c1d3] dark:bg-[#75c1d3]/50 rounded-lg p-3 text-white">
                         <p className="text-left">Đã nhớ</p>
                         <h1 className="font-bold text-3xl text-right">0</h1>
                     </div>
-                    <div className="flex-1 flex flex-col bg-[#d37a75] rounded-lg p-3 text-white">
+                    <div className="flex-1 flex flex-col bg-[#d37a75] dark:bg-[#d37a75]/50 rounded-lg p-3 text-white">
                         <p className="text-left">Cần ôn tập</p>
                         <h1 className="font-bold text-3xl text-right">0</h1>
                     </div>
@@ -105,12 +105,12 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 max-h-[350px] overflow-y-scroll">
                         <div
                             onClick={showModal}
-                            className="w-full text-primary cursor-pointer hover:border-primary bg-gray-100 rounded-xl shadow-sm p-3 border hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 flex-col  h-[181px]">
+                            className="w-full text-primary cursor-pointer hover:border-primary bg-gray-100 dark:bg-slate-800/50 border border-white/10 rounded-xl shadow-sm p-3 hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 flex-col  h-[181px]">
                             <AiOutlinePlus size={30} />
                             <h1>Tạo list từ mới</h1>
                         </div>
                         <Modal title="Tạo list từ" open={open} onOk={handleOk} confirmLoading={loading} okText="Tạo" onCancel={handleCancel}>
-                            <div className="space-y-2">
+                            <div className="space-y-2 ">
                                 <input
                                     type="text"
                                     autoFocus
@@ -154,7 +154,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                             listFlashCard.map((item) => (
                                 <Link
                                     href={`/flashcard/${item?._id}`}
-                                    className="w-full h-[181px] bg-gray-100 rounded-xl block shadow-sm p-3 border hover:shadow-md transition-all duration-300"
+                                    className="w-full h-[181px] bg-gray-100 dark:bg-slate-800/50 rounded-xl block shadow-sm p-3 border-white/10 border hover:shadow-md transition-all duration-300"
                                     key={item._id}>
                                     <h1 className="font-bold line-clamp-1" title={item.title}>
                                         {item.title}
@@ -198,7 +198,9 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                 <div className="flex gap-3 py-3 items-center flex-wrap">
                     <h3>Lọc theo ngôn ngữ:</h3>
                     <button
-                        className={`border border-gray-400 px-5 py-2 rounded-full w-36 h-10 flex items-center justify-center  ${language === "all" ? "bg-secondary border-none text-white" : ""}`}
+                        className={`border dark:border-white/10 border-primary px-5 py-2 rounded-full w-36 h-10 flex items-center justify-center  ${
+                            language === "all" ? "bg-secondary text-white border-white" : ""
+                        }`}
                         value="all"
                         onClick={(e) => handleNavLanguage(e.target.value)}>
                         <MdPublic className="mr-1" /> Tất cả
@@ -206,8 +208,8 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                     {languageOption.map((item) => (
                         <button
                             key={item.value}
-                            className={`transition-colors duration-200 border border-gray-400 px-5 py-2 rounded-full w-36 h-10 flex items-center justify-center ${
-                                item.value === language ? "bg-secondary border-none" : ""
+                            className={`transition-colors duration-200 border dark:border-white/10 border-gray-500 px-5 py-2 rounded-full w-16 h-10 flex items-center justify-center ${
+                                item.value === language ? "bg-secondary border-white" : ""
                             }`}
                             onClick={() => handleNavLanguage(item.value)}>
                             <Image src={`/flag/${item.value}.svg`} alt="" width={25} height={25} className="rounded-sm border border-gray-400"></Image>
@@ -219,7 +221,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                         filterLanguage.map((item) => (
                             <Link
                                 href={`/flashcard/${item?._id}`}
-                                className="w-full h-[181px] bg-gray-100 rounded-xl block shadow-sm p-3 border hover:shadow-md transition-all duration-300"
+                                className="w-full h-[181px] bg-gray-100 dark:bg-slate-800/50 border border-white/10 rounded-xl block shadow-sm p-3 hover:shadow-md transition-all duration-300"
                                 key={item._id}>
                                 <h1 className="font-bold line-clamp-1" title={item.title}>
                                     {item.title}
@@ -239,7 +241,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                                     <div className="w-[40px] h-[40px] overflow-hidden relative">
                                         <Image src={item?.userId?.profilePicture} alt="" className="rounded-full w-full h-full absolute object-cover" fill />
                                     </div>
-                                    <div className="">
+                                    <div className="flex-1">
                                         <p title={item.userId.displayName} className="line-clamp-1">
                                             {item.userId.displayName}
                                         </p>

@@ -5,8 +5,8 @@ import { FaFacebook } from "react-icons/fa";
 import { GrGithub } from "react-icons/gr";
 export default function CFooter() {
     return (
-        <footer className="">
-            <div className="mt-5 bg-secondary text-white w-full">
+        <footer className=" border-t border-gray-500">
+            <div className="pt-5 bg-secondary text-white w-full">
                 <div className="flex gap-3 justify-center  py-2">
                     <p>
                         Bản quyền thuộc về <span className="rubik-wet-paint-regulars">Quizzet</span>{" "}

@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Popover, Badge, Modal } from "antd";
+import { Popover, Badge, Modal, Switch } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { FiLogOut } from "react-icons/fi";
 import { IoMdNotificationsOutline } from "react-icons/io";
@@ -9,13 +9,15 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useUser } from "../context/userContext";
-import { MdEmail, MdOutlineHistory } from "react-icons/md";
+import { MdDarkMode, MdEmail, MdOutlineHistory } from "react-icons/md";
 import { GET_API, POST_API } from "@/lib/fetchAPI";
 import CNotify from "./CNotify";
 import CChat from "./CChat";
 import { BsDiscord, BsMailbox } from "react-icons/bs";
 import TextArea from "antd/es/input/TextArea";
 import Swal from "sweetalert2";
+import { BiCopy } from "react-icons/bi";
+import { CiDark, CiLight } from "react-icons/ci";
 export default function CHeader({ token }: { token: string }) {
     const [open, setOpen] = useState(false);
     const [openNoti, setOpenNoti] = useState(false);
@@ -25,6 +27,7 @@ export default function CHeader({ token }: { token: string }) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [feedback, setFeedback] = useState("");
+    const [darkTheme, setDarkTheme] = useState(false);
     const handleOpenChange = (newOpen: boolean) => {
         setOpen(newOpen);
     };
@@ -58,7 +61,27 @@ export default function CHeader({ token }: { token: string }) {
         if (user) {
             fetchAPI();
         }
+        const dark = localStorage.getItem("dark");
+        if (dark === "true") {
+            setDarkTheme(true);
+        } else {
+            setDarkTheme(false);
+        }
     }, [user, token]);
+
+    useEffect(() => {
+        const root = document.documentElement;
+        if (darkTheme) {
+            root.classList.add("dark");
+        } else {
+            root.classList.remove("dark");
+        }
+    }, [darkTheme]);
+
+    const handleSetTheme = (value: boolean) => {
+        setDarkTheme(value);
+        localStorage.setItem("dark", JSON.stringify(value));
+    };
 
     const handleRouterNotify = async (item: any) => {
         const req = await GET_API(`/notify/${item?._id}`, token);
@@ -95,13 +118,23 @@ export default function CHeader({ token }: { token: string }) {
         setIsModalOpen(false);
     };
 
+    const handleCopyToken = () => {
+        navigator.clipboard.writeText(token);
+        Swal.fire({
+            icon: "success",
+            title: "Copy token thành công",
+            showConfirmButton: false,
+            timer: 1500,
+        });
+    };
+
     return (
-        <header className="bg-white text-primary w-full flex items-center justify-center fixed z-20 shadow-lg">
+        <header className="bg-white text-primary dark:text-white dark:bg-gray-800 w-full flex items-center justify-center fixed z-20 border-b border-white/70 dark:border-white/10">
             <div className="flex items-center justify-between px-5 py-1 md:px-0 md:py-0 w-[800px] md:w-[1000px] xl:w-[1200px]">
                 <Link href="/">
                     <Image unoptimized src="/logo.png" alt="" width={120} height={30} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"></Image>
                 </Link>
-                <ul className="hidden md:flex items-center gap-5">
+                <ul className="hidden md:flex items-center gap-5 ">
                     <li>
                         <Link href="/" className={`block  ${pathname == "/" ? "active" : ""}`}>
                             Trang chủ
@@ -129,73 +162,84 @@ export default function CHeader({ token }: { token: string }) {
                         </Link>
                     </li>
                 </ul>
-
-                {!user ? (
-                    <div className="">
-                        <Link href="/login">
-                            <button className="btn btn-primary">Đăng nhập</button>
-                        </Link>
+                <div className="flex items-center gap-5">
+                    <div className="flex items-center gap-2">
+                        {darkTheme ? <MdDarkMode size={20} /> : <CiLight size={20} />}
+                        <Switch onChange={(value) => handleSetTheme(value)} value={darkTheme} />
                     </div>
-                ) : (
-                    <div className="flex gap-2 items-center">
-                        <div className="flex gap-3 items-center">
-                            <Popover
-                                content={
-                                    <div className="w-full md:w-[400px] max-h-[600px] overflow-y-scroll">
-                                        <CNotify notify={notify} handleRouter={handleRouterNotify} />
-                                    </div>
-                                }
-                                trigger="click"
-                                open={openNoti}
-                                onOpenChange={handleOpenNoti}
-                                title="Thông báo">
-                                <Badge count={unreadCountNotify} offset={[-5, 5]} size="small" className="text-primary hover:text-secondary cursor-pointer">
-                                    <IoMdNotificationsOutline size={30} />
-                                </Badge>
-                            </Popover>
-                            <CChat token={token} user={user} router={router} />
-
-                            <Popover
-                                content={
-                                    <>
-                                        <Link href={`/profile`} className="flex items-center gap-2 p-2 hover:bg-gray-100">
-                                            <UserOutlined />
-                                            <p>Quản lí tài khoản</p>
-                                        </Link>
-                                        {token && (
-                                            <Link href={`/lichsu`} className="flex items-center gap-2 p-2 hover:bg-gray-100">
-                                                <MdOutlineHistory />
-                                                <p>Lịch sử làm bài</p>
-                                            </Link>
-                                        )}
-                                        <div onClick={showModal} className="flex gap-2 items-center p-2 hover:bg-gray-100 hover:text-primary cursor-pointer">
-                                            <BsMailbox />
-                                            Góp ý
-                                        </div>
-                                        <div onClick={handleLogout} className="flex gap-2 items-center p-2 hover:bg-gray-100 hover:text-red-500 cursor-pointer">
-                                            <FiLogOut />
-                                            Đăng xuất
-                                        </div>
-                                    </>
-                                }
-                                title={user?.email}
-                                trigger="click"
-                                open={open}
-                                onOpenChange={handleOpenChange}>
-                                <div className="w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden relative">
-                                    <Image
-                                        unoptimized
-                                        src={user?.profilePicture || "/avatar.jpg"}
-                                        alt=""
-                                        className="object-cover h-full absolute"
-                                        fill
-                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                    />
-                                </div>
-                            </Popover>
+                    {!user ? (
+                        <div className="">
+                            <Link href="/login">
+                                <button className="btn btn-primary">Đăng nhập</button>
+                            </Link>
                         </div>
-                    </div>
-                )}
+                    ) : (
+                        <div className="flex gap-2 items-center">
+                            <div className="flex gap-3 items-center">
+                                <Popover
+                                    content={
+                                        <div className="w-full md:w-[400px] max-h-[600px] overflow-y-scroll">
+                                            <CNotify notify={notify} handleRouter={handleRouterNotify} />
+                                        </div>
+                                    }
+                                    trigger="click"
+                                    open={openNoti}
+                                    onOpenChange={handleOpenNoti}
+                                    title="Thông báo">
+                                    <Badge count={unreadCountNotify} offset={[-5, 5]} size="small" className="text-primary hover:text-secondary cursor-pointer">
+                                        <IoMdNotificationsOutline size={30} />
+                                    </Badge>
+                                </Popover>
+                                <CChat token={token} user={user} router={router} />
+
+                                <Popover
+                                    content={
+                                        <>
+                                            <Link href={`/profile`} className="flex items-center gap-2 p-2 hover:bg-gray-100">
+                                                <UserOutlined />
+                                                <p>Quản lí tài khoản</p>
+                                            </Link>
+                                            {token && (
+                                                <Link href={`/lichsu`} className="flex items-center gap-2 p-2 hover:bg-gray-100">
+                                                    <MdOutlineHistory />
+                                                    <p>Lịch sử làm bài</p>
+                                                </Link>
+                                            )}
+                                            <div onClick={handleCopyToken} className="flex gap-2 items-center p-2 hover:bg-gray-100 hover:text-primary cursor-pointer">
+                                                <BiCopy />
+                                                Copy TOKEN
+                                            </div>
+                                            <div onClick={showModal} className="flex gap-2 items-center p-2 hover:bg-gray-100 hover:text-primary cursor-pointer">
+                                                <BsMailbox />
+                                                Góp ý
+                                            </div>
+
+                                            <div onClick={handleLogout} className="flex gap-2 items-center p-2 hover:bg-gray-100 hover:text-red-500 cursor-pointer">
+                                                <FiLogOut />
+                                                Đăng xuất
+                                            </div>
+                                        </>
+                                    }
+                                    title={user?.email}
+                                    trigger="click"
+                                    open={open}
+                                    onOpenChange={handleOpenChange}>
+                                    <div className="w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden relative">
+                                        <Image
+                                            unoptimized
+                                            src={user?.profilePicture || "/avatar.jpg"}
+                                            alt=""
+                                            className="object-cover h-full absolute"
+                                            fill
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                        />
+                                    </div>
+                                </Popover>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
                 <Modal title="Hòm thư góp ý" open={isModalOpen} onOk={handleOk} loading={loading} onCancel={handleCancel} okText="Gửi góp ý" cancelText="Hủy">
                     <div className="">
                         <p className="text-gray-700 mb-2">Cảm ơn bạn đã viết góp ý, chúng tôi sẽ cố gắng sửa lỗi cũng như thực hiện sớm nhất những tính năng mới</p>

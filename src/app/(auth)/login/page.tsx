@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { GET_API, POST_API } from "@/lib/fetchAPI";
 import { message, Spin } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
+import { GoogleCircleFilled, GoogleOutlined, LoadingOutlined } from "@ant-design/icons";
 import { IoIosArrowBack } from "react-icons/io";
 import Image from "next/image";
 export default function LoginForm() {
@@ -42,7 +42,7 @@ export default function LoginForm() {
             if (res) {
                 const data = await res.json();
                 if (res.ok) {
-                    Cookies.set("token", data.token, { expires: 7 });
+                    Cookies.set("token", data.token, { expires: 30 });
                     router.push("/");
                 } else {
                     messageApi.open({
@@ -73,7 +73,7 @@ export default function LoginForm() {
         const token = urlParams.get("token");
 
         if (token) {
-            Cookies.set("token", token, { expires: 7 });
+            Cookies.set("token", token, { expires: 30 });
             const fetchAPI = async () => {
                 await GET_API("/profile", token);
             };
@@ -131,33 +131,20 @@ export default function LoginForm() {
                 </form>
                 <div className="my-5">
                     <div className="relative mb-3">
-                        <div className="absolute w-full h-[1px] bg-gray-500"></div>
-                        <div className="absolute w-full flex items-center justify-center bottom-[-12px]">
-                            <p className=" bg-white px-2 ">Hoặc tiếp tục với</p>
+                        <div className="absolute w-full h-[1px] bg-gray-300"></div>
+                        <div className="absolute w-full flex items-center justify-center bottom-[-9px]">
+                            <p className=" bg-white px-2 text-gray-500 text-sm">Hoặc</p>
                         </div>
                     </div>
                     {/* onClick={() => googleLogin()} */}
                 </div>
                 <div className="mt-10 pt-3">
-                    <div className="flex border border-primary rounded-full overflow-hidden h-[50px]">
-                        <button className="bg-white h-full flex-1 flex items-center justify-center hover:bg-gray-200 rounded-l-full  ">
-                            <Image
-                                unoptimized
-                                alt=""
-                                width={35}
-                                height={35}
-                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/480px-Facebook_Logo_%282019%29.png"></Image>
-                        </button>
-                        <div className="w-[1px] h-full bg-primary"></div>
-                        <button className="bg-white flex-1 flex justify-center items-center hover:bg-gray-200 rounded-r-full" onClick={handleLoginGoogle}>
-                            <Image
-                                unoptimized
-                                alt=""
-                                width={35}
-                                height={35}
-                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png"></Image>
-                        </button>
-                    </div>
+                    <button
+                        className="flex items-center gap-2 w-full border border-gray-300 text-gray-500 rounded-full overflow-hidden px-5 py-2  hover:bg-gray-100 duration-200 hover:text-gray-800"
+                        onClick={handleLoginGoogle}>
+                        <GoogleOutlined size={40} />
+                        <p className="text-sm">Đăng nhập bằng Google</p>
+                    </button>
                 </div>
             </div>
         </div>

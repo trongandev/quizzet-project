@@ -451,7 +451,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
     };
 
     return (
-        <div className="text-third px-3 md:px-0">
+        <div className="text-third dark:text-white px-3 md:px-0">
             {contextHolder}
             <Link href="/flashcard" className="hover:text-primary hover:underline flex items-center gap-1">
                 <IoIosArrowBack /> Quay lại
@@ -729,9 +729,9 @@ export default function CFlashcardDetail({ id_flashcard }) {
                 </button>
             </div>
 
-            <p className="text-gray-700">
+            <p className="text-gray-700 dark:text-white/50">
                 Dựa trên nghiên cứu về{" "}
-                <Link className="underline text-blue-900 font-bold" target="_blank" href="https://vmptraining.com/ung-dung-duong-cong-lang-quen-ebbinghaus-de-hoc-tap-hieu-qua/">
+                <Link className="underline text-primary font-bold" target="_blank" href="https://vmptraining.com/ung-dung-duong-cong-lang-quen-ebbinghaus-de-hoc-tap-hieu-qua/">
                     đường cong lãng quên
                 </Link>{" "}
                 của Hermann Ebbinghaus , con người cần lặp lại <label className="font-bold">từ 5–7 lần</label> tại các khoảng thời gian khác nhau để <label className="font-bold">ghi nhớ</label> lâu
@@ -740,7 +740,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
             <div className=" h-[80px] my-3 flex flex-1 text-right gap-1 md:gap-3 text-[12px]">
                 <div
                     className={`flex-1 flex  flex-col rounded-lg justify-between p-2 md:p-3 cursor-pointer   border-2 ${
-                        choose == 0 ? "border-[#636363] text-[#636363] bg-white" : "bg-[#636363] text-white"
+                        choose == 0 ? "border-2 border-[#636363] text-[#636363] bg-white dark:bg-slate-800/50" : "bg-[#636363] text-white"
                     }`}
                     onClick={() => handleSetChoose(0)}>
                     <p className="text-left">Tất cả</p>
@@ -756,7 +756,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
                 </div>
                 <div
                     className={`flex-1 flex flex-col  rounded-lg justify-between p-2 md:p-3  cursor-pointer border-2  ${
-                        choose == 1 ? "border-[#4CAF50] text-[#4CAF50] bg-white" : "bg-[#4CAF50] text-white"
+                        choose == 1 ? "border-[#4CAF50] text-[#4CAF50] bg-white dark:bg-slate-800/50" : "bg-[#4CAF50] text-white"
                     }`}
                     onClick={() => handleSetChoose(1)}>
                     <p className="text-left">Đã học</p>
@@ -764,7 +764,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
                 </div>
                 <div
                     className={`flex-1 flex flex-col rounded-lg justify-between p-2 md:p-3 cursor-pointer  border-2 ${
-                        choose == 2 ? "border-[#2196F3] text-[#2196F3] bg-white" : "bg-[#2196F3] text-white"
+                        choose == 2 ? "border-[#2196F3] text-[#2196F3] bg-white dark:bg-slate-800/50" : "bg-[#2196F3] text-white"
                     }`}
                     onClick={() => handleSetChoose(2)}>
                     <p className="text-left">Đã nhớ</p>
@@ -772,7 +772,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
                 </div>
                 <div
                     className={`flex-1 flex flex-col rounded-lg justify-between p-2 md:p-3  cursor-pointer   border-2 ${
-                        choose == 3 ? "border-[#FFC107] text-[#FFC107] bg-white" : "bg-[#FFC107] text-white"
+                        choose == 3 ? "border-[#FFC107] text-[#FFC107] bg-white dark:bg-slate-800/50" : "bg-[#FFC107] text-white"
                     }`}
                     onClick={() => handleSetChoose(3)}>
                     <p className="text-left">Ôn tập</p>
@@ -785,9 +785,9 @@ export default function CFlashcardDetail({ id_flashcard }) {
             </div>
             <div className="">
                 {isSimple === 1 && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-5 ">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-5 text-secondary dark:text-white">
                         {filteredFlashcards?.map((item, index) => (
-                            <div className="bg-gray-100 p-5 shadow-sm rounded-xl" key={index}>
+                            <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-5 shadow-sm rounded-xl" key={index}>
                                 <div className="flex items-center justify-between">
                                     <div
                                         className={`rounded-full text-white text-[12px] px-3 py-[1px] font-bold ${
@@ -799,7 +799,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
                                     <div className={`rounded-full text-white text-[12px] px-3 py-[1px] font-bold bg-[#9C27B0]`}>Ghi nhớ: {item?.progress?.percentage}%</div>
                                 </div>
                                 <div className="flex items-center justify-between gap-5">
-                                    <div className="flex gap-2 items-center text-secondary font-bold flex-wrap">
+                                    <div className="flex gap-2 items-center font-bold flex-wrap">
                                         <h1 className="text-primary text-lg" title={item?.title}>
                                             {item?.title}
                                         </h1>
@@ -939,28 +939,28 @@ export default function CFlashcardDetail({ id_flashcard }) {
                                         </div>
                                     </Modal>
                                 </div>
-                                <p className="font-bold text-gray-600">({item?.type_of_word || "Không có loại từ"})</p>
-                                <p className="font-bold text-gray-600">
+                                <p className="font-bold text-gray-600 dark:text-white/60">({item?.type_of_word || "Không có loại từ"})</p>
+                                <p className="font-bold text-gray-600 dark:text-white">
                                     Định nghĩa: <span className="italic font-thin">{item?.define}</span>
                                 </p>
                                 <div className="flex items-center justify-between">
-                                    <p className="font-bold text-gray-600">Ví dụ: </p>
-                                    <p className="text-xs text-gray-600">{handleCompareDate(item?.created_at)}</p>
+                                    <p className="font-bold text-gray-600 dark:text-white/60">Ví dụ: </p>
+                                    <p className="text-xs text-gray-600 dark:text-white/60">{handleCompareDate(item?.created_at)}</p>
                                 </div>
 
-                                <div className=" border border-secondary rounded-lg px-5 py-3 my-3 h-[220px] overflow-y-auto">
+                                <div className=" border border-secondary dark:border-white/10 rounded-sm px-5 py-3 my-3 h-[220px] overflow-y-auto">
                                     {item?.example?.map((ex, idx) => (
                                         <div key={ex.en} className="mb-1">
                                             <div className="">
                                                 <div className="flex items-center gap-2">
-                                                    <p className="text-gray-600 font-bold">
+                                                    <p className="text-gray-600 dark:text-white/50 font-bold">
                                                         {idx + 1}. {ex.en}
                                                     </p>
                                                     {listFlashcard?.language != "english" && (
                                                         <HiMiniSpeakerWave className="cursor-pointer hover:text-primary" onClick={() => speakWord(ex.en, 2, item?._id + idx)} />
                                                     )}
                                                 </div>
-                                                <p className="text-gray-600  font-bold">{ex?.trans}</p>
+                                                <p className="text-gray-600 dark:text-white/50  font-bold">{ex?.trans}</p>
                                                 <div className="text-xs text-gray-500 flex">
                                                     {listFlashcard?.language == "english" && (
                                                         <>
@@ -984,13 +984,13 @@ export default function CFlashcardDetail({ id_flashcard }) {
                                                     )}
                                                 </div>
                                             </div>
-                                            <p className="text-sm text-gray-600 italic">{ex.vi}</p>
+                                            <p className="text-sm text-gray-600 dark:text-white/50 italic">{ex.vi}</p>
                                         </div>
                                     ))}
                                     {item?.example?.length === 0 && <p className="text-gray-500 text-sm">Không có ví dụ...</p>}
                                 </div>
 
-                                <p className="font-bold text-gray-600">
+                                <p className="font-bold text-gray-600 dark:text-white">
                                     Ghi chú: <span className="italic font-thin">{item?.note}</span>
                                 </p>
                             </div>

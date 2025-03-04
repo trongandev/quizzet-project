@@ -99,7 +99,7 @@ export default function CQuizMobile({ quizData }) {
                         </Tooltip>
                     )}
 
-                    <select onChange={(e) => handleSearchSubject(e.target.value)}>
+                    <select onChange={(e) => handleSearchSubject(e.target.value)} className="dark:!bg-gray-900">
                         {subjectOption.map((item, index) => (
                             <option key={index} value={item.value}>
                                 {item.label}
@@ -108,7 +108,7 @@ export default function CQuizMobile({ quizData }) {
                     </select>
                 </div>
                 <div className="flex items-center gap-3 flex-1 flex-wrap justify-end">
-                    <input type="text" placeholder="Tìm tên câu hỏi mà bạn cần..." className="w-full md:w-[250px]" onChange={(e) => handleSearch(e.target.value)} />
+                    <input type="text" placeholder="Tìm tên câu hỏi mà bạn cần..." className="w-full md:w-[250px] dark:!bg-gray-900" onChange={(e) => handleSearch(e.target.value)} />
                     <div className="flex-1 flex gap-3 md:justify-end">
                         <Link href="/quiz/themcauhoi" className="block flex-1">
                             <button className="btn btn-second w-full lg:w-[170px]">Thêm câu hỏi</button>

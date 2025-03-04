@@ -8,7 +8,7 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { message, Spin } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
+import { GoogleOutlined, LoadingOutlined } from "@ant-design/icons";
 import { IoIosArrowBack } from "react-icons/io";
 import Image from "next/image";
 export default function RegisterForm() {
@@ -158,31 +158,18 @@ export default function RegisterForm() {
                 <div className="">
                     <div className="relative mb-3">
                         <div className="absolute w-full h-[1px] bg-gray-500"></div>
-                        <div className="absolute w-full flex items-center justify-center bottom-[-10px]">
-                            <p className=" bg-white px-2 ">Hoặc tiếp tục với</p>
+                        <div className="absolute w-full flex items-center justify-center bottom-[-9px]">
+                            <p className=" bg-white px-2 text-sm text-gray-500">Hoặc</p>
                         </div>
                     </div>
                 </div>
                 <div className="mt-10 pt-3">
-                    <div className="flex border-2 border-gray-200 rounded-full overflow-hidden h-[60px]">
-                        <button className="bg-white flex-1 flex justify-center py-3 hover:bg-gray-200 rounded-l-full  ">
-                            <Image
-                                unoptimized
-                                alt=""
-                                width={35}
-                                height={35}
-                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/480px-Facebook_Logo_%282019%29.png"></Image>
-                        </button>
-                        <div className="w-[1px] h-full bg-gray-200"></div>
-                        <button className="bg-white flex-1 flex justify-center py-3 hover:bg-gray-200 rounded-r-full" onClick={handleLoginGoogle}>
-                            <Image
-                                unoptimized
-                                alt=""
-                                width={35}
-                                height={35}
-                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1200px-Google_%22G%22_logo.svg.png"></Image>
-                        </button>
-                    </div>
+                    <button
+                        className="flex items-center gap-2 w-full border border-gray-300 text-gray-500 rounded-full overflow-hidden px-5 py-2  hover:bg-gray-100 duration-200 hover:text-gray-800"
+                        onClick={handleLoginGoogle}>
+                        <GoogleOutlined size={40} />
+                        <p className="text-sm">Đăng nhập bằng Google</p>
+                    </button>
                 </div>
             </div>
         </div>

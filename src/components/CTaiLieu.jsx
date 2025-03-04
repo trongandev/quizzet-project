@@ -92,7 +92,7 @@ export default function CTaiLieu({ toolData }) {
                         </Tooltip>
                     )}
 
-                    <select onChange={(e) => handleSearchSubject(e.target.value)} className="h-full">
+                    <select onChange={(e) => handleSearchSubject(e.target.value)} className="h-full dark:!bg-gray-900">
                         {subjectOption.map((item, index) => (
                             <option key={index} value={item.value}>
                                 {item.label}
@@ -101,7 +101,7 @@ export default function CTaiLieu({ toolData }) {
                     </select>
                 </div>
                 <div className="flex items-center gap-3 flex-1 flex-wrap justify-end">
-                    <input type="text" placeholder="Tìm tên tài liệu mà bạn cần..." className="flex-1 md:w-[250px]" onChange={(e) => handleSearch(e.target.value)} />
+                    <input type="text" placeholder="Tìm tên tài liệu mà bạn cần..." className="flex-1 md:w-[250px] dark:!bg-gray-900" onChange={(e) => handleSearch(e.target.value)} />
                     {/* <div className="flex gap-3 flex-1 items-center">
                         <Link href="/tailieu/themtailieu" className="block flex-1 text-center w-full btn btn-second !rounded-md">
                             Thêm tài liệu
@@ -121,7 +121,7 @@ export default function CTaiLieu({ toolData }) {
             )}
             <div className="grid grid-cols-2 lg:grid-cols-4 md:grid-cols-3 gap-4">
                 {data?.map((item, index) => (
-                    <div className="bg-white rounded-xl h-[200px] flex flex-col md:flex-row overflow-hidden text-third shadow-md " key={index}>
+                    <div className="bg-white dark:bg-slate-800/50 rounded-xl h-[200px] flex flex-col md:flex-row overflow-hidden shadow-md " key={index}>
                         <div className="relative flex-1">
                             <Image
                                 unoptimized

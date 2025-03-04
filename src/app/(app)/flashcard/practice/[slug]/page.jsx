@@ -269,7 +269,7 @@ export default function PractiveFlashcard({ params }) {
                     <div className="w-full flex flex-col gap-5">
                         {/* Main Flashcard Container */}
                         <div
-                            className=" relative w-full h-[500px] border rounded-lg  shadow-md bg-white"
+                            className=" relative w-full h-[500px] border border-white/10 rounded-lg  shadow-md bg-white dark:bg-slate-800/50 dark:text-white"
                             style={{ perspective: "1000px" }}
                             onClick={feature === FEATURES.FLASHCARD ? () => setIsFlipped(!isFlipped) : undefined}>
                             {/* Flashcard Feature */}
@@ -278,7 +278,9 @@ export default function PractiveFlashcard({ params }) {
                                     className={`rounded-lg  cursor-pointer absolute inset-0 w-full h-full transition-transform duration-500 transform ${isFlipped ? "rotate-y-180" : ""}`}
                                     style={{ transformStyle: "preserve-3d" }}>
                                     {/* Front Side */}
-                                    <div className="rounded-lg  absolute inset-0 bg-white flex flex-col items-center justify-center backface-hidden p-5" style={{ backfaceVisibility: "hidden" }}>
+                                    <div
+                                        className="rounded-lg  absolute inset-0 bg-white dark:bg-slate-800/50 flex flex-col items-center justify-center backface-hidden p-5"
+                                        style={{ backfaceVisibility: "hidden" }}>
                                         <div className="flex items-center gap-2 mb-4">
                                             <p className="text-2xl font-semibold">{flashcards[index]?.title}</p>
                                             <button
@@ -297,26 +299,26 @@ export default function PractiveFlashcard({ params }) {
 
                                     {/* Back Side */}
                                     <div
-                                        className="rounded-lg  absolute inset-0 bg-white flex flex-col items-center justify-center p-5 backface-hidden"
+                                        className="rounded-lg  absolute inset-0 bg-white dark:bg-slate-800/50 flex flex-col items-center justify-center p-5 backface-hidden"
                                         style={{
                                             backfaceVisibility: "hidden",
                                             transform: "rotateY(180deg)",
                                         }}>
-                                        {isFlipped && <p className="text-lg text-gray-700">{flashcards[index]?.define}</p>}
+                                        {isFlipped && <p className="text-lg ">{flashcards[index]?.define}</p>}
 
                                         {flashcards[index]?.example && (
-                                            <div className="mt-4 p-4 bg-gray-50 rounded-lg w-full">
+                                            <div className="mt-4 p-4 bg-gray-50 dark:bg-slate-800 rounded-lg w-full">
                                                 {isFlipped && (
                                                     <>
                                                         {" "}
                                                         <p className="font-medium mb-2">Ví dụ:</p>
                                                         <div className="mb-2">
-                                                            <p className="font-bold italic text-gray-600">{flashcards[index].example[0]?.en}</p>
-                                                            <p className="italic text-gray-600">{flashcards[index].example[0]?.vi}</p>
+                                                            <p className="font-bold italic text-gray-600 dark:text-white/50">{flashcards[index].example[0]?.en}</p>
+                                                            <p className="italic text-gray-600 dark:text-white/50">{flashcards[index].example[0]?.vi}</p>
                                                         </div>
                                                         <div className="mb-2">
-                                                            <p className="font-bold italic text-gray-600">{flashcards[index].example[1]?.en}</p>
-                                                            <p className="italic text-gray-600">{flashcards[index].example[1]?.vi}</p>
+                                                            <p className="font-bold italic text-gray-600 dark:text-white/50">{flashcards[index].example[1]?.en}</p>
+                                                            <p className="italic text-gray-600 dark:text-white/50">{flashcards[index].example[1]?.vi}</p>
                                                         </div>
                                                     </>
                                                 )}
@@ -331,7 +333,7 @@ export default function PractiveFlashcard({ params }) {
                                 <div className="p-5 h-full flex flex-col">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-1">
-                                            <h1 className="text-xl font-bold text-gray-700">Chọn đáp án đúng</h1>
+                                            <h1 className="text-xl font-bold ">Chọn đáp án đúng</h1>
                                         </div>
                                         <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">Quiz</span>
                                     </div>
@@ -344,15 +346,15 @@ export default function PractiveFlashcard({ params }) {
                                                 onClick={() => handleQuizAnswer(option, idx)}
                                                 disabled={selectedAnswers[idx]}
                                                 className={`
-                                              flex items-center h-full border rounded-lg group 
-                                              hover:border-primary transition-colors disabled:!bg-transparent
+                                              flex items-center h-full border dark:border-white/10 rounded-lg group 
+                                              transition-colors disabled:!bg-transparent
                                               ${selectedAnswers[idx] === "correct" ? "!border-green-500 border-2 tada" : ""}
                                               ${selectedAnswers[idx] === "incorrect" ? "!border-red-500 border-2 shake" : ""}
                                             `}>
                                                 <div
                                                     className={`
-                                              w-[50px] h-full flex items-center justify-center border-r
-                                              group-hover:border-r-primary transition-colors
+                                              w-[50px] h-full flex items-center justify-center border-r dark:border-r-white/10
+                                               transition-colors
                                               ${selectedAnswers[idx] === "correct" ? "!border-r-green-500" : ""}
                                               ${selectedAnswers[idx] === "incorrect" ? "!border-r-red-500" : ""}
                                             `}>
@@ -370,7 +372,7 @@ export default function PractiveFlashcard({ params }) {
                             {feature === FEATURES.LISTENING && (
                                 <div className="p-5 flex flex-col h-full">
                                     <div className="flex items-center justify-between mb-4">
-                                        <h1 className="text-xl font-bold text-gray-700">Nghe và điền từ</h1>
+                                        <h1 className="text-xl font-bold ">Nghe và điền từ</h1>
                                         <span className="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm">Listening</span>
                                     </div>
                                     <div className="flex gap-4 mb-6">
@@ -388,7 +390,7 @@ export default function PractiveFlashcard({ params }) {
                                         </button>
                                     </div>
                                     <div className="flex-1">
-                                        <p className="text-gray-700 mb-2">Định nghĩa:</p>
+                                        <p className=" mb-2">Định nghĩa:</p>
                                         <p className="text-gray-600 mb-4">{flashcards[index]?.define}</p>
                                         <input
                                             type="text"
@@ -418,11 +420,11 @@ export default function PractiveFlashcard({ params }) {
                             {feature === FEATURES.FILL_BLANK && (
                                 <div className="p-5 flex flex-col h-full">
                                     <div className="flex items-center justify-between mb-4">
-                                        <h1 className="text-xl font-bold text-gray-700">Điền từ còn thiếu</h1>
+                                        <h1 className="text-xl font-bold ">Điền từ còn thiếu</h1>
                                         <span className="px-3 py-1 bg-purple-100 text-purple-600 rounded-full text-sm">Practice</span>
                                     </div>
                                     <div className="flex-1">
-                                        <p className="text-gray-700 mb-4">{flashcards[index]?.define}</p>
+                                        <p className=" mb-4">{flashcards[index]?.define}</p>
                                         <div className="bg-gray-50 p-4 rounded-lg mb-4">
                                             <p className="text-gray-600 font-medium mb-2">Ví dụ:</p>
                                             <p className="text-lg">
@@ -456,7 +458,7 @@ export default function PractiveFlashcard({ params }) {
 
                         {/* Navigation Controls */}
 
-                        <div className="bg-gray-100 rounded-xl overflow-hidden w-full flex items-center justify-between shadow-md text-2xl">
+                        <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 rounded-md overflow-hidden w-full flex items-center justify-between shadow-md text-2xl">
                             <div className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer" onClick={() => handleProgress("unknown")}>
                                 <GrFormPrevious />
                                 <p className="text-sm">Lùi lại</p>
@@ -487,11 +489,11 @@ export default function PractiveFlashcard({ params }) {
 
                         <div className="space-y-2">
                             <h2 className="font-medium">Cài đặt Random</h2>
-                            <div className="bg-gray-100 p-4 rounded-lg space-y-3">
+                            <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg space-y-3">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
-                                        <span className="text-gray-600">Random câu hỏi</span>
-                                        <Switch checked={isRandomMode} onChange={(checked) => setIsRandomMode(checked)} className="bg-gray-300" />
+                                        <span className="text-gray-600 dark:text-white">Random câu hỏi</span>
+                                        <Switch checked={isRandomMode} onChange={(checked) => setIsRandomMode(checked)} className="bg-gray-300 dark:bg-slate-500" />
                                     </div>
                                 </div>
                             </div>
@@ -509,7 +511,9 @@ export default function PractiveFlashcard({ params }) {
                                     <button
                                         key={value}
                                         onClick={() => setFeature(value)}
-                                        className={`px-4 py-2 rounded-lg transition-colors ${feature === value ? "bg-primary text-white" : "bg-gray-100 hover:bg-gray-200"}`}>
+                                        className={`px-4 py-2 rounded-lg transition-colors  border border-white/10 ${
+                                            feature === value ? "bg-primary text-white" : "bg-gray-100 dark:bg-slate-800/50 hover:bg-gray-200"
+                                        }`}>
                                         {name}
                                     </button>
                                 ))}
@@ -519,13 +523,13 @@ export default function PractiveFlashcard({ params }) {
                         {/* Progress Display */}
                         <div className="space-y-2">
                             <h2 className="font-medium">Tiến trình</h2>
-                            <div className="bg-gray-100 p-4 rounded-lg">
+                            <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg">
                                 <div className="flex justify-between mb-2">
                                     <span>Đã học:</span>
                                     <span>{progress.known.length}</span>
                                 </div>
 
-                                <div className="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                <div className="mt-2 h-2 bg-gray-200 dark:bg-gray-500/50 rounded-full overflow-hidden">
                                     <div
                                         className="h-full bg-primary"
                                         style={{
@@ -539,27 +543,27 @@ export default function PractiveFlashcard({ params }) {
                         {/* Keyboard Shortcuts Guide */}
                         <div className="space-y-2">
                             <h2 className="font-medium">Phím tắt</h2>
-                            <div className="bg-gray-100 p-4 rounded-lg space-y-3">
+                            <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg space-y-3 text-gray-500 dark:text-white">
                                 <div className="flex items-center gap-2">
-                                    <kbd className="px-2 py-1 bg-white rounded shadow text-sm">→</kbd>
-                                    <span className="text-gray-600">Tiến tới</span>
+                                    <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">→</kbd>
+                                    <span className="">Tiến tới</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <kbd className="px-2 py-1 bg-white rounded shadow text-sm">←</kbd>
-                                    <span className="text-gray-600">Lùi lại</span>
+                                    <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">←</kbd>
+                                    <span className="">Lùi lại</span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <kbd className="px-2 py-1 bg-white rounded shadow text-sm">Space</kbd>
-                                    <span className="text-gray-600">Lật thẻ </span>
+                                    <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Space</kbd>
+                                    <span className="">Lật thẻ </span>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <kbd className="px-2 py-1 bg-white rounded shadow text-sm">Enter</kbd>
-                                    <span className="text-gray-600">Kiểm tra đáp án</span>
+                                    <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Enter</kbd>
+                                    <span className="">Kiểm tra đáp án</span>
                                 </div>
 
                                 <div className="flex items-center gap-2">
-                                    <kbd className="px-2 py-1 bg-white rounded shadow text-sm">Shift</kbd>
-                                    <span className="text-gray-600">Phát âm thanh</span>
+                                    <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Shift</kbd>
+                                    <span className="">Phát âm thanh</span>
                                 </div>
                             </div>
                         </div>

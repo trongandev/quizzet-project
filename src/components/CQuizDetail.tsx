@@ -118,7 +118,7 @@ export default function CQuizDetail({ QuizData, QuestData }: { QuizData?: IQuiz;
     return (
         <>
             {contextHolder}
-            <div className="text-third px-2 md:px-0 min-h-[80vh]">
+            <div className="text-third dark:text-white px-2 md:px-0 min-h-[80vh]">
                 <div className="">
                     {QuizData && (
                         <div className="">
@@ -129,11 +129,11 @@ export default function CQuizDetail({ QuizData, QuestData }: { QuizData?: IQuiz;
                         </div>
                     )}
                 </div>
-                <form action="" onSubmit={handleQuiz} className="relative flex gap-5 flex-row  mt-1">
+                <form action="" onSubmit={handleQuiz} className="relative flex gap-5 flex-row  mt-3">
                     <div className="w-full md:w-2/3">
-                        <div className="h-[80vh] overflow-y-auto scroll-smooth">
+                        <div className="h-[80vh] overflow-y-auto scroll-smooth flex flex-col gap-2">
                             {QuestData?.map((item, index) => (
-                                <div className="bg-linear-item-2 p-5 mt-2 rounded-xl" key={index} id={index.toString()}>
+                                <div className="bg-linear-item-2 dark:!bg-slate-800/50 p-5 border border-white/10" key={index} id={index.toString()}>
                                     <h1 className="text-lg font-bold text-primary">
                                         Câu {index + 1}: {item.question}{" "}
                                     </h1>
@@ -182,7 +182,7 @@ export default function CQuizDetail({ QuizData, QuestData }: { QuizData?: IQuiz;
                     {/* desktop */}
                     <div className="hidden md:block">
                         <div className="w-full h-full">
-                            <div className="w-full h-[500px] bg-gray-200 p-5  ">
+                            <div className="w-full h-[500px] bg-gray-200 dark:bg-slate-800/50 rounded-md p-5 border border-white/10 ">
                                 <h1 className="text-lg font-bold text-primary text-center mb-3">Danh sách câu hỏi</h1>
                                 <div className="grid grid-cols-5 gap-2 max-h-[420px] overflow-y-scroll pr-2">
                                     {QuestData?.map((item, index) => (

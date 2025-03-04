@@ -2,7 +2,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+@custom-variant light (html:not(.dark) &);
 body {
     margin: 0;
     font-family: "Maven Pro", sans-serif;
@@ -106,6 +106,8 @@ textarea::-webkit-scrollbar {
 /* Handle */
 textarea::-webkit-scrollbar-thumb {
     background: #2187d5;
+    cursor: pointer;
+
     border-radius: 5px;
 }
 
@@ -115,19 +117,35 @@ textarea::-webkit-scrollbar-thumb {
 
 .frm-post::-webkit-scrollbar-thumb {
     background: #ccc;
+    cursor: pointer;
     border-radius: 5px;
 }
 
 ::-webkit-scrollbar {
-    width: 10px;
+    width: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #ccc;
+    background: #a5bed1;
+    cursor: pointer;
 }
 
 mark {
     background-color: #ffe9e9;
+}
+
+.chatcommu::-webkit-scrollbar {
+    width: 5px;
+}
+
+.chatcommu::-webkit-scrollbar-thumb {
+    background: #a5bed1;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.chatcommu::-webkit-scrollbar-thumb:hover {
+    background: #2187d5;
 }
 
 .bg-linear {

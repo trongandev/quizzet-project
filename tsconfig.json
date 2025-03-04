@@ -36,7 +36,9 @@
         "src/app/(app)/quiz/themcauhoi/gui/page.jsx",
         "src/app/(app)/edit-tool/[slug]/page.jsx",
         "src/components/CTaiLieuDetail.jsx",
-        "src/app/(app)/dapan/[slug]/page.jsx"
+        "src/app/(app)/dapan/[slug]/page.jsx",
+        "src/app/(app)/congdong/ChatArea.jsx",
+        "src/app/(app)/congdong/ChatArea.jsx"
     ],
     "exclude": ["node_modules"]
 }
