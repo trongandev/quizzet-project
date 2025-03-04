@@ -82,7 +82,7 @@ export default function CQuizDetail({ QuizData, QuestData }: { QuizData?: IQuiz;
                 const data = await req.json();
                 if (req.ok) {
                     messageApi.success(data?.message);
-                    router.push("/dapan/" + data?.data);
+                    router.push("/dapan/" + data?.id_history);
                 } else {
                     messageApi.error(data?.message);
                 }
@@ -131,7 +131,7 @@ export default function CQuizDetail({ QuizData, QuestData }: { QuizData?: IQuiz;
                 </div>
                 <form action="" onSubmit={handleQuiz} className="relative flex gap-5 flex-row  mt-3">
                     <div className="w-full md:w-2/3">
-                        <div className="h-[80vh] overflow-y-auto scroll-smooth flex flex-col gap-2">
+                        <div className="max-h-[80vh] overflow-y-auto scroll-smooth flex flex-col gap-2">
                             {QuestData?.map((item, index) => (
                                 <div className="bg-linear-item-2 dark:!bg-slate-800/50 p-5 border border-white/10" key={index} id={index.toString()}>
                                     <h1 className="text-lg font-bold text-primary">

@@ -21,7 +21,7 @@ export default function Report() {
             const req = await GET_API("/report", token);
             if (req.ok) {
                 setLoading(true);
-                setReport(req?.data);
+                setReport(req?.result);
                 messageApi.success(req.message);
             } else {
                 messageApi.error(req.message);

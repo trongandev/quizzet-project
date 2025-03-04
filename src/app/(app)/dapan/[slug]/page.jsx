@@ -20,8 +20,8 @@ export default function Answer({ params }) {
     useEffect(() => {
         const fetchAPI = async () => {
             const req = await GET_API("/history/" + slug, token);
-            setQuestion(req?.data?.questions?.data_history);
-            setQuiz(req?.data);
+            setQuestion(req?.history?.questions?.data_history);
+            setQuiz(req?.history);
         };
         fetchAPI();
     }, [slug, token]);
@@ -63,14 +63,14 @@ export default function Answer({ params }) {
         <>
             {contextHolder}
 
-            <div className="px-3 md:px-0 text-third">
+            <div className="px-3 md:px-0 text-third dark:text-white min-h-[80vh]">
                 <div className="flex justify-between flex-col md:flex-row gap-5 md:gap-0">
                     <div className="">
                         {quiz?.quiz_id && (
                             <>
                                 {" "}
                                 <h1 className="text-2xl font-bold text-primary">Bài quiz về chủ đê: {quiz?.quiz_id?.title}</h1>
-                                <p className="text-secondary" key={quiz.id}>
+                                <p className="text-secondary dark:text-white/70" key={quiz.id}>
                                     Nội dung: {quiz?.quiz_id?.content}
                                 </p>
                             </>
@@ -86,12 +86,12 @@ export default function Answer({ params }) {
                     <div className="flex gap-5 text-center justify-center">
                         <div className="">
                             <Progress type="circle" percent={Math.floor((1 / question.length) * (question.length - quiz?.score) * 100)} strokeColor="#ff4d4f" />
-                            <p className="text-gray-600 mt-1">Câu sai: {question.length - quiz.score}</p>
+                            <p className="text-gray-600 dark:text-white/70 mt-1">Câu sai: {question.length - quiz.score}</p>
                         </div>
 
                         <div className="">
                             <Progress type="circle" strokeColor="#2187d5" percent={Math.floor((quiz.score / question.length) * 100)} />
-                            <p className="text-gray-600 mt-1">Câu đúng: {quiz.score}</p>
+                            <p className="text-gray-600 dark:text-white/70 mt-1">Câu đúng: {quiz.score}</p>
                         </div>
                     </div>
                 </div>
@@ -99,7 +99,7 @@ export default function Answer({ params }) {
                 <div className="w-full">
                     {question.length > 0 &&
                         question?.map((item, index) => (
-                            <div className="bg-linear-item-2 p-5 mt-5 shadow-sm rounded-xl" key={item.id}>
+                            <div className="bg-linear-item-2  p-5 mt-5 border border-white/10 rounded-md" key={item.id}>
                                 <h1 className={` ${item.answer_correct === item.answer_choose ? "text-primary " : "text-red-500"}   mb-3 flex gap-2 items-center`}>
                                     <p className="text-lg font-bold">
                                         Câu {index + 1}: {item.question_name}

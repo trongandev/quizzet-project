@@ -33,10 +33,10 @@ export default function QuizDetail({ params }: { params: any }) {
     useEffect(() => {
         const fetchData = async () => {
             const res = await GET_API_WITHOUT_COOKIE(`/quiz/${params.slug}`);
-            setComment(res?.data?.comment);
-            setQuiz(res?.data?.questions?.data_quiz.slice(0, 6));
-            delete res?.data?.questions;
-            setData(res?.data);
+            setComment(res?.quiz?.comment);
+            setQuiz(res?.quiz?.questions?.data_quiz.slice(0, 6));
+            delete res?.quiz?.questions;
+            setData(res.quiz);
         };
         fetchData();
     }, []);
@@ -74,8 +74,9 @@ export default function QuizDetail({ params }: { params: any }) {
         if (req) {
             const res = await req.json();
             if (res.ok) {
-                if (res?.data.exist) {
-                    setComment((item) => item.map((i) => (i._id == res?.data.id ? { ...i, review, created_at: new Date() } : i)));
+                console.log(res);
+                if (res?.exist) {
+                    setComment((item) => item.map((i) => (i._id == res?.id ? { ...i, review, created_at: new Date() } : i)));
                 } else {
                     setComment([...comment, newComment]);
                 }
@@ -144,7 +145,7 @@ export default function QuizDetail({ params }: { params: any }) {
     };
 
     return (
-        <div className="text-third relative px-3 md:px-0">
+        <div className="text-third dark:text-white relative px-3 md:px-0">
             {contextHolder}
             <div className=" ">
                 <h1 className="flex text-3xl font-bold items-center gap-2">
@@ -152,7 +153,7 @@ export default function QuizDetail({ params }: { params: any }) {
                     {data?.title}
                 </h1>
                 {data && (
-                    <div className="flex flex-col lg:flex-row gap-5 mt-5 bg-white p-5 rounded-lg shadow-sm">
+                    <div className="flex flex-col lg:flex-row gap-5 mt-5 bg-white dark:bg-slate-800/50 p-5 rounded-lg shadow-sm  border border-white/10">
                         <div className="flex-1 flex gap-5">
                             <div className="flex-1 w-[200px] rounded-xl  shadow-md h-[300px] lg:h-[400px]">
                                 <div className="overflow-hidden relative h-full rounded-[8px]">
@@ -166,7 +167,7 @@ export default function QuizDetail({ params }: { params: any }) {
                                     />
                                     <div className="p-3 absolute z-1 text-white bottom-0 w-full bg-linear-item">
                                         <div className="flex justify-between items-center gap-1 flex-col lg:flex-row">
-                                            <Link href={`/profile/${data?.uid?._id}`} className="flex items-center gap-2">
+                                            <Link href={`/profile/${data?.uid?._id}`} className="flex flex-1 items-center gap-2">
                                                 <div className="relative w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden">
                                                     <Image
                                                         unoptimized
@@ -190,7 +191,7 @@ export default function QuizDetail({ params }: { params: any }) {
                                                     )}
                                                 </div>
                                             </Link>
-                                            <div className="text-sm">
+                                            <div className="text-sm flex-1">
                                                 <div className="flex justify-end items-center gap-1 ">
                                                     <FaFileCircleQuestion />
                                                     <p className="">Số câu hỏi {quiz?.length}</p>
@@ -240,9 +241,9 @@ export default function QuizDetail({ params }: { params: any }) {
                                 <h1 className="text-primary font-bold">Preview 10 câu hỏi trong bài quiz này</h1>
                                 {quiz.length > 0 &&
                                     quiz?.map((item, index) => (
-                                        <div className="bg-gray-100 rounded-md px-3 py-2 text-sm" key={index}>
-                                            <h1 className="font-bold text-gray-500">{item?.question}</h1>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-1 text-gray-500">
+                                        <div className="bg-gray-100 dark:bg-slate-800/30 dark:text-white/60 rounded-md px-3 py-2 text-sm" key={index}>
+                                            <h1 className="font-bold ">{item?.question}</h1>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-1 ">
                                                 {item.answers.map((answer, idx) => (
                                                     <div key={idx} title={answer} className={`text-[12px] h-[36px] line-clamp-1 relative flex items-center cursor-pointer`}>
                                                         <input type="radio" className="w-1 invisible" />
@@ -279,7 +280,7 @@ export default function QuizDetail({ params }: { params: any }) {
             </Modal>
             <div className="mt-5 w-full">
                 <div className="flex gap-5 items-start flex-col-reverse lg:flex-row ">
-                    <div className="flex-1 bg-white rounded-lg shadow-sm p-5 w-full">
+                    <div className="flex-1 bg-white dark:bg-slate-800/50  border border-white/10 rounded-lg shadow-sm p-5 w-full">
                         <h1 className="text-primary text-3xl font-bold">Đánh giá</h1>
                         <div className="flex gap-5 items-center my-5">
                             <h1 className="text-3xl font-bold">{Round(calAvg(comment))}</h1>
@@ -302,7 +303,7 @@ export default function QuizDetail({ params }: { params: any }) {
                         <div className="space-y-3 h-[350px] overflow-y-scroll">
                             {comment.length > 0 &&
                                 comment?.map((item: IComment, index) => (
-                                    <div className="bg-gray-100 rounded-lg shadow-sm px-5 py-3" key={index} id={item?.user_id?._id}>
+                                    <div className="bg-gray-100 dark:bg-slate-800/50 rounded-lg shadow-sm px-5 py-3" key={index} id={item?.user_id?._id}>
                                         <div className="flex items-center gap-2">
                                             <div className="relative w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden">
                                                 <Image
@@ -333,11 +334,15 @@ export default function QuizDetail({ params }: { params: any }) {
                             {comment.length === 0 && <p className="text-gray-500">Chưa có lượt đánh giá nào...</p>}
                         </div>
                     </div>
-                    <div className="flex-1 bg-white rounded-lg shadow-sm p-5 space-y-2 w-full">
+                    <div className="flex-1 bg-white dark:bg-slate-800/50 border border-white/10 rounded-lg shadow-sm p-5 space-y-2 w-full">
                         <h1 className="text-secondary text-3xl font-bold">Bình luận</h1>
                         <p className="text-gray-500">Hãy để lại bình luận cũng như số sao của bạn dưới đây:</p>
                         <Rate defaultValue={5} tooltips={desc} onChange={setValue} value={value} />
-                        <textarea placeholder="Bình luận của bạn..." className="h-[100px] rounded-xl py-3" value={review} onChange={(e) => setReview(e.target.value)}></textarea>
+                        <textarea
+                            placeholder="Bình luận của bạn..."
+                            className="h-[100px] rounded-xl py-3 dark:bg-gray-500/50 dark:text-white text-third"
+                            value={review}
+                            onChange={(e) => setReview(e.target.value)}></textarea>
                         <button className="btn btn-primary w-[100px]" onClick={handleSendComment}>
                             Gửi
                         </button>

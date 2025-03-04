@@ -19,8 +19,7 @@ export default function History() {
             const req = await GET_API("/history/admin", token);
             if (req.ok) {
                 setLoading(true);
-
-                setHistory(req?.data);
+                setHistory(req?.history);
                 messageApi.success("Lấy thành công lịch sử làm bài!");
             } else {
                 messageApi.error(req.message);

@@ -31,8 +31,8 @@ export default function ProfileUID({ params }) {
     useEffect(() => {
         const fetchAPI = async () => {
             const req = await GET_API(`/profile/${slug}`, token);
-            setProfile(req?.data.user);
-            setQuiz(req?.data.quiz);
+            setProfile(req?.user);
+            setQuiz(req?.quiz);
         };
 
         fetchAPI();
@@ -127,7 +127,7 @@ export default function ProfileUID({ params }) {
     };
 
     return (
-        <div className="px-3 md:px-0">
+        <div className="px-3 md:px-0 text-third dark:text-white min-h-[80vh]">
             {contextHolder}
             {profile ? (
                 <>
@@ -180,7 +180,7 @@ export default function ProfileUID({ params }) {
                         <div className=" mt-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             {quiz &&
                                 quiz?.map((item) => (
-                                    <div key={item._id} className="rounded-[12px]  shadow-md h-[400px]">
+                                    <div key={item._id} className="rounded-[12px] border border-white/10 shadow-md h-[400px]">
                                         <div className="overflow-hidden relative h-full rounded-[8px]">
                                             <Image
                                                 src={item?.img || "/meme.jpg"}

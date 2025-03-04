@@ -14,7 +14,7 @@ export default function CTaiLieuDetail({ DeCuongData }) {
         handleChangeRouterDeCuong();
     }, []);
     return (
-        <div className="text-third px-2 md:px-0">
+        <div className="text-third px-2 md:px-0 dark:text-white">
             <div className="flex justify-between items-center">
                 <div className="">
                     <h1 className="text-2xl ">
@@ -32,12 +32,12 @@ export default function CTaiLieuDetail({ DeCuongData }) {
             <div className="grid grid-cols-1  gap-2 md:gap-5 mt-5">
                 {DeCuongData &&
                     DeCuongData?.quest?.data_so.map((item, index) => (
-                        <div className=" bg-linear-item-2 rounded-xl  p-5" key={index}>
-                            <h1 className=" font-bold text-lg">
+                        <div className=" bg-linear-item-2 rounded-xl border border-white/10  p-5" key={index}>
+                            <h1 className=" font-bold text-lg dark:text-white/80">
                                 Câu {index + 1}: {item.question.replace("Câu ", "")}
                             </h1>
 
-                            <p className="text-secondary">{item.answer}</p>
+                            <p className="text-secondary  dark:text-white/70">{item.answer}</p>
                         </div>
                     ))}
             </div>

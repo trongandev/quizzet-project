@@ -27,8 +27,8 @@ export default function CProfile() {
     useEffect(() => {
         const fetchAPI = async () => {
             const req = await GET_API("/profile", token);
-            setUser(req?.data.user);
-            setQuiz(req?.data.quiz);
+            setUser(req?.user);
+            setQuiz(req?.quiz);
             setLoading(true);
         };
         fetchAPI();
@@ -184,13 +184,13 @@ export default function CProfile() {
     };
 
     return (
-        <div className="px-3 md:px-0">
+        <div className="px-3 md:px-0 min-h-screen">
             {contextHolder}
             <div className="flex gap-3 items-center text-third">
                 <div className="w-[100px] h-[100px] rounded-full overflow-hidden relative">
                     <Image unoptimized src={user?.profilePicture} alt="" className="object-cover h-full w-full absolute" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                 </div>
-                <div className="text-secondary">
+                <div className="text-secondary dark:text-white/70">
                     <div className="flex gap-2 items-center">
                         <h1 className="text-2xl font-bold text-primary">{user?.displayName || "Đang tải..."}</h1>
                         {user?.verify ? <MdOutlineVerified color="#3b82f6" /> : ""}

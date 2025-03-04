@@ -277,9 +277,9 @@ trả về kiểu dữ liệu json, không giải thích hay nói bất cứ th�
         handleCancelAI();
     };
     return (
-        <div className="flex items-center justify-center gap-5 flex-col md:flex-row px-3 md:px-0">
+        <div className="flex items-center justify-center gap-5 flex-col md:flex-row px-3 md:px-0 text-third dark:text-white h-screen">
             <div className="w-full md:w-[1000px]  overflow-y-auto frm-post">
-                <div className="flex items-center flex-row my-3 bg-white rounded-lg">
+                <div className="flex items-center flex-row my-3 bg-white rounded-lg dark:bg-slate-800/50 border border-white/10">
                     <div className="flex items-center justify-between w-full gap-3 p-3 md:flex-row flex-col">
                         <div className="flex items-center gap-3">
                             <div className="w-[150px] h-[100px] overflow-hidden group relative">
@@ -383,9 +383,9 @@ trả về kiểu dữ liệu json, không giải thích hay nói bất cứ th�
                     </div>
                 </div>
 
-                <div className="max-h-[500px] overflow-y-scroll text-third">
+                <div className="max-h-[500px] overflow-y-scroll text-third dark:text-white/70">
                     {quest.map((item, index) => (
-                        <div className="bg-linear-item-2 p-5 mt-5 rounded-xl" key={index}>
+                        <div className="bg-linear-item-2 p-5 mt-5 rounded-xl border border-white/10" key={index}>
                             <div className="flex justify-between items-center mb-3">
                                 <h1 className="text-lg font-bold text-primary">
                                     Câu {index + 1}: {item.question}

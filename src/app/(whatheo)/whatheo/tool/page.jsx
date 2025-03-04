@@ -24,8 +24,7 @@ export default function NewPostTool() {
         const fetchTool = async () => {
             setLoading(true);
             const req = await GET_API("/admin/suboutline", token);
-
-            setTool(req?.data);
+            setTool(req);
             messageApi.success("Fetch thành công!");
         };
         fetchTool();

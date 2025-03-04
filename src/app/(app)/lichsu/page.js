@@ -15,7 +15,7 @@ export default function History() {
     const [messageApi, contextHolder] = message.useMessage();
     const fetchHistory = async () => {
         const req = await GET_API("/history", token);
-        setHistoryData(req?.data);
+        setHistoryData(req?.history);
         setLoading(true);
     };
 
@@ -39,19 +39,19 @@ export default function History() {
                 <div className="grid md:grid-cols-4 gap-5 my-5 relative grid-cols-2 ">
                     {historyData &&
                         historyData.map((item) => (
-                            <div key={item.id} className="bg-white border-[1px] shadow-md rounded-xl">
+                            <div key={item.id} className="bg-white dark:bg-slate-800/50 dark:text-white border border-white/10 shadow-md rounded-xl">
                                 <div className="p-3 ">
-                                    <h1 className="text-lg mb-3 text-primary font-bold h-[56px] line-clamp-2">{item?.title || "Chưa có tiêu đề"}</h1>
+                                    <h1 className="text-lg mb-3 text-primary  font-bold h-[56px] line-clamp-2">{item?.title || "Chưa có tiêu đề"}</h1>
                                     <p>
                                         Số câu đúng:{" "}
                                         <label className="text-primary font-bold">
                                             {item.score}/{item?.questions?.data_history.length}
                                         </label>{" "}
                                     </p>
-                                    <p className="text-gray-500 flex gap-1 items-center">
+                                    <p className="text-gray-500 dark:text-white/70 flex gap-1 items-center">
                                         <IoIosTimer /> {handleCompareDate(item?.date)}
                                     </p>
-                                    <p className="text-gray-500">
+                                    <p className="text-gray-500 dark:text-white/70">
                                         Tổng thời gian làm: {Math.floor((item?.time % 3600) / 60)}p:{item?.time % 60}s
                                     </p>
                                     <Link href={`/dapan/${item?._id}`} className="block text-right mt-3">
