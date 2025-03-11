@@ -15,9 +15,19 @@ export default function LoginForm() {
     const token = Cookies.get("token") || "";
     const [loading, setLoading] = React.useState(false);
     const [messageApi, contextHolder] = message.useMessage();
+    const fetchProfile = async () => {
+        try {
+            const res = await GET_API("/profile", token);
+            if (!res.ok) {
+                Cookies.remove("token");
+            }
+        } catch (error) {
+            Cookies.remove("token");
+        }
+    };
     useEffect(() => {
         if (token) {
-            router.push("/");
+            fetchProfile();
         }
     });
 

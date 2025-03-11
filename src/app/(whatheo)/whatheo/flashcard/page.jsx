@@ -14,9 +14,11 @@ import { RiGlobalLine } from "react-icons/ri";
 export default function Flashcard() {
     const [flashcard, setFlashcard] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [visible, setVisible] = useState(false);
     const [loadingSwitch, setLoadingSwitch] = useState(false);
     const token = Cookies.get("token");
     const [messageApi, contextHolder] = message.useMessage();
+
     useEffect(() => {
         setLoading(true);
         const fetchUser = async () => {
@@ -29,19 +31,17 @@ export default function Flashcard() {
 
     const handleUpdateProfile = async (id, value) => {
         setLoadingSwitch(true);
-        const req = await POST_API(`/profile`, { id, ...value }, "PATCH", token);
-        const data = req.json();
+        const req = await POST_API(`/list-flashcards/${id}`, value, "PATCH", token);
+        const data = await req.json();
         if (req.ok) {
-            setLoadingSwitch(false);
-            const newUser = user.map((item) => {
-                if (item._id === id) return { ...item, ...value };
-                return item;
-            });
-            setUser(newUser);
+            const newFlashcard = flashcard.map((item) => (item._id === id ? { ...item, public: value.public } : item));
+            setFlashcard(newFlashcard);
+            setVisible(false);
             messageApi.success(data.message);
         } else {
             messageApi.error(data.message);
         }
+        setLoadingSwitch(false);
     };
 
     return (
@@ -112,14 +112,32 @@ export default function Flashcard() {
                                         </td>
                                         <td className="px-6 py-4">{item?.desc}</td>
                                         <td className="px-6 py-4">
-                                            {item.public ? (
-                                                <div className="bg-green-200 text-green-500 rounded-md text-center w-[35px] h-[25px] flex items-center justify-center">
-                                                    <RiGlobalLine />
+                                            {!visible && (
+                                                <div className="">
+                                                    {item.public ? (
+                                                        <div
+                                                            className="bg-green-200 text-green-500 rounded-md text-center w-[35px] h-[25px] flex items-center justify-center"
+                                                            onClick={() => setVisible(true)}>
+                                                            <RiGlobalLine />
+                                                        </div>
+                                                    ) : (
+                                                        <div
+                                                            className="bg-red-200 text-red-500 rounded-md text-center w-[35px] h-[25px] flex items-center justify-center"
+                                                            onClick={() => setVisible(true)}>
+                                                            <IoLockClosedSharp />
+                                                        </div>
+                                                    )}
                                                 </div>
-                                            ) : (
-                                                <div className="bg-red-200 text-red-500 rounded-md text-center w-[35px] h-[25px] flex items-center justify-center">
-                                                    <IoLockClosedSharp />
-                                                </div>
+                                            )}
+
+                                            {visible && (
+                                                <Switch
+                                                    checkedChildren="Public"
+                                                    unCheckedChildren="Private"
+                                                    checked={item.public}
+                                                    onChange={(checked) => handleUpdateProfile(item._id, { public: checked })}
+                                                    loading={loadingSwitch}
+                                                />
                                             )}
                                         </td>
                                         <td className="px-6 py-4">{item?.flashcards?.length}</td>
