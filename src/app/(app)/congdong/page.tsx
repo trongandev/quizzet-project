@@ -49,7 +49,6 @@ export default function CongDong() {
     const [loadingIcon, setLoadingIcon] = useState(false);
 
     const fetchInitialMessages = useCallback(async () => {
-        if (!token) return;
         const req = await GET_API_WITHOUT_COOKIE(`/chatcommu?skip=${skip}&limit=50`);
         if (req.ok) {
             const sortedMessages = req.messages.sort((a: any, b: any) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
@@ -57,7 +56,7 @@ export default function CongDong() {
             setHasMore(req?.hasMore);
             // setSkip(50);
         }
-    }, [token, skip]);
+    }, [skip]);
 
     useEffect(() => {
         if (lastMessageRef.current) {
@@ -101,8 +100,6 @@ export default function CongDong() {
         }),
         []
     );
-
-    console.log("rerender");
 
     useEffect(() => {
         if (!socket) return;

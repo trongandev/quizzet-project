@@ -38,7 +38,7 @@ const ReplyContent = memo(({ msg, isCurrentUser, userId }) => {
                 </div>
             )}
             {msg?.replyTo?.text !== "" && (
-                <Link href={`#${msg?.replyTo._id}`} className={`flex max-w-[350px] justify-end ${isCurrentUser ? "" : ""}`}>
+                <Link href={`#${msg?.replyTo._id}`} className={`flex max-w-[350px]  ${isCurrentUser ? "justify-end" : ""}`}>
                     <p className={` inline-block bg-gray-400 dark:bg-gray-500/70 rounded-md border border-white/10 px-3 py-2 mb-[-10px] line-clamp-2`}>
                         {msg?.replyTo?.unsend ? "Tin nhắn đã bị gỡ" : msg?.replyTo?.message}
                     </p>
@@ -163,7 +163,7 @@ const MessageItem = memo(
             () => ({
                 container: `flex items-start ${isCurrentUser ? "justify-end" : "justify-start"} mb-[4px] group min-h-[40px] items-center`,
                 content: ` ${isCurrentUser ? "" : "ml-[45px]"}`,
-                msg: `max-w-[350px]  border border-white/10  ${isCurrentUser ? "bg-primary dark:bg-slate-800/50 text-white " : "bg-gray-200 dark:bg-slate-500/50"} ${
+                msg: `max-w-[350px]  border border-white/10  ${isCurrentUser ? " bg-primary dark:bg-slate-800/50 text-white " : "bg-gray-200 dark:bg-slate-500/50"} ${
                     msg?.unsend ? "!bg-white dark:!bg-slate-800  border border-primary !text-primary text-[12px]" : ""
                 } rounded-lg px-3 py-2 inline-block break-words whitespace-pre-wrap overflow-wrap-anywhere`,
             }),
@@ -199,7 +199,7 @@ const MessageItem = memo(
                                 {msg?.isEdit && <span className={`text-xs text-gray-600 ${isCurrentUser ? "text-end mr-5" : "text-start ml-5"} block`}>Đã chỉnh sửa</span>}
 
                                 {/* <MessageContent msg={msg} isCurrentUser={isCurrentUser} onReactionClick={onReact} /> */}
-                                <div className="flex justify-end ">{msg?.message && <p className={messageClasses.msg}>{msg?.unsend ? "Tin nhắn đã bị gỡ" : msg?.message}</p>}</div>
+                                <div className={messageClasses.container}>{msg?.message && <p className={messageClasses.msg}>{msg?.unsend ? "Tin nhắn đã bị gỡ" : msg?.message}</p>}</div>
                             </div>
 
                             <MessageActions
