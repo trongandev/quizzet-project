@@ -6,7 +6,6 @@ import { GiStopSign } from "react-icons/gi";
 import { CiShuffle } from "react-icons/ci";
 import { Button, message, Modal, Popconfirm, Popover, Select, Spin, Switch } from "antd";
 import { FaBrain, FaTrash } from "react-icons/fa6";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { CloseOutlined, LoadingOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 import { HiMiniSpeakerWave } from "react-icons/hi2";
 import { IoIosArrowBack, IoMdAdd } from "react-icons/io";
@@ -99,29 +98,21 @@ export default function CFlashcardDetail({ id_flashcard }) {
         setOpen(true);
     };
 
-    const handleAIAndCreate = async () => {
-        setLoading(true);
-        await handleSendPrompt();
-        await handleOk();
-    };
-
     const handleOk = async () => {
-        setLoading(true);
-        console.log(newFlashcard);
-        const req = await POST_API("/flashcards", { ...newFlashcard, list_flashcard_id: listFlashcard._id }, "POST", token);
-        const res = await req.json();
-        if (req.ok) {
-            setOpen(false);
-            setFlashcard([res?.flashcard, ...flashcard]);
-            setFilteredFlashcards([res?.flashcard, ...flashcard]);
-            setNewFlashcard(defaultFlashcard);
-        } else {
-            messageApi.open({
-                type: "error",
-                content: res.message,
-            });
+        try {
+            setLoading(true);
+            const req = await POST_API("/flashcards", { ...newFlashcard, list_flashcard_id: listFlashcard._id }, "POST", token);
+            const res = await req.json();
+            if (req.ok) {
+                setOpen(false);
+                setFilteredFlashcards([res?.flashcard, ...flashcard]);
+                setNewFlashcard(defaultFlashcard);
+            }
+        } catch (error) {
+            messageApi.error(error.message);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     const handleCancel = () => {
@@ -157,72 +148,71 @@ export default function CFlashcardDetail({ id_flashcard }) {
         setOpenAddMore(false);
     };
 
-    const genAI = new GoogleGenerativeAI(process.env.API_KEY_AI);
-
     const handleSendPrompt = async (method) => {
-        setLoading(true);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-        const word = method === 1 ? editWord.title : newFlashcard.title;
-        const optimizedPrompt = `
-                Bạn là một chuyên gia ngôn ngữ có khả năng tạo flashcard chất lượng cao. Hãy tạo flashcard cho từ "${word}" với ngôn ngữ ${listFlashcard?.language}.
-                
-                Yêu cầu:
-                1. Phải cung cấp thông tin chính xác và đầy đủ
-                2. Ví dụ phải thực tế và dễ hiểu
-                3. Ghi chú phải hữu ích cho việc ghi nhớ
-                4. Định dạng JSON phải chính xác
-                
-                Trả về kết quả theo cấu trúc JSON sau và KHÔNG kèm theo bất kỳ giải thích nào:
-                
-                {
-                "title": "", // Từ gốc bằng tiếng ${listFlashcard?.language} (không ghi phiên âm)
-                "define": "", // Định nghĩa bằng tiếng Việt, ngắn gọn và dễ hiểu
-                "type_of_word": "", // Loại từ (danh từ, động từ, tính từ, etc.)
-                "transcription": "", // Phiên âm chuẩn theo từng ngôn ngữ
-                "example": [
+        try {
+            const word = method === 1 ? editWord.title : newFlashcard.title;
+            // const word = newFlashcard.title;
+            const optimizedPrompt = `
+                    Bạn là một chuyên gia ngôn ngữ có khả năng tạo flashcard chất lượng cao. Hãy tạo flashcard cho từ "${word}" với ngôn ngữ ${listFlashcard?.language}.
+                    
+                    Yêu cầu:
+                    1. Phải cung cấp thông tin chính xác và đầy đủ
+                    2. Ví dụ phải thực tế và dễ hiểu
+                    3. Ghi chú phải hữu ích cho việc ghi nhớ
+                    4. Định dạng JSON phải chính xác
+                    
+                    Trả về kết quả theo cấu trúc JSON sau và KHÔNG kèm theo bất kỳ giải thích nào:
+                    
                     {
-                    "en": "", // Câu ví dụ bằng ${listFlashcard?.language}
-                    "trans": "",// phiên âm theo ví dụ
-                    "vi": ""  // Dịch nghĩa tiếng Việt
-                    },
-                    {
-                    "en": "",
-                    "trans": "",
-                    "vi": ""
-                    },
-                    {
-                    "en": "",
-                    "trans": "",
-                    "vi": ""
-                    },
-                    {
-                    "en": "",
-                    "trans": "",
-                    "vi": ""
+                    "title": "", // Từ gốc bằng tiếng ${listFlashcard?.language} (không ghi phiên âm)
+                    "define": "", // Định nghĩa bằng tiếng Việt, ngắn gọn và dễ hiểu
+                    "type_of_word": "", // Loại từ (danh từ, động từ, tính từ, etc.)
+                    "transcription": "", // Phiên âm chuẩn theo từng ngôn ngữ
+                    "example": [
+                        {
+                        "en": "", // Câu ví dụ bằng ${listFlashcard?.language}
+                        "trans": "",// phiên âm theo ví dụ
+                        "vi": ""  // Dịch nghĩa tiếng Việt
+                        },
+                        {
+                        "en": "",
+                        "trans": "",
+                        "vi": ""
+                        },
+                        {
+                        "en": "",
+                        "trans": "",
+                        "vi": ""
+                        },
+                        {
+                        "en": "",
+                        "trans": "",
+                        "vi": ""
+                        }
+                    ],
+                    "note": "" // Tips ghi nhớ, cách dùng đặc biệt, hoặc các lưu ý quan trọng bằng tiếng Việt. Các dấu nháy đôi "" thay bằng dấu ngoặc () để tránh lỗi JSON
                     }
-                ],
-                "note": "" // Tips ghi nhớ, cách dùng đặc biệt, hoặc các lưu ý quan trọng bằng tiếng Việt. Các dấu nháy đôi "" thay bằng dấu ngoặc () để tránh lỗi JSON
-                }
-                `;
-        const result = await model.generateContent(optimizedPrompt);
-        const parse = result.response
-            .text()
-            .replace(/```json/g, "")
-            .replace(/```/g, "");
+                    `;
+            setLoading(true);
 
-        if (method === 1) {
-            setEditWord({ ...editWord, ...JSON.parse(parse) });
-        } else {
-            setNewFlashcard(JSON.parse(parse));
+            const req = await POST_API("/flashcards/create-ai", { prompt: optimizedPrompt, list_flashcard_id: listFlashcard._id }, "POST", token);
+            const res = await req.json();
+            if (res.ok) {
+                messageApi.success(res.message);
+                setFilteredFlashcards([res?.flashcard, ...filteredFlashcards]);
+                setNewFlashcard(defaultFlashcard);
+                setOpen(false);
+                setPrompt("");
+            }
+        } catch (error) {
+            messageApi.error(error.message);
+        } finally {
+            setLoading(false);
         }
-
-        setLoading(false);
     };
 
     const handleSendPromptAddMore = async () => {
         setLoading(true);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const optimizedPrompt = `
                 Bạn là một chuyên gia ngôn ngữ có khả năng tạo flashcard chất lượng cao. Hãy tạo flashcard cho danh sách từ "${prompt}" cách nhau bằng dấu , với ngôn ngữ ${listFlashcard?.language}.
@@ -260,12 +250,14 @@ export default function CFlashcardDetail({ id_flashcard }) {
                 }]
                 `;
         try {
-            const result = await model.generateContent(optimizedPrompt);
-            const parse = result.response
-                .text()
-                .replace(/```json/g, "")
-                .replace(/```/g, "");
-            setAddMore(JSON.parse(parse));
+            const req = await POST_API("/flashcards/list", { prompt: optimizedPrompt, list_flashcard_id: listFlashcard._id }, "POST", token);
+            const data = await req.json();
+            if (req.ok) {
+                messageApi.success(data.message);
+                setFilteredFlashcards([...data?.flashcards, ...filteredFlashcards]);
+                setOpenAddMore(false);
+                setPrompt("");
+            }
         } catch (error) {
             messageApi.error(error);
         } finally {
@@ -636,7 +628,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
                     </div>
                 </Modal>
                 {/* thêm nhiều từ mới */}
-                <Modal title="Thêm nhiều từ mới" open={openAddMore} onOk={handleOkAddMore} confirmLoading={loading} okText="Tạo" onCancel={handleCancelAddMore}>
+                <Modal title="Thêm nhiều từ mới" open={openAddMore} onOk={handleSendPromptAddMore} confirmLoading={loading} okText="Tạo" onCancel={handleCancelAddMore}>
                     <div className="space-y-3">
                         <div className="flex-1">
                             <p className="">Nhập danh sách từ mới (nhập rồi bấm vào AI Generate)</p>
@@ -648,53 +640,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
                                 onChange={(e) => setPrompt(e.target.value)}
                             />
                         </div>
-                        <div className="flex justify-end">
-                            <button className="btn btn-primary !rounded-md flex items-center gap-2 " disabled={loading} onClick={handleSendPromptAddMore}>
-                                {loading ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ color: "blue" }} /> : <FaBrain />}
-                                AI Generate
-                            </button>
-                        </div>
-                        <div className="space-y-3 max-h-[300px] overflow-y-scroll">
-                            {addMore.length != 0 && <p className="text-gray-500 font-bold">Generate thành công {addMore.length} từ</p>}
-                            {loading && <Spin indicator={<LoadingOutlined spin />} className="h-[300px] flex items-center justify-center" style={{ color: "blue" }} />}
-                            {addMore.map((item, index) => (
-                                <div className="border border-secondary  p-2 rounded-md space-y-2 relative" key={index}>
-                                    <div className="absolute top-1 right-2 cursor-pointer hover:text-red-500" onClick={() => handleRemoveAddMore(item)}>
-                                        <CloseOutlined />
-                                    </div>
-                                    <div className="flex gap-3">
-                                        <div className="flex-1">
-                                            <p className="">Tên từ</p>
-                                            <input placeholder="Tên từ" value={item?.title} onChange={(e) => handleChangeInputAddMore(e, index, title)} />
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className="">Định nghĩa</p>
-                                            <input placeholder="Định nghĩa" value={item?.define} onChange={(e) => handleChangeInputAddMore(e, index, define)} />
-                                        </div>
-                                    </div>
-                                    <div className="flex gap-3 items-center">
-                                        <div className="flex-1">
-                                            <p className="ml-2">Loại từ</p>
-                                            <input type="text" placeholder="Loại từ (N,V,Adj,...)" value={item?.type_of_word} onChange={(e) => handleChangeInputAddMore(e, index, type_of_word)} />
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className="ml-2">Phiên âm</p>
-                                            <input type="text" placeholder="Phiên âm" value={item?.transcription} onChange={(e) => handleChangeInputAddMore(e, index, transcription)} />
-                                        </div>
-                                    </div>
-                                    <div className="flex gap-3 items-center">
-                                        <div className="w-[60%]">
-                                            <p className="ml-2">Ví dụ</p>
-                                            <textarea placeholder="Ví dụ (tối đa 10 câu)" className="h-24" disabled value={item?.example?.map((ex) => `EN: ${ex.en}\nVI: ${ex.vi}`).join("\n\n")} />
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className="ml-2">Ghi chú</p>
-                                            <textarea className="h-24" placeholder="Ghi chú" value={item.note} onChange={(e) => handleChangeInputAddMore(e, index, note)} />
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                        <p>Tối đa 20 từ để không bị lỗi</p>
                     </div>
                 </Modal>
             </div>
@@ -945,7 +891,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
                                 </p>
                                 <div className="flex items-center justify-between">
                                     <p className="font-bold text-gray-600 dark:text-white/60">Ví dụ: </p>
-                                    <p className="text-xs text-gray-600 dark:text-white/60">{handleCompareDate(item?.created_at)}</p>
+                                    <p className="text-xs text-gray-600 dark:text-white/60">{item?.created_at && handleCompareDate(item?.created_at)}</p>
                                 </div>
 
                                 <div className=" border border-secondary dark:border-white/10 rounded-sm px-5 py-3 my-3 h-[220px] overflow-y-auto">
@@ -1004,7 +950,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
                 {isSimple === 2 && (
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 mt-5">
                         {filteredFlashcards?.map((item, index) => (
-                            <div key={index} className="bg-white p-5 shadow-sm rounded-xl font-bold text-secondary space-y-2">
+                            <div key={index} className="bg-white dark:bg-slate-800/50 dark:text-white border border-white/10 p-5 shadow-sm rounded-xl font-bold text-secondary space-y-2">
                                 <div className="flex items-center justify-between">
                                     <div
                                         className={`rounded-full text-white text-[12px] px-3 py-[1px] font-bold ${
@@ -1058,7 +1004,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
                                         </>
                                     )}
                                 </div>
-                                <p className="font-bold text-gray-600">
+                                <p className="font-bold text-gray-600 dark:text-white/70">
                                     Định nghĩa: <span className="italic font-thin">{item?.define}</span>
                                 </p>
                             </div>

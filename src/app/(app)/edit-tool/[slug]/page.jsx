@@ -160,9 +160,9 @@ export default function EditTool({ params }) {
     };
 
     return (
-        <div className="flex items-center justify-center gap-5 flex-col md:flex-row">
+        <div className="flex items-center justify-center gap-5 flex-col md:flex-row text-third dark:text-white">
             <div className="w-full md:w-[1000px]  overflow-y-auto frm-post ">
-                <div className="flex items-center flex-row my-3 bg-white ">
+                <div className="flex items-center flex-row my-3 bg-white dark:bg-slate-800 ">
                     <div className="w-[150px] h-[100px] overflow-hidden group relative">
                         <Image unoptimized src={quiz?.image} alt="" className="w-full h-[100px] object-cover absolute" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                     </div>
@@ -204,13 +204,25 @@ export default function EditTool({ params }) {
                         />
                     </Modal>
                 </div>
-                <div className="flex flex-col gap-3 w-full h-[500px] overflow-y-scroll bg-gray-200 border-2 border-gray-500">
+                <div className="flex flex-col gap-3 w-full h-[500px] overflow-y-scroll bg-gray-200 dark:bg-slate-800/50 border-2 border-gray-500 dark:border-white/10">
                     {quest.map((item, index) => (
-                        <div className="flex items-center gap-2 bg-white p-3" key={index}>
-                            <p className="w-10 h-10 bg-green-100 flex items-center justify-center text-green-500 font-bold">{index + 1}</p>
-                            <div className="w-full">
-                                <input placeholder="Nhập câu hỏi?" className="mb-2" name="quest" value={item.question} onChange={(e) => handleInputChange(index, "question", e.target.value)} />
-                                <input placeholder="Đáp án?" name="answer" value={item.answer} onChange={(e) => handleInputChange(index, "answer", e.target.value)} />
+                        <div className="flex items-center gap-2 bg-white dark:bg-slate-800 p-3" key={index}>
+                            <p className="w-10 h-10 bg-green-100 flex items-center justify-center text-green-500 dark:bg-slate-500/50 dark:text-white font-bold">{index + 1}</p>
+                            <div className="w-full ">
+                                <input
+                                    placeholder="Nhập câu hỏi?"
+                                    className="mb-2 dark:bg-slate-800/50 dark:border-white/10"
+                                    name="quest"
+                                    value={item.question}
+                                    onChange={(e) => handleInputChange(index, "question", e.target.value)}
+                                />
+                                <input
+                                    placeholder="Đáp án?"
+                                    className="dark:bg-slate-800/50 dark:border-white/10"
+                                    name="answer"
+                                    value={item.answer}
+                                    onChange={(e) => handleInputChange(index, "answer", e.target.value)}
+                                />
                             </div>
                             <button className="" onClick={handleDelete(index)}>
                                 <BiTrash />

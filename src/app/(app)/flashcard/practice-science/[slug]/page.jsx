@@ -349,7 +349,7 @@ export default function PractiveFlashcard({ params }) {
     }
 
     return (
-        <div className="px-3 md:px-0 focus-visible:outline-none text-third dark:text-white h-screen" onKeyDown={handleKeyDown} tabIndex={0}>
+        <div className="px-3 md:px-0 focus-visible:outline-none text-third dark:text-white min-h-screen" onKeyDown={handleKeyDown} tabIndex={0}>
             {contextHolder}
             <div className="w-full flex items-center justify-center h-[90%] flex-col gap-5">
                 <div className="w-full flex flex-col md:flex-row gap-5 items-start">
