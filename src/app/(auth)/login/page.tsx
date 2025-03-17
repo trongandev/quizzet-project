@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { GET_API, POST_API } from "@/lib/fetchAPI";
 import { message, Spin } from "antd";
-import { GoogleCircleFilled, GoogleOutlined, LoadingOutlined } from "@ant-design/icons";
+import { GoogleOutlined, LoadingOutlined } from "@ant-design/icons";
 import { IoIosArrowBack } from "react-icons/io";
 import Image from "next/image";
 export default function LoginForm() {
@@ -18,7 +18,7 @@ export default function LoginForm() {
     const fetchProfile = async () => {
         try {
             const res = await GET_API("/profile", token);
-            if (!res.ok) {
+            if (!res.user) {
                 Cookies.remove("token");
             }
         } catch (error) {
