@@ -12,14 +12,16 @@ import { IListFlashcard, IQuiz, ISO } from "@/types/type";
 import Swal from "sweetalert2";
 export default function CHome({ quizData, toolData, publicFlashcards }: { quizData: IQuiz[]; toolData: ISO[]; publicFlashcards: IListFlashcard[] }) {
     useEffect(() => {
-        Swal.fire({
-            title: "Thông báo quan trọng!",
-
-            html: `<p class="text-md">Tên miền trongan.site sẽ hết hạn vào cuối tháng 3, vui lòng truy cập <a href="https://quizzet.site/" class="text-blue-500 underline">quizzet.site</a> để tiếp tục sử dụng dịch vụ của chúng tôi.</p>`,
-            icon: "warning",
-            confirmButtonColor: "#3085d6",
-            confirmButtonText: "Đóng",
-        });
+        const currentDomain = window.location.hostname;
+        if (currentDomain === "trongan.site") {
+            Swal.fire({
+                title: "Thông báo quan trọng!",
+                html: `<p class="text-md">Tên miền trongan.site sẽ hết hạn vào cuối tháng 3, vui lòng truy cập <a href="https://quizzet.site/" class="text-blue-500 underline">quizzet.site</a> để tiếp tục sử dụng dịch vụ của chúng tôi.</p>`,
+                icon: "warning",
+                confirmButtonColor: "#3085d6",
+                confirmButtonText: "Đóng",
+            });
+        }
     }, []);
     return (
         <div className="px-2 dark:text-white">

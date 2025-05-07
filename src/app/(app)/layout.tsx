@@ -17,7 +17,6 @@ import { AiFillHome } from "react-icons/ai";
 import { FaFileAlt } from "react-icons/fa";
 import { GiCardPick } from "react-icons/gi";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import CShowMessage from "@/components/CShowMessage";
 
 export default function RootLayout({ children }: any) {
     const pathname = usePathname();
@@ -45,6 +44,7 @@ export default function RootLayout({ children }: any) {
                 />
 
                 <Script async src="https://www.googletagmanager.com/gtag/js?id=G-L681038P5E"></Script>
+                <Script defer src="https://cloud.umami.is/script.js" data-website-id="01e0d2d3-5b2d-460e-b7e0-b3dff7bc0294"></Script>
             </head>
             <UserProvider>
                 <SocketProvider>
