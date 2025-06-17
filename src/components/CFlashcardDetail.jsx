@@ -260,7 +260,8 @@ export default function CFlashcardDetail({ id_flashcard }) {
                 setPrompt("");
             }
         } catch (error) {
-            messageApi.error(error);
+            messageApi.error("Lỗi khi gửi yêu cầu: " + error.message);
+            console.log("Error in handleSendPromptAddMore:", error);
         } finally {
             setLoading(false);
         }
