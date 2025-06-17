@@ -229,7 +229,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
                 "define": "", // Định nghĩa bằng tiếng Việt, ngắn gọn và dễ hiểu
                 "type_of_word": "", // Loại từ (danh từ, động từ, tính từ, etc.)
                 "transcription": "", // Phiên âm chuẩn theo từng ngôn ngữ
-                 "example": [
+                "example": [
                     {
                     "en": "", // Câu ví dụ bằng ${listFlashcard?.language}, thêm phiên âm 
                     "trans": "",// phiên âm theo ví dụ
@@ -252,6 +252,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
         try {
             const req = await POST_API("/flashcards/list", { prompt: optimizedPrompt, list_flashcard_id: listFlashcard._id }, "POST", token);
             const data = await req.json();
+            console.log("data:::", data);
             if (req.ok) {
                 messageApi.success(data.message);
                 setFilteredFlashcards([...data?.flashcards, ...filteredFlashcards]);

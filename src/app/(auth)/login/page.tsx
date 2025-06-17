@@ -22,6 +22,7 @@ export default function LoginForm() {
                 Cookies.remove("token");
             }
         } catch (error) {
+            console.log("Error fetching profile:", error);
             Cookies.remove("token");
         }
     };

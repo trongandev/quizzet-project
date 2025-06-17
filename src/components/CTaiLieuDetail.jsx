@@ -21,7 +21,7 @@ export default function CTaiLieuDetail({ DeCuongData }) {
                         Bộ đề môn: <label className="text-primary font-bold ">{DeCuongData?.title}</label>
                     </h1>
                     <p>
-                        Tổng: <label className="text-secondary font-bold ">{DeCuongData?.lenght} câu hỏi</label>
+                        Tổng: <label className="text-secondary dark:text-gray-300 font-bold ">{DeCuongData?.lenght} câu hỏi</label>
                     </p>
                 </div>
                 <Link href={`/tailieu/flashcard/${DeCuongData?._id}`} className="flex gap-2 items-center btn btn-primary !rounded-md">
@@ -32,7 +32,7 @@ export default function CTaiLieuDetail({ DeCuongData }) {
             <div className="grid grid-cols-1  gap-2 md:gap-5 mt-5">
                 {DeCuongData &&
                     DeCuongData?.quest?.data_so.map((item, index) => (
-                        <div className=" bg-linear-item-2 rounded-xl border border-white/10  p-5" key={index}>
+                        <div className=" bg-linear-item-2 rounded-xl border border-white/20  p-5" key={index}>
                             <h1 className=" font-bold text-lg dark:text-white/80">
                                 Câu {index + 1}: {item.question.replace("Câu ", "")}
                             </h1>

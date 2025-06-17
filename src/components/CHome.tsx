@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -9,27 +9,11 @@ import CQuizMobile from "./CQuizMobile";
 import CQuiz from "./CQuiz";
 import { IoCopyOutline } from "react-icons/io5";
 import { IListFlashcard, IQuiz, ISO } from "@/types/type";
-import Swal from "sweetalert2";
 export default function CHome({ quizData, toolData, publicFlashcards }: { quizData: IQuiz[]; toolData: ISO[]; publicFlashcards: IListFlashcard[] }) {
-    useEffect(() => {
-        const currentDomain = window.location.hostname;
-        if (currentDomain === "trongan.site") {
-            Swal.fire({
-                title: "Thông báo quan trọng!",
-                html: `<p class="text-md">Tên miền trongan.site sẽ hết hạn vào cuối tháng 3, vui lòng truy cập <a href="https://quizzet.site/" class="text-blue-500 underline">quizzet.site</a> để tiếp tục sử dụng dịch vụ của chúng tôi.</p>`,
-                icon: "warning",
-                confirmButtonColor: "#3085d6",
-                confirmButtonText: "Đóng",
-            });
-        }
-    }, []);
     return (
         <div className="px-2 dark:text-white">
             <div className="">
                 <div className="text-secondary dark:text-white text-center space-y-7 px-5 md:p-0 w-full md:w-[700px] lg:w-[900px] mx-auto">
-                    <p className="text-red-700 dark:text-red-300">
-                        Tên miền trongan.site sẽ hết hạn vào cuối tháng 3, vui lòng truy cập <a href="https://quizzet.site/">quizzet.site</a>
-                    </p>
                     <h1 className=" font-bold text-4xl">Chào mừng bạn đến với Quizzet</h1>
                     <div className="">
                         <p className="">Quizzet là một cộng đồng chia sẻ tài liệu cho sinh viên Đại học Công nghệ Đồng Nai</p>

@@ -190,7 +190,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                     </div>
                 </div>
             ) : (
-                <div className=" text-secondary">Bạn cần đăng nhập để có thể thêm flashcard mới</div>
+                <div className=" text-secondary mt-10 dark:text-gray-300">Bạn cần đăng nhập để có thể thêm nhiều flashcard </div>
             )}
 
             <div className="mt-10">
@@ -216,7 +216,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                         </button>
                     ))}
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 max-h-[350px] overflow-y-scroll">
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
                     {filterLanguage &&
                         filterLanguage.map((item) => (
                             <Link
