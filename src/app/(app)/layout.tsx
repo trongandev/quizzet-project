@@ -46,12 +46,13 @@ export default function RootLayout({ children }: any) {
                 <Script async src="https://www.googletagmanager.com/gtag/js?id=G-L681038P5E"></Script>
                 <Script defer src="https://cloud.umami.is/script.js" data-website-id="01e0d2d3-5b2d-460e-b7e0-b3dff7bc0294"></Script>
             </head>
-            <UserProvider>
-                <SocketProvider>
-                    <body className="bg-linear dark:!bg-gray-700">
+            <body className="bg-linear dark:!bg-gray-700">
+                <UserProvider>
+                    <SocketProvider>
                         <CHeader token={token || ""} />
                         <div className="flex items-center justify-center relative dark:bg-gray-700 dark:text-white">
                             <div className="w-[800px] md:w-[1000px] xl:w-[1200px] py-5 pt-20">{children}</div>
+
                             <div className="fixed bottom-0 bg-gray-100 dark:bg-slate-800/90 dark:text-white  text-black h-[48px] w-full block md:hidden z-10">
                                 <ul className="flex h-full">
                                     <li className="flex-1">
@@ -82,13 +83,13 @@ export default function RootLayout({ children }: any) {
                                 </ul>
                             </div>
                         </div>
-                        <CFooter />
-                        <Analytics />
-                        <GoogleAnalytics gaId="G-L681038P5E" />
-                        <SpeedInsights />
-                    </body>
-                </SocketProvider>
-            </UserProvider>
+                    </SocketProvider>
+                </UserProvider>
+                <CFooter />
+                <Analytics />
+                <GoogleAnalytics gaId="G-L681038P5E" />
+                <SpeedInsights />
+            </body>
         </html>
     );
 }

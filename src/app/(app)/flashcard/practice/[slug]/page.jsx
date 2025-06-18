@@ -8,6 +8,7 @@ import { HiMiniSpeakerWave } from "react-icons/hi2";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import { BiSlideshow } from "react-icons/bi";
 import { IoSend } from "react-icons/io5";
+import { EdgeSpeechTTS } from "@lobehub/tts";
 const FEATURES = {
     FLASHCARD: 1,
     QUIZ: 2,
@@ -92,29 +93,53 @@ export default function PractiveFlashcard({ params }) {
         [flashcards]
     );
 
-    // Handle audio playback
-    const speakWord = async (text, type, id) => {
-        setLoadingAudio(id);
+    const [tts] = useState(() => new EdgeSpeechTTS({ locale: "en-US" }));
 
-        if (language == "english") {
-            const req = await fetch(`${process.env.API_ENDPOINT}/proxy?audio=${text}&type=${type}`);
-            const blob = await req.blob();
-            const url = URL.createObjectURL(blob);
-            const audio = new Audio(url);
-            audio.play();
-        } else {
-            if ("speechSynthesis" in window) {
-                const utterance = new SpeechSynthesisUtterance(text);
-                if (language == "japan") utterance.lang = "ja-JP"; // Thiết lập ngôn ngữ tiếng Nhật
-                if (language == "korea") utterance.lang = "ko-KR"; // Thiết lập ngôn ngữ tiếng Hàn
-                if (language == "chinese") utterance.lang = "zh-CN"; // Thiết lập ngôn ngữ tiếng Trung
-                window.speechSynthesis.speak(utterance);
-            } else {
-                alert("Trình duyệt của bạn không hỗ trợ Text-to-Speech.");
+    // Function để lấy voice dựa trên language và type
+    const getVoiceByLanguage = useCallback((language, type) => {
+        if (language === "english" && type === 1) return "en-GB-SoniaNeural";
+        if (language === "english" && type === 2) return "en-US-GuyNeural";
+        if (language === "vietnamese") return "vi-VN-HoaiMyNeural";
+        if (language === "germany") return "de-DE-KatjaNeural";
+        if (language === "france") return "fr-FR-DeniseNeural";
+        if (language === "japan") return "ja-JP-NanamiNeural";
+        if (language === "korea") return "ko-KR-SunHiNeural";
+        if (language === "chinese") return "zh-CN-XiaoxiaoNeural";
+        return "en-US-GuyNeural"; // default
+    }, []);
+
+    const speakWord = useCallback(
+        async (text, type, id) => {
+            const voice = getVoiceByLanguage(language, type);
+
+            try {
+                setLoadingAudio(id);
+                const response = await tts.create({
+                    input: text,
+                    options: {
+                        voice: voice,
+                    },
+                });
+
+                const audioBuffer = await response.arrayBuffer();
+                const blob = new Blob([audioBuffer], { type: "audio/mpeg" });
+                const url = URL.createObjectURL(blob);
+                const audio = new Audio(url);
+
+                audio.addEventListener("ended", () => {
+                    URL.revokeObjectURL(url);
+                });
+
+                await audio.play();
+            } catch (error) {
+                console.error("TTS Error:", error);
+                messageApi.error("Lỗi khi phát âm thanh: " + error.message);
+            } finally {
+                setLoadingAudio(null);
             }
-        }
-        setLoadingAudio(null);
-    };
+        },
+        [tts, getVoiceByLanguage, messageApi]
+    );
 
     // Navigation handlers
     const handleChangeIndex = useCallback(

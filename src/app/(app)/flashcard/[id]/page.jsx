@@ -1,4 +1,4 @@
-import CFlashcardDetail from "@/components/CFlashcardDetail";
+import CFlashcardDetail from "./CFlashcardDetail";
 import React from "react";
 import { GET_API_WITHOUT_COOKIE } from "@/lib/fetchAPI";
 

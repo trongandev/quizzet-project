@@ -65,7 +65,7 @@ export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
             <div className="flex justify-center md:justify-between items-center mb-4 gap-3 flex-wrap ">
                 <div className="flex gap-3 items-center">
                     <Tooltip placement="top" title="Sắp xếp theo thời gian">
-                        <button onClick={() => handleDefault()} className="btn btn-primary !rounded-md text-[11px]">
+                        <button onClick={() => handleDefault()} className="btn btn-primary !rounded-md text-sm">
                             Default
                         </button>
                     </Tooltip>
@@ -119,13 +119,13 @@ export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {data?.map((item) => (
-                    <div key={item._id} className=" rounded-xl  shadow-md h-[400px]">
+                    <div key={item._id} className="group hover:shadow-md hover:scale-105 transition-all duration-300  rounded-xl border border-white/10 shadow-md h-[400px]">
                         <div className="overflow-hidden relative h-full rounded-[8px]">
                             <Link className="block" href={`/quiz/detail/${item.slug}`}>
                                 <Image
                                     src={item.img}
                                     alt={item.title}
-                                    className="absolute h-full w-full object-cover hover:scale-110 duration-300  brightness-90"
+                                    className="absolute h-full w-full object-cover group-hover:scale-105 duration-300  brightness-90"
                                     fill
                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                     priority

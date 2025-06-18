@@ -10,8 +10,9 @@ export default function UserCreateFC({ item }: any) {
     return (
         <Link
             href={`/flashcard/${item?._id}`}
-            className="w-full h-[181px] bg-gray-100 dark:bg-slate-800/50 rounded-xl block shadow-sm p-3 border-white/10 border hover:shadow-md transition-all duration-300"
+            className="relative group overflow-hidden w-full h-[181px] bg-gray-200/80 dark:bg-slate-800/50 rounded-xl block shadow-sm p-3 border-white/10 border hover:shadow-md transition-all duration-300"
             key={item._id}>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
             <h1 className="font-bold line-clamp-1" title={item.title}>
                 {item.title}
             </h1>

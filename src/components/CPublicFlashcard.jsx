@@ -8,8 +8,8 @@ import { MdPublic } from "react-icons/md";
 import { LoadingOutlined } from "@ant-design/icons";
 import { languageOption } from "@/lib/languageOption";
 import Cookies from "js-cookie";
-import PublicFC from "./FlashcardP/PublicFC";
-import UserCreateFC from "./FlashcardP/UserCreateFC";
+import PublicFC from "../app/(app)/flashcard/[id]/PublicFC";
+import UserCreateFC from "../app/(app)/flashcard/[id]/UserCreateFC";
 export default function CPublicFlashCard({ publicFlashcards }) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -103,7 +103,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 max-h-[350px] overflow-y-scroll">
                         <div
                             onClick={showModal}
-                            className="w-full text-primary cursor-pointer hover:border-primary bg-gray-100 dark:bg-slate-800/50 border border-white/10 rounded-xl shadow-sm p-3 hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 flex-col  h-[181px]">
+                            className="w-full text-primary cursor-pointer hover:border-primary bg-gray-200/80 dark:bg-slate-800/50 border border-white/10 rounded-xl shadow-sm p-3 hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 flex-col  h-[181px]">
                             <AiOutlinePlus size={30} />
                             <h1>Tạo list từ mới</h1>
                         </div>

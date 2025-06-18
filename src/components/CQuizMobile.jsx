@@ -67,7 +67,7 @@ export default function CQuizMobile({ quizData }) {
             <div className="flex justify-center md:justify-between items-center mb-4 gap-3 flex-wrap ">
                 <div className="flex gap-3 items-center">
                     <Tooltip placement="top" title="Sắp xếp theo thời gian">
-                        <button onClick={() => handleDefault()} className="btn btn-primary text-[11px]">
+                        <button onClick={() => handleDefault()} className="btn btn-primary text-sm">
                             Default
                         </button>
                     </Tooltip>

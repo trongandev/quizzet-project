@@ -14,7 +14,9 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
         <div className="px-2 dark:text-white">
             <div className="">
                 <div className="text-secondary dark:text-white text-center space-y-7 px-5 md:p-0 w-full md:w-[700px] lg:w-[900px] mx-auto">
-                    <h1 className=" font-bold text-4xl">Chào mừng bạn đến với Quizzet</h1>
+                    <h1 className="font-bold text-4xl bg-gradient-to-r from-purple-800 to-secondary dark:from-white/70 dark:to-purple-500 text-transparent bg-clip-text">
+                        Chào mừng bạn đến với Quizzet
+                    </h1>
                     <div className="">
                         <p className="">Quizzet là một cộng đồng chia sẻ tài liệu cho sinh viên Đại học Công nghệ Đồng Nai</p>
                         <p>Trang web này giúp bạn tạo ra các bài quiz online đồng thời cũng là nơi chia sẻ tài liệu các môn đại cương hoặc chuyên ngành một cách dễ dàng và nhanh chóng.</p>
@@ -74,8 +76,9 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
                             publicFlashcards.map((item) => (
                                 <Link
                                     href={`/flashcard/${item?._id}`}
-                                    className="w-full mt-2 h-[181px] bg-gray-100 dark:bg-slate-800/50 rounded-xl block shadow-sm p-3  hover:shadow-md transition-all duration-300"
+                                    className="relative group w-full mt-2 h-[181px] bg-gray-200/80 dark:bg-slate-800/50 rounded-xl block shadow-sm p-3  hover:shadow-md transition-all duration-300 overflow-hidden border border-white/10"
                                     key={item._id}>
+                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
                                     <h1 className="font-bold line-clamp-1" title={item?.title}>
                                         {item?.title}
                                     </h1>

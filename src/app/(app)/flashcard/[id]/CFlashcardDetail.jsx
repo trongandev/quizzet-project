@@ -14,8 +14,8 @@ import Image from "next/image";
 import { AiOutlineAppstoreAdd } from "react-icons/ai";
 import { languageOption } from "@/lib/languageOption";
 import { optimizedPromptFCMore, optimizedPromptFCSingle } from "@/lib/optimizedPrompt";
-import ItemFC from "./FlashcardP/ItemFCDetail";
-import ItemFCSimple from "./FlashcardP/ItemFCSimple";
+import ItemFC from "./ItemFCDetail";
+import ItemFCSimple from "./ItemFCSimple";
 import { EdgeSpeechTTS } from "@lobehub/tts";
 export default function CFlashcardDetail({ id_flashcard }) {
     const [open, setOpen] = useState(false);

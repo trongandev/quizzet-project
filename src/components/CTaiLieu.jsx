@@ -121,13 +121,15 @@ export default function CTaiLieu({ toolData }) {
             )}
             <div className="grid grid-cols-2 lg:grid-cols-4 md:grid-cols-3 gap-4">
                 {data?.map((item, index) => (
-                    <div className="bg-white dark:bg-slate-800/50 rounded-xl h-[200px] flex flex-col md:flex-row overflow-hidden shadow-md " key={index}>
+                    <div
+                        className="bg-white dark:bg-slate-800/50 hover:shadow-md rounded-xl h-[200px] flex flex-col md:flex-row overflow-hidden shadow-sm border border-white/10 group hover:scale-105 transition-all duration-300"
+                        key={index}>
                         <div className="relative flex-1">
                             <Image
                                 unoptimized
                                 src={item.image}
                                 alt={item.title}
-                                className="object-cover absolute h-full"
+                                className="object-cover absolute h-full hover:scale-105 transition-all duration-300"
                                 priority
                                 fill
                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
