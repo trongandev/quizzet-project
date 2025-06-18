@@ -22,7 +22,7 @@ export async function generateMetadata() {
             description: `Quizzet`,
             type: "website",
             // images: quiz[0]?.img,
-            url: "https://trongan.site",
+            url: "https://quizzet.site",
         },
     };
 }

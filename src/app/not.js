@@ -11,7 +11,7 @@ async function generateSitemap() {
                 .map(
                     (post) => `
   <url>
-    <loc>https://www.trongan.site/decuong/${post.slug}</loc>
+    <loc>https://www.quizzet.site/decuong/${post.slug}</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
@@ -23,13 +23,13 @@ async function generateSitemap() {
             // Các URL cố định
             const staticUrls = `
   <url>
-    <loc>https://www.trongan.site</loc>
+    <loc>https://www.quizzet.site</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>yearly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.trongan.site/chude</loc>
+    <loc>https://www.quizzet.site/chude</loc>
     <lastmod>${new Date().toISOString()}</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>

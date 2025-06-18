@@ -1,28 +1,24 @@
 "use client";
 import { GET_API_WITHOUT_COOKIE, POST_API } from "@/lib/fetchAPI";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import Cookies from "js-cookie";
-import { GiStopSign } from "react-icons/gi";
-import { CiShuffle } from "react-icons/ci";
 import { Button, message, Modal, Popconfirm, Popover, Select, Spin, Switch } from "antd";
 import { FaBrain, FaTrash } from "react-icons/fa6";
-import { CloseOutlined, LoadingOutlined, QuestionCircleOutlined } from "@ant-design/icons";
-import { HiMiniSpeakerWave } from "react-icons/hi2";
+import { LoadingOutlined } from "@ant-design/icons";
 import { IoIosArrowBack, IoMdAdd } from "react-icons/io";
 import { MdEdit, MdOutlineQuestionMark } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import handleCompareDate from "@/lib/CompareDate";
-import { IoClose } from "react-icons/io5";
-import { TiEdit } from "react-icons/ti";
 import { useUser } from "@/context/userContext";
 import Image from "next/image";
 import { AiOutlineAppstoreAdd } from "react-icons/ai";
 import { languageOption } from "@/lib/languageOption";
-
+import { optimizedPromptFCMore, optimizedPromptFCSingle } from "@/lib/optimizedPrompt";
+import ItemFC from "./FlashcardP/ItemFCDetail";
+import ItemFCSimple from "./FlashcardP/ItemFCSimple";
+import { EdgeSpeechTTS } from "@lobehub/tts";
 export default function CFlashcardDetail({ id_flashcard }) {
     const [open, setOpen] = useState(false);
-    const [openConfirm, setOpenConfirm] = useState(false);
     const [loading, setLoading] = useState(false);
     const [loadingConfirm, setLoadingConfirm] = useState(false);
     const [loadingAudio, setLoadingAudio] = useState(null);
@@ -49,8 +45,65 @@ export default function CFlashcardDetail({ id_flashcard }) {
     const { user } = useUser();
 
     const [openAddMore, setOpenAddMore] = useState(false);
-    const [addMore, setAddMore] = useState([]);
+    const [openTool, setOpenTool] = useState(false);
+    const [tts] = useState(() => new EdgeSpeechTTS({ locale: "en-US" }));
 
+    // Function để lấy voice dựa trên language và type
+    const getVoiceByLanguage = useCallback((language, type) => {
+        if (language === "english" && type === 1) return "en-GB-SoniaNeural";
+        if (language === "english" && type === 2) return "en-US-GuyNeural";
+        if (language === "vietnamese") return "vi-VN-HoaiMyNeural";
+        if (language === "germany") return "de-DE-KatjaNeural";
+        if (language === "france") return "fr-FR-DeniseNeural";
+        if (language === "japan") return "ja-JP-NanamiNeural";
+        if (language === "korea") return "ko-KR-SunHiNeural";
+        if (language === "chinese") return "zh-CN-XiaoxiaoNeural";
+        return "en-US-GuyNeural"; // default
+    }, []);
+
+    const speakWord = useCallback(
+        async (text, type, id) => {
+            if (disableAudio) return;
+
+            const voice = getVoiceByLanguage(listFlashcard?.language, type);
+
+            try {
+                setLoadingAudio(id);
+                setDisableAudio(true);
+
+                const response = await tts.create({
+                    input: text,
+                    options: {
+                        voice: voice,
+                    },
+                });
+
+                const audioBuffer = await response.arrayBuffer();
+                const blob = new Blob([audioBuffer], { type: "audio/mpeg" });
+                const url = URL.createObjectURL(blob);
+                const audio = new Audio(url);
+
+                audio.addEventListener("ended", () => {
+                    URL.revokeObjectURL(url);
+                });
+
+                audio.play();
+            } catch (error) {
+                console.error("TTS Error:", error);
+                messageApi.error("Lỗi khi phát âm thanh: " + error.message);
+            } finally {
+                setLoadingAudio(null);
+                setTimeout(() => {
+                    setDisableAudio(false);
+                }, 1000);
+            }
+        },
+        [disableAudio, listFlashcard?.language, tts, getVoiceByLanguage, messageApi]
+    );
+
+    const handleOpenChange = (newOpen) => {
+        setOpenTool(newOpen);
+    };
     useEffect(() => {
         const fetchAPI = async () => {
             const req = await GET_API_WITHOUT_COOKIE(`/flashcards/${id_flashcard}`);
@@ -66,7 +119,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
             }
         };
         fetchAPI();
-    }, []);
+    }, [id_flashcard]);
 
     useEffect(() => {
         const counts = flashcard?.reduce((acc, card) => {
@@ -96,6 +149,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
     // showw modal thêm mới từ trong flashcard
     const showModal = () => {
         setOpen(true);
+        setOpenTool(false);
     };
 
     const handleOk = async () => {
@@ -122,26 +176,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
     // show modal thêm nhiều từ mới từ trong flashcard
     const showModalAddMore = () => {
         setOpenAddMore(true);
-    };
-
-    const handleOkAddMore = async () => {
-        setLoading(true);
-        const req = await POST_API("/flashcards/list", { flashcards: addMore, list_flashcard_id: listFlashcard._id }, "POST", token);
-        const res = await req.json();
-        if (req.ok) {
-            setOpenAddMore(false);
-            setFlashcard([...res?.flashcards, ...flashcard]);
-            setFilteredFlashcards([...res?.flashcards, ...flashcard]);
-            setAddMore([]);
-            setPrompt("");
-            setNewFlashcard(defaultFlashcard);
-        } else {
-            messageApi.open({
-                type: "error",
-                content: res.message,
-            });
-        }
-        setLoading(false);
+        setOpenTool(false);
     };
 
     const handleCancelAddMore = () => {
@@ -152,47 +187,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
         try {
             const word = method === 1 ? editWord.title : newFlashcard.title;
             // const word = newFlashcard.title;
-            const optimizedPrompt = `
-                    Bạn là một chuyên gia ngôn ngữ có khả năng tạo flashcard chất lượng cao. Hãy tạo flashcard cho từ "${word}" với ngôn ngữ ${listFlashcard?.language}.
-                    
-                    Yêu cầu:
-                    1. Phải cung cấp thông tin chính xác và đầy đủ
-                    2. Ví dụ phải thực tế và dễ hiểu
-                    3. Ghi chú phải hữu ích cho việc ghi nhớ
-                    4. Định dạng JSON phải chính xác
-                    
-                    Trả về kết quả theo cấu trúc JSON sau và KHÔNG kèm theo bất kỳ giải thích nào:
-                    
-                    {
-                    "title": "", // Từ gốc bằng tiếng ${listFlashcard?.language} (không ghi phiên âm)
-                    "define": "", // Định nghĩa bằng tiếng Việt, ngắn gọn và dễ hiểu
-                    "type_of_word": "", // Loại từ (danh từ, động từ, tính từ, etc.)
-                    "transcription": "", // Phiên âm chuẩn theo từng ngôn ngữ
-                    "example": [
-                        {
-                        "en": "", // Câu ví dụ bằng ${listFlashcard?.language}
-                        "trans": "",// phiên âm theo ví dụ
-                        "vi": ""  // Dịch nghĩa tiếng Việt
-                        },
-                        {
-                        "en": "",
-                        "trans": "",
-                        "vi": ""
-                        },
-                        {
-                        "en": "",
-                        "trans": "",
-                        "vi": ""
-                        },
-                        {
-                        "en": "",
-                        "trans": "",
-                        "vi": ""
-                        }
-                    ],
-                    "note": "" // Tips ghi nhớ, cách dùng đặc biệt, hoặc các lưu ý quan trọng bằng tiếng Việt. Các dấu nháy đôi "" thay bằng dấu ngoặc () để tránh lỗi JSON
-                    }
-                    `;
+            const optimizedPrompt = optimizedPromptFCSingle(word, listFlashcard?.language);
             setLoading(true);
 
             const req = await POST_API("/flashcards/create-ai", { prompt: optimizedPrompt, list_flashcard_id: listFlashcard._id }, "POST", token);
@@ -214,41 +209,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
     const handleSendPromptAddMore = async () => {
         setLoading(true);
 
-        const optimizedPrompt = `
-                Bạn là một chuyên gia ngôn ngữ có khả năng tạo flashcard chất lượng cao. Hãy tạo flashcard cho danh sách từ "${prompt}" cách nhau bằng dấu , với ngôn ngữ ${listFlashcard?.language}.
-                
-                Yêu cầu:
-                1. Phải cung cấp thông tin chính xác và đầy đủ
-                2. Ghi chú phải hữu ích cho việc ghi nhớ
-                3. Định dạng JSON phải chính xác
-                
-                Trả về kết quả theo cấu trúc mảng JSON sau và KHÔNG kèm theo bất kỳ giải thích nào:
-                
-                [{
-                "title": "", // Từ gốc bằng tiếng ${listFlashcard?.language} (không ghi phiên âm)
-                "define": "", // Định nghĩa bằng tiếng Việt, ngắn gọn và dễ hiểu
-                "type_of_word": "", // Loại từ (danh từ, động từ, tính từ, etc.)
-                "transcription": "", // Phiên âm chuẩn theo từng ngôn ngữ
-                "example": [
-                    {
-                    "en": "", // Câu ví dụ bằng ${listFlashcard?.language}, thêm phiên âm 
-                    "trans": "",// phiên âm theo ví dụ
-                    "vi": "" // Dịch nghĩa tiếng Việt
-                    },
-                    {
-                    "en": "",
-                    "trans": "",
-                    "vi": ""
-                    },
-                    {
-                    "en": "",
-                    "trans": "",
-                    "vi": ""
-                    }
-                ],
-                "note": "" // Tips ghi nhớ, cách dùng đặc biệt, hoặc các lưu ý quan trọng bằng tiếng Việt. Các dấu nháy đôi "" thay bằng dấu ngoặc () để tránh lỗi JSON
-                }]
-                `;
+        const optimizedPrompt = optimizedPromptFCMore(prompt, listFlashcardlanguage);
         try {
             const req = await POST_API("/flashcards/list", { prompt: optimizedPrompt, list_flashcard_id: listFlashcard._id }, "POST", token);
             const data = await req.json();
@@ -267,43 +228,8 @@ export default function CFlashcardDetail({ id_flashcard }) {
         }
     };
 
-    const handleRemoveAddMore = (item) => {
-        setAddMore((prev) => prev.filter((i) => i !== item));
-    };
-
-    const handleChangeInputAddMore = (e, index, key) => {
-        const updatedAddMore = addMore.map((item, i) => (i === index ? { ...item, [key]: e.target.value } : item));
-        setAddMore(updatedAddMore);
-    };
-
-    const speakWord = async (text, type, id) => {
-        if (disableAudio) return;
-        else {
-            setLoadingAudio(id);
-            setDisableAudio(true);
-            if (listFlashcard?.language == "english") {
-                const req = await fetch(`${process.env.API_ENDPOINT}/proxy?audio=${text}&type=${type}`);
-                const blob = await req.blob();
-                const url = URL.createObjectURL(blob);
-                const audio = new Audio(url);
-                audio.play();
-            } else {
-                if ("speechSynthesis" in window) {
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    if (listFlashcard?.language == "japan") utterance.lang = "ja-JP"; // Thiết lập ngôn ngữ tiếng Nhật
-                    if (listFlashcard?.language == "korea") utterance.lang = "ko-KR"; // Thiết lập ngôn ngữ tiếng Hàn
-                    if (listFlashcard?.language == "chinese") utterance.lang = "zh-CN"; // Thiết lập ngôn ngữ tiếng Trung
-                    window.speechSynthesis.speak(utterance);
-                } else {
-                    alert("Trình duyệt của bạn không hỗ trợ Text-to-Speech.");
-                }
-            }
-            setLoadingAudio(null);
-            setTimeout(() => {
-                setDisableAudio(false);
-            }, 1000);
-        }
-    };
+    // const handleRemoveAddMore = (item) => {
+    //     setAddMore((prev) => prev.filter((i) => i !== item));    // };
 
     const showPopconfirm = () => {
         setOpenConfirm(true);
@@ -357,6 +283,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
 
     const showModalEdit = () => {
         setOpenEdit(true);
+        setOpenTool(false);
     };
 
     const handleOkEdit = async () => {
@@ -447,19 +374,60 @@ export default function CFlashcardDetail({ id_flashcard }) {
     return (
         <div className="text-third dark:text-white px-3 md:px-0">
             {contextHolder}
-            <Link href="/flashcard" className="hover:text-primary hover:underline flex items-center gap-1">
-                <IoIosArrowBack /> Quay lại
-            </Link>
+            <div className="flex items-center justify-between">
+                <Link href="/flashcard" className="hover:text-primary hover:underline flex items-center gap-1">
+                    <IoIosArrowBack /> Quay lại
+                </Link>
+                <div className="block md:hidden">
+                    <Popover
+                        content={
+                            <div className="flex-1 flex justify-between gap-3 flex-col">
+                                <button className="btn btn-primary !rounded-md flex items-center gap-1" onClick={showModalEdit}>
+                                    <MdEdit /> Chỉnh sửa
+                                </button>
+                                <button className="btn btn-primary !rounded-md flex items-center gap-1" onClick={showModal}>
+                                    <IoMdAdd /> Thêm
+                                </button>
+                                <button className="btn btn-primary flex items-center gap-1 !rounded-md" onClick={showModalAddMore}>
+                                    <AiOutlineAppstoreAdd /> Thêm nhiều
+                                </button>
+                                <div className="">
+                                    <Popconfirm
+                                        title="Xóa flashcard này?"
+                                        description="Bạn chắc chứ? nó sẽ không khôi phục được đâu"
+                                        onConfirm={confirm}
+                                        okText="Chắc chắn!"
+                                        cancelText="Để suy nghĩ lại"
+                                        okButtonProps={{
+                                            loading: loading,
+                                        }}>
+                                        <button disabled={user?._id == listFlashcard?.userId} className="btn btn-primary !bg-red-500 flex items-center gap-1" onClick={showPopconfirm}>
+                                            <FaTrash /> Xóa
+                                        </button>
+                                    </Popconfirm>
+                                </div>
+                            </div>
+                        }
+                        title="Tính năng"
+                        trigger="click"
+                        open={openTool}
+                        onOpenChange={handleOpenChange}>
+                        <button type="primary" className="btn btn-primary !rounded-md flex items-center gap-1">
+                            Tính năng
+                        </button>
+                    </Popover>
+                </div>
+            </div>
             <div className="flex items-center gap-2 md:gap-5 md:flex-row flex-col">
                 <h1 className="text-2xl font-bold text-primary text-left flex-1">Flashcard: {listFlashcard?.title}</h1>
                 {user?._id == listFlashcard?.userId?._id ? (
-                    <div className="flex-1 flex justify-between gap-2 items-center">
-                        <div className="flex gap-2 items-center h-[36px]">
+                    <div className="flex-1 hidden md:flex justify-between gap-2 items-center">
+                        <div className="flex gap-2 items-center h-[36px] ">
                             <button className="btn btn-primary h-full !rounded-md" onClick={showModalEdit}>
                                 <MdEdit />
                             </button>
-                            <button className="btn btn-primary h-full !rounded-md" onClick={showModal}>
-                                <IoMdAdd />
+                            <button className="btn btn-primary h-full !rounded-md flex items-center gap-1" onClick={showModal}>
+                                <IoMdAdd /> Thêm
                             </button>
                             <button className="btn btn-primary flex items-center gap-1 !rounded-md" onClick={showModalAddMore}>
                                 <AiOutlineAppstoreAdd /> Thêm nhiều
@@ -685,7 +653,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
                 của Hermann Ebbinghaus , con người cần lặp lại <label className="font-bold">từ 5–7 lần</label> tại các khoảng thời gian khác nhau để <label className="font-bold">ghi nhớ</label> lâu
                 dài.
             </p>
-            <div className=" h-[80px] my-3 flex flex-1 text-right gap-1 md:gap-3 text-[12px]">
+            <div className=" md:h-[80px] my-3 grid grid-cols-3 md:grid-cols-5 flex-1 text-right gap-2 md:gap-3 text-[12px]">
                 <div
                     className={`flex-1 flex  flex-col rounded-lg justify-between p-2 md:p-3 cursor-pointer   border-2 ${
                         choose == 0 ? "border-2 border-[#636363] text-[#636363] bg-white dark:bg-slate-800/50" : "bg-[#636363] text-white"
@@ -703,7 +671,7 @@ export default function CFlashcardDetail({ id_flashcard }) {
                     </div>
                 </div>
                 <div
-                    className={`flex-1 flex flex-col  rounded-lg justify-between p-2 md:p-3  cursor-pointer border-2  ${
+                    className={`flex-1 flex flex-col  rounded-lg justify-between p-2 md:p-3  cursor-pointer border border-white/5 bg-gradient-to-r from-green-500/30 to-blue-500/30   ${
                         choose == 1 ? "border-[#4CAF50] text-[#4CAF50] bg-white dark:bg-slate-800/50" : "bg-[#4CAF50] text-white"
                     }`}
                     onClick={() => handleSetChoose(1)}>
@@ -735,213 +703,28 @@ export default function CFlashcardDetail({ id_flashcard }) {
                 {isSimple === 1 && (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-5 text-secondary dark:text-white">
                         {filteredFlashcards?.map((item, index) => (
-                            <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-5 shadow-sm rounded-xl" key={index}>
-                                <div className="flex items-center justify-between">
-                                    <div
-                                        className={`rounded-full text-white text-[12px] px-3 py-[1px] font-bold ${
-                                            item?.status === "reviewing" ? "bg-[#FFC107]" : item?.status === "remembered" ? "bg-[#2196F3]" : "bg-[#4CAF50]"
-                                        }`}>
-                                        {item?.status === "reviewing" ? "Cần ôn tập" : item?.status === "remembered" ? "Đã nhớ" : "Đã học"}
-                                    </div>
-                                    <div className={`rounded-full text-white text-[12px] px-3 py-[1px] font-bold bg-[#4CAF50]`}>Số lần học: {item?.progress?.learnedTimes}</div>
-                                    <div className={`rounded-full text-white text-[12px] px-3 py-[1px] font-bold bg-[#9C27B0]`}>Ghi nhớ: {item?.progress?.percentage}%</div>
-                                </div>
-                                <div className="flex items-center justify-between gap-5">
-                                    <div className="flex gap-2 items-center font-bold flex-wrap">
-                                        <h1 className="text-primary text-lg" title={item?.title}>
-                                            {item?.title}
-                                        </h1>
-
-                                        <p>{item?.transcription}</p>
-                                        {listFlashcard?.language == "english" ? (
-                                            <>
-                                                <div className="flex items-center gap-1 mr-2 cursor-pointer" onClick={() => speakWord(item?.title, 1, item?._id)}>
-                                                    {loadingAudio == item?._id ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ color: "blue" }} /> : <HiMiniSpeakerWave />}
-                                                    <p>UK</p>
-                                                </div>
-                                                <div className="flex items-center gap-1 cursor-pointer" onClick={() => speakWord(item?.title, 2, item?._id)}>
-                                                    {loadingAudio == item?._id ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ color: "blue" }} /> : <HiMiniSpeakerWave />}
-                                                    US
-                                                </div>
-                                            </>
-                                        ) : (
-                                            <HiMiniSpeakerWave className="flex items-center gap-1 cursor-pointer" onClick={() => speakWord(item?.title, 2, item?._id)} />
-                                        )}
-                                    </div>
-                                    {user?._id == listFlashcard?.userId?._id ? (
-                                        <div className="flex gap-2 items-center">
-                                            <TiEdit className="hover:text-primary cursor-pointer" onClick={() => handleEditWord(item)} />
-                                            <Popconfirm
-                                                title={`Xóa từ "${item?.title}"`}
-                                                description="Bạn có chắc muốn xóa từ này không?"
-                                                okText="Chắc chắn"
-                                                onConfirm={() => confirmDelete(item._id)}
-                                                okButtonProps={{
-                                                    loading: loadingConfirm,
-                                                }}
-                                                cancelText="Để suy nghĩ lại"
-                                                icon={
-                                                    <QuestionCircleOutlined
-                                                        style={{
-                                                            color: "red",
-                                                        }}
-                                                    />
-                                                }>
-                                                <IoClose className="hover:text-red-500 cursor-pointer" />
-                                            </Popconfirm>
-                                        </div>
-                                    ) : (
-                                        ""
-                                    )}
-
-                                    {/* model chỉnh sửa từ */}
-                                    <Modal
-                                        title="Chỉnh sửa từ"
-                                        open={openEditWord == item?._id}
-                                        onOk={handleOkEditWord}
-                                        confirmLoading={loadingConfirm}
-                                        cancelText="Hủy bỏ"
-                                        okText="Chỉnh sửa"
-                                        onCancel={handleCancelEditWord}>
-                                        <div className="space-y-3">
-                                            <div className="flex gap-3 items-end">
-                                                <div className="flex-1">
-                                                    <div className="flex gap-2 items-center">
-                                                        <p className="ml-2">Tên từ (nhập rồi bấm vào AI Generate)</p>
-                                                        <Popover
-                                                            content={
-                                                                <div>
-                                                                    <p>Bấm Enter để AI Generate</p>
-                                                                    <p>Bấm Ctrl + Enter để tạo</p>
-                                                                </div>
-                                                            }
-                                                            title="Mẹo nhỏ"
-                                                            trigger="click"
-                                                            open={openTrick}
-                                                            onOpenChange={handleOpenChangeTrick}>
-                                                            <MdOutlineQuestionMark className="text-red-500" />
-                                                        </Popover>
-                                                    </div>
-                                                    <input
-                                                        type="text"
-                                                        className=""
-                                                        placeholder="Tên từ mới "
-                                                        value={editWord.title}
-                                                        onChange={(e) => setEditWord({ ...editWord, title: e.target.value })}
-                                                        onKeyDown={handleKeyPressEdit}
-                                                    />
-                                                </div>
-                                                <button className="btn btn-primary flex items-center gap-2" onClick={() => handleSendPrompt(1)}>
-                                                    {loading ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ color: "white" }} /> : <FaBrain />}
-                                                    AI Generate
-                                                </button>
-                                            </div>
-                                            <div className="">
-                                                <p className="ml-2">Định nghĩa</p>
-                                                <input placeholder="Định nghĩa  (bắt buộc)" value={editWord.define} onChange={(e) => setEditWord({ ...editWord, define: e.target.value })} />
-                                            </div>
-                                            <div className="border border-secondary  p-2 rounded-md space-y-2">
-                                                <p className="text-gray-700">Không yêu cầu phải điền</p>
-                                                <div className="flex gap-3 items-center">
-                                                    <div className="flex-1">
-                                                        <p className="ml-2">Loại từ</p>
-                                                        <input
-                                                            type="text"
-                                                            placeholder="Loại từ (N,V,Adj,...)"
-                                                            value={editWord.type_of_word}
-                                                            onChange={(e) => setEditWord({ ...editWord, type_of_word: e.target.value })}
-                                                        />
-                                                    </div>
-                                                    <div className="flex-1">
-                                                        <p className="ml-2">Phiên âm</p>
-                                                        <input
-                                                            type="text"
-                                                            placeholder="Phiên âm"
-                                                            value={editWord.transcription}
-                                                            onChange={(e) => setEditWord({ ...editWord, transcription: e.target.value })}
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className="">
-                                                    <p className="ml-2">Ví dụ</p>
-                                                    <textarea
-                                                        placeholder="Ví dụ (tối đa 10 câu)"
-                                                        className="h-32"
-                                                        onChange={(e) => {
-                                                            const updatedExamples = e.target.value.split("\n\n").map((sentence) => {
-                                                                const [enLine, transLine, viLine] = sentence.split("\n");
-                                                                const en = enLine?.replace(/^LANG: /, "").trim();
-                                                                const trans = transLine?.replace(/^TRANS: /, "").trim();
-                                                                const vi = viLine?.replace(/^VIE: /, "").trim();
-                                                                return { en, trans, vi };
-                                                            });
-                                                            setEditWord({ ...editWord, example: updatedExamples });
-                                                        }}
-                                                    />
-                                                </div>
-                                                <div className="">
-                                                    <p className="ml-2">Ghi chú</p>
-                                                    <textarea className="h-20" placeholder="Ghi chú" value={editWord.note} onChange={(e) => setEditWord({ ...editWord, note: e.target.value })} />
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Modal>
-                                </div>
-                                <p className="font-bold text-gray-600 dark:text-white/60">({item?.type_of_word || "Không có loại từ"})</p>
-                                <p className="font-bold text-gray-600 dark:text-white">
-                                    Định nghĩa: <span className="italic font-thin">{item?.define}</span>
-                                </p>
-                                <div className="flex items-center justify-between">
-                                    <p className="font-bold text-gray-600 dark:text-white/60">Ví dụ: </p>
-                                    <p className="text-xs text-gray-600 dark:text-white/60">{item?.created_at && handleCompareDate(item?.created_at)}</p>
-                                </div>
-
-                                <div className=" border border-secondary dark:border-white/10 rounded-sm px-5 py-3 my-3 h-[220px] overflow-y-auto">
-                                    {item?.example?.map((ex, idx) => (
-                                        <div key={ex.en} className="mb-1">
-                                            <div className="">
-                                                <div className="flex items-center gap-2">
-                                                    <p className="text-gray-600 dark:text-white/50 font-bold">
-                                                        {idx + 1}. {ex.en}
-                                                    </p>
-                                                    {listFlashcard?.language != "english" && (
-                                                        <HiMiniSpeakerWave className="cursor-pointer hover:text-primary" onClick={() => speakWord(ex.en, 2, item?._id + idx)} />
-                                                    )}
-                                                </div>
-                                                <p className="text-gray-600 dark:text-white/50  font-bold">{ex?.trans}</p>
-                                                <div className="text-xs text-gray-500 flex">
-                                                    {listFlashcard?.language == "english" && (
-                                                        <>
-                                                            <div className="flex items-center gap-1 mr-3 cursor-pointer hover:text-secondary" onClick={() => speakWord(ex.en, 1, item?._id + idx)}>
-                                                                {loadingAudio == item?._id + idx ? (
-                                                                    <Spin indicator={<LoadingOutlined spin />} size="small" style={{ color: "blue" }} />
-                                                                ) : (
-                                                                    <HiMiniSpeakerWave />
-                                                                )}
-                                                                <p>UK</p>
-                                                            </div>
-                                                            <div className="flex items-center gap-1 cursor-pointer hover:text-secondary" onClick={() => speakWord(ex.en, 2, item?._id + idx)}>
-                                                                {loadingAudio == item?._id + idx ? (
-                                                                    <Spin indicator={<LoadingOutlined spin />} size="small" style={{ color: "blue" }} />
-                                                                ) : (
-                                                                    <HiMiniSpeakerWave />
-                                                                )}
-                                                                US
-                                                            </div>
-                                                        </>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <p className="text-sm text-gray-600 dark:text-white/50 italic">{ex.vi}</p>
-                                        </div>
-                                    ))}
-                                    {item?.example?.length === 0 && <p className="text-gray-500 text-sm">Không có ví dụ...</p>}
-                                </div>
-
-                                <p className="font-bold text-gray-600 dark:text-white">
-                                    Ghi chú: <span className="italic font-thin">{item?.note}</span>
-                                </p>
-                            </div>
+                            <ItemFC
+                                item={item}
+                                key={index}
+                                listFlashcard={listFlashcard}
+                                speakWord={speakWord}
+                                editWord={editWord}
+                                setEditWord={setEditWord}
+                                loadingAudio={loadingAudio}
+                                user={user}
+                                handleEditWord={handleEditWord}
+                                openEditWord={openEditWord}
+                                handleCancelEditWord={handleCancelEditWord}
+                                setOpenEditWord={setOpenEditWord}
+                                handleOkEditWord={handleOkEditWord}
+                                loadingConfirm={loadingConfirm}
+                                confirmDelete={confirmDelete}
+                                loading={loading}
+                                openTrick={openTrick}
+                                handleOpenChangeTrick={handleOpenChangeTrick}
+                                handleKeyPressEdit={handleKeyPressEdit}
+                                handleSendPrompt={handleSendPrompt}
+                            />
                         ))}
                         {filteredFlashcards?.length === 0 && <p className="h-[400px] flex items-center justify-center col-span-full">Không có từ nào trong list...</p>}
                     </div>
@@ -952,64 +735,28 @@ export default function CFlashcardDetail({ id_flashcard }) {
                 {isSimple === 2 && (
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 mt-5">
                         {filteredFlashcards?.map((item, index) => (
-                            <div key={index} className="bg-white dark:bg-slate-800/50 dark:text-white border border-white/10 p-5 shadow-sm rounded-xl font-bold text-secondary space-y-2">
-                                <div className="flex items-center justify-between">
-                                    <div
-                                        className={`rounded-full text-white text-[12px] px-3 py-[1px] font-bold ${
-                                            item?.status === "reviewing" ? "bg-[#FFC107]" : item?.status === "remembered" ? "bg-[#2196F3]" : "bg-[#4CAF50]"
-                                        }`}>
-                                        {item?.status}
-                                    </div>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <h1 className="text-primary text-lg" title={item?.title}>
-                                            {item?.title}
-                                        </h1>
-                                        {listFlashcard?.language != "english" && (
-                                            <HiMiniSpeakerWave className="flex items-center gap-1 cursor-pointer" onClick={() => speakWord(item?.title, 2, item?._id)} />
-                                        )}
-                                    </div>
-                                    {user?._id == listFlashcard?.userId?._id && (
-                                        <Popconfirm
-                                            title={`Xóa từ "${item?.title}"`}
-                                            description="Bạn có chắc muốn xóa từ này không?"
-                                            okText="Chắc chắn"
-                                            onConfirm={() => confirmDelete(item._id)}
-                                            okButtonProps={{
-                                                loading: loadingConfirm,
-                                            }}
-                                            cancelText="Để suy nghĩ lại"
-                                            icon={
-                                                <QuestionCircleOutlined
-                                                    style={{
-                                                        color: "red",
-                                                    }}
-                                                />
-                                            }>
-                                            <IoClose className="hover:text-red-500 cursor-pointer" />
-                                        </Popconfirm>
-                                    )}
-                                </div>
-                                <p>{item?.transcription}</p>
-                                <div className="flex items-center gap-3">
-                                    {listFlashcard?.language == "english" && (
-                                        <>
-                                            <div className="flex items-center gap-1 mr-2 cursor-pointer" onClick={() => speakWord(item?.title, 1, item?._id)}>
-                                                {loadingAudio == item?._id ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ color: "blue" }} /> : <HiMiniSpeakerWave />}
-                                                <p>UK</p>
-                                            </div>
-                                            <div className="flex items-center gap-1 cursor-pointer" onClick={() => speakWord(item?.title, 2, item?._id)}>
-                                                {loadingAudio == item?._id ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ color: "blue" }} /> : <HiMiniSpeakerWave />}
-                                                US
-                                            </div>
-                                        </>
-                                    )}
-                                </div>
-                                <p className="font-bold text-gray-600 dark:text-white/70">
-                                    Định nghĩa: <span className="italic font-thin">{item?.define}</span>
-                                </p>
-                            </div>
+                            <ItemFCSimple
+                                item={item}
+                                key={index}
+                                listFlashcard={listFlashcard}
+                                speakWord={speakWord}
+                                editWord={editWord}
+                                setEditWord={setEditWord}
+                                loadingAudio={loadingAudio}
+                                user={user}
+                                handleEditWord={handleEditWord}
+                                openEditWord={openEditWord}
+                                handleCancelEditWord={handleCancelEditWord}
+                                setOpenEditWord={setOpenEditWord}
+                                handleOkEditWord={handleOkEditWord}
+                                loadingConfirm={loadingConfirm}
+                                confirmDelete={confirmDelete}
+                                loading={loading}
+                                openTrick={openTrick}
+                                handleOpenChangeTrick={handleOpenChangeTrick}
+                                handleKeyPressEdit={handleKeyPressEdit}
+                                handleSendPrompt={handleSendPrompt}
+                            />
                         ))}
                     </div>
                 )}

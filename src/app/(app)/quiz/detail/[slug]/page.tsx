@@ -293,7 +293,7 @@ export default function QuizDetail({ params }: { params: any }) {
                                     <FaRegFlag />
                                 </div>
                                 <Link
-                                    href={`https://www.facebook.com/share.php?u=https://www.trongan.site/quiz/detail/${params?.id}`}
+                                    href={`https://www.facebook.com/share.php?u=https://www.quizzet.site/quiz/detail/${params?.id}`}
                                     target="_blank"
                                     className="hover:text-primary cursor-pointer bg-gray-200 w-[35px] h-full flex items-center justify-center rounded-lg">
                                     <IoShareSocial size={15} />

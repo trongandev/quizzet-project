@@ -20,7 +20,7 @@ export default function CFooter() {
                         <Link href="https://www.facebook.com/trongandev" target="_blank">
                             <FaFacebook size={30} />
                         </Link>
-                        <Link href="https://github.com/angutboiz" target="_blank">
+                        <Link href="https://github.com/trongandev" target="_blank">
                             <GrGithub size={30} />
                         </Link>
                     </div>

@@ -3,26 +3,15 @@ import { getCachedFlashcardPublic, getCachedQuizzet, getCachedTool } from "@/lib
 import React from "react";
 
 export async function generateMetadata() {
-    // const quiz = await getCachedQuizzet();
-    // const tool = await getCachedTool();
-    // let data = "";
-    // let dataTool = "";
-    // quiz?.map((item) => {
-    //     data += item.content + " | ";
-    // });
-    // tool?.map((item) => {
-    //     dataTool += item.title + " | ";
-    // });
-
     return {
-        title: `Quizzet | Trang chủ`,
-        description: `Quizzet`,
+        title: `Quizzet - AI Quiz, Flashcard Generator`,
+        description: `Quizzet là một nền tảng web được thiết kế nhằm tối ưu hóa quá trình học tập và ôn luyện của sinh viên thông qua các tính năng đa dạng và ứng dụng công nghệ (AI). Nền tảng không chỉ giúp sinh viên tự kiểm tra kiến thức mà còn hỗ trợ xây dựng lộ trình học tập hiệu quả, tương tác với cộng đồng và tiếp cận nguồn tài liệu phong phú.`,
         openGraph: {
-            title: `Quizzet | Trang chủ`,
-            description: `Quizzet`,
+            title: `Quizzet - AI Quiz, Flashcard Generator`,
+            description: `Quizzet là một nền tảng web được thiết kế nhằm tối ưu hóa quá trình học tập và ôn luyện của sinh viên thông qua các tính năng đa dạng và ứng dụng công nghệ trí tuệ nhân tạo (AI). Nền tảng không chỉ giúp sinh viên tự kiểm tra kiến thức mà còn hỗ trợ xây dựng lộ trình học tập hiệu quả, tương tác với cộng đồng và tiếp cận nguồn tài liệu phong phú.`,
             type: "website",
-            // images: quiz[0]?.img,
-            url: "https://trongan.site",
+            images: "/banner.png",
+            url: "https://quizzet.site",
         },
     };
 }

@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: any }) {
             description: `Quizzet | ${quiz?.quiz?.content}`,
             type: "website",
             images: quiz?.quiz?.img,
-            url: "https://trongan.site/quiz/" + slug,
+            url: "https://quizzet.site/quiz/" + slug,
         },
     };
 }

@@ -133,17 +133,19 @@ export default function ProfileUID({ params }) {
                 <>
                     <div className="flex gap-3 items-center">
                         <Images src={profile?.profilePicture} alt="" className="object-cover rounded-full" width={100} height={100} />
-                        <div className="">
+                        <div className="text-secondary dark:text-white/70">
                             <div className="flex flex-col">
                                 <div className="flex gap-1 items-center">
-                                    <h1 className="text-2xl font-bold text-gray-700">{profile?.displayName}</h1>
+                                    <h1 className="text-2xl font-bold">{profile?.displayName}</h1>
                                     {profile?.verify ? <MdOutlineVerified color="#3b82f6" /> : ""}
                                 </div>
-                                <p className="text-secondary">{profile?.email}</p>
-                                <p className="text-secondary">Tham gia vào ngày {new Date(profile?.created_at).toLocaleDateString("vi-VN")}</p>
-                                <div className="flex items-center gap-2 text-secondary">
+                                <p className="">{profile?.email}</p>
+                                <p className="">Tham gia vào ngày {new Date(profile?.created_at).toLocaleDateString("vi-VN")}</p>
+                                <div className="flex items-center gap-2  ">
                                     <p>Báo cáo vi phạm?</p>
-                                    <div className="mb-0 xl:mb-1 hover:text-primary cursor-pointer bg-gray-200 w-[25px] h-[25px] flex items-center justify-center rounded-lg" onClick={showModal}>
+                                    <div
+                                        className="mb-0 xl:mb-1 hover:text-primary cursor-pointer bg-gray-200 dark:bg-gray-800 w-[25px] h-[25px] flex items-center justify-center rounded-lg"
+                                        onClick={showModal}>
                                         <FaRegFlag size={12} />
                                     </div>
                                 </div>

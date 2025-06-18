@@ -2,16 +2,14 @@
 import { GET_API, POST_API } from "@/lib/fetchAPI";
 import { message, Modal, Select, Spin } from "antd";
 import Image from "next/image";
-import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
-import { IoCopyOutline } from "react-icons/io5";
 import { MdPublic } from "react-icons/md";
-import handleCompareDate from "@/lib/CompareDate";
-import { RiGitRepositoryPrivateFill } from "react-icons/ri";
 import { LoadingOutlined } from "@ant-design/icons";
 import { languageOption } from "@/lib/languageOption";
 import Cookies from "js-cookie";
+import PublicFC from "./FlashcardP/PublicFC";
+import UserCreateFC from "./FlashcardP/UserCreateFC";
 export default function CPublicFlashCard({ publicFlashcards }) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -150,42 +148,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                                 </div>
                             </div>
                         </Modal>
-                        {listFlashCard &&
-                            listFlashCard.map((item) => (
-                                <Link
-                                    href={`/flashcard/${item?._id}`}
-                                    className="w-full h-[181px] bg-gray-100 dark:bg-slate-800/50 rounded-xl block shadow-sm p-3 border-white/10 border hover:shadow-md transition-all duration-300"
-                                    key={item._id}>
-                                    <h1 className="font-bold line-clamp-1" title={item.title}>
-                                        {item.title}
-                                    </h1>
-                                    <h1 className="flex items-center gap-1">
-                                        <IoCopyOutline />
-                                        {item?.flashcards?.length} từ
-                                    </h1>
-                                    <p className="text-sm line-clamp-2 italic h-[40px]" title={item.desc}>
-                                        {item.desc || "Không có mô tả"}
-                                    </p>
-                                    <div className="flex gap-2 items-center">
-                                        <p className="text-sm line-clamp-2 italic">Ngôn ngữ: </p>
-                                        <Image src={`/flag/${item.language}.svg`} alt="" width={25} height={15} className="rounded-sm border border-gray-400"></Image>
-                                    </div>
-                                    <div className="flex items-center gap-2 mt-2">
-                                        <div className="w-[40px] h-[40px] overflow-hidden relative">
-                                            <Image src={item?.userId?.profilePicture} alt="" className="rounded-full w-full h-full absolute object-cover" fill />
-                                        </div>
-                                        <div className="">
-                                            <p title={item.userId.displayName} className="line-clamp-1">
-                                                {item.userId.displayName}
-                                            </p>
-                                            <div className="flex gap-1 items-center text-xs text-gray-500 " title={new Date(item.created_at).toLocaleString()}>
-                                                {item.public ? <MdPublic /> : <RiGitRepositoryPrivateFill />}
-                                                <p className="line-clamp-1">{handleCompareDate(item?.created_at)}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Link>
-                            ))}
+                        {listFlashCard && listFlashCard.map((item) => <UserCreateFC item={item} key={item._id} />)}
                         {loading && <Spin indicator={<LoadingOutlined spin />} size="default" className="h-full flex items-center justify-center" />}
                     </div>
                 </div>
@@ -217,42 +180,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                     ))}
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
-                    {filterLanguage &&
-                        filterLanguage.map((item) => (
-                            <Link
-                                href={`/flashcard/${item?._id}`}
-                                className="w-full h-[181px] bg-gray-100 dark:bg-slate-800/50 border border-white/10 rounded-xl block shadow-sm p-3 hover:shadow-md transition-all duration-300"
-                                key={item._id}>
-                                <h1 className="font-bold line-clamp-1" title={item.title}>
-                                    {item.title}
-                                </h1>
-                                <h1 className="flex items-center gap-1">
-                                    <IoCopyOutline />
-                                    {item?.flashcards?.length} từ
-                                </h1>
-                                <p className="text-sm line-clamp-2 italic  h-[40px]" title={item.desc}>
-                                    {item.desc || "Không có mô tả"}
-                                </p>
-                                <div className="flex gap-2 items-center">
-                                    <p className="text-sm line-clamp-2 italic">Ngôn ngữ: </p>
-                                    <Image src={`/flag/${item.language}.svg`} alt="" width={25} height={25} className="rounded-sm border border-gray-400"></Image>
-                                </div>
-                                <div className="flex items-center gap-2 mt-2">
-                                    <div className="w-[40px] h-[40px] overflow-hidden relative">
-                                        <Image src={item?.userId?.profilePicture} alt="" className="rounded-full w-full h-full absolute object-cover" fill />
-                                    </div>
-                                    <div className="flex-1">
-                                        <p title={item.userId.displayName} className="line-clamp-1">
-                                            {item.userId.displayName}
-                                        </p>
-                                        <div className="flex gap-1 items-center text-xs text-gray-500 " title={new Date(item.created_at).toLocaleString()}>
-                                            {item.public ? <MdPublic /> : <RiGitRepositoryPrivateFill />}
-                                            <p className="line-clamp-1">{handleCompareDate(item?.created_at)}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Link>
-                        ))}
+                    {filterLanguage && filterLanguage.map((item) => <PublicFC item={item} key={item?._id} />)}
                     {filterLanguage?.length <= 0 && <div className="h-[350px] col-span-12 flex items-center justify-center">Không có dữ liệu...</div>}
                 </div>
             </div>

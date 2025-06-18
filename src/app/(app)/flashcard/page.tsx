@@ -9,7 +9,8 @@ export async function generateMetadata() {
             title: `Quizzet | Flashcard trắc nghiệm trực tuyến`,
             description: `Flashcard là một trong những cách tốt nhất để ghi nhớ những kiến thức quan trọng. Hãy cùng Quizzet tham khảo và tạo những bộ flashcards bạn nhé!`,
             type: "website",
-            url: "https://trongan.site/flashcard",
+            images: "/flashcard.png",
+            url: "https://quizzet.site/flashcard",
         },
     };
 }

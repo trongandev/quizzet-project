@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { Button, Modal, Popover, Select, Input } from "antd";
+import { Button, Modal, Popover, Select, Input, message } from "antd";
 import { CiCirclePlus } from "react-icons/ci";
 import { IoIosClose } from "react-icons/io";
 import { FaBrain, FaRegEdit } from "react-icons/fa";
@@ -235,49 +235,58 @@ export default function PostGUI() {
     const genAI = new GoogleGenerativeAI(process.env.API_KEY_AI);
 
     const handleSendPrompt = async () => {
-        setLoading(true);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        var defaultPrompt = ` yêu cầu:
+        try {
+            setLoading(true);
 
-trả về kiểu dữ liệu json, không giải thích hay nói bất cứ thứ gì thêm, nếu người dùng nhập sai thì hãy trả ra yêu cầu người dùng nhập lại. có câu hỏi, có 4 đáp án, và có 1 đáp án đúng ví dụ
+            const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+            var defaultPrompt = ` yêu cầu:
+    
+    trả về kiểu dữ liệu json, không giải thích hay nói bất cứ thứ gì thêm, nếu người dùng không đưa ra số câu hỏi muốn tạo thì bạn hãy tạo 20 câu hỏi ở một chủ đề bất kì. có câu hỏi, có 4 đáp án, và có 1 đáp án đúng ví dụ
+    
+    [
+    
+    {
+    "id": 1, //tăng dần
+    
+    "question": "Câu hỏi 1",
+    
+    "answers": ["Đáp án 1", "Đáp án 2", "Đáp án 3", "Đáp án 4"],
+    
+    "correct": 0
+    
+    },
+    
+    {
+    "id": 2,
+    
+    "question": "Câu hỏi 2",
+    
+    "answers": ["Đáp án 1", "Đáp án 2", "Đáp án 3", "Đáp án 4"],
+    
+    "correct": 0
+    
+    }
+    
+    ]`;
+            const result = await model.generateContent(promptValue + defaultPrompt);
+            const parse = result.response
+                .text()
+                .replace(/```json/g, "")
+                .replace(/```/g, "");
 
-[
-
-{
-"id": 1, //tăng dần
-
-"question": "Câu hỏi 1",
-
-"answers": ["Đáp án 1", "Đáp án 2", "Đáp án 3", "Đáp án 4"],
-
-"correct": 0
-
-},
-
-{
-"id": 2,
-
-"question": "Câu hỏi 2",
-
-"answers": ["Đáp án 1", "Đáp án 2", "Đáp án 3", "Đáp án 4"],
-
-"correct": 0
-
-}
-
-]`;
-        const result = await model.generateContent(promptValue + defaultPrompt);
-        const parse = result.response
-            .text()
-            .replace(/```json/g, "")
-            .replace(/```/g, "");
-
-        setQuest([...quest, ...JSON.parse(parse)]);
-        setLoading(false);
-        handleCancelAI();
+            setQuest([...quest, ...JSON.parse(parse)]);
+            setPromptValue("");
+        } catch (error) {
+            console.log(error);
+            message.error("Đã có lỗi xảy ra: ", error.message);
+        } finally {
+            setLoading(false);
+            handleCancelAI();
+        }
     };
     return (
-        <div className="flex items-center justify-center gap-5 flex-col md:flex-row px-3 md:px-0 text-third dark:text-white h-screen">
+        <div className="relative flex items-center justify-center gap-5 flex-col md:flex-row px-3 md:px-0 text-third dark:text-white h-screen">
+            <div class="absolute inset-0 h-full w-full  bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
             <div className="w-full md:w-[1000px]  overflow-y-auto frm-post">
                 <div className="flex items-center flex-row my-3 bg-white rounded-lg dark:bg-slate-800/50 border border-white/10">
                     <div className="flex items-center justify-between w-full gap-3 p-3 md:flex-row flex-col">
@@ -376,7 +385,7 @@ trả về kiểu dữ liệu json, không giải thích hay nói bất cứ th�
                                         Ví dụ: cho tôi 20 bài quiz về tư tưởng hồ chí minh"
                                         onChange={(e) => setPromptValue(e.target.value)}
                                     />
-                                    <p className="text-sm text-red-500">Lưu ý: nếu nó không trả ra gì thì bạn hãy yêu cầu câu hỏi khác</p>
+                                    <p className="text-sm text-red-500">Lưu ý: vui lòng nhập số câu muốn tạo ví dụ: 20 câu hỏi về chủ đề bóng đá</p>
                                 </div>
                             </Modal>
                         </div>

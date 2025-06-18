@@ -1,5 +1,5 @@
 "use client";
-import React, { memo } from "react";
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -19,7 +19,7 @@ const OnlineUsers = ({ onlineUsers }) => {
                             passHref>
                             <div className="w-[50px] h-[50px] overflow-hidden relative rounded-full">
                                 <Image
-                                    src={onl_user?.profilePicture || "https://github.com/angutboiz/quiz/blob/master/public/meme.jpg?raw=true"}
+                                    src={onl_user?.profilePicture || "https://github.com/trongandev/quiz/blob/master/public/meme.jpg?raw=true"}
                                     alt=""
                                     className={`w-full h-full object-cover absolute  border ${onl_user?._id ? "border-primary" : ""}  rounded-full`}
                                     fill

@@ -11,7 +11,7 @@ export async function generateMetadata({ params }) {
             title: `Quizzet | Flashcard: ${listFlashCards?.listFlashCards?.title}`,
             description: listFlashCards?.listFlashCards?.desc + " | " + listFlashCards?.listFlashCards?.language,
             type: "website",
-            url: "https://trongan.site/flashcard/" + params.id,
+            url: "https://quizzet.site/flashcard/" + params.id,
         },
     };
 }
