@@ -144,7 +144,7 @@ export default function Flashcard() {
                                         <td className="px-6 py-4">{item?.created_at && handleCompareDate(item?.created_at)}</td>
                                     </tr>
                                 ))}
-                            {flashcard.length === 0 && <p className="text-primary">Không có tài liệu nào...</p>}
+                            {flashcard.length === 0 && <p className="text-primary">Không có đề cương nào...</p>}
                         </tbody>
                     </table>
                     {loading && (

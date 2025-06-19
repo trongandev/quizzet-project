@@ -65,13 +65,13 @@ export default function CTaiLieu({ toolData }) {
                         </button>
                     </Tooltip>
                     {toggleBtnSortAlpha ? (
-                        <Tooltip placement="top" title="Sắp xếp theo tên tài liệu từ A -> Z" className="btn btn-primary !rounded-md">
+                        <Tooltip placement="top" title="Sắp xếp theo tên đề cương từ A -> Z" className="btn btn-primary !rounded-md">
                             <button onClick={() => handleSort("title", "asc")}>
                                 <FaSortAlphaDown />
                             </button>
                         </Tooltip>
                     ) : (
-                        <Tooltip placement="top" title="Sắp xếp theo tên tài liệu từ Z -> A" className="btn btn-primary !rounded-md">
+                        <Tooltip placement="top" title="Sắp xếp theo tên đề cương từ Z -> A" className="btn btn-primary !rounded-md">
                             <button onClick={() => handleSort("title", "desc")}>
                                 <FaSortAlphaDownAlt />
                             </button>
@@ -101,10 +101,10 @@ export default function CTaiLieu({ toolData }) {
                     </select>
                 </div>
                 <div className="flex items-center gap-3 flex-1 flex-wrap justify-end">
-                    <input type="text" placeholder="Tìm tên tài liệu mà bạn cần..." className="flex-1 md:w-[250px] dark:!bg-gray-900" onChange={(e) => handleSearch(e.target.value)} />
+                    <input type="text" placeholder="Tìm tên đề cương mà bạn cần..." className="flex-1 md:w-[250px] dark:!bg-gray-900" onChange={(e) => handleSearch(e.target.value)} />
                     {/* <div className="flex gap-3 flex-1 items-center">
-                        <Link href="/tailieu/themtailieu" className="block flex-1 text-center w-full btn btn-second !rounded-md">
-                            Thêm tài liệu
+                        <Link href="/decuong/themtailieu" className="block flex-1 text-center w-full btn btn-second !rounded-md">
+                            Thêm đề cương
                         </Link>
                     </div> */}
                     <Link href="/flashcard" className="flex-1 w-full flex gap-2 items-center btn btn-primary !rounded-md justify-center">
@@ -151,14 +151,14 @@ export default function CTaiLieu({ toolData }) {
                             </div>
                             <div className="">
                                 <p className="text-[12px]">{handleCompareDate(item.date)}</p>
-                                <Link href={`/tailieu/${item.slug}`}>
+                                <Link href={`/decuong/${item.slug}`}>
                                     <button className="text-sm w-full btn btn-primary !rounded-md">Xem ngay</button>
                                 </Link>
                             </div>
                         </div>
                     </div>
                 ))}
-                {data && data.length === 0 ? <p className="text-primary">Không có tài liệu nào...</p> : ""}
+                {data && data.length === 0 ? <p className="text-primary">Không có đề cương nào...</p> : ""}
             </div>
         </div>
     );

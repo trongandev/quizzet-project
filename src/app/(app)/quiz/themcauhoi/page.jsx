@@ -20,7 +20,7 @@ export default function ThemCauHoi() {
                     <p>Thực hiện sẽ nhanh hơn</p>
                 </Button>
             </Link> */}
-            <h1 className="text-3xl text-center font-semibold">Tạo một bài Quiz mới</h1>
+            <h1 className="text-3xl text-center font-semibold ">Tạo một bài Quiz mới</h1>
             <div className="flex gap-5 flex-col md:flex-row  items-center">
                 <div className="flex-1 w-full h-80 text-center rounded-xl overflow-hidden bg-secondary/50 border-2 border-white/10 hover:border-primary transition-all duration-300 cursor-pointer hover:bg-secondary/70 group shadow-md">
                     <div className="relative w-full h-40 md:h-1/2 border-b-2 border-b-gray-500">
@@ -31,10 +31,10 @@ export default function ThemCauHoi() {
                             fill></Image>
                     </div>
                     <div className="flex-1 h-1/2 flex flex-col justify-center items-center gap-2 py-5 md:py-0">
-                        <h3 className="text-lg md:text-xl font-bold inline-flex items-center gap-2">
+                        <h3 className="text-lg md:text-xl font-bold inline-flex items-center gap-2 text-white">
                             Tạo bằng AI <Image src="https://www.gstatic.com/lamda/images/gemini_sparkle_red_4ed1cbfcbc6c9e84c31b987da73fc4168aec8445.svg" alt="" width={30} height={30}></Image>
                         </h3>
-                        <p className="text-md md:text:lg text-gray-400">Ra lệnh cho AI thực hiện</p>
+                        <p className="text-md md:text:lg text-gray-200 dark:text-gray-400 ">Ra lệnh cho AI thực hiện</p>
                     </div>
                 </div>{" "}
                 <div className="flex-1 w-full  h-80 text-center rounded-xl overflow-hidden bg-secondary/50 border-2 border-white/10 hover:border-primary transition-all duration-300 cursor-pointer hover:bg-secondary/70 group shadow-md">
@@ -46,8 +46,8 @@ export default function ThemCauHoi() {
                             fill></Image>
                     </div>
                     <div className="flex-1 h-1/2 flex flex-col justify-center items-center gap-2 py-5 md:py-0">
-                        <h3 className="text-lg md:text-xl font-bold">Nhập tạo từ đầu</h3>
-                        <p className="text-md md:text:lg text-gray-400">Nhập tay tất cả thông tin</p>
+                        <h3 className="text-lg md:text-xl font-bold  text-white">Nhập tạo từ đầu</h3>
+                        <p className="text-md md:text:lg text-gray-200 dark:text-gray-400 ">Nhập tay tất cả thông tin</p>
                     </div>
                 </div>
                 <div className="flex-1 w-full  h-80 text-center rounded-xl overflow-hidden bg-secondary/50 border-2 border-white/10 hover:border-primary transition-all duration-300 cursor-pointer hover:bg-secondary/70 group shadow-md">
@@ -59,8 +59,8 @@ export default function ThemCauHoi() {
                             fill></Image>
                     </div>
                     <div className="flex-1 h-1/2 flex flex-col justify-center items-center gap-2 py-5 md:py-0">
-                        <h3 className="text-lg md:text-xl font-bold">Nhập từ file docx, xlxs</h3>
-                        <p className="text-md md:text:lg text-gray-400">Từ tài liệu, biểu mẫu google, bảng tính,...</p>
+                        <h3 className="text-lg md:text-xl font-bold  text-white">Nhập từ file docx, xlxs</h3>
+                        <p className="text-md md:text:lg text-gray-200 dark:text-gray-400 ">Từ đề cương, biểu mẫu google, bảng tính,...</p>
                     </div>
                 </div>
             </div>

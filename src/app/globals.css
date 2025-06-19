@@ -16,7 +16,7 @@ pre {
 
 .btn {
     padding: 6px 16px;
-    border-radius: 16px;
+    border-radius: 5px;
     transition: all 0.1s;
     cursor: pointer;
     border: none;
@@ -34,7 +34,7 @@ pre {
 
 .btn-second {
     padding: 5px 15px;
-    border-radius: 15px;
+    border-radius: 5px;
     border: 1px solid #2187d5;
     color: #2187d5;
 }
@@ -62,7 +62,6 @@ pre {
 
 button:disabled,
 button[disabled] {
-    background-color: #ccc;
     cursor: not-allowed;
 }
 

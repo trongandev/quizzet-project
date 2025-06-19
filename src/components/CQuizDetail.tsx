@@ -131,9 +131,9 @@ export default function CQuizDetail({ QuizData, QuestData }: { QuizData?: IQuiz;
                 </div>
                 <form action="" onSubmit={handleQuiz} className="relative flex gap-5 flex-row  mt-3">
                     <div className="w-full md:w-2/3">
-                        <div className="max-h-[80vh] overflow-y-auto scroll-smooth flex flex-col gap-2">
+                        <div className="max-h-[80vh] overflow-y-auto scroll-smooth flex flex-col gap-2 pr-3">
                             {QuestData?.map((item, index) => (
-                                <div className="bg-linear-item-2 dark:!bg-slate-800/50 p-5 border border-white/10" key={index} id={index.toString()}>
+                                <div className="bg-gray-200/80 dark:!bg-slate-800/50 p-5 border-2 border-white/10 rounded-lg" key={index} id={index.toString()}>
                                     <h1 className="text-lg font-bold text-primary">
                                         Câu {index + 1}: {item.question}{" "}
                                     </h1>
@@ -190,7 +190,7 @@ export default function CQuizDetail({ QuizData, QuestData }: { QuizData?: IQuiz;
                                             href={`#${index - 1}`}
                                             key={index}
                                             className={`flex items-center justify-center w-[45px] h-[45px] rounded-md ${
-                                                selectedAnswers[index] !== undefined ? "bg-primary text-green-100 font-bold" : "bg-red-500 text-red-100"
+                                                selectedAnswers[index] !== undefined ? "bg-primary text-green-100 font-bold" : "bg-red-700/50 text-red-100"
                                             }`}>
                                             <p>{index + 1}</p>
                                         </a>

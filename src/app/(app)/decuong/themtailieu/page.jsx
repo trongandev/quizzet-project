@@ -132,15 +132,15 @@ export default function AddSO() {
                             Hủy bỏ
                         </Button>,
                         <Button key="submit" type="primary" onClick={handleSendPrompt} loading={loading}>
-                            Tạo tài liệu
+                            Tạo đề cương
                         </Button>,
                     ]}>
                     <div className="">
                         <textarea
                             className="resize-none h-24"
                             maxLength={1000}
-                            placeholder="Nhập prompt để tạo ra tài liệu theo yêu cầu 
-                                        Ví dụ: 20 câu tài liệu về lịch sử Việt Nam"
+                            placeholder="Nhập prompt để tạo ra đề cương theo yêu cầu 
+                                        Ví dụ: 20 câu đề cương về lịch sử Việt Nam"
                             onChange={(e) => setPromptValue(e.target.value)}
                         />
                     </div>

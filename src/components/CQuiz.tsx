@@ -70,13 +70,13 @@ export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
                         </button>
                     </Tooltip>
                     {toggleBtnSortAlpha ? (
-                        <Tooltip placement="top" title="Sắp xếp theo tên tài liệu từ A -> Z">
+                        <Tooltip placement="top" title="Sắp xếp theo tên đề cương từ A -> Z">
                             <button onClick={() => handleSort("title", "asc")} className="btn btn-primary !rounded-md">
                                 <FaSortAlphaDown />
                             </button>
                         </Tooltip>
                     ) : (
-                        <Tooltip placement="top" title="Sắp xếp theo tên tài liệu từ Z -> A">
+                        <Tooltip placement="top" title="Sắp xếp theo tên đề cương từ Z -> A">
                             <button onClick={() => handleSort("title", "desc")} className="btn btn-primary !rounded-md">
                                 <FaSortAlphaDownAlt />
                             </button>
@@ -170,7 +170,7 @@ export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
                         </div>
                     </div>
                 ))}
-                {data && data.length === 0 ? <p className="text-primary">Không có tài liệu nào...</p> : ""}
+                {data && data.length === 0 ? <p className="text-primary">Không có đề cương nào...</p> : ""}
             </div>
         </div>
     );

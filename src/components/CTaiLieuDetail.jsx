@@ -24,7 +24,7 @@ export default function CTaiLieuDetail({ DeCuongData }) {
                         Tổng: <label className="text-secondary dark:text-gray-300 font-bold ">{DeCuongData?.lenght} câu hỏi</label>
                     </p>
                 </div>
-                <Link href={`/tailieu/flashcard/${DeCuongData?._id}`} className="flex gap-2 items-center btn btn-primary !rounded-md">
+                <Link href={`/decuong/flashcard/${DeCuongData?._id}`} className="flex gap-2 items-center btn btn-primary !rounded-md">
                     <GiCardPick size={20} />
                     Luyện tập bằng Flashcard
                 </Link>

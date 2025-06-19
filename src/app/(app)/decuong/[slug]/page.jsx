@@ -24,7 +24,7 @@ export async function generateMetadata({ params }) {
             description: `Quizzet | ${decuong?.title} | Số câu hỏi:  + ${decuong?.lenght}`,
             type: "website",
             images: decuong?.image,
-            url: "https://quizzet.site/tailieu/" + slug,
+            url: "https://quizzet.site/decuong/" + slug,
         },
     };
 }

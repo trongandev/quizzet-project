@@ -11,15 +11,14 @@ import { IoCopyOutline } from "react-icons/io5";
 import { IListFlashcard, IQuiz, ISO } from "@/types/type";
 export default function CHome({ quizData, toolData, publicFlashcards }: { quizData: IQuiz[]; toolData: ISO[]; publicFlashcards: IListFlashcard[] }) {
     return (
-        <div className="px-2 dark:text-white">
-            <div className="">
+        <div className="">
+            <div className="px-2 dark:text-white">
                 <div className="text-secondary dark:text-white text-center space-y-7 px-5 md:p-0 w-full md:w-[700px] lg:w-[900px] mx-auto">
-                    <h1 className="font-bold text-4xl bg-gradient-to-r from-purple-800 to-secondary dark:from-white/70 dark:to-purple-500 text-transparent bg-clip-text">
-                        Chào mừng bạn đến với Quizzet
+                    <h1 className="font-bold text-4xl ">
+                        Chào mừng bạn đến với <span className="bg-gradient-to-r from-blue-800 to-purple-800 dark:from-white/70 dark:to-purple-500 text-transparent bg-clip-text">Quizzet</span>
                     </h1>
                     <div className="">
-                        <p className="">Quizzet là một cộng đồng chia sẻ tài liệu cho sinh viên Đại học Công nghệ Đồng Nai</p>
-                        <p>Trang web này giúp bạn tạo ra các bài quiz online đồng thời cũng là nơi chia sẻ tài liệu các môn đại cương hoặc chuyên ngành một cách dễ dàng và nhanh chóng.</p>
+                        <p className="">Nền tảng học tập thông minh giúp bạn nâng cao kiến thức thông qua flashcard, quiz và đề cương chất lượng cao. Học tập hiệu quả, tiến bộ mỗi ngày.</p>
                     </div>
                 </div>
                 {/* <div className="my-2 flex gap-5 items-center justify-center">
@@ -45,7 +44,7 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
                     </div>
                     <div className="h-[500px] bg-linear-item-blue flex-1 rounded-3xl flex items-center justify-center flex-col">
                         <div className="w-[250px] h-[280px] overflow-hidden relative">
-                            <Image src="/item1.png" alt="" className="absolute w-full h-full" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"></Image>
+                            <Image src="/item1.png" alt="" className="absolute w-full h-full object-contain" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"></Image>
                         </div>
                         <div className="bg-white dark:bg-gray-700 dark:text-white text-center p-4 rounded-xl w-[350px] space-y-2">
                             <h1 className="text-2xl font-bold">Quiz</h1>
@@ -57,12 +56,12 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
                     </div>
                     <div className="h-[500px] bg-linear-item-pink flex-1 rounded-3xl flex items-center justify-center flex-col">
                         <div className="w-[250px] h-[280px] overflow-hidden relative">
-                            <Image src="/item2.png" alt="" className="absolute w-full h-full" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"></Image>
+                            <Image src="/item2.png" alt="" className="absolute w-full h-full object-contain" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"></Image>
                         </div>
                         <div className="bg-white dark:bg-gray-700 dark:text-white text-center p-4 rounded-xl w-[350px] space-y-2">
-                            <h1 className="text-2xl font-bold">Tài liệu</h1>
-                            <p className="">Tổng hợp những tài liệu của nhiều môn luôn sẵn sàng để bạn ôn bài hiệu quả nhất.</p>
-                            <Link href="/tailieu">
+                            <h1 className="text-2xl font-bold">đề cương</h1>
+                            <p className="">Tổng hợp những đề cương của nhiều môn luôn sẵn sàng để bạn ôn bài hiệu quả nhất.</p>
+                            <Link href="/decuong">
                                 <button className="btn btn-primary">Tìm hiểu thêm</button>
                             </Link>
                         </div>
@@ -76,7 +75,7 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
                             publicFlashcards.map((item) => (
                                 <Link
                                     href={`/flashcard/${item?._id}`}
-                                    className="relative group w-full mt-2 h-[181px] bg-gray-200/80 dark:bg-slate-800/50 rounded-xl block shadow-sm p-3  hover:shadow-md transition-all duration-300 overflow-hidden border border-white/10"
+                                    className="relative group overflow-hidden  w-full mt-2 h-[181px] bg-gray-200/80 dark:bg-slate-800/50 rounded-xl block shadow-sm p-3  hover:shadow-md transition-all duration-300border border-white/10"
                                     key={item._id}>
                                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
                                     <h1 className="font-bold line-clamp-1" title={item?.title}>
@@ -124,12 +123,12 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
                 </div>
 
                 <div className="mt-10 mb-5">
-                    <h1 className="text-3xl font-bold">Tài liệu</h1>
-                    <p>Tổng hợp những tài liệu của nhiều môn luôn sẵn sàng để bạn ôn bài hiệu quả nhất.</p>
+                    <h1 className="text-3xl font-bold">đề cương</h1>
+                    <p>Tổng hợp những đề cương của nhiều môn luôn sẵn sàng để bạn ôn bài hiệu quả nhất.</p>
                     <p>
-                        Nếu bạn có tài liệu cần đưa lên web? bấm vào nút dưới để{" "}
+                        Nếu bạn có đề cương cần đưa lên web? bấm vào nút dưới để{" "}
                         <a className="underline text-primary" href="mailto: thngan25k3@gmail.com">
-                            gửi tài liệu
+                            gửi đề cương
                         </a>{" "}
                         cho mình nhá
                     </p>

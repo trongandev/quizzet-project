@@ -120,7 +120,7 @@ export default function CChat({ token, user, router }: { token: string; user: IU
         <>
             <Popover
                 content={
-                    <div className="w-full md:w-[400px] max-h-[600px] overflow-y-scroll">
+                    <div className="w-full md:w-[400px] max-h-[600px] overflow-y-scroll ">
                         <div className="min-h-[600px]">
                             <div className="flex gap-2 items-center h-9  mb-3">
                                 {isSearch && (

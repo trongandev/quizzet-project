@@ -151,8 +151,8 @@ export default function CHeader({ token }: { token: string }) {
                         </Link>
                     </li>
                     <li className="">
-                        <Link href="/tailieu" className={`block ${pathname.startsWith("/tailieu") ? "active" : ""}`}>
-                            Tài liệu
+                        <Link href="/decuong" className={`block ${pathname.startsWith("/decuong") ? "active" : ""}`}>
+                            đề cương
                         </Link>
                     </li>
 
@@ -170,7 +170,10 @@ export default function CHeader({ token }: { token: string }) {
                     {!user ? (
                         <div className="">
                             <Link href="/login">
-                                <button className="btn btn-primary">Đăng nhập</button>
+                                <button className="relative group overflow-hidden btn btn-primary bg-gradient-to-r from-blue-600 to-purple-600 font-bold hover:shadow-md">
+                                    Đăng nhập
+                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50  dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
+                                </button>
                             </Link>
                         </div>
                     ) : (

@@ -101,7 +101,7 @@ export default function HistoryTool() {
                                         {index + 1}
                                     </th>
                                     <td className="px-6 py-4 ">
-                                        <Link href={`/tailieu/${item.subject}`} className="block w-[200px]">
+                                        <Link href={`/decuong/${item.subject}`} className="block w-[200px]">
                                             {item.subject}
                                         </Link>
                                     </td>
