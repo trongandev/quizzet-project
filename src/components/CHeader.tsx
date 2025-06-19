@@ -130,7 +130,7 @@ export default function CHeader({ token }: { token: string }) {
 
     return (
         <header className="bg-white text-primary dark:text-white dark:bg-gray-800 w-full flex items-center justify-center fixed z-20 border-b border-white/70 dark:border-white/10">
-            <div className="flex items-center justify-between px-5 py-1 md:px-0 md:py-0 w-[800px] md:w-[1000px] xl:w-[1200px]">
+            <div className="flex items-center justify-between px-5 py-1 md:px-0 md:py-0 w-full md:w-[1000px] xl:w-[1200px]">
                 <Link href="/">
                     <Image unoptimized src="/logo.png" alt="" width={120} height={30} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"></Image>
                 </Link>
@@ -152,7 +152,7 @@ export default function CHeader({ token }: { token: string }) {
                     </li>
                     <li className="">
                         <Link href="/decuong" className={`block ${pathname.startsWith("/decuong") ? "active" : ""}`}>
-                            đề cương
+                            Đề cương
                         </Link>
                     </li>
 
@@ -168,9 +168,10 @@ export default function CHeader({ token }: { token: string }) {
                         <Switch onChange={(value) => handleSetTheme(value)} value={darkTheme} />
                     </div>
                     {!user ? (
-                        <div className="">
-                            <Link href="/login">
-                                <button className="relative group overflow-hidden btn btn-primary bg-gradient-to-r from-blue-600 to-purple-600 font-bold hover:shadow-md">
+                        <div className=" ">
+                            <Link href="/login" className="relative">
+                                <div className="-z-1 absolute inset-0 bg-purple-500 rounded-full blur opacity-30 group-hover:opacity-50 transition duration-1000  animate-pulse "></div>
+                                <button className="z-1 relative group overflow-hidden btn btn-primary bg-gradient-to-r from-blue-600 to-purple-600 font-bold hover:shadow-md">
                                     Đăng nhập
                                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50  dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
                                 </button>

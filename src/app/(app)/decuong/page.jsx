@@ -5,8 +5,10 @@ export default async function SubjectOutline() {
     const toolData = await getCachedTool();
 
     return (
-        <div className="px-2 md:px-0">
-            <CTaiLieu toolData={toolData} />
+        <div className="flex items-center justify-center px-5 md:px-0">
+            <div className="w-full md:w-[1000px] xl:w-[1200px] py-5 pt-20">
+                <CTaiLieu toolData={toolData} />
+            </div>
         </div>
     );
 }

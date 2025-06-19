@@ -2,6 +2,10 @@ import React from "react";
 import "@/app/globals.css";
 import Link from "next/link";
 import { DiscordFilled, FacebookFilled, GithubOutlined } from "@ant-design/icons";
+import { FaFileAlt, FaRegCreditCard } from "react-icons/fa";
+import { SiQuizlet } from "react-icons/si";
+import { FaPeopleGroup } from "react-icons/fa6";
+import { Book, Bug, HandHelping, MessageCircleQuestionMark, Scroll } from "lucide-react";
 export default function CFooter() {
     return (
         <footer className="bg-gray-200/80 dark:bg-gray-900 text-secondary dark:text-white  py-12 pb-5 px-4 sm:px-6 lg:px-8">
@@ -21,22 +25,25 @@ export default function CFooter() {
                         <h3 className="font-bold mb-4">Sản phẩm</h3>
                         <ul className="space-y-2 text-gray-500 dark:text-gray-400">
                             <li>
-                                <a href="/flashcard" className="hover:text-gray-800 dark:hover:text-white transition-colors">
+                                <a href="/flashcard" className="flex items-center gap-2 hover:text-gray-800 dark:hover:text-white transition-colors">
+                                    <FaRegCreditCard />
                                     Flashcard
                                 </a>
                             </li>
                             <li>
-                                <a href="/quiz" className="hover:text-gray-800 dark:hover:text-white transition-colors">
-                                    Quiz
+                                <a href="/quiz" className="flex items-center gap-2 hover:text-gray-800 dark:hover:text-white transition-colors">
+                                    <SiQuizlet /> Quiz
                                 </a>
                             </li>
                             <li>
-                                <a href="/decuong" className="hover:text-gray-800 dark:hover:text-white transition-colors">
+                                <a href="/decuong" className="flex items-center gap-2 hover:text-gray-800 dark:hover:text-white transition-colors">
+                                    <FaFileAlt />
                                     Đề cương
                                 </a>
                             </li>
                             <li>
-                                <a href="/congdong" className="hover:text-gray-800 dark:hover:text-white transition-colors">
+                                <a href="/congdong" className="flex items-center gap-2 hover:text-gray-800 dark:hover:text-white transition-colors">
+                                    <FaPeopleGroup />
                                     Cộng đồng
                                 </a>
                             </li>
@@ -47,19 +54,21 @@ export default function CFooter() {
                         <h3 className="font-bold mb-4">Hỗ trợ</h3>
                         <ul className="space-y-2 text-gray-500 dark:text-gray-400">
                             <li>
-                                <a href="/help-center" target="_blank" className="hover:text-gray-800 dark:hover:text-white transition-colors">
+                                <a href="/help-center" target="_blank" className="flex items-center gap-2 hover:text-gray-800 dark:hover:text-white transition-colors">
+                                    <MessageCircleQuestionMark size={18} />
                                     Trung tâm trợ giúp
                                 </a>
                             </li>
 
                             <li>
-                                <a href="/baoloi" className="hover:text-gray-800 dark:hover:text-white transition-colors">
+                                <a href="/baoloi" className="flex items-center gap-2 hover:text-gray-800 dark:hover:text-white transition-colors">
+                                    <Bug size={18} />
                                     Báo lỗi
                                 </a>
                             </li>
                             <li>
-                                <a href="/gopy" className="hover:text-gray-800 dark:hover:text-white transition-colors">
-                                    Góp ý
+                                <a href="/gopy" className="flex items-center gap-2 hover:text-gray-800 dark:hover:text-white transition-colors">
+                                    <Scroll size={18} /> Góp ý
                                 </a>
                             </li>
                         </ul>
@@ -84,7 +93,8 @@ export default function CFooter() {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="#" target="_blank" className="hover:text-gray-800 dark:hover:text-white transition-colors">
+                                <Link href="#" target="_blank" className=" inline-flex gap-2 items-center hover:text-gray-800 dark:hover:text-white transition-colors">
+                                    <Book size={18} />
                                     Về chúng tôi
                                 </Link>
                             </li>

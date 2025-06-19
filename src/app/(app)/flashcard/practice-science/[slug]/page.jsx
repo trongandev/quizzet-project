@@ -349,295 +349,299 @@ export default function PractiveFlashcard({ params }) {
     }
 
     return (
-        <div className="px-3 md:px-0 focus-visible:outline-none text-third dark:text-white min-h-screen" onKeyDown={handleKeyDown} tabIndex={0}>
-            {contextHolder}
-            <div className="w-full flex items-center justify-center h-[90%] flex-col gap-5">
-                <div className="w-full flex flex-col md:flex-row gap-5 items-start">
-                    <div className="w-full flex flex-col gap-5">
-                        {/* Main Flashcard Container */}
-                        <div
-                            className="relative w-full h-[500px] border border-white/10  shadow-md bg-white text-white dark:bg-slate-800/50 rounded-md"
-                            style={{ perspective: "1000px" }}
-                            onClick={feature === FEATURES.FLASHCARD ? () => setIsFlipped(!isFlipped) : undefined}>
-                            {/* Flashcard Feature */}
-                            {feature === FEATURES.FLASHCARD && (
-                                <div
-                                    className={`cursor-pointer absolute inset-0 w-full h-full transition-transform duration-500 transform ${isFlipped ? "rotate-y-180" : ""}`}
-                                    style={{ transformStyle: "preserve-3d" }}>
-                                    {/* Front Side */}
+        <div className=" py-5 pt-20 flex justify-center items-center">
+            <div className="px-3 md:px-0 focus-visible:outline-none text-third dark:text-white min-h-screen" onKeyDown={handleKeyDown} tabIndex={0}>
+                {contextHolder}
+                <div className="w-full flex items-center justify-center h-[90%] flex-col gap-5">
+                    <div className="w-full flex flex-col md:flex-row gap-5 items-start">
+                        <div className="w-full flex flex-col gap-5">
+                            {/* Main Flashcard Container */}
+                            <div
+                                className="relative w-full h-[500px] border border-white/10  shadow-md bg-white text-white dark:bg-slate-800/50 rounded-md"
+                                style={{ perspective: "1000px" }}
+                                onClick={feature === FEATURES.FLASHCARD ? () => setIsFlipped(!isFlipped) : undefined}>
+                                {/* Flashcard Feature */}
+                                {feature === FEATURES.FLASHCARD && (
                                     <div
-                                        className="absolute inset-0 bg-white dark:bg-slate-800/50 rounded-md flex flex-col items-center justify-center backface-hidden p-5"
-                                        style={{ backfaceVisibility: "hidden" }}>
-                                        <div className="flex items-center gap-2 mb-4">
-                                            <p className="text-2xl font-semibold">{currentCard.title}</p>
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    speakWord(currentCard?.title, speakLang, currentCard?._id);
-                                                }}
-                                                className="p-2 hover:bg-gray-100 rounded-full"
-                                                disabled={loadingAudio}>
-                                                {loadingAudio === currentCard?._id ? <Spin indicator={<LoadingOutlined spin />} /> : <HiMiniSpeakerWave size={24} />}
-                                            </button>
-                                        </div>
-                                        <p className="text-gray-500 dark:text-white text-lg font-bold">{currentCard?.transcription}</p>
-
-                                        <p className="text-gray-500 text-sm">(Click to flip)</p>
-                                    </div>
-
-                                    {/* Back Side */}
-                                    <div
-                                        className="absolute inset-0 bg-white rounded-md dark:bg-slate-800/50 flex flex-col items-center justify-center p-5 backface-hidden"
-                                        style={{
-                                            backfaceVisibility: "hidden",
-                                            transform: "rotateY(180deg)",
-                                        }}>
-                                        {isFlipped && <p className="text-lg text-gray-700 dark:text-white">{currentCard?.define}</p>}
-
-                                        {currentCard?.example && (
-                                            <div className="mt-4 p-4 bg-gray-50 dark:bg-slate-800 rounded-lg w-full text-third dark:text-white/70">
-                                                {isFlipped && (
-                                                    <>
-                                                        {" "}
-                                                        <p className="font-medium mb-2  ">Ví dụ:</p>
-                                                        <div className="mb-2">
-                                                            <p className="font-bold italic">{currentCard?.example[0]?.en}</p>
-                                                            <p className="italic">{currentCard?.example[0]?.vi}</p>
-                                                        </div>
-                                                        <div className="mb-2">
-                                                            <p className="font-bold italic">{currentCard?.example[1]?.en}</p>
-                                                            <p className="italic">{currentCard?.example[1]?.vi}</p>
-                                                        </div>
-                                                    </>
-                                                )}
+                                        className={`cursor-pointer absolute inset-0 w-full h-full transition-transform duration-500 transform ${isFlipped ? "rotate-y-180" : ""}`}
+                                        style={{ transformStyle: "preserve-3d" }}>
+                                        {/* Front Side */}
+                                        <div
+                                            className="absolute inset-0 bg-white dark:bg-slate-800/50 rounded-md flex flex-col items-center justify-center backface-hidden p-5"
+                                            style={{ backfaceVisibility: "hidden" }}>
+                                            <div className="flex items-center gap-2 mb-4">
+                                                <p className="text-2xl font-semibold">{currentCard.title}</p>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        speakWord(currentCard?.title, speakLang, currentCard?._id);
+                                                    }}
+                                                    className="p-2 hover:bg-gray-100 rounded-full"
+                                                    disabled={loadingAudio}>
+                                                    {loadingAudio === currentCard?._id ? <Spin indicator={<LoadingOutlined spin />} /> : <HiMiniSpeakerWave size={24} />}
+                                                </button>
                                             </div>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
+                                            <p className="text-gray-500 dark:text-white text-lg font-bold">{currentCard?.transcription}</p>
 
-                            {/* Quiz Feature */}
-                            {feature === FEATURES.QUIZ && (
-                                <div className="p-5 h-full flex flex-col ">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-1">
-                                            <h1 className="text-xl font-bold text-gray-700 dark:text-white">Chọn đáp án đúng</h1>
+                                            <p className="text-gray-500 text-sm">(Click to flip)</p>
                                         </div>
-                                        <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">Quiz</span>
+
+                                        {/* Back Side */}
+                                        <div
+                                            className="absolute inset-0 bg-white rounded-md dark:bg-slate-800/50 flex flex-col items-center justify-center p-5 backface-hidden"
+                                            style={{
+                                                backfaceVisibility: "hidden",
+                                                transform: "rotateY(180deg)",
+                                            }}>
+                                            {isFlipped && <p className="text-lg text-gray-700 dark:text-white">{currentCard?.define}</p>}
+
+                                            {currentCard?.example && (
+                                                <div className="mt-4 p-4 bg-gray-50 dark:bg-slate-800 rounded-lg w-full text-third dark:text-white/70">
+                                                    {isFlipped && (
+                                                        <>
+                                                            {" "}
+                                                            <p className="font-medium mb-2  ">Ví dụ:</p>
+                                                            <div className="mb-2">
+                                                                <p className="font-bold italic">{currentCard?.example[0]?.en}</p>
+                                                                <p className="italic">{currentCard?.example[0]?.vi}</p>
+                                                            </div>
+                                                            <div className="mb-2">
+                                                                <p className="font-bold italic">{currentCard?.example[1]?.en}</p>
+                                                                <p className="italic">{currentCard?.example[1]?.vi}</p>
+                                                            </div>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
-                                    <p className=" mb-4 text-gray-500"> (nếu không có đáp án đúng vui lòng bấm bỏ qua)</p>
-                                    <p className="text-lg mb-6">{currentCard?.define}</p>
-                                    <div className="grid grid-cols-2 gap-5 flex-1">
-                                        {quizOptions.map((option, idx) => (
-                                            <button
-                                                key={idx}
-                                                onClick={() => checkAnswer(option, idx)}
-                                                disabled={selectedAnswers[idx]}
-                                                className={`
+                                )}
+
+                                {/* Quiz Feature */}
+                                {feature === FEATURES.QUIZ && (
+                                    <div className="p-5 h-full flex flex-col ">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-1">
+                                                <h1 className="text-xl font-bold text-gray-700 dark:text-white">Chọn đáp án đúng</h1>
+                                            </div>
+                                            <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">Quiz</span>
+                                        </div>
+                                        <p className=" mb-4 text-gray-500"> (nếu không có đáp án đúng vui lòng bấm bỏ qua)</p>
+                                        <p className="text-lg mb-6">{currentCard?.define}</p>
+                                        <div className="grid grid-cols-2 gap-5 flex-1">
+                                            {quizOptions.map((option, idx) => (
+                                                <button
+                                                    key={idx}
+                                                    onClick={() => checkAnswer(option, idx)}
+                                                    disabled={selectedAnswers[idx]}
+                                                    className={`
                                               flex items-center h-full border rounded-lg group text-third dark:text-white/70
                                               hover:border-primary transition-colors disabled:!bg-transparent
                                               ${selectedAnswers[idx] === "correct" ? "!border-green-500 border-2 tada" : ""}
                                               ${selectedAnswers[idx] === "incorrect" ? "!border-red-500 border-2 shake" : ""}
                                             `}>
-                                                <div
-                                                    className={`
+                                                    <div
+                                                        className={`
                                               w-[50px] h-full flex items-center justify-center border-r
                                               group-hover:border-r-primary transition-colors
                                               ${selectedAnswers[idx] === "correct" ? "!border-r-green-500" : ""}
                                               ${selectedAnswers[idx] === "incorrect" ? "!border-r-red-500" : ""}
                                             `}>
-                                                    {idx + 1}
-                                                </div>
-                                                <p className="flex-1 text-center px-2">{option}</p>
-                                            </button>
-                                        ))}
-                                        {quizOptions.length < 4 && <p className="text-red-500">Cảnh báo: Chưa đủ đáp án để trộn ngẫu nhiên (Yêu cầu trên 4)</p>}
+                                                        {idx + 1}
+                                                    </div>
+                                                    <p className="flex-1 text-center px-2">{option}</p>
+                                                </button>
+                                            ))}
+                                            {quizOptions.length < 4 && <p className="text-red-500">Cảnh báo: Chưa đủ đáp án để trộn ngẫu nhiên (Yêu cầu trên 4)</p>}
+                                        </div>
                                     </div>
-                                </div>
-                            )}
+                                )}
 
-                            {/* Listening Feature */}
-                            {feature === FEATURES.LISTENING && (
-                                <div className="p-5 flex flex-col h-full">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h1 className="text-xl font-bold text-gray-700 dark:text-white">Nghe và điền từ</h1>
-                                        <span className="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm">Listening</span>
-                                    </div>
-                                    <div className="flex gap-4 mb-6">
-                                        <button
-                                            onClick={() => speakWord(currentCard?.title, 1, currentCard?._id)}
-                                            className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-primary">
-                                            <HiMiniSpeakerWave />
-                                            <span>UK</span>
-                                        </button>
-                                        <button
-                                            onClick={() => speakWord(currentCard?.title, 2, currentCard?._id)}
-                                            className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-primary">
-                                            <HiMiniSpeakerWave />
-                                            <span>US</span>
-                                        </button>
-                                    </div>
-                                    <div className="flex-1">
-                                        <p className="text-gray-700 dark:text-white/70 mb-2">Định nghĩa:</p>
-                                        <p className="text-gray-600 dark:text-white/60 mb-4">{currentCard?.define}</p>
-                                        <input
-                                            type="text"
-                                            value={inputAnswer}
-                                            onChange={(e) => setInputAnswer(e.target.value)}
-                                            placeholder="Điền từ bạn nghe được"
-                                            autoFocus
-                                            className={`w-full p-3 border transition-colors text-third dark:bg-gray-500/50
+                                {/* Listening Feature */}
+                                {feature === FEATURES.LISTENING && (
+                                    <div className="p-5 flex flex-col h-full">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <h1 className="text-xl font-bold text-gray-700 dark:text-white">Nghe và điền từ</h1>
+                                            <span className="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm">Listening</span>
+                                        </div>
+                                        <div className="flex gap-4 mb-6">
+                                            <button
+                                                onClick={() => speakWord(currentCard?.title, 1, currentCard?._id)}
+                                                className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-primary">
+                                                <HiMiniSpeakerWave />
+                                                <span>UK</span>
+                                            </button>
+                                            <button
+                                                onClick={() => speakWord(currentCard?.title, 2, currentCard?._id)}
+                                                className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-primary">
+                                                <HiMiniSpeakerWave />
+                                                <span>US</span>
+                                            </button>
+                                        </div>
+                                        <div className="flex-1">
+                                            <p className="text-gray-700 dark:text-white/70 mb-2">Định nghĩa:</p>
+                                            <p className="text-gray-600 dark:text-white/60 mb-4">{currentCard?.define}</p>
+                                            <input
+                                                type="text"
+                                                value={inputAnswer}
+                                                onChange={(e) => setInputAnswer(e.target.value)}
+                                                placeholder="Điền từ bạn nghe được"
+                                                autoFocus
+                                                className={`w-full p-3 border transition-colors text-third dark:bg-gray-500/50
             ${isCorrectAns === "correct" ? "!border-green-500 border-2" : ""}
             ${isCorrectAns === "incorrect" ? "!border-red-500 border-2 shake" : ""}
         `}
-                                        />
-                                        <div className="flex justify-end">
-                                            <button className="btn btn-primary mt-3 flex items-center  gap-2" onClick={() => checkAnswer(inputAnswer)}>
-                                                <IoSend /> Gửi
-                                            </button>
+                                            />
+                                            <div className="flex justify-end">
+                                                <button className="btn btn-primary mt-3 flex items-center  gap-2" onClick={() => checkAnswer(inputAnswer)}>
+                                                    <IoSend /> Gửi
+                                                </button>
+                                            </div>
                                         </div>
+                                        <button onClick={() => setInputAnswer(currentCard.title)} className="flex items-center gap-2 text-gray-600 hover:text-primary mt-4">
+                                            <BiSlideshow />
+                                            <span>Hiển thị đáp án</span>
+                                        </button>
                                     </div>
-                                    <button onClick={() => setInputAnswer(currentCard.title)} className="flex items-center gap-2 text-gray-600 hover:text-primary mt-4">
-                                        <BiSlideshow />
-                                        <span>Hiển thị đáp án</span>
-                                    </button>
-                                </div>
-                            )}
+                                )}
 
-                            {/* Fill in the blank Feature */}
-                            {feature === FEATURES.FILL_BLANK && (
-                                <div className="p-5 flex flex-col h-full ">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h1 className="text-xl font-bold text-gray-700 dark:text-white">Điền từ còn thiếu</h1>
-                                        <span className="px-3 py-1 bg-purple-100 dark:bg-slate-800/50 text-purple-600 rounded-full text-sm">Practice</span>
-                                    </div>
-                                    <div className="flex-1">
-                                        <p className="text-gray-700 dark:text-white/50 mb-4">{currentCard?.define}</p>
-                                        <div className="bg-gray-50 dark:bg-slate-800/50 p-4 rounded-lg mb-4">
-                                            <p className="text-gray-600 dark:text-white/70 font-medium mb-2">Ví dụ:</p>
-                                            <p className="text-lg text-third dark:text-white/50">
-                                                {showAns ? currentCard.example?.[0]?.en : currentCard.example?.[0]?.en.replace(currentCard.title.toLowerCase(), "_".repeat(currentCard.title.length))}
-                                            </p>
+                                {/* Fill in the blank Feature */}
+                                {feature === FEATURES.FILL_BLANK && (
+                                    <div className="p-5 flex flex-col h-full ">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <h1 className="text-xl font-bold text-gray-700 dark:text-white">Điền từ còn thiếu</h1>
+                                            <span className="px-3 py-1 bg-purple-100 dark:bg-slate-800/50 text-purple-600 rounded-full text-sm">Practice</span>
                                         </div>
-                                        <input
-                                            type="text"
-                                            value={inputAnswer}
-                                            onChange={(e) => setInputAnswer(e.target.value)}
-                                            placeholder="Điền từ còn thiếu..."
-                                            autoFocus
-                                            className={`w-full p-3 border transition-colors text-third dark:bg-gray-500/50
+                                        <div className="flex-1">
+                                            <p className="text-gray-700 dark:text-white/50 mb-4">{currentCard?.define}</p>
+                                            <div className="bg-gray-50 dark:bg-slate-800/50 p-4 rounded-lg mb-4">
+                                                <p className="text-gray-600 dark:text-white/70 font-medium mb-2">Ví dụ:</p>
+                                                <p className="text-lg text-third dark:text-white/50">
+                                                    {showAns
+                                                        ? currentCard.example?.[0]?.en
+                                                        : currentCard.example?.[0]?.en.replace(currentCard.title.toLowerCase(), "_".repeat(currentCard.title.length))}
+                                                </p>
+                                            </div>
+                                            <input
+                                                type="text"
+                                                value={inputAnswer}
+                                                onChange={(e) => setInputAnswer(e.target.value)}
+                                                placeholder="Điền từ còn thiếu..."
+                                                autoFocus
+                                                className={`w-full p-3 border transition-colors text-third dark:bg-gray-500/50
                                                 ${isCorrectAns === "correct" ? "!border-green-500 border-2" : ""}
                                                 ${isCorrectAns === "incorrect" ? "!border-red-500 border-2 shake" : ""}
                                             `}
-                                        />
-                                        <div className="flex justify-end">
-                                            <button className="btn btn-primary mt-3 flex items-center  gap-2" onClick={() => checkAnswer(inputAnswer)}>
-                                                <IoSend /> Gửi
-                                            </button>
+                                            />
+                                            <div className="flex justify-end">
+                                                <button className="btn btn-primary mt-3 flex items-center  gap-2" onClick={() => checkAnswer(inputAnswer)}>
+                                                    <IoSend /> Gửi
+                                                </button>
+                                            </div>
                                         </div>
+                                        <button onClick={() => setInputAnswer(currentCard.title)} className="flex items-center gap-2 text-blue-500 hover:text-blue-600 mt-4">
+                                            <BiSlideshow />
+                                            <span>Hiển thị đáp án</span>
+                                        </button>
                                     </div>
-                                    <button onClick={() => setInputAnswer(currentCard.title)} className="flex items-center gap-2 text-blue-500 hover:text-blue-600 mt-4">
-                                        <BiSlideshow />
-                                        <span>Hiển thị đáp án</span>
-                                    </button>
+                                )}
+                            </div>
+
+                            {/* Navigation Controls */}
+                            {feature === FEATURES.FLASHCARD && (
+                                <div className="bg-white rounded-md overflow-hidden w-full flex items-center justify-between shadow-md text-2xl border border-white/10 dark:bg-slate-800/50">
+                                    <div
+                                        className="flex-1 p-3 hover:bg-[#FFCDD2] text-red-500 flex flex-col gap-1 justify-center items-center cursor-pointer"
+                                        onClick={() => handleKnowledgeLevel("unknown")}>
+                                        <BsEmojiFrown />
+                                        <p className="text-sm">Chưa biết</p>
+                                    </div>
+                                    <div
+                                        className="flex-1 p-3 hover:bg-[#FFF9C4] text-yellow-500  flex flex-col gap-1 justify-center items-center cursor-pointer"
+                                        onClick={() => handleKnowledgeLevel("familiar")}>
+                                        <BsEmojiAstonished />
+                                        <p className="text-sm">Tương đối</p>
+                                    </div>
+                                    <div
+                                        className="flex-1 p-3 hover:bg-[#C8E6C9] text-green-500 flex flex-col gap-1 justify-center items-center cursor-pointer"
+                                        onClick={() => handleKnowledgeLevel("known")}>
+                                        <BsEmojiLaughing />
+                                        <p className="text-sm">Đã biết</p>
+                                    </div>
                                 </div>
                             )}
                         </div>
 
-                        {/* Navigation Controls */}
-                        {feature === FEATURES.FLASHCARD && (
-                            <div className="bg-white rounded-md overflow-hidden w-full flex items-center justify-between shadow-md text-2xl border border-white/10 dark:bg-slate-800/50">
-                                <div
-                                    className="flex-1 p-3 hover:bg-[#FFCDD2] text-red-500 flex flex-col gap-1 justify-center items-center cursor-pointer"
-                                    onClick={() => handleKnowledgeLevel("unknown")}>
-                                    <BsEmojiFrown />
-                                    <p className="text-sm">Chưa biết</p>
-                                </div>
-                                <div
-                                    className="flex-1 p-3 hover:bg-[#FFF9C4] text-yellow-500  flex flex-col gap-1 justify-center items-center cursor-pointer"
-                                    onClick={() => handleKnowledgeLevel("familiar")}>
-                                    <BsEmojiAstonished />
-                                    <p className="text-sm">Tương đối</p>
-                                </div>
-                                <div
-                                    className="flex-1 p-3 hover:bg-[#C8E6C9] text-green-500 flex flex-col gap-1 justify-center items-center cursor-pointer"
-                                    onClick={() => handleKnowledgeLevel("known")}>
-                                    <BsEmojiLaughing />
-                                    <p className="text-sm">Đã biết</p>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Feature Selection Panel */}
-                    <div className="w-full md:w-auto flex flex-col gap-4">
-                        <div className="space-y-2">
-                            <div className="flex items-center gap-2">
-                                <HiMiniSpeakerWave size={20} />
-                                <span>Phát âm giọng UK, US</span>
-                            </div>
-                            <Switch
-                                checkedChildren={speakLang === 1 && "UK"}
-                                unCheckedChildren={speakLang === 2 && "US"}
-                                checked={speakLang === 1}
-                                onChange={(checked) => setSpeakLang(checked ? 1 : 2)}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <h2 className="font-medium">Chế độ học</h2>
-                            <div className="flex flex-wrap gap-2">
-                                {Object.entries({
-                                    Flashcard: FEATURES.FLASHCARD,
-                                    Quiz: FEATURES.QUIZ,
-                                    Listening: FEATURES.LISTENING,
-                                    "Fill Blank": FEATURES.FILL_BLANK,
-                                }).map(([name, value]) => (
-                                    <button
-                                        key={value}
-                                        className={`px-4 py-2 rounded-lg transition-colors cursor-default border border-white/10 ${
-                                            feature === value ? "bg-primary text-white" : "bg-gray-100 dark:bg-slate-800/50 text-gray-600"
-                                        }`}>
-                                        {name}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Progress Display */}
-                        <div className="space-y-2">
-                            <h2 className="font-medium">Tiến trình</h2>
-                            <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg">
-                                <div className="flex justify-between mb-2">
-                                    <span>Tổng số câu</span>
-                                    <span>{`${currentIndex + 1}/${flashcards.length}`}</span>
-                                </div>
-                                <div className="h-2 bg-gray-200 dark:bg-gray-500/50 rounded-full">
-                                    <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${((currentIndex + 1) / flashcards.length) * 100}%` }} />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Keyboard Shortcuts Guide */}
-                        <div className="space-y-2">
-                            <h2 className="font-medium">Phím tắt</h2>
-                            <div className="bg-gray-100 dark:text-white/50 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg space-y-3">
+                        {/* Feature Selection Panel */}
+                        <div className="w-full md:w-auto flex flex-col gap-4">
+                            <div className="space-y-2">
                                 <div className="flex items-center gap-2">
-                                    <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Space</kbd>
-                                    <span className="">Lật thẻ </span>
+                                    <HiMiniSpeakerWave size={20} />
+                                    <span>Phát âm giọng UK, US</span>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Enter</kbd>
-                                    <span className="">Kiểm tra đáp án</span>
-                                </div>
-
-                                <div className="flex items-center gap-2">
-                                    <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Shift</kbd>
-                                    <span className="">Phát âm thanh</span>
+                                <Switch
+                                    checkedChildren={speakLang === 1 && "UK"}
+                                    unCheckedChildren={speakLang === 2 && "US"}
+                                    checked={speakLang === 1}
+                                    onChange={(checked) => setSpeakLang(checked ? 1 : 2)}
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <h2 className="font-medium">Chế độ học</h2>
+                                <div className="flex flex-wrap gap-2">
+                                    {Object.entries({
+                                        Flashcard: FEATURES.FLASHCARD,
+                                        Quiz: FEATURES.QUIZ,
+                                        Listening: FEATURES.LISTENING,
+                                        "Fill Blank": FEATURES.FILL_BLANK,
+                                    }).map(([name, value]) => (
+                                        <button
+                                            key={value}
+                                            className={`px-4 py-2 rounded-lg transition-colors cursor-default border border-white/10 ${
+                                                feature === value ? "bg-primary text-white" : "bg-gray-100 dark:bg-slate-800/50 text-gray-600"
+                                            }`}>
+                                            {name}
+                                        </button>
+                                    ))}
                                 </div>
                             </div>
-                        </div>
-                        <div className="">
-                            <p className="font-medium">Đây là phiên bản beta còn rất nhiều bất cập mong bạn thông cảm</p>
+
+                            {/* Progress Display */}
+                            <div className="space-y-2">
+                                <h2 className="font-medium">Tiến trình</h2>
+                                <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg">
+                                    <div className="flex justify-between mb-2">
+                                        <span>Tổng số câu</span>
+                                        <span>{`${currentIndex + 1}/${flashcards.length}`}</span>
+                                    </div>
+                                    <div className="h-2 bg-gray-200 dark:bg-gray-500/50 rounded-full">
+                                        <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${((currentIndex + 1) / flashcards.length) * 100}%` }} />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Keyboard Shortcuts Guide */}
+                            <div className="space-y-2">
+                                <h2 className="font-medium">Phím tắt</h2>
+                                <div className="bg-gray-100 dark:text-white/50 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg space-y-3">
+                                    <div className="flex items-center gap-2">
+                                        <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Space</kbd>
+                                        <span className="">Lật thẻ </span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Enter</kbd>
+                                        <span className="">Kiểm tra đáp án</span>
+                                    </div>
+
+                                    <div className="flex items-center gap-2">
+                                        <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Shift</kbd>
+                                        <span className="">Phát âm thanh</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="">
+                                <p className="font-medium">Đây là phiên bản beta còn rất nhiều bất cập mong bạn thông cảm</p>
+                            </div>
                         </div>
                     </div>
                 </div>

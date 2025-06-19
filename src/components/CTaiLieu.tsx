@@ -5,21 +5,20 @@ import { SearchOutlined } from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useCallback, useState } from "react";
-import { CiTimer } from "react-icons/ci";
-import { FaRegEye } from "react-icons/fa";
-import { IoArrowForwardCircleOutline } from "react-icons/io5";
-import { MdOutlineVerified } from "react-icons/md";
+import { FaRegEye, FaRegQuestionCircle } from "react-icons/fa";
 import { Dropdown } from "./dropdown/Dropdown";
 import { DropdownItem } from "./dropdown/DropdownItem";
 import { BiChevronDown } from "react-icons/bi";
-import { ArrowDownNarrowWide, ArrowUpNarrowWide, Funnel, Grid2X2, Grid3x3, Play, Plus, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowDownNarrowWide, ArrowUpNarrowWide, ChevronLeft, ChevronRight, Funnel, Grid2X2, Grid3x3, Play, Plus } from "lucide-react";
 import { SiQuizlet } from "react-icons/si";
 import { Tooltip } from "antd";
 import { subjectOption } from "@/lib/subjectOption";
-export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
+
+export default function CTaiLieu({ toolData }: any) {
+    const [toggleBtnSortNumber, setToggleBtnSortNumber] = useState(true);
     const [sortOrder, setSortOrder] = useState("asc"); // "asc" or "desc"
     const [viewMode, setViewMode] = useState(4); // "grid 4x2" or "grid3x2"
-    const [data, setData] = useState(quizData);
+    const [data, setData] = useState(toolData);
     const [subject, setSubject] = useState("Tất cả");
     // Pagination states
     const [currentPage, setCurrentPage] = useState(1);
@@ -32,34 +31,33 @@ export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
     const endIndex = startIndex + itemsPerPage;
     const currentItems = data.slice(startIndex, endIndex);
 
-    const displayQuizs = currentItems;
+    const displaySO = currentItems;
 
     const handleSortByNumber = useCallback(
         (key: keyof IQuiz, direction = "asc") => {
+            setToggleBtnSortNumber(!toggleBtnSortNumber);
             const sortedData = [...data].sort((a, b) => {
                 if (direction === "asc") return Number(a[key]) - Number(b[key]);
                 return Number(b[key]) - Number(a[key]);
             });
             setData(sortedData);
-            setCurrentPage(1); // Reset to first page after sorting
         },
         [data]
     );
 
     const handleSearch = (value: any) => {
-        const search = quizData.filter((item) => item.title.toLowerCase().includes(value.toLowerCase()));
+        const search = toolData.filter((item: any) => item.title.toLowerCase().includes(value.toLowerCase()));
         setData(search);
-        setCurrentPage(1); // Reset to first page after search
     };
 
     const handleSearchSubject = (label: string, value: string) => {
         if (value === "none") {
-            setData(quizData);
+            setData(toolData);
             setCurrentPage(1);
             return;
         }
         setSubject(label);
-        const search = quizData.filter((item) => item.subject == value);
+        const search = toolData.filter((item: any) => item.subject == value);
         setData(search);
         setCurrentPage(1); // Reset to first page after filter
     };
@@ -130,15 +128,15 @@ export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
 
     return (
         <div className="flex items-center justify-center">
-            <div className="w-full md:w-[1000px] xl:w-[1200px] py-5 my-10">
+            <div className="w-full md:w-[1000px] xl:w-[1200px] py-5">
                 <div className="p-2 md:p-5 flex flex-col gap-5  bg-gray-200/80 dark:bg-gray-800 border border-gray-400/50 dark:border-white/10 rounded-lg mb-4 shadow-sm">
                     <div className="flex items-center gap-3 ">
                         <div className="w-1/6 h-14 md:w-14  flex items-center justify-center bg-gradient-to-r from-blue-500/80 to-purple-500/80 rounded-lg text-white">
                             <SiQuizlet size={21} />
                         </div>
                         <div className="flex-1">
-                            <h1 className="text-3xl font-bold">Quiz</h1>
-                            <p>Tổng hợp những bài quiz để bạn kiểm tra thử kiến thức của bản thân</p>
+                            <h1 className="text-3xl font-bold">Đề cương</h1>
+                            <p>Tổng hợp những đề cương của nhiều môn luôn sẵn sàng để bạn ôn bài hiệu quả nhất.</p>
                         </div>
                     </div>
                     <div className="flex md:items-center gap-3 justify-between flex-col md:flex-row">
@@ -159,7 +157,7 @@ export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
                                     className="w-full md:w-40 h-11 flex px-3 items-center justify-between border border-gray-400/50 dark:border-white/10  rounded-lg hover:border-gray-400 transition-all duration-300">
                                     <Funnel size={18} className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 pr-1" />
                                     <div className="flex items-center gap-2">
-                                        <span>{subject}</span>
+                                        <span>Tất cả</span>
                                         <BiChevronDown className="w-5 h-5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
                                     </div>
                                 </button>
@@ -167,7 +165,7 @@ export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
                                     {subjectOption.map((item, index) => (
                                         <DropdownItem
                                             key={index}
-                                            onClick={() => handleSearchSubject(item.label, item.value)}
+                                            onClick={() => handleSearchSubject(item.value, item.value)}
                                             onItemClick={closeDropdown}
                                             className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
                                             {item.label}
@@ -228,74 +226,60 @@ export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
                                 href="/quiz/themcauhoi"
                                 className="w-full md:w-auto border border-gray-500/50 dark:border-white/10 rounded-md flex items-center justify-center md:justify-start gap-2 h-11 px-3 text-gray-500">
                                 <Plus className="h-4 w-4" />
-                                Thêm câu hỏi
+                                Thêm đề cương
                             </Link>
-                            <Link
-                                href="/quiz/nganhang"
-                                className="relative group overflow-hidden w-full md:w-auto flex items-center justify-center md:justify-start gap-4 bg-gradient-to-r from-blue-500 to-purple-500 px-4 h-11 rounded-md text-white">
-                                <Play className="h-4 w-4" />
-                                Thi thử
-                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50  dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
-                            </Link>
+                            <Tooltip placement="top" title="Nếu bạn có đề cương hoặc tài liệu, đừng ngần ngại hãy gửi cho tôi">
+                                <Link
+                                    href="mailto:trongandev@gmail.com"
+                                    className="relative group overflow-hidden w-full md:w-auto flex items-center justify-center md:justify-start gap-4 bg-gradient-to-r from-blue-500 to-purple-500 px-4 h-11 rounded-md text-white">
+                                    <Play className="h-4 w-4" />
+                                    Gửi Mail
+                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50  dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
+                                </Link>
+                            </Tooltip>
                         </div>
                     </div>
                     <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-${viewMode} gap-4`}>
-                        {displayQuizs?.map((item) => (
-                            <div key={item._id} className="group hover:shadow-md hover:scale-105 transition-all duration-300  rounded-xl border border-white/10 shadow-md h-[400px]">
-                                <div className="overflow-hidden relative h-full rounded-[8px]">
-                                    <Link className="block" href={`/quiz/detail/${item.slug}`}>
-                                        <Image
-                                            src={item.img}
-                                            alt={item.title}
-                                            className="absolute h-full w-full object-cover group-hover:scale-105 duration-300  brightness-90"
-                                            fill
-                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                            priority
-                                        />
-                                    </Link>
-                                    <div className="p-3 absolute z-1 text-white bottom-0 w-full bg-linear-item">
-                                        <h1 className="text-lg font-bold">{item.title}</h1>
-                                        <p className="line-clamp-2 text-sm text-[#D9D9D9]">{item.content}</p>
-                                        <div className="flex justify-end items-center gap-1 mb-[1px] text-[10px]">
+                        {data?.map((item: any, index: any) => (
+                            <div
+                                className="bg-white dark:bg-slate-800/50 hover:shadow-md rounded-xl h-[200px] flex flex-col md:flex-row overflow-hidden shadow-sm border border-white/10 group hover:scale-105 transition-all duration-300"
+                                key={index}>
+                                <div className="relative flex-1">
+                                    <Image
+                                        unoptimized
+                                        src={item.image}
+                                        alt={item.title}
+                                        className="object-cover absolute h-full hover:scale-105 transition-all duration-300"
+                                        priority
+                                        fill
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                    />
+                                    <div className="absolute z-1 bottom-0 bg-linear-item w-full text-white text-[10px] p-2 font-bold ">
+                                        <p className="flex gap-1 items-center">
+                                            <FaRegQuestionCircle />
+                                            Số câu hỏi: {item.lenght}
+                                        </p>
+                                        <p className="flex gap-1 items-center">
                                             <FaRegEye />
-                                            <p className="">Lượt làm: {item.noa}</p>
-                                        </div>
-                                        <div className="flex justify-between items-center gap-1">
-                                            <Link href={`/profile/${item.uid._id}`} className="flex items-center gap-2">
-                                                <div className="relative w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden">
-                                                    <Image
-                                                        unoptimized
-                                                        src={item.uid.profilePicture}
-                                                        alt={item.uid.displayName}
-                                                        className="absolute object-cover h-full"
-                                                        fill
-                                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                        priority
-                                                    />
-                                                </div>
-                                                <div className="group">
-                                                    <div className="flex items-center gap-1">
-                                                        <h2 className="text-sm line-clamp-1 overflow-hidden">{item.uid.displayName}</h2>
-                                                        {item.uid.verify ? <MdOutlineVerified color="#3b82f6" /> : ""}
-                                                    </div>
-                                                    <p className="text-[#D9D9D9] text-[10px] flex gap-1 items-center">
-                                                        <CiTimer color="#D9D9D9" /> {handleCompareDate(item.date)}
-                                                    </p>
-                                                </div>
-                                            </Link>
-
-                                            <Link href={`/quiz/${item.slug}`} className="flex gap-1 items-center text-sm btn btn-primary !rounded-md">
-                                                Làm bài <IoArrowForwardCircleOutline />
-                                            </Link>
-                                        </div>
+                                            Lượt xem: {item.view}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex-1 flex justify-between flex-col h-full p-3">
+                                    <div className="">
+                                        <h1 className="font-bold line-clamp-2 h-[48px]">{item.title}</h1>
+                                    </div>
+                                    <div className="">
+                                        <p className="text-[12px]">{handleCompareDate(item.date)}</p>
+                                        <Link href={`/decuong/${item.slug}`}>
+                                            <button className="text-sm w-full btn btn-primary !rounded-md">Xem ngay</button>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>
                         ))}
-                        {/* Empty state */}
-                        {data && data.length === 0 ? <p className="text-primary col-span-full text-center py-8">Không có quiz nào...</p> : ""}
+                        {data && data.length === 0 ? <p className="text-primary">Không có đề cương nào...</p> : ""}
                     </div>
-
                     {/* Pagination */}
                     {totalPages > 1 && (
                         <div className="flex items-center justify-center gap-2">

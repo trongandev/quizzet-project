@@ -116,73 +116,73 @@ export default function CQuizDetail({ QuizData, QuestData }: { QuizData?: IQuiz;
     }
 
     return (
-        <>
-            {contextHolder}
-            <div className="text-third dark:text-white px-2 md:px-0 min-h-[80vh]">
-                <div className="">
-                    {QuizData && (
-                        <div className="">
-                            <h1 className="text-xl font-bold text-primary">{QuizData?.title}</h1>
-                            <p className="">{QuizData?.content}</p>
-                            <p className="">Tác giả: {QuizData?.uid?.displayName}</p>
-                            <p className="">Ngày đăng: {QuizData?.date && handleCompareDate(QuizData?.date)}</p>
-                        </div>
-                    )}
-                </div>
-                <form action="" onSubmit={handleQuiz} className="relative flex gap-5 flex-row  mt-3">
-                    <div className="w-full md:w-2/3">
-                        <div className="max-h-[80vh] overflow-y-auto scroll-smooth flex flex-col gap-2 pr-3">
-                            {QuestData?.map((item, index) => (
-                                <div className="bg-gray-200/80 dark:!bg-slate-800/50 p-5 border-2 border-white/10 rounded-lg" key={index} id={index.toString()}>
-                                    <h1 className="text-lg font-bold text-primary">
-                                        Câu {index + 1}: {item.question}{" "}
-                                    </h1>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                        {item.answers.map((answer, idx) => (
-                                            <div key={idx} className={`relative flex items-center ${selectedAnswers[index] === idx.toString() ? " text-primary font-bold" : ""}`}>
-                                                <input
-                                                    type="radio"
-                                                    name={item.id.toString()}
-                                                    className="w-1 invisible"
-                                                    id={`${index}ans${idx}`}
-                                                    checked={selectedAnswers[index] === idx.toString()}
-                                                    onChange={() => handleSelect(index.toString(), idx.toString())}
-                                                />
-                                                <label
-                                                    htmlFor={`${index}ans${idx}`}
-                                                    className={`absolute h-full font-bold px-3 flex items-center justify-center rounded-md ${
-                                                        selectedAnswers[index] === idx.toString() ? "bg-primary text-white" : ""
-                                                    }`}>
-                                                    {idx === 0 ? "A" : idx === 1 ? "B" : idx === 2 ? "C" : "D"}
-                                                </label>
-                                                <label htmlFor={`${index}ans${idx}`} className=" cursor-pointer block w-full ml-8 p-2">
-                                                    {answer}
-                                                </label>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="mt-5 flex items-center justify-between">
-                            <h1>
-                                {Math.floor(seconds / 3600)}h:{Math.floor((seconds % 3600) / 60)}p:{seconds % 60}s
-                            </h1>
-                            {token != undefined ? (
-                                <button type="submit" className="btn btn-primary" disabled={loading}>
-                                    {loading && <Spin indicator={<LoadingOutlined spin />} className="mr-2" size="small" />}
-                                    Nộp bài
-                                </button>
-                            ) : (
-                                ""
-                            )}
-                        </div>
+        <div className="flex items-center justify-center">
+            <div className="w-full md:w-[1000px] xl:w-[1200px] py-5 pt-20">
+                {contextHolder}
+                <div className="text-third dark:text-white px-2 md:px-0 min-h-[80vh]">
+                    <div className="">
+                        {QuizData && (
+                            <div className="">
+                                <h1 className="text-xl font-bold text-primary">{QuizData?.title}</h1>
+                                <p className="">{QuizData?.content}</p>
+                                <p className="">Tác giả: {QuizData?.uid?.displayName}</p>
+                                <p className="">Ngày đăng: {QuizData?.date && handleCompareDate(QuizData?.date)}</p>
+                            </div>
+                        )}
                     </div>
-                    {/* desktop */}
-                    <div className="hidden md:block">
-                        <div className="w-full h-full">
-                            <div className="w-full h-[500px] bg-gray-200 dark:bg-slate-800/50 rounded-md p-5 border border-white/10 ">
+                    <form action="" onSubmit={handleQuiz} className="flex gap-5 flex-row  mt-3">
+                        <div className="w-full md:w-2/3">
+                            <div className="min-h-[80vh] scroll-smooth flex flex-col gap-2 pr-3">
+                                {QuestData?.map((item, index) => (
+                                    <div className="bg-gray-200/80 dark:!bg-slate-800/50 p-5 border-2 border-white/10 rounded-lg" key={index} id={index.toString()}>
+                                        <h1 className="text-lg font-bold text-primary">
+                                            Câu {index + 1}: {item.question}{" "}
+                                        </h1>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                            {item.answers.map((answer, idx) => (
+                                                <div key={idx} className={`relative flex items-center ${selectedAnswers[index] === idx.toString() ? " text-primary font-bold" : ""}`}>
+                                                    <input
+                                                        type="radio"
+                                                        name={item.id.toString()}
+                                                        className="w-1 invisible"
+                                                        id={`${index}ans${idx}`}
+                                                        checked={selectedAnswers[index] === idx.toString()}
+                                                        onChange={() => handleSelect(index.toString(), idx.toString())}
+                                                    />
+                                                    <label
+                                                        htmlFor={`${index}ans${idx}`}
+                                                        className={`absolute h-full font-bold px-3 flex items-center justify-center rounded-md ${
+                                                            selectedAnswers[index] === idx.toString() ? "bg-primary text-white" : ""
+                                                        }`}>
+                                                        {idx === 0 ? "A" : idx === 1 ? "B" : idx === 2 ? "C" : "D"}
+                                                    </label>
+                                                    <label htmlFor={`${index}ans${idx}`} className=" cursor-pointer block w-full ml-8 p-2">
+                                                        {answer}
+                                                    </label>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="mt-5 flex items-center justify-between">
+                                <h1>
+                                    {Math.floor(seconds / 3600)}h:{Math.floor((seconds % 3600) / 60)}p:{seconds % 60}s
+                                </h1>
+                                {token != undefined ? (
+                                    <button type="submit" className="btn btn-primary" disabled={loading}>
+                                        {loading && <Spin indicator={<LoadingOutlined spin />} className="mr-2" size="small" />}
+                                        Nộp bài
+                                    </button>
+                                ) : (
+                                    ""
+                                )}
+                            </div>
+                        </div>
+                        {/* desktop */}
+                        <div className="hidden  md:block  top-5 right-5 w-[300px] h-full">
+                            <div className="fixed shadow-md bg-gray-200 dark:bg-slate-800/50 rounded-md p-5 border border-white/10 ">
                                 <h1 className="text-lg font-bold text-primary text-center mb-3">Danh sách câu hỏi</h1>
                                 <div className="grid grid-cols-5 gap-2 max-h-[420px] overflow-y-scroll pr-2">
                                     {QuestData?.map((item, index) => (
@@ -198,33 +198,33 @@ export default function CQuizDetail({ QuizData, QuestData }: { QuizData?: IQuiz;
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    {/* mobile */}
-                    <div className="fixed right-[10px] bottom-[130px] md:hidden">
-                        <div onClick={showModal} className="w-[50px] h-[50px] px-2 bg-red-500 flex items-center justify-center rounded-full text-white animate-bounce">
-                            <IoIosArrowUp />
-                        </div>
-                        <Modal title="Danh sách câu hỏi" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                            <div className="">
-                                <div className="grid grid-cols-5 gap-3">
-                                    {QuestData &&
-                                        QuestData.map((item, index) => (
-                                            <a
-                                                href={`#${index - 1}`}
-                                                key={index}
-                                                onClick={handleCancel}
-                                                className={`flex items-center justify-center w-full h-[55px] ${
-                                                    selectedAnswers[index] !== undefined ? "bg-primary text-white font-bold" : "bg-red-500 text-red-100"
-                                                }`}>
-                                                <p>{index + 1}</p>
-                                            </a>
-                                        ))}
-                                </div>
+                        {/* mobile */}
+                        <div className="fixed right-[10px] bottom-[60px] md:hidden">
+                            <div onClick={showModal} className="w-[50px] h-[50px] px-2 bg-red-500 flex items-center justify-center rounded-full text-white animate-bounce">
+                                <IoIosArrowUp />
                             </div>
-                        </Modal>
-                    </div>
-                </form>
+                            <Modal title="Danh sách câu hỏi" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                                <div className="">
+                                    <div className="grid grid-cols-5 gap-3">
+                                        {QuestData &&
+                                            QuestData.map((item, index) => (
+                                                <a
+                                                    href={`#${index - 1}`}
+                                                    key={index}
+                                                    onClick={handleCancel}
+                                                    className={`flex items-center justify-center w-full h-[55px] ${
+                                                        selectedAnswers[index] !== undefined ? "bg-primary text-white font-bold" : "bg-red-500 text-red-100"
+                                                    }`}>
+                                                    <p>{index + 1}</p>
+                                                </a>
+                                            ))}
+                                    </div>
+                                </div>
+                            </Modal>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </>
+        </div>
     );
 }

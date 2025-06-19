@@ -176,155 +176,163 @@ export default function TaiLieuFlashcard({ params }) {
     }
 
     return (
-        <div className="px-3 md:px-0 focus-visible:outline-none min-h-screen" onKeyDown={handleKeyDown} tabIndex={0}>
-            {contextHolder}
-            <div className="w-full flex items-center justify-center h-[90%] flex-col gap-5">
-                <div className="w-full flex flex-col md:flex-row gap-5 items-start">
-                    <div className="w-full flex flex-col gap-5">
-                        {/* Main Flashcard Container */}
-                        <div
-                            className=" relative w-full h-[500px] border border-white/10 rounded-lg  shadow-md bg-white dark:bg-slate-800/50 dark:text-white"
-                            style={{ perspective: "1000px" }}
-                            onClick={feature === FEATURES.FLASHCARD ? () => setIsFlipped(!isFlipped) : undefined}>
-                            {/* Flashcard Feature */}
-                            {feature === FEATURES.FLASHCARD && (
+        <div className="flex items-center justify-center">
+            <div className="w-full md:w-[1000px] xl:w-[1200px] py-5 pt-20">
+                <div className="px-3 md:px-0 focus-visible:outline-none min-h-screen" onKeyDown={handleKeyDown} tabIndex={0}>
+                    {contextHolder}
+                    <div className="w-full flex items-center justify-center h-[90%] flex-col gap-5">
+                        <div className="w-full flex flex-col md:flex-row gap-5 items-start">
+                            <div className="w-full flex flex-col gap-5">
+                                {/* Main Flashcard Container */}
                                 <div
-                                    className={`rounded-lg  cursor-pointer absolute inset-0 w-full h-full transition-transform duration-500 transform ${isFlipped ? "rotate-y-180" : ""}`}
-                                    style={{ transformStyle: "preserve-3d" }}>
-                                    {/* Front Side */}
-                                    <div
-                                        className="rounded-lg  absolute inset-0 bg-white dark:bg-slate-800/50 flex flex-col items-center justify-center backface-hidden p-5"
-                                        style={{ backfaceVisibility: "hidden" }}>
-                                        <div className="flex items-center gap-2 mb-4">
-                                            <p className="text-2xl font-semibold">{flashcards[index]?.question}</p>
+                                    className=" relative w-full h-[500px] border border-white/10 rounded-lg  shadow-md bg-white dark:bg-slate-800/50 dark:text-white"
+                                    style={{ perspective: "1000px" }}
+                                    onClick={feature === FEATURES.FLASHCARD ? () => setIsFlipped(!isFlipped) : undefined}>
+                                    {/* Flashcard Feature */}
+                                    {feature === FEATURES.FLASHCARD && (
+                                        <div
+                                            className={`rounded-lg  cursor-pointer absolute inset-0 w-full h-full transition-transform duration-500 transform ${isFlipped ? "rotate-y-180" : ""}`}
+                                            style={{ transformStyle: "preserve-3d" }}>
+                                            {/* Front Side */}
+                                            <div
+                                                className="rounded-lg  absolute inset-0 bg-white dark:bg-slate-800/50 flex flex-col items-center justify-center backface-hidden p-5"
+                                                style={{ backfaceVisibility: "hidden" }}>
+                                                <div className="flex items-center gap-2 mb-4">
+                                                    <p className="text-2xl font-semibold">{flashcards[index]?.question}</p>
+                                                </div>
+
+                                                <p className="text-gray-500 text-sm">(Click to flip)</p>
+                                            </div>
+
+                                            {/* Back Side */}
+                                            <div
+                                                className="rounded-lg  absolute inset-0 bg-white dark:bg-slate-800/50 flex flex-col items-center justify-center p-5 backface-hidden"
+                                                style={{
+                                                    backfaceVisibility: "hidden",
+                                                    transform: "rotateY(180deg)",
+                                                }}>
+                                                {isFlipped && <p className="text-lg ">{flashcards[index]?.answer}</p>}
+                                            </div>
                                         </div>
+                                    )}
 
-                                        <p className="text-gray-500 text-sm">(Click to flip)</p>
-                                    </div>
-
-                                    {/* Back Side */}
-                                    <div
-                                        className="rounded-lg  absolute inset-0 bg-white dark:bg-slate-800/50 flex flex-col items-center justify-center p-5 backface-hidden"
-                                        style={{
-                                            backfaceVisibility: "hidden",
-                                            transform: "rotateY(180deg)",
-                                        }}>
-                                        {isFlipped && <p className="text-lg ">{flashcards[index]?.answer}</p>}
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Quiz Feature */}
-                            {feature === FEATURES.QUIZ && (
-                                <div className="p-5 h-full flex flex-col">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-1">
-                                            <h1 className="text-xl font-bold ">Chọn đáp án đúng</h1>
-                                        </div>
-                                        <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">Quiz</span>
-                                    </div>
-                                    <p className=" mb-4 text-gray-500"> (nếu không có đáp án đúng vui lòng bấm bỏ qua)</p>
-                                    <p className="text-lg mb-6">{flashcards[index]?.question}</p>
-                                    <div className="grid grid-cols-2 gap-5 flex-1">
-                                        {quizOptions.map((option, idx) => (
-                                            <button
-                                                key={idx}
-                                                onClick={() => handleQuizAnswer(option, idx)}
-                                                disabled={selectedAnswers[idx]}
-                                                className={`
+                                    {/* Quiz Feature */}
+                                    {feature === FEATURES.QUIZ && (
+                                        <div className="p-5 h-full flex flex-col">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-1">
+                                                    <h1 className="text-xl font-bold ">Chọn đáp án đúng</h1>
+                                                </div>
+                                                <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">Quiz</span>
+                                            </div>
+                                            <p className=" mb-4 text-gray-500"> (nếu không có đáp án đúng vui lòng bấm bỏ qua)</p>
+                                            <p className="text-lg mb-6">{flashcards[index]?.question}</p>
+                                            <div className="grid grid-cols-2 gap-5 flex-1">
+                                                {quizOptions.map((option, idx) => (
+                                                    <button
+                                                        key={idx}
+                                                        onClick={() => handleQuizAnswer(option, idx)}
+                                                        disabled={selectedAnswers[idx]}
+                                                        className={`
                                               flex items-center h-full border dark:border-white/10 rounded-lg group 
                                               transition-colors disabled:!bg-transparent
                                               ${selectedAnswers[idx] === "correct" ? "!border-green-500 border-2 tada" : ""}
                                               ${selectedAnswers[idx] === "incorrect" ? "!border-red-500 border-2 shake" : ""}
                                             `}>
-                                                <div
-                                                    className={`
+                                                        <div
+                                                            className={`
                                               w-[50px] h-full flex items-center justify-center border-r dark:border-r-white/10
                                                transition-colors
                                               ${selectedAnswers[idx] === "correct" ? "!border-r-green-500" : ""}
                                               ${selectedAnswers[idx] === "incorrect" ? "!border-r-red-500" : ""}
                                             `}>
-                                                    {idx + 1}
-                                                </div>
-                                                <p className="flex-1 text-center px-2">{option}</p>
-                                            </button>
-                                        ))}
-                                        {quizOptions.length < 4 && <p className="text-red-500">Cảnh báo: Chưa đủ đáp án để trộn ngẫu nhiên (Yêu cầu trên 4)</p>}
+                                                            {idx + 1}
+                                                        </div>
+                                                        <p className="flex-1 text-center px-2">{option}</p>
+                                                    </button>
+                                                ))}
+                                                {quizOptions.length < 4 && <p className="text-red-500">Cảnh báo: Chưa đủ đáp án để trộn ngẫu nhiên (Yêu cầu trên 4)</p>}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Navigation Controls */}
+
+                                <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 rounded-md overflow-hidden w-full flex items-center justify-between shadow-md text-2xl">
+                                    <div
+                                        className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer"
+                                        onClick={() => handleProgress("unknown")}>
+                                        <GrFormPrevious />
+                                        <p className="text-sm">Lùi lại</p>
+                                    </div>
+                                    <div
+                                        className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer"
+                                        onClick={() => handleProgress("known")}>
+                                        <GrFormNext />
+                                        <p className="text-sm">Tiến tới</p>
                                     </div>
                                 </div>
-                            )}
-                        </div>
-
-                        {/* Navigation Controls */}
-
-                        <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 rounded-md overflow-hidden w-full flex items-center justify-between shadow-md text-2xl">
-                            <div className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer" onClick={() => handleProgress("unknown")}>
-                                <GrFormPrevious />
-                                <p className="text-sm">Lùi lại</p>
                             </div>
-                            <div className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer" onClick={() => handleProgress("known")}>
-                                <GrFormNext />
-                                <p className="text-sm">Tiến tới</p>
-                            </div>
-                        </div>
-                    </div>
 
-                    {/* Feature Selection Panel */}
-                    <div className="w-full md:w-auto flex flex-col gap-4">
-                        <div className="space-y-2">
-                            <h2 className="font-medium">Chế độ học</h2>
-                            <div className="flex flex-wrap gap-2">
-                                {Object.entries({
-                                    Flashcard: FEATURES.FLASHCARD,
-                                    Quiz: FEATURES.QUIZ,
-                                }).map(([name, value]) => (
-                                    <button
-                                        key={value}
-                                        onClick={() => setFeature(value)}
-                                        className={`px-4 py-2 rounded-lg transition-colors  border border-white/10 ${
-                                            feature === value ? "bg-primary text-white" : "bg-gray-100 dark:bg-slate-800/50 hover:bg-gray-200"
-                                        }`}>
-                                        {name}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Progress Display */}
-                        <div className="space-y-2">
-                            <h2 className="font-medium">Tiến trình</h2>
-                            <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg">
-                                <div className="flex justify-between mb-2">
-                                    <span>Đã học:</span>
-                                    <span>{progress.known.length}</span>
+                            {/* Feature Selection Panel */}
+                            <div className="w-full md:w-auto flex flex-col gap-4">
+                                <div className="space-y-2">
+                                    <h2 className="font-medium">Chế độ học</h2>
+                                    <div className="flex flex-wrap gap-2">
+                                        {Object.entries({
+                                            Flashcard: FEATURES.FLASHCARD,
+                                            Quiz: FEATURES.QUIZ,
+                                        }).map(([name, value]) => (
+                                            <button
+                                                key={value}
+                                                onClick={() => setFeature(value)}
+                                                className={`px-4 py-2 rounded-lg transition-colors  border border-white/10 ${
+                                                    feature === value ? "bg-primary text-white" : "bg-gray-100 dark:bg-slate-800/50 hover:bg-gray-200"
+                                                }`}>
+                                                {name}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
 
-                                <div className="mt-2 h-2 bg-gray-200 dark:bg-gray-500/50 rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-primary"
-                                        style={{
-                                            width: `${(progress.known.length / flashcards.length) * 100}%`,
-                                        }}
-                                    />
-                                </div>
-                            </div>
-                        </div>
+                                {/* Progress Display */}
+                                <div className="space-y-2">
+                                    <h2 className="font-medium">Tiến trình</h2>
+                                    <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg">
+                                        <div className="flex justify-between mb-2">
+                                            <span>Đã học:</span>
+                                            <span>{progress.known.length}</span>
+                                        </div>
 
-                        {/* Keyboard Shortcuts Guide */}
-                        <div className="space-y-2">
-                            <h2 className="font-medium">Phím tắt</h2>
-                            <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg space-y-3 text-gray-500 dark:text-white">
-                                <div className="flex items-center gap-2">
-                                    <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">→</kbd>
-                                    <span className="">Tiến tới</span>
+                                        <div className="mt-2 h-2 bg-gray-200 dark:bg-gray-500/50 rounded-full overflow-hidden">
+                                            <div
+                                                className="h-full bg-primary"
+                                                style={{
+                                                    width: `${(progress.known.length / flashcards.length) * 100}%`,
+                                                }}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">←</kbd>
-                                    <span className="">Lùi lại</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Space</kbd>
-                                    <span className="">Lật thẻ </span>
+
+                                {/* Keyboard Shortcuts Guide */}
+                                <div className="space-y-2">
+                                    <h2 className="font-medium">Phím tắt</h2>
+                                    <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg space-y-3 text-gray-500 dark:text-white">
+                                        <div className="flex items-center gap-2">
+                                            <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">→</kbd>
+                                            <span className="">Tiến tới</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">←</kbd>
+                                            <span className="">Lùi lại</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Space</kbd>
+                                            <span className="">Lật thẻ </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

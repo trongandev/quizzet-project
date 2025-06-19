@@ -335,66 +335,70 @@ export default function CongDong() {
     }
 
     return (
-        <div className="text-third dark:text-white flex gap-5 flex-wrap px-3 md:px-0 min-h-[85vh]">
-            {contextHolder}
+        <div className="flex items-center justify-center">
+            <div className="w-full md:w-[1000px] xl:w-[1200px] py-5 pt-20">
+                <div className="text-third dark:text-white flex gap-5 flex-wrap px-3 md:px-0 min-h-[85vh]">
+                    {contextHolder}
 
-            <div className=" w-full md:w-[700px] p-3 md:p-5  border border-primary  rounded-md">
-                <MessageList
-                    messages={messages}
-                    lastMessageRef={lastMessageRef}
-                    setReplyingTo={setReplyingTo}
-                    handleReactIcon={handleReactIcon}
-                    user={user}
-                    token={token}
-                    isModalOpen={isModalOpen}
-                    reactIconList={reactIconList}
-                    loadingIcon={loadingIcon}
-                    emoji={emojiData}
-                    onReply={(id: any) => setReplyingTo(id)}
-                    onModalOpen={showModal}
-                    onOpenChange={handleOpenChange}
-                    onModalCancel={handleCancel}
-                    handleUnsend={handleUnsend}
-                    loading={loading}
-                    handleEditMess={handleEditMess}
-                    isModalOpenEditMess={isModalOpenEditMess}
-                    handleOkEditMess={handleOkEditMess}
-                    setEditMess={setEditMess}
-                    handleCancelEditMess={handleCancelEditMess}
-                    showModalEditMess={showModalEditMess}
-                    editMess={editMess}
-                    onEdit={handleEditMess}
-                    onModalOk={handleOkEditMess}
-                    onModalOpenEditMess={showModalEditMess}
-                />
-                <ChatArea
-                    user={user}
-                    setReplyingTo={setReplyingTo}
-                    handleOpenChange={handleOpenChange}
-                    inputRef={inputRef}
-                    handleMessageChange={handleMessageChange}
-                    handleSendMessage={handleSendMessage}
-                    // image={image}
-                    imageReview={imageReview}
-                    handleImageChange={handleImageChange}
-                    handleSetDefaultImage={handleSetDefaultImage}
-                    handleKeyPress={handleKeyPress}
-                    handlePaste={handlePaste}
-                    open={open}
-                    emojiData={emojiData}
-                    searchEmoji={searchEmoji}
-                    handleSearchEmoji={handleSearchEmoji}
-                    replyingTo={replyingTo}
-                    newMessage={newMessage}
-                    loading={loading}
-                    onEmojiSelect={(emoji: any) => {
-                        if (inputRef.current) {
-                            inputRef.current.value += emoji;
-                        }
-                    }}
-                />
+                    <div className=" w-full md:w-[700px] p-3 md:p-5  border border-primary  rounded-md">
+                        <MessageList
+                            messages={messages}
+                            lastMessageRef={lastMessageRef}
+                            setReplyingTo={setReplyingTo}
+                            handleReactIcon={handleReactIcon}
+                            user={user}
+                            token={token}
+                            isModalOpen={isModalOpen}
+                            reactIconList={reactIconList}
+                            loadingIcon={loadingIcon}
+                            emoji={emojiData}
+                            onReply={(id: any) => setReplyingTo(id)}
+                            onModalOpen={showModal}
+                            onOpenChange={handleOpenChange}
+                            onModalCancel={handleCancel}
+                            handleUnsend={handleUnsend}
+                            loading={loading}
+                            handleEditMess={handleEditMess}
+                            isModalOpenEditMess={isModalOpenEditMess}
+                            handleOkEditMess={handleOkEditMess}
+                            setEditMess={setEditMess}
+                            handleCancelEditMess={handleCancelEditMess}
+                            showModalEditMess={showModalEditMess}
+                            editMess={editMess}
+                            onEdit={handleEditMess}
+                            onModalOk={handleOkEditMess}
+                            onModalOpenEditMess={showModalEditMess}
+                        />
+                        <ChatArea
+                            user={user}
+                            setReplyingTo={setReplyingTo}
+                            handleOpenChange={handleOpenChange}
+                            inputRef={inputRef}
+                            handleMessageChange={handleMessageChange}
+                            handleSendMessage={handleSendMessage}
+                            // image={image}
+                            imageReview={imageReview}
+                            handleImageChange={handleImageChange}
+                            handleSetDefaultImage={handleSetDefaultImage}
+                            handleKeyPress={handleKeyPress}
+                            handlePaste={handlePaste}
+                            open={open}
+                            emojiData={emojiData}
+                            searchEmoji={searchEmoji}
+                            handleSearchEmoji={handleSearchEmoji}
+                            replyingTo={replyingTo}
+                            newMessage={newMessage}
+                            loading={loading}
+                            onEmojiSelect={(emoji: any) => {
+                                if (inputRef.current) {
+                                    inputRef.current.value += emoji;
+                                }
+                            }}
+                        />
+                    </div>
+                    <OnlineUsers onlineUsers={onlineUsers} />
+                </div>
             </div>
-            <OnlineUsers onlineUsers={onlineUsers} />
         </div>
     );
 }

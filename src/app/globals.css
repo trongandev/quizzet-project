@@ -70,20 +70,19 @@ button[disabled] {
     font-weight: bold;
 }
 
-input,
+/* input,
 textarea,
 select {
     padding: 5px 15px;
     border: 1px solid #ccc;
     width: 100%;
     border-radius: 5px;
-}
+} */
 
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
     outline: none;
-    border: 1px solid #2187d5;
 }
 
 .helvetica {

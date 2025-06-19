@@ -5,10 +5,10 @@ import Link from "next/link";
 import Image from "next/image";
 import "@/app/globals.css";
 import CTaiLieu from "@/components/CTaiLieu";
-import CQuizMobile from "./CQuizMobile";
 import CQuiz from "./CQuiz";
 import { IoCopyOutline } from "react-icons/io5";
 import { IListFlashcard, IQuiz, ISO } from "@/types/type";
+import { GiCardPick } from "react-icons/gi";
 export default function CHome({ quizData, toolData, publicFlashcards }: { quizData: IQuiz[]; toolData: ISO[]; publicFlashcards: IListFlashcard[] }) {
     return (
         <div className="">
@@ -59,7 +59,7 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
                             <Image src="/item2.png" alt="" className="absolute w-full h-full object-contain" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"></Image>
                         </div>
                         <div className="bg-white dark:bg-gray-700 dark:text-white text-center p-4 rounded-xl w-[350px] space-y-2">
-                            <h1 className="text-2xl font-bold">đề cương</h1>
+                            <h1 className="text-2xl font-bold">Đề cương</h1>
                             <p className="">Tổng hợp những đề cương của nhiều môn luôn sẵn sàng để bạn ôn bài hiệu quả nhất.</p>
                             <Link href="/decuong">
                                 <button className="btn btn-primary">Tìm hiểu thêm</button>
@@ -67,9 +67,17 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
                         </div>
                     </div>
                 </div>
-                <div className="mt-10 mb-5dark:text-white">
-                    <h1 className="text-3xl font-bold">Flashcard</h1>
-                    <p>Flashcard là một trong những cách tốt nhất để ghi nhớ những kiến thức quan trọng. Hãy cùng Quizzet tham khảo và tạo những bộ flashcards bạn nhé!</p>
+                <div className="mt-10 mb-5 dark:text-white">
+                    <div className="flex items-center gap-3 mb-3">
+                        <div className="w-1/6 h-14 md:w-14 flex items-center justify-center bg-gradient-to-r from-blue-500/80 to-purple-500/80 rounded-lg text-white">
+                            <GiCardPick size={21} />
+                        </div>
+                        <div className="flex-1">
+                            <h1 className="text-3xl font-bold">Flashcard</h1>
+                            <p>Flashcard là một trong những cách tốt nhất để ghi nhớ những kiến thức quan trọng</p>
+                        </div>
+                    </div>
+
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 max-h-[300px] overflow-y-scroll">
                         {publicFlashcards.length > 0 &&
                             publicFlashcards.map((item) => (
@@ -106,36 +114,10 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
                             ))}
                     </div>
                 </div>
-                {/* {!quizData && (
-                    <div className="h-[400px] flex items-center justify-center w-full bg-white p-5 mt-2">
-                        <Spin indicator={<LoadingOutlined spin />} size="large" />
-                    </div>
-                )} */}
-                <div className="mt-10 mb-5">
-                    <h1 className="text-3xl font-bold">Quiz</h1>
-                    <p>Tổng hợp những bài quiz để bạn kiểm tra thử kiến thức của bản thân</p>
-                    <div className="block md:hidden">
-                        <CQuizMobile quizData={quizData} />
-                    </div>
-                    <div className="hidden md:block">
-                        <CQuiz quizData={quizData} />
-                    </div>
-                </div>
 
-                <div className="mt-10 mb-5">
-                    <h1 className="text-3xl font-bold">đề cương</h1>
-                    <p>Tổng hợp những đề cương của nhiều môn luôn sẵn sàng để bạn ôn bài hiệu quả nhất.</p>
-                    <p>
-                        Nếu bạn có đề cương cần đưa lên web? bấm vào nút dưới để{" "}
-                        <a className="underline text-primary" href="mailto: thngan25k3@gmail.com">
-                            gửi đề cương
-                        </a>{" "}
-                        cho mình nhá
-                    </p>
-                </div>
-                <div className="">
-                    <CTaiLieu toolData={toolData} />
-                </div>
+                <CQuiz quizData={quizData} />
+
+                <CTaiLieu toolData={toolData} />
             </div>
         </div>
     );

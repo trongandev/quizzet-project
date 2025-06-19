@@ -17,6 +17,7 @@ import { AiFillHome } from "react-icons/ai";
 import { FaFileAlt } from "react-icons/fa";
 import { GiCardPick } from "react-icons/gi";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { FaRegCreditCard } from "react-icons/fa";
 
 export default function RootLayout({ children }: any) {
     const pathname = usePathname();
@@ -77,7 +78,7 @@ export default function RootLayout({ children }: any) {
                                     </li>
                                     <li className="flex-1">
                                         <Link href="/flashcard" className={`flex items-center h-full justify-center ${pathname.startsWith("/flashcard") ? "active" : ""}`}>
-                                            <GiCardPick size={25} />
+                                            <FaRegCreditCard size={25} />
                                         </Link>
                                     </li>
                                 </ul>

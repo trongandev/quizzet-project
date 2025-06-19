@@ -14,38 +14,42 @@ export default function CTaiLieuDetail({ DeCuongData }) {
         handleChangeRouterDeCuong();
     }, []);
     return (
-        <div className="text-third px-2 md:px-0 dark:text-white">
-            <div className="flex justify-between items-center">
-                <div className="">
-                    <h1 className="text-2xl ">
-                        Bộ đề môn: <label className="text-primary font-bold ">{DeCuongData?.title}</label>
-                    </h1>
-                    <p>
-                        Tổng: <label className="text-secondary dark:text-gray-300 font-bold ">{DeCuongData?.lenght} câu hỏi</label>
-                    </p>
-                </div>
-                <Link href={`/decuong/flashcard/${DeCuongData?._id}`} className="flex gap-2 items-center btn btn-primary !rounded-md">
-                    <GiCardPick size={20} />
-                    Luyện tập bằng Flashcard
-                </Link>
-            </div>
-            <div className="grid grid-cols-1  gap-2 md:gap-5 mt-5">
-                {DeCuongData &&
-                    DeCuongData?.quest?.data_so.map((item, index) => (
-                        <div className=" bg-linear-item-2 rounded-xl border border-white/20  p-5" key={index}>
-                            <h1 className=" font-bold text-lg dark:text-white/80">
-                                Câu {index + 1}: {item.question.replace("Câu ", "")}
+        <div className="flex items-center justify-center">
+            <div className="w-full md:w-[1000px] xl:w-[1200px] py-5 pt-20">
+                <div className="text-third px-2 md:px-0 dark:text-white">
+                    <div className="flex justify-between items-center">
+                        <div className="">
+                            <h1 className="text-2xl ">
+                                Bộ đề môn: <label className="text-primary font-bold ">{DeCuongData?.title}</label>
                             </h1>
-
-                            <p className="text-secondary  dark:text-white/70">{item.answer}</p>
+                            <p>
+                                Tổng: <label className="text-secondary dark:text-gray-300 font-bold ">{DeCuongData?.lenght} câu hỏi</label>
+                            </p>
                         </div>
-                    ))}
-            </div>
-            {!DeCuongData && (
-                <div className="h-[400px] flex items-center justify-center w-full bg-white p-5 mt-2">
-                    <Spin indicator={<LoadingOutlined spin />} size="large" />
+                        <Link href={`/decuong/flashcard/${DeCuongData?._id}`} className="flex gap-2 items-center btn btn-primary !rounded-md">
+                            <GiCardPick size={20} />
+                            Luyện tập bằng Flashcard
+                        </Link>
+                    </div>
+                    <div className="grid grid-cols-1  gap-2 md:gap-5 mt-5">
+                        {DeCuongData &&
+                            DeCuongData?.quest?.data_so.map((item, index) => (
+                                <div className=" bg-linear-item-2 rounded-xl border border-white/20  p-5" key={index}>
+                                    <h1 className=" font-bold text-lg dark:text-white/80">
+                                        Câu {index + 1}: {item.question.replace("Câu ", "")}
+                                    </h1>
+
+                                    <p className="text-secondary  dark:text-white/70">{item.answer}</p>
+                                </div>
+                            ))}
+                    </div>
+                    {!DeCuongData && (
+                        <div className="h-[400px] flex items-center justify-center w-full bg-white p-5 mt-2">
+                            <Spin indicator={<LoadingOutlined spin />} size="large" />
+                        </div>
+                    )}
                 </div>
-            )}
+            </div>
         </div>
     );
 }

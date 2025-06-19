@@ -372,396 +372,402 @@ export default function CFlashcardDetail({ id_flashcard }) {
     };
 
     return (
-        <div className="text-third dark:text-white px-3 md:px-0">
-            {contextHolder}
-            <div className="flex items-center justify-between">
-                <Link href="/flashcard" className="hover:text-primary hover:underline flex items-center gap-1">
-                    <IoIosArrowBack /> Quay lại
-                </Link>
-                <div className="block md:hidden">
-                    <Popover
-                        content={
-                            <div className="flex-1 flex justify-between gap-3 flex-col">
-                                <button className="btn btn-primary !rounded-md flex items-center gap-1" onClick={showModalEdit}>
-                                    <MdEdit /> Chỉnh sửa
+        <div className=" py-5 pt-20 flex justify-center items-center">
+            <div className="w-full md:w-[1000px] xl:w-[1200px] text-third dark:text-white px-3 md:px-0">
+                {contextHolder}
+                <div className="flex items-center justify-between">
+                    <Link href="/flashcard" className="hover:text-primary hover:underline flex items-center gap-1">
+                        <IoIosArrowBack /> Quay lại
+                    </Link>
+                    <div className="block md:hidden">
+                        <Popover
+                            content={
+                                <div className="flex-1 flex justify-between gap-3 flex-col">
+                                    <button className="btn btn-primary !rounded-md flex items-center gap-1" onClick={showModalEdit}>
+                                        <MdEdit /> Chỉnh sửa
+                                    </button>
+                                    <button className="btn btn-primary !rounded-md flex items-center gap-1" onClick={showModal}>
+                                        <IoMdAdd /> Thêm
+                                    </button>
+                                    <button className="btn btn-primary flex items-center gap-1 !rounded-md" onClick={showModalAddMore}>
+                                        <AiOutlineAppstoreAdd /> Thêm nhiều
+                                    </button>
+                                    <div className="">
+                                        <Popconfirm
+                                            title="Xóa flashcard này?"
+                                            description="Bạn chắc chứ? nó sẽ không khôi phục được đâu"
+                                            onConfirm={confirm}
+                                            okText="Chắc chắn!"
+                                            cancelText="Để suy nghĩ lại"
+                                            okButtonProps={{
+                                                loading: loading,
+                                            }}>
+                                            <button disabled={user?._id == listFlashcard?.userId} className="btn btn-primary !bg-red-500 flex items-center gap-1" onClick={showPopconfirm}>
+                                                <FaTrash /> Xóa
+                                            </button>
+                                        </Popconfirm>
+                                    </div>
+                                </div>
+                            }
+                            title="Tính năng"
+                            trigger="click"
+                            open={openTool}
+                            onOpenChange={handleOpenChange}>
+                            <button type="primary" className="btn btn-primary !rounded-md flex items-center gap-1">
+                                Tính năng
+                            </button>
+                        </Popover>
+                    </div>
+                </div>
+                <div className="flex items-center gap-2 md:gap-5 md:flex-row flex-col">
+                    <h1 className="text-2xl font-bold text-primary text-left flex-1">Flashcard: {listFlashcard?.title}</h1>
+                    {user?._id == listFlashcard?.userId?._id ? (
+                        <div className="flex-1 hidden md:flex justify-between gap-2 items-center">
+                            <div className="flex gap-2 items-center h-[36px] ">
+                                <button className="btn btn-primary h-full !rounded-md" onClick={showModalEdit}>
+                                    <MdEdit />
                                 </button>
-                                <button className="btn btn-primary !rounded-md flex items-center gap-1" onClick={showModal}>
+                                <button className="btn btn-primary h-full !rounded-md flex items-center gap-1" onClick={showModal}>
                                     <IoMdAdd /> Thêm
                                 </button>
                                 <button className="btn btn-primary flex items-center gap-1 !rounded-md" onClick={showModalAddMore}>
                                     <AiOutlineAppstoreAdd /> Thêm nhiều
                                 </button>
-                                <div className="">
-                                    <Popconfirm
-                                        title="Xóa flashcard này?"
-                                        description="Bạn chắc chứ? nó sẽ không khôi phục được đâu"
-                                        onConfirm={confirm}
-                                        okText="Chắc chắn!"
-                                        cancelText="Để suy nghĩ lại"
-                                        okButtonProps={{
-                                            loading: loading,
-                                        }}>
-                                        <button disabled={user?._id == listFlashcard?.userId} className="btn btn-primary !bg-red-500 flex items-center gap-1" onClick={showPopconfirm}>
-                                            <FaTrash /> Xóa
-                                        </button>
-                                    </Popconfirm>
-                                </div>
                             </div>
-                        }
-                        title="Tính năng"
-                        trigger="click"
-                        open={openTool}
-                        onOpenChange={handleOpenChange}>
-                        <button type="primary" className="btn btn-primary !rounded-md flex items-center gap-1">
-                            Tính năng
-                        </button>
-                    </Popover>
-                </div>
-            </div>
-            <div className="flex items-center gap-2 md:gap-5 md:flex-row flex-col">
-                <h1 className="text-2xl font-bold text-primary text-left flex-1">Flashcard: {listFlashcard?.title}</h1>
-                {user?._id == listFlashcard?.userId?._id ? (
-                    <div className="flex-1 hidden md:flex justify-between gap-2 items-center">
-                        <div className="flex gap-2 items-center h-[36px] ">
-                            <button className="btn btn-primary h-full !rounded-md" onClick={showModalEdit}>
-                                <MdEdit />
-                            </button>
-                            <button className="btn btn-primary h-full !rounded-md flex items-center gap-1" onClick={showModal}>
-                                <IoMdAdd /> Thêm
-                            </button>
-                            <button className="btn btn-primary flex items-center gap-1 !rounded-md" onClick={showModalAddMore}>
-                                <AiOutlineAppstoreAdd /> Thêm nhiều
-                            </button>
+                            <div className="">
+                                <Popconfirm
+                                    title="Xóa flashcard này?"
+                                    description="Bạn chắc chứ? nó sẽ không khôi phục được đâu"
+                                    onConfirm={confirm}
+                                    okText="Chắc chắn!"
+                                    cancelText="Để suy nghĩ lại"
+                                    okButtonProps={{
+                                        loading: loading,
+                                    }}>
+                                    <button disabled={user?._id == listFlashcard?.userId} className="btn btn-primary !bg-red-500 flex items-center gap-1" onClick={showPopconfirm}>
+                                        <FaTrash /> Xóa
+                                    </button>
+                                </Popconfirm>
+                            </div>
                         </div>
-                        <div className="">
-                            <Popconfirm
-                                title="Xóa flashcard này?"
-                                description="Bạn chắc chứ? nó sẽ không khôi phục được đâu"
-                                onConfirm={confirm}
-                                okText="Chắc chắn!"
-                                cancelText="Để suy nghĩ lại"
-                                okButtonProps={{
-                                    loading: loading,
-                                }}>
-                                <button disabled={user?._id == listFlashcard?.userId} className="btn btn-primary !bg-red-500 flex items-center gap-1" onClick={showPopconfirm}>
-                                    <FaTrash /> Xóa
-                                </button>
-                            </Popconfirm>
-                        </div>
-                    </div>
-                ) : (
-                    ""
-                )}
-                {/* chỉnh sửa list flashcard*/}
-                <Modal title="Chỉnh sửa list từ" open={openEdit} onOk={handleOkEdit} confirmLoading={loading} okText="Chỉnh sửa" onCancel={handleCancelEdit}>
-                    <div className="space-y-2">
-                        <div className="">
-                            <p>Tên list từ</p>
-                            <input
-                                type="text"
-                                placeholder="Tên list từ"
-                                className="w-full p-3 border rounded-md"
-                                value={newListFlashCard?.title}
-                                onChange={(e) => setNewListFlashCard({ ...newListFlashCard, title: e.target.value })}
-                            />
-                        </div>
-                        <div className="">
-                            <p>Tiếng phát</p>
-                            <Select
-                                className="w-full mt-3 rounded-none"
-                                showSearch
-                                placeholder="Tìm kiếm ngôn ngữ"
-                                optionFilterProp="children"
-                                filterOption={(input, option) => (option?.label ?? "").includes(input)}
-                                filterSort={(optionA, optionB) => (optionA?.label ?? "").toLowerCase().localeCompare((optionB?.label ?? "").toLowerCase())}
-                                options={languageOption}
-                                value={newListFlashCard?.language}
-                                onChange={(value) => setNewListFlashCard({ ...newListFlashCard, language: value })}
-                            />
-                        </div>
-                        <div className="">
-                            <p>Mô tả</p>
-                            <textarea
-                                placeholder="Mô tả"
-                                className="w-full p-3 border rounded-md"
-                                value={newListFlashCard?.desc}
-                                onChange={(e) => setNewListFlashCard({ ...newListFlashCard, desc: e.target.value })}
-                            />
-                        </div>
-                        <div className="flex items-center">
-                            <input
-                                type="checkbox"
-                                className="w-5"
-                                id="public"
-                                checked={newListFlashCard?.public}
-                                onChange={(e) => setNewListFlashCard({ ...newListFlashCard, public: e.target.checked })}
-                            />
-                            <label htmlFor="public" className="cursor-pointer">
-                                Công khai
-                            </label>
-                        </div>
-                    </div>
-                </Modal>
-                {/* thêm từ mới */}
-                <Modal
-                    title="Thêm từ mới"
-                    open={open}
-                    onOk={handleOk}
-                    confirmLoading={loading}
-                    okText="Tạo"
-                    onCancel={handleCancel}
-                    footer={[
-                        <Button key="back" onClick={handleCancel}>
-                            Cancel
-                        </Button>,
-                        // <Button key="submit" type="primary" loading={loading} onClick={handleAIAndCreate}>
-                        //     AI + Tạo
-                        // </Button>,
-                        <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
-                            Tạo
-                        </Button>,
-                        ,
-                    ]}>
-                    <div className="space-y-3">
-                        <div className="flex gap-3 items-end">
-                            <div className="flex-1">
-                                <div className="flex gap-2 items-center">
-                                    <p className="ml-2">Tên từ mới (nhập rồi bấm vào AI Generate)</p>
-                                    <Popover
-                                        content={
-                                            <div>
-                                                <p>Bấm Enter để AI Generate</p>
-                                                <p>Bấm Ctrl + Enter để tạo</p>
-                                            </div>
-                                        }
-                                        title="Mẹo nhỏ"
-                                        trigger="click"
-                                        open={openTrick}
-                                        onOpenChange={handleOpenChangeTrick}>
-                                        <MdOutlineQuestionMark className="text-red-500" />
-                                    </Popover>
-                                </div>
+                    ) : (
+                        ""
+                    )}
+                    {/* chỉnh sửa list flashcard*/}
+                    <Modal title="Chỉnh sửa list từ" open={openEdit} onOk={handleOkEdit} confirmLoading={loading} okText="Chỉnh sửa" onCancel={handleCancelEdit}>
+                        <div className="space-y-2">
+                            <div className="">
+                                <p>Tên list từ</p>
                                 <input
                                     type="text"
-                                    className=""
-                                    placeholder="Tên từ mới "
-                                    value={newFlashcard?.title}
-                                    onChange={(e) => setNewFlashcard({ ...newFlashcard, title: e.target.value })}
-                                    onKeyDown={handleKeyPress}
+                                    placeholder="Tên list từ"
+                                    className="w-full p-3 border rounded-md"
+                                    value={newListFlashCard?.title}
+                                    onChange={(e) => setNewListFlashCard({ ...newListFlashCard, title: e.target.value })}
                                 />
                             </div>
-                            <button className="btn btn-primary flex items-center gap-2 !rounded-md" disabled={loading} onClick={handleSendPrompt}>
-                                {loading ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ color: "blue" }} /> : <FaBrain />}
-                                AI Generate
-                            </button>
-                        </div>
-                        <div className="">
-                            <p className="ml-2">Định nghĩa</p>
-                            <input placeholder="Định nghĩa  (bắt buộc)" value={newFlashcard?.define} onChange={(e) => setNewFlashcard({ ...newFlashcard, define: e.target.value })} />
-                        </div>
-                        <div className="border border-secondary  p-2 rounded-md space-y-2">
-                            <p className="text-gray-700">Không yêu cầu phải điền</p>
-                            <div className="flex gap-3 items-center">
-                                <div className="flex-1">
-                                    <p className="ml-2">Loại từ</p>
-                                    <input
-                                        type="text"
-                                        placeholder="Loại từ (N,V,Adj,...)"
-                                        value={newFlashcard?.type_of_word}
-                                        onChange={(e) => setNewFlashcard({ ...newFlashcard, type_of_word: e.target.value })}
-                                    />
-                                </div>
-                                <div className="flex-1">
-                                    <p className="ml-2">Phiên âm</p>
-                                    <input
-                                        type="text"
-                                        placeholder="Phiên âm"
-                                        value={newFlashcard?.transcription}
-                                        onChange={(e) => setNewFlashcard({ ...newFlashcard, transcription: e.target.value })}
-                                    />
-                                </div>
+                            <div className="">
+                                <p>Tiếng phát</p>
+                                <Select
+                                    className="w-full mt-3 rounded-none"
+                                    showSearch
+                                    placeholder="Tìm kiếm ngôn ngữ"
+                                    optionFilterProp="children"
+                                    filterOption={(input, option) => (option?.label ?? "").includes(input)}
+                                    filterSort={(optionA, optionB) => (optionA?.label ?? "").toLowerCase().localeCompare((optionB?.label ?? "").toLowerCase())}
+                                    options={languageOption}
+                                    value={newListFlashCard?.language}
+                                    onChange={(value) => setNewListFlashCard({ ...newListFlashCard, language: value })}
+                                />
                             </div>
                             <div className="">
-                                <p className="ml-2">Ví dụ</p>
+                                <p>Mô tả</p>
                                 <textarea
-                                    placeholder="Ví dụ (tối đa 10 câu)"
-                                    className="h-32"
-                                    disabled
-                                    value={newFlashcard?.example?.map((ex) => `LANG: ${ex.en}\nTRANS: ${ex.trans}\nVIE: ${ex.vi}`).join("\n\n")}
+                                    placeholder="Mô tả"
+                                    className="w-full p-3 border rounded-md"
+                                    value={newListFlashCard?.desc}
+                                    onChange={(e) => setNewListFlashCard({ ...newListFlashCard, desc: e.target.value })}
                                 />
                             </div>
-                            <div className="">
-                                <p className="ml-2">Ghi chú</p>
-                                <textarea className="h-20" disabled placeholder="Ghi chú" value={newFlashcard?.note} />
+                            <div className="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    className="w-5"
+                                    id="public"
+                                    checked={newListFlashCard?.public}
+                                    onChange={(e) => setNewListFlashCard({ ...newListFlashCard, public: e.target.checked })}
+                                />
+                                <label htmlFor="public" className="cursor-pointer">
+                                    Công khai
+                                </label>
                             </div>
                         </div>
-                    </div>
-                </Modal>
-                {/* thêm nhiều từ mới */}
-                <Modal title="Thêm nhiều từ mới" open={openAddMore} onOk={handleSendPromptAddMore} confirmLoading={loading} okText="Tạo" onCancel={handleCancelAddMore}>
-                    <div className="space-y-3">
-                        <div className="flex-1">
-                            <p className="">Nhập danh sách từ mới (nhập rồi bấm vào AI Generate)</p>
-                            <textarea
-                                type="text"
-                                className="h-[100px]"
-                                placeholder="Nhập list từ cách nhau bằng dấu , ví dụ attendion,transition,drop;"
-                                value={prompt}
-                                onChange={(e) => setPrompt(e.target.value)}
-                            />
+                    </Modal>
+                    {/* thêm từ mới */}
+                    <Modal
+                        title="Thêm từ mới"
+                        open={open}
+                        onOk={handleOk}
+                        confirmLoading={loading}
+                        okText="Tạo"
+                        onCancel={handleCancel}
+                        footer={[
+                            <Button key="back" onClick={handleCancel}>
+                                Cancel
+                            </Button>,
+                            // <Button key="submit" type="primary" loading={loading} onClick={handleAIAndCreate}>
+                            //     AI + Tạo
+                            // </Button>,
+                            <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
+                                Tạo
+                            </Button>,
+                            ,
+                        ]}>
+                        <div className="space-y-3">
+                            <div className="flex gap-3 items-end">
+                                <div className="flex-1">
+                                    <div className="flex gap-2 items-center">
+                                        <p className="ml-2">Tên từ mới (nhập rồi bấm vào AI Generate)</p>
+                                        <Popover
+                                            content={
+                                                <div>
+                                                    <p>Bấm Enter để AI Generate</p>
+                                                    <p>Bấm Ctrl + Enter để tạo</p>
+                                                </div>
+                                            }
+                                            title="Mẹo nhỏ"
+                                            trigger="click"
+                                            open={openTrick}
+                                            onOpenChange={handleOpenChangeTrick}>
+                                            <MdOutlineQuestionMark className="text-red-500" />
+                                        </Popover>
+                                    </div>
+                                    <input
+                                        type="text"
+                                        className=""
+                                        placeholder="Tên từ mới "
+                                        value={newFlashcard?.title}
+                                        onChange={(e) => setNewFlashcard({ ...newFlashcard, title: e.target.value })}
+                                        onKeyDown={handleKeyPress}
+                                    />
+                                </div>
+                                <button className="btn btn-primary flex items-center gap-2 !rounded-md" disabled={loading} onClick={handleSendPrompt}>
+                                    {loading ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ color: "blue" }} /> : <FaBrain />}
+                                    AI Generate
+                                </button>
+                            </div>
+                            <div className="">
+                                <p className="ml-2">Định nghĩa</p>
+                                <input placeholder="Định nghĩa  (bắt buộc)" value={newFlashcard?.define} onChange={(e) => setNewFlashcard({ ...newFlashcard, define: e.target.value })} />
+                            </div>
+                            <div className="border border-secondary  p-2 rounded-md space-y-2">
+                                <p className="text-gray-700">Không yêu cầu phải điền</p>
+                                <div className="flex gap-3 items-center">
+                                    <div className="flex-1">
+                                        <p className="ml-2">Loại từ</p>
+                                        <input
+                                            type="text"
+                                            placeholder="Loại từ (N,V,Adj,...)"
+                                            value={newFlashcard?.type_of_word}
+                                            onChange={(e) => setNewFlashcard({ ...newFlashcard, type_of_word: e.target.value })}
+                                        />
+                                    </div>
+                                    <div className="flex-1">
+                                        <p className="ml-2">Phiên âm</p>
+                                        <input
+                                            type="text"
+                                            placeholder="Phiên âm"
+                                            value={newFlashcard?.transcription}
+                                            onChange={(e) => setNewFlashcard({ ...newFlashcard, transcription: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="">
+                                    <p className="ml-2">Ví dụ</p>
+                                    <textarea
+                                        placeholder="Ví dụ (tối đa 10 câu)"
+                                        className="h-32"
+                                        disabled
+                                        value={newFlashcard?.example?.map((ex) => `LANG: ${ex.en}\nTRANS: ${ex.trans}\nVIE: ${ex.vi}`).join("\n\n")}
+                                    />
+                                </div>
+                                <div className="">
+                                    <p className="ml-2">Ghi chú</p>
+                                    <textarea className="h-20" disabled placeholder="Ghi chú" value={newFlashcard?.note} />
+                                </div>
+                            </div>
                         </div>
-                        <p>Tối đa 20 từ để không bị lỗi</p>
-                    </div>
-                </Modal>
-            </div>
+                    </Modal>
+                    {/* thêm nhiều từ mới */}
+                    <Modal title="Thêm nhiều từ mới" open={openAddMore} onOk={handleSendPromptAddMore} confirmLoading={loading} okText="Tạo" onCancel={handleCancelAddMore}>
+                        <div className="space-y-3">
+                            <div className="flex-1">
+                                <p className="">Nhập danh sách từ mới (nhập rồi bấm vào AI Generate)</p>
+                                <textarea
+                                    type="text"
+                                    className="h-[100px]"
+                                    placeholder="Nhập list từ cách nhau bằng dấu , ví dụ attendion,transition,drop;"
+                                    value={prompt}
+                                    onChange={(e) => setPrompt(e.target.value)}
+                                />
+                            </div>
+                            <p>Tối đa 20 từ để không bị lỗi</p>
+                        </div>
+                    </Modal>
+                </div>
 
-            <p className="text-gray-500 italic">{listFlashcard?.desc || "Không có mô tả"}</p>
-            <div className="flex gap-2 items-center">
-                <p className="text-sm line-clamp-2 italic">Ngôn ngữ: </p>
-                <Image src={`/flag/${listFlashcard?.language}.svg`} alt="" width={25} height={25} className="rounded-sm border border-gray-400"></Image>
-                {listFlashcard?.userId?._id == user?._id && (
-                    <p className="hover:underline cursor-pointer" onClick={showModalEdit}>
-                        (sửa tiếng phát)
-                    </p>
-                )}
-            </div>
-            <div className="flex items-center gap-2 mt-2">
-                <p>Người chia sẻ:</p>
-                <div className="w-[40px] h-[40px] overflow-hidden relative">
-                    <Image src={listFlashcard?.userId?.profilePicture || "/meme.jpg"} alt="" className="rounded-full w-full h-full absolute object-cover" fill />
+                <p className="text-gray-500 italic">{listFlashcard?.desc || "Không có mô tả"}</p>
+                <div className="flex gap-2 items-center">
+                    <p className="text-sm line-clamp-2 italic">Ngôn ngữ: </p>
+                    <Image src={`/flag/${listFlashcard?.language}.svg`} alt="" width={25} height={25} className="rounded-sm border border-gray-400"></Image>
+                    {listFlashcard?.userId?._id == user?._id && (
+                        <p className="hover:underline cursor-pointer" onClick={showModalEdit}>
+                            (sửa tiếng phát)
+                        </p>
+                    )}
                 </div>
-                <Link href={`/profile/${listFlashcard?.userId?._id}`} className="hover:underline">
-                    <p title={listFlashcard?.userId?.displayName} className="line-clamp-1">
-                        {listFlashcard?.userId?.displayName}
-                    </p>
-                </Link>
-            </div>
-            <div className="flex items-center gap-3">
-                <Link href={`/flashcard/practice/${listFlashcard?._id}`} className="py-5 block flex-1">
-                    <button className="w-full btn btn-primary !rounded-lg">Luyện tập </button>
-                </Link>
-                <button className="w-full btn bg-secondary !rounded-lg py-5 block flex-1" onClick={handlePracticeScience} disabled={flashcard?.length < 4} title="Phải trên 4 từ mới có thể thực hiện">
-                    Luyện tập theo khoa học (beta)
-                </button>
-            </div>
-
-            <p className="text-gray-700 dark:text-white/50">
-                Dựa trên nghiên cứu về{" "}
-                <Link className="underline text-primary font-bold" target="_blank" href="https://vmptraining.com/ung-dung-duong-cong-lang-quen-ebbinghaus-de-hoc-tap-hieu-qua/">
-                    đường cong lãng quên
-                </Link>{" "}
-                của Hermann Ebbinghaus , con người cần lặp lại <label className="font-bold">từ 5–7 lần</label> tại các khoảng thời gian khác nhau để <label className="font-bold">ghi nhớ</label> lâu
-                dài.
-            </p>
-            <div className=" md:h-[80px] my-3 grid grid-cols-3 md:grid-cols-5 flex-1 text-right gap-2 md:gap-3 text-[12px]">
-                <div
-                    className={`flex-1 flex  flex-col rounded-lg justify-between p-2 md:p-3 cursor-pointer   border-2 ${
-                        choose == 0 ? "border-2 border-[#636363] text-[#636363] bg-white dark:bg-slate-800/50" : "bg-[#636363] text-white"
-                    }`}
-                    onClick={() => handleSetChoose(0)}>
-                    <p className="text-left">Tất cả</p>
-                    <div className="flex justify-between items-end gap-1">
-                        <Switch
-                            checkedChildren={isSimple === 1 && "Chi tiết "}
-                            unCheckedChildren={isSimple === 2 && "Đơn giản"}
-                            checked={isSimple === 1}
-                            onChange={(checked) => setIsSimple(checked ? 1 : 2)}
-                        />
-                        <h1 className="font-bold text-3xl text-right">{flashcard?.length}</h1>
+                <div className="flex items-center gap-2 mt-2">
+                    <p>Người chia sẻ:</p>
+                    <div className="w-[40px] h-[40px] overflow-hidden relative">
+                        <Image src={listFlashcard?.userId?.profilePicture || "/meme.jpg"} alt="" className="rounded-full w-full h-full absolute object-cover" fill />
                     </div>
+                    <Link href={`/profile/${listFlashcard?.userId?._id}`} className="hover:underline">
+                        <p title={listFlashcard?.userId?.displayName} className="line-clamp-1">
+                            {listFlashcard?.userId?.displayName}
+                        </p>
+                    </Link>
                 </div>
-                <div
-                    className={`flex-1 flex flex-col  rounded-lg justify-between p-2 md:p-3  cursor-pointer border border-white/5 bg-gradient-to-r from-green-500/30 to-blue-500/30   ${
-                        choose == 1 ? "border-[#4CAF50] text-[#4CAF50] bg-white dark:bg-slate-800/50" : "bg-[#4CAF50] text-white"
-                    }`}
-                    onClick={() => handleSetChoose(1)}>
-                    <p className="text-left">Đã học</p>
-                    <h1 className="font-bold text-3xl text-right">{blockFlashcard?.totalLearned || 0}</h1>
+                <div className="flex items-center gap-3">
+                    <Link href={`/flashcard/practice/${listFlashcard?._id}`} className="py-5 block flex-1">
+                        <button className="w-full btn btn-primary !rounded-lg">Luyện tập </button>
+                    </Link>
+                    <button
+                        className="w-full btn bg-secondary !rounded-lg py-5 block flex-1"
+                        onClick={handlePracticeScience}
+                        disabled={flashcard?.length < 4}
+                        title="Phải trên 4 từ mới có thể thực hiện">
+                        Luyện tập theo khoa học (beta)
+                    </button>
                 </div>
-                <div
-                    className={`flex-1 flex flex-col rounded-lg justify-between p-2 md:p-3 cursor-pointer  border-2 ${
-                        choose == 2 ? "border-[#2196F3] text-[#2196F3] bg-white dark:bg-slate-800/50" : "bg-[#2196F3] text-white"
-                    }`}
-                    onClick={() => handleSetChoose(2)}>
-                    <p className="text-left">Đã nhớ</p>
-                    <h1 className="font-bold text-3xl text-right">{blockFlashcard?.totalRemembered}</h1>
-                </div>
-                <div
-                    className={`flex-1 flex flex-col rounded-lg justify-between p-2 md:p-3  cursor-pointer   border-2 ${
-                        choose == 3 ? "border-[#FFC107] text-[#FFC107] bg-white dark:bg-slate-800/50" : "bg-[#FFC107] text-white"
-                    }`}
-                    onClick={() => handleSetChoose(3)}>
-                    <p className="text-left">Ôn tập</p>
-                    <h1 className="font-bold text-3xl text-right">{blockFlashcard?.totalReviewing || 0}</h1>
-                </div>
-                <div className={`flex-1 flex flex-col rounded-lg justify-between p-2 md:p-3  cursor-pointer bg-[#9C27B0] border-2 text-white`}>
-                    <p className="text-left">Ghi nhớ</p>
-                    <h1 className="font-bold text-3xl text-right">{listFlashcard?.progress?.rememberedCards}%</h1>
-                </div>
-            </div>
-            <div className="">
-                {isSimple === 1 && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-5 text-secondary dark:text-white">
-                        {filteredFlashcards?.map((item, index) => (
-                            <ItemFC
-                                item={item}
-                                key={index}
-                                listFlashcard={listFlashcard}
-                                speakWord={speakWord}
-                                editWord={editWord}
-                                setEditWord={setEditWord}
-                                loadingAudio={loadingAudio}
-                                user={user}
-                                handleEditWord={handleEditWord}
-                                openEditWord={openEditWord}
-                                handleCancelEditWord={handleCancelEditWord}
-                                setOpenEditWord={setOpenEditWord}
-                                handleOkEditWord={handleOkEditWord}
-                                loadingConfirm={loadingConfirm}
-                                confirmDelete={confirmDelete}
-                                loading={loading}
-                                openTrick={openTrick}
-                                handleOpenChangeTrick={handleOpenChangeTrick}
-                                handleKeyPressEdit={handleKeyPressEdit}
-                                handleSendPrompt={handleSendPrompt}
+
+                <p className="text-gray-700 dark:text-white/50">
+                    Dựa trên nghiên cứu về{" "}
+                    <Link className="underline text-primary font-bold" target="_blank" href="https://vmptraining.com/ung-dung-duong-cong-lang-quen-ebbinghaus-de-hoc-tap-hieu-qua/">
+                        đường cong lãng quên
+                    </Link>{" "}
+                    của Hermann Ebbinghaus , con người cần lặp lại <label className="font-bold">từ 5–7 lần</label> tại các khoảng thời gian khác nhau để <label className="font-bold">ghi nhớ</label>{" "}
+                    lâu dài.
+                </p>
+                <div className=" md:h-[80px] my-3 grid grid-cols-3 md:grid-cols-5 flex-1 text-right gap-2 md:gap-3 text-[12px]">
+                    <div
+                        className={`flex-1 flex  flex-col rounded-lg justify-between p-2 md:p-3 cursor-pointer   border-2 ${
+                            choose == 0 ? "border-2 border-[#636363] text-[#636363] bg-white dark:bg-slate-800/50" : "bg-[#636363] text-white"
+                        }`}
+                        onClick={() => handleSetChoose(0)}>
+                        <p className="text-left">Tất cả</p>
+                        <div className="flex justify-between items-end gap-1">
+                            <Switch
+                                checkedChildren={isSimple === 1 && "Chi tiết "}
+                                unCheckedChildren={isSimple === 2 && "Đơn giản"}
+                                checked={isSimple === 1}
+                                onChange={(checked) => setIsSimple(checked ? 1 : 2)}
                             />
-                        ))}
-                        {filteredFlashcards?.length === 0 && <p className="h-[400px] flex items-center justify-center col-span-full">Không có từ nào trong list...</p>}
+                            <h1 className="font-bold text-3xl text-right">{flashcard?.length}</h1>
+                        </div>
                     </div>
-                )}
-
-                {loading && <Spin indicator={<LoadingOutlined spin />} size="default" className="h-[400px] flex items-center justify-center" />}
-
-                {isSimple === 2 && (
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 mt-5">
-                        {filteredFlashcards?.map((item, index) => (
-                            <ItemFCSimple
-                                item={item}
-                                key={index}
-                                listFlashcard={listFlashcard}
-                                speakWord={speakWord}
-                                editWord={editWord}
-                                setEditWord={setEditWord}
-                                loadingAudio={loadingAudio}
-                                user={user}
-                                handleEditWord={handleEditWord}
-                                openEditWord={openEditWord}
-                                handleCancelEditWord={handleCancelEditWord}
-                                setOpenEditWord={setOpenEditWord}
-                                handleOkEditWord={handleOkEditWord}
-                                loadingConfirm={loadingConfirm}
-                                confirmDelete={confirmDelete}
-                                loading={loading}
-                                openTrick={openTrick}
-                                handleOpenChangeTrick={handleOpenChangeTrick}
-                                handleKeyPressEdit={handleKeyPressEdit}
-                                handleSendPrompt={handleSendPrompt}
-                            />
-                        ))}
+                    <div
+                        className={`flex-1 flex flex-col  rounded-lg justify-between p-2 md:p-3  cursor-pointer border border-white/5 bg-gradient-to-r from-green-500/30 to-blue-500/30   ${
+                            choose == 1 ? "border-[#4CAF50] text-[#4CAF50] bg-white dark:bg-slate-800/50" : "bg-[#4CAF50] text-white"
+                        }`}
+                        onClick={() => handleSetChoose(1)}>
+                        <p className="text-left">Đã học</p>
+                        <h1 className="font-bold text-3xl text-right">{blockFlashcard?.totalLearned || 0}</h1>
                     </div>
-                )}
+                    <div
+                        className={`flex-1 flex flex-col rounded-lg justify-between p-2 md:p-3 cursor-pointer  border-2 ${
+                            choose == 2 ? "border-[#2196F3] text-[#2196F3] bg-white dark:bg-slate-800/50" : "bg-[#2196F3] text-white"
+                        }`}
+                        onClick={() => handleSetChoose(2)}>
+                        <p className="text-left">Đã nhớ</p>
+                        <h1 className="font-bold text-3xl text-right">{blockFlashcard?.totalRemembered}</h1>
+                    </div>
+                    <div
+                        className={`flex-1 flex flex-col rounded-lg justify-between p-2 md:p-3  cursor-pointer   border-2 ${
+                            choose == 3 ? "border-[#FFC107] text-[#FFC107] bg-white dark:bg-slate-800/50" : "bg-[#FFC107] text-white"
+                        }`}
+                        onClick={() => handleSetChoose(3)}>
+                        <p className="text-left">Ôn tập</p>
+                        <h1 className="font-bold text-3xl text-right">{blockFlashcard?.totalReviewing || 0}</h1>
+                    </div>
+                    <div className={`flex-1 flex flex-col rounded-lg justify-between p-2 md:p-3  cursor-pointer bg-[#9C27B0] border-2 text-white`}>
+                        <p className="text-left">Ghi nhớ</p>
+                        <h1 className="font-bold text-3xl text-right">{listFlashcard?.progress?.rememberedCards}%</h1>
+                    </div>
+                </div>
+                <div className="">
+                    {isSimple === 1 && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-5 text-secondary dark:text-white">
+                            {filteredFlashcards?.map((item, index) => (
+                                <ItemFC
+                                    item={item}
+                                    key={index}
+                                    listFlashcard={listFlashcard}
+                                    speakWord={speakWord}
+                                    editWord={editWord}
+                                    setEditWord={setEditWord}
+                                    loadingAudio={loadingAudio}
+                                    user={user}
+                                    handleEditWord={handleEditWord}
+                                    openEditWord={openEditWord}
+                                    handleCancelEditWord={handleCancelEditWord}
+                                    setOpenEditWord={setOpenEditWord}
+                                    handleOkEditWord={handleOkEditWord}
+                                    loadingConfirm={loadingConfirm}
+                                    confirmDelete={confirmDelete}
+                                    loading={loading}
+                                    openTrick={openTrick}
+                                    handleOpenChangeTrick={handleOpenChangeTrick}
+                                    handleKeyPressEdit={handleKeyPressEdit}
+                                    handleSendPrompt={handleSendPrompt}
+                                />
+                            ))}
+                            {filteredFlashcards?.length === 0 && <p className="h-[400px] flex items-center justify-center col-span-full">Không có từ nào trong list...</p>}
+                        </div>
+                    )}
 
-                {filteredFlashcards?.length === 0 && <p className="h-[400px] flex items-center justify-center">Không có từ nào trong list</p>}
+                    {loading && <Spin indicator={<LoadingOutlined spin />} size="default" className="h-[400px] flex items-center justify-center" />}
+
+                    {isSimple === 2 && (
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 mt-5">
+                            {filteredFlashcards?.map((item, index) => (
+                                <ItemFCSimple
+                                    item={item}
+                                    key={index}
+                                    listFlashcard={listFlashcard}
+                                    speakWord={speakWord}
+                                    editWord={editWord}
+                                    setEditWord={setEditWord}
+                                    loadingAudio={loadingAudio}
+                                    user={user}
+                                    handleEditWord={handleEditWord}
+                                    openEditWord={openEditWord}
+                                    handleCancelEditWord={handleCancelEditWord}
+                                    setOpenEditWord={setOpenEditWord}
+                                    handleOkEditWord={handleOkEditWord}
+                                    loadingConfirm={loadingConfirm}
+                                    confirmDelete={confirmDelete}
+                                    loading={loading}
+                                    openTrick={openTrick}
+                                    handleOpenChangeTrick={handleOpenChangeTrick}
+                                    handleKeyPressEdit={handleKeyPressEdit}
+                                    handleSendPrompt={handleSendPrompt}
+                                />
+                            ))}
+                        </div>
+                    )}
+
+                    {filteredFlashcards?.length === 0 && <p className="h-[400px] flex items-center justify-center">Không có từ nào trong list</p>}
+                </div>
             </div>
         </div>
     );
