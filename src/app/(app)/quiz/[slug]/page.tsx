@@ -1,5 +1,5 @@
 import React from "react";
-import CQuizDetail from "@/components/CQuizDetail";
+// import CQuizDetail from "@/components/CQuizDetail";
 import { getCachedQuiz } from "@/lib/cacheData";
 import QuizExam from "@/components/quiz/QuizExam";
 

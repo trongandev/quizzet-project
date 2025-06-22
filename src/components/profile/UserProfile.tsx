@@ -19,7 +19,7 @@ interface PropsProfile {
     quiz: IQuiz[];
 }
 export default function UserProfile({ profile, quiz }: PropsProfile) {
-    const { user } = useUser();
+    const { user } = useUser() || { user: null };
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [tempprofile, setTempprofile] = useState(profile);
     const [avatarInputType, setAvatarInputType] = useState<"file" | "url">("file");

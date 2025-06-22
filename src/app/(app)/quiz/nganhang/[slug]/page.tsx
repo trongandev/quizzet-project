@@ -1,7 +1,7 @@
 "use client";
 import { GET_API_WITHOUT_COOKIE } from "@/lib/fetchAPI";
 import React, { useEffect, useState } from "react";
-import CQuizDetail from "@/components/CQuizDetail";
+// import CQuizDetail from "@/components/CQuizDetail";
 import { useSearchParams } from "next/navigation";
 export default function NganHangDeCuong() {
     const [subject, setSubject] = useState([]);
@@ -18,7 +18,8 @@ export default function NganHangDeCuong() {
 
     return (
         <div className="text-third">
-            <CQuizDetail QuestData={subject} />
+            {/* <CQuizDetail QuestData={subject} /> */}
+            <h1>nothing</h1>
         </div>
     );
 }

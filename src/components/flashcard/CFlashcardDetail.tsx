@@ -11,7 +11,7 @@ import Link from "next/link";
 import { useUser } from "@/context/userContext";
 import Image from "next/image";
 import { AiOutlineAppstoreAdd } from "react-icons/ai";
-import { languageOption } from "@/lib/languageOption";
+// import { languageOption } from "@/lib/languageOption";
 import { optimizedPromptFCMore, optimizedPromptFCSingle } from "@/lib/optimizedPrompt";
 import ItemFC from "./ItemFCDetail";
 import ItemFCSimple from "./ItemFCSimple";
@@ -177,7 +177,7 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                     <AlertDialogCancel>Từ chối</AlertDialogCancel>
-                                    <AlertDialogAction onClick={() => handleDeleteListFlashcard(listFlashcard?._id || "")} disabled={loadingConfirm} className="dark:text-white">
+                                    <AlertDialogAction onClick={handleDeleteListFlashcard} disabled={loadingConfirm} className="dark:text-white">
                                         {loadingConfirm && <Loading />}Xóa
                                     </AlertDialogAction>
                                 </AlertDialogFooter>

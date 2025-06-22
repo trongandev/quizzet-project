@@ -66,7 +66,7 @@ export default function VocaCardItem(data: Flashcard) {
     }, []);
 
     const speakWord = useCallback(
-        async (text: string, type: number, id: number) => {
+        async (text: string, type: number, id: any) => {
             if (disableAudio) return;
 
             const voice = getVoiceByLanguage("english", type);
@@ -149,7 +149,7 @@ export default function VocaCardItem(data: Flashcard) {
                                         variant="ghost"
                                         size="sm"
                                         className="h-6 w-6 p-0 text-blue-600 hover:text-blue-700"
-                                        onClick={() => speakWord(data.title, data.type_of_word === "noun" ? 1 : 2, data.id)}>
+                                        onClick={() => speakWord(data.title, data.type_of_word === "noun" ? 1 : 2, data._id)}>
                                         <Volume2 className="w-4 h-4" />
                                     </Button>
                                 </div>

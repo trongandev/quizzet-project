@@ -173,7 +173,7 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                 <div className="flex flex-col md:flex-row gap-6">
                                     <div className="flex-shrink-0">
                                         <div className="w-48 h-32 relative rounded-lg overflow-hidden">
-                                            <Image src={data?.img} alt="" className="absolute w-full h-full" fill></Image>
+                                            <Image src={data?.img || ""} alt="" className="absolute w-full h-full" fill></Image>
                                         </div>
                                     </div>
                                     <div className="flex-1">

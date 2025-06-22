@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -28,7 +29,7 @@ export default function NganHang() {
                                 <input type="number" value={input} onChange={(e) => setInput(Number(e.target.value))} />
                             </div>
                             <Link href={`/quiz/nganhang/lsd?limit=${input}`} className="block">
-                                <Button className="w-full btn btn-primary">Thi thử</Button>
+                                <Button>Thi thử</Button>
                             </Link>
                         </div>
                     </div>

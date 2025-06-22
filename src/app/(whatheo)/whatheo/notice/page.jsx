@@ -9,6 +9,7 @@ import { IoAdd } from "react-icons/io5";
 import { BiEdit } from "react-icons/bi";
 import { CiTrash } from "react-icons/ci";
 import handleCompareDate from "@/lib/CompareDate";
+import { Button } from "@/components/ui/button";
 
 export default function Notice() {
     const [notice, setNotice] = useState([]);

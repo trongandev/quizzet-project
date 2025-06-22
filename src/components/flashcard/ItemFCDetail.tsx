@@ -7,6 +7,7 @@ import { HiMiniSpeakerWave } from "react-icons/hi2";
 import { IoClose } from "react-icons/io5";
 import { MdOutlineQuestionMark } from "react-icons/md";
 import { TiEdit } from "react-icons/ti";
+import { Button } from "../ui/button";
 
 export default function ItemFC({
     item,
@@ -126,7 +127,7 @@ export default function ItemFC({
                                     onKeyDown={handleKeyPressEdit}
                                 />
                             </div>
-                            <Button className="flex items-center gap-2" onClick={() => handleSendPrompt(1)}>
+                            <Button onClick={() => handleSendPrompt(1)}>
                                 {loading ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ color: "white" }} /> : <FaBrain />}
                                 AI Generate
                             </Button>
