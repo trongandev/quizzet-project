@@ -1,24 +1,31 @@
 "use client";
-import { GET_API, POST_API } from "@/lib/fetchAPI";
-import { message, Modal, Select, Spin } from "antd";
-import Image from "next/image";
+import { GET_API } from "@/lib/fetchAPI";
+import { message, Spin } from "antd";
 import React, { useEffect, useState } from "react";
-import { AiOutlinePlus } from "react-icons/ai";
-import { MdPublic } from "react-icons/md";
 import { LoadingOutlined } from "@ant-design/icons";
-import { languageOption } from "@/lib/languageOption";
+import { languages } from "@/lib/languageOption";
 import Cookies from "js-cookie";
-import PublicFC from "../app/(app)/flashcard/[id]/PublicFC";
-import UserCreateFC from "../app/(app)/flashcard/[id]/UserCreateFC";
+import PublicFC from "./flashcard/PublicFC";
+import { BookOpen, Brain, Globe, Plus, RotateCcw, Search } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "./ui/input";
+import { CreateFlashcardModal } from "@/components/flashcard/CreateFlashcardModal";
+import { Button } from "@/components/ui/button";
+import UserFC from "@/components/flashcard/UserFC";
+import Image from "next/image";
+import { toast } from "sonner";
 export default function CPublicFlashCard({ publicFlashcards }) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [language, setLanguage] = useState("all");
+    const [searchFC, setSearchFC] = useState("");
     const [filterLanguage, setFilterLanguage] = useState(publicFlashcards);
+    const [filterFlashcard, setFilterFlashcard] = useState([]);
     const defaultListFlashCard = { title: "", desc: "", language: "english", public: false };
     const [listFlashCard, setListFlashCard] = useState([]);
     const [newListFlashCard, setNewListFlashCard] = useState(defaultListFlashCard);
     const [messageApi, contextHolder] = message.useMessage();
+    const [tabFlashcard, setTabFlashcard] = useState("my-sets"); // my-sets | community
     const token = Cookies.get("token");
     const showModal = () => {
         setOpen(true);
@@ -29,31 +36,11 @@ export default function CPublicFlashCard({ publicFlashcards }) {
         const fetchListFlashCard = async () => {
             const res = await GET_API("/list-flashcards", token);
             setListFlashCard(res?.listFlashCards);
+            setFilterFlashcard(res?.listFlashCards);
             setLoading(false);
         };
         fetchListFlashCard();
     }, []);
-
-    const handleOk = async () => {
-        setLoading(true);
-        const req = await POST_API("/list-flashcards", newListFlashCard, "POST", token);
-        const res = await req.json();
-        if (req.ok) {
-            setOpen(false);
-            setListFlashCard([...listFlashCard, res?.listFlashCard]);
-            setNewListFlashCard(defaultListFlashCard);
-        } else {
-            messageApi.open({
-                type: "error",
-                content: res.message,
-            });
-        }
-        setLoading(false);
-    };
-
-    const handleCancel = () => {
-        setOpen(false);
-    };
 
     if (!publicFlashcards && !listFlashCard) {
         return (
@@ -63,130 +50,147 @@ export default function CPublicFlashCard({ publicFlashcards }) {
         );
     }
 
-    const handleNavLanguage = (value) => {
-        setLanguage(value);
-        if (value === "all") {
+    // const handleNavLanguage = (value) => {
+    //     setLanguage(value);
+    //     if (value === "all") {
+    //         setFilterLanguage(publicFlashcards);
+    //         return;
+    //     }
+    //     const filter = publicFlashcards.filter((item) => item.language === value);
+    //     setFilterLanguage(filter);
+    // };
+
+    const handleSearchFC = (e) => {
+        const value = e.target.value.toLowerCase();
+        setSearchFC(value);
+        if (value === "") {
             setFilterLanguage(publicFlashcards);
+            setFilterFlashcard(listFlashCard);
             return;
         }
-        const filter = publicFlashcards.filter((item) => item.language === value);
-        setFilterLanguage(filter);
+        if (language === "community") {
+            const filtered = publicFlashcards.filter((item) => {
+                return item.title.toLowerCase().includes(value) || item.desc.toLowerCase().includes(value);
+            });
+            setFilterLanguage(filtered);
+        } else {
+            const filtered = listFlashCard.filter((item) => {
+                return item.title.toLowerCase().includes(value) || item.desc.toLowerCase().includes(value);
+            });
+            setFilterFlashcard(filtered);
+        }
     };
 
     return (
         <div className=" py-5 pt-20 flex justify-center items-center">
             <div className="text-third dark:text-white px-3 md:px-0 min-h-screen w-full md:w-[1000px] xl:w-[1200px]">
-                {contextHolder}
-
-                <div className="flex gap-5 flex-col md:flex-row md:h-[80px]">
-                    <div className=" flex-1">
-                        <h1 className="text-2xl font-bold text-primary">Flashcard</h1>
-                        <p className="text-gray-500">
+                <div className="flex flex-col gap-10 ">
+                    <div className="">
+                        <h1 className="text-center text-4xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text">Flashcard</h1>
+                        <p className="text-center max-w-2xl mx-auto mt-3 text-lg text-gray-600 dark:text-white/60">
                             Flashcard là một trong những cách tốt nhất để ghi nhớ những kiến thức quan trọng. Hãy cùng Quizzet tham khảo và tạo những bộ flashcards bạn nhé!
                         </p>
                     </div>
-                    <div className=" h-full flex flex-1 text-right gap-3">
-                        <div className="flex-1 flex flex-col bg-[#75d37d] dark:bg-[#75d37d]/50  rounded-lg p-3 text-white">
-                            <p className="text-left">Đã học</p>
-                            <h1 className="font-bold text-3xl text-right">0</h1>
+                    <div className="flex gap-5 items-center">
+                        <div className="flex-1 h-24 px-5 bg-green-200/60 dark:bg-green-800/50 rounded-xl flex items-center justify-between border border-green-500/50  dark:border-white/10 shadow-sm shadow-green-500/50">
+                            <div className="">
+                                <p className="text-gray-600 dark:text-white/60">Đã học</p>
+                                <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">0</h3>
+                            </div>
+                            <div className="w-10 h-10 flex items-center justify-center bg-green-500 text-white rounded-full">
+                                <BookOpen />
+                            </div>
                         </div>
-                        <div className="flex-1 flex flex-col bg-[#75c1d3] dark:bg-[#75c1d3]/50 rounded-lg p-3 text-white">
-                            <p className="text-left">Đã nhớ</p>
-                            <h1 className="font-bold text-3xl text-right">0</h1>
+                        <div className="flex-1 h-24 px-5 bg-blue-200/60 dark:bg-blue-800/50 rounded-xl flex items-center justify-between border border-blue-500/50  dark:border-white/10 shadow-sm shadow-blue-500/50">
+                            <div className="">
+                                <p className="text-gray-600 dark:text-white/60">Đã nhớ</p>
+                                <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">0</h3>
+                            </div>
+                            <div className="w-10 h-10 flex items-center justify-center bg-blue-500 text-white rounded-full">
+                                <Brain />
+                            </div>
                         </div>
-                        <div className="flex-1 flex flex-col bg-[#d37a75] dark:bg-[#d37a75]/50 rounded-lg p-3 text-white">
-                            <p className="text-left">Cần ôn tập</p>
-                            <h1 className="font-bold text-3xl text-right">0</h1>
+                        <div className="flex-1 h-24 px-5 bg-red-200/60 dark:bg-red-800/50 rounded-xl flex items-center justify-between border border-red-500/50  dark:border-white/10 shadow-sm shadow-red-500/50">
+                            <div className="">
+                                <p className="text-gray-600 dark:text-white/60">Cần ôn tập</p>
+                                <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">0</h3>
+                            </div>
+                            <div className="w-10 h-10 flex items-center justify-center bg-red-500 text-white rounded-full">
+                                <RotateCcw />
+                            </div>
                         </div>
                     </div>
                 </div>
-                {token !== undefined ? (
-                    <div className="mt-10">
-                        <h4 className="text-xl mb-2 text-primary">List từ đã tạo</h4>
-                        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 max-h-[350px] overflow-y-scroll">
-                            <div
-                                onClick={showModal}
-                                className="w-full text-primary cursor-pointer hover:border-primary bg-gray-200/80 dark:bg-slate-800/50 border border-white/10 rounded-xl shadow-sm p-3 hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 flex-col  h-[181px]">
-                                <AiOutlinePlus size={30} />
-                                <h1>Tạo list từ mới</h1>
+                <Tabs defaultValue="my-sets" className="mt-8">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-2 rounded-lg shadow-sm border dark:bg-slate-700">
+                        <TabsList className="grid w-full sm:w-auto grid-cols-2 bg-gray-100 dark:bg-slate-600">
+                            <TabsTrigger
+                                value="my-sets"
+                                onClick={() => setTabFlashcard("my-sets")}
+                                className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-primary">
+                                Bộ flashcard của tôi
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="community"
+                                onClick={() => setTabFlashcard("community")}
+                                className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-primary">
+                                Khám phá cộng đồng
+                            </TabsTrigger>
+                        </TabsList>
+
+                        <div className="flex items-center gap-3">
+                            <div className="relative">
+                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                <Input placeholder="Tìm kiếm flashcard..." className="pl-10 w-64" value={searchFC} onChange={handleSearchFC} />
                             </div>
-                            <Modal title="Tạo list từ" open={open} onOk={handleOk} confirmLoading={loading} okText="Tạo" onCancel={handleCancel}>
-                                <div className="space-y-2 ">
-                                    <input
-                                        type="text"
-                                        autoFocus
-                                        placeholder="Tên list từ"
-                                        className="w-full p-3 border rounded-md"
-                                        value={newListFlashCard.title}
-                                        onChange={(e) => setNewListFlashCard({ ...newListFlashCard, title: e.target.value })}
-                                    />
-                                    <Select
-                                        className="w-full mt-3 rounded-none"
-                                        showSearch
-                                        placeholder="Tìm kiếm ngôn ngữ"
-                                        optionFilterProp="children"
-                                        filterOption={(input, option) => (option?.label ?? "").includes(input)}
-                                        filterSort={(optionA, optionB) => (optionA?.label ?? "").toLowerCase().localeCompare((optionB?.label ?? "").toLowerCase())}
-                                        options={languageOption}
-                                        value={newListFlashCard.language}
-                                        onChange={(value) => setNewListFlashCard({ ...newListFlashCard, language: value })}
-                                    />
-                                    <textarea
-                                        placeholder="Mô tả"
-                                        className="w-full p-3 border rounded-md"
-                                        value={newListFlashCard.desc}
-                                        onChange={(e) => setNewListFlashCard({ ...newListFlashCard, desc: e.target.value })}
-                                    />
-                                    <div className="flex items-center">
-                                        <input
-                                            type="checkbox"
-                                            className="w-5"
-                                            id="public"
-                                            checked={newListFlashCard.public}
-                                            onChange={(e) => setNewListFlashCard({ ...newListFlashCard, public: e.target.checked })}
-                                        />
-                                        <label htmlFor="public" className="cursor-pointer">
-                                            Công khai
-                                        </label>
+                            <CreateFlashcardModal listFlashCard={listFlashCard} setListFlashCard={setListFlashCard} filterFlashcard={filterFlashcard} setFilterFlashcard={setFilterFlashcard}>
+                                <Button className="bg-blue-600 hover:bg-blue-700">
+                                    <Plus className="w-4 h-4 mr-2" />
+                                    Tạo mới
+                                </Button>
+                            </CreateFlashcardModal>
+                        </div>
+                    </div>
+                    <TabsContent value="my-sets">
+                        <div>
+                            {token !== undefined ? (
+                                <div className="mt-10">
+                                    <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 ">
+                                        {filterFlashcard && filterFlashcard.map((item) => <UserFC item={item} key={item._id} />)}
+                                        {loading && <Spin indicator={<LoadingOutlined spin />} size="default" className="h-full flex items-center justify-center" />}
+                                        {!loading && filterFlashcard?.length <= 0 && <div className="h-[350px] col-span-12 flex items-center justify-center text-gray-700">Không có dữ liệu...</div>}
                                     </div>
                                 </div>
-                            </Modal>
-                            {listFlashCard && listFlashCard.map((item) => <UserCreateFC item={item} key={item._id} />)}
-                            {loading && <Spin indicator={<LoadingOutlined spin />} size="default" className="h-full flex items-center justify-center" />}
+                            ) : (
+                                <div className=" text-gray-700 mt-10 dark:text-gray-300">Bạn cần đăng nhập để có thể thêm nhiều flashcard </div>
+                            )}
                         </div>
-                    </div>
-                ) : (
-                    <div className=" text-secondary mt-10 dark:text-gray-300">Bạn cần đăng nhập để có thể thêm nhiều flashcard </div>
-                )}
+                    </TabsContent>
+                    <TabsContent value="community">
+                        <div className="flex items-center gap-4 p-4 bg-white dark:bg-slate-700/80 rounded-lg shadow-sm border">
+                            <div className="flex items-center gap-2">
+                                <Globe className="w-5 h-5 text-gray-500" />
+                                <span className="font-medium text-gray-700 dark:text-white/80">Lọc theo ngôn ngữ:</span>
+                            </div>
 
-                <div className="mt-10">
-                    <h3 className="text-xl  text-primary">Khám phá từ cộng đồng chúng tôi</h3>
-                    <div className="flex gap-3 py-3 items-center flex-wrap">
-                        <h3>Lọc theo ngôn ngữ:</h3>
-                        <button
-                            className={`border dark:border-white/10 border-primary px-5 py-2 rounded-full w-36 h-10 flex items-center justify-center  ${
-                                language === "all" ? "bg-secondary text-white border-white" : ""
-                            }`}
-                            value="all"
-                            onClick={(e) => handleNavLanguage(e.target.value)}>
-                            <MdPublic className="mr-1" /> Tất cả
-                        </button>
-                        {languageOption.map((item) => (
-                            <button
-                                key={item.value}
-                                className={`transition-colors duration-200 border dark:border-white/10 border-gray-500 px-5 py-2 rounded-full w-16 h-10 flex items-center justify-center ${
-                                    item.value === language ? "bg-secondary border-white" : ""
-                                }`}
-                                onClick={() => handleNavLanguage(item.value)}>
-                                <Image src={`/flag/${item.value}.svg`} alt="" width={25} height={25} className="rounded-sm border border-gray-400"></Image>
-                            </button>
-                        ))}
-                    </div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
-                        {filterLanguage && filterLanguage.map((item) => <PublicFC item={item} key={item?._id} />)}
-                        {filterLanguage?.length <= 0 && <div className="h-[350px] col-span-12 flex items-center justify-center">Không có dữ liệu...</div>}
-                    </div>
-                </div>
+                            <div className="flex flex-wrap gap-2">
+                                <Button variant="outline" size="sm" className="h-8">
+                                    <Globe /> Tất cả
+                                </Button>
+                                {languages.map((lang) => (
+                                    <Button key={lang.code} variant={lang.code === "all" ? "default" : "outline"} size="sm" className="h-8">
+                                        <Image src={`/flag/${lang.value}.svg`} alt="" width={20} height={20}></Image>
+                                        {lang.label}
+                                    </Button>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5 mt-5">
+                            {filterLanguage && filterLanguage.map((item) => <PublicFC item={item} key={item?._id} />)}
+                            {filterLanguage?.length <= 0 && <div className="h-[350px] col-span-12 flex items-center justify-center text-gray-700">Không có dữ liệu...</div>}
+                        </div>
+                    </TabsContent>
+                </Tabs>
             </div>
         </div>
     );

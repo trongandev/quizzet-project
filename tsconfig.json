@@ -35,7 +35,7 @@
         "src/app/(whatheo)/whatheo/users/page.jsx",
         "src/app/(app)/quiz/themcauhoi/gui/page.jsx",
         "src/app/(app)/edit-tool/[slug]/page.jsx",
-        "src/components/CTaiLieuDetail.jsx",
+        "src/components/CTaiLieuDetail.tsx",
         "src/app/(app)/dapan/[slug]/page.jsx",
         "src/app/(app)/congdong/ChatArea.jsx",
         "src/app/(app)/congdong/ChatArea.jsx",

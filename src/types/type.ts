@@ -1,3 +1,5 @@
+import { Key } from "react";
+
 interface IUser {
     _id: string;
     displayName: string;
@@ -25,17 +27,22 @@ interface INotify {
 }
 
 interface IQuestion {
-    id: number;
-    question: string;
-    answers: string[];
-    correct: number;
+    _id: number;
+    data_quiz: IDataQuiz[];
 }
 
+interface IDataQuiz {
+    id: string;
+    question: string;
+    answers: [];
+    correct: string;
+}
 interface IComment {
     user_id: IUser;
     quiz_id?: string;
     rating: number;
     review: string;
+    helpful: number;
     _id: string;
     created_at: Date;
 }
@@ -43,25 +50,18 @@ interface IComment {
 interface IHistory {
     _id: string;
     user_id: string;
-    quiz_id: string;
+    quiz_id: QuizId;
     score: number;
+    total_questions: number;
     time: number;
-    questions: IDataHistory;
-    date: string;
+    userAnswers: Key[];
+    date: Date;
 }
 
-interface IDataHistory {
+interface QuizId {
     _id: string;
-    data_history: Datahistory[];
-}
-
-interface Datahistory {
-    question_id: number;
-    question_name: string;
-    answer_choose?: number;
-    answers: string[];
-    answer_correct: number;
-    status: boolean;
+    title: string;
+    subject: string;
 }
 
 interface ISO {
@@ -74,7 +74,18 @@ interface ISO {
     lenght: number;
     view: number;
     subject: string;
-    quest: string;
+    quest: IQuestionSO;
+}
+
+interface IQuestionSO {
+    _id: number;
+    data_so: IDataSO[];
+}
+
+interface IDataSO {
+    _id: string;
+    question: string;
+    answer: string;
 }
 
 interface IQuiz {
@@ -86,6 +97,7 @@ interface IQuiz {
     content: string;
     img: string;
     noa: number;
+    view: number;
     date: Date;
     status: boolean;
     questions: IQuestion;
@@ -105,6 +117,14 @@ interface IListFlashcard {
     is_public: boolean;
 }
 
+export interface IEditFlashcard {
+    _id: string;
+    title: string;
+    language: string;
+    desc: string;
+    public: boolean;
+}
+
 interface IProgress {
     percentage: number;
     rememberedCards: number;
@@ -122,7 +142,7 @@ interface Flashcard {
     status: string;
     progress: Progress;
     history: any[];
-    created_at: string;
+    created_at: Date;
 }
 
 interface Progress {
@@ -173,4 +193,23 @@ interface IChatCommunity {
     }[];
 }
 
-export type { IUser, INotify, IQuestion, IComment, IHistory, IDataHistory, ISO, IQuiz, IListFlashcard, IProgress, Flashcard, Progress, Example, IMessage, IChat, IChatCommunity };
+interface IChatCommunityMessage {
+    _id: string;
+    userId: UserId;
+    message: string;
+    image: string;
+    isEdit: boolean;
+    replyTo: null;
+    unsend: boolean;
+    reactions: any[];
+    timestamp: Date;
+    __v: number;
+}
+
+interface UserId {
+    _id: string;
+    displayName: string;
+    profilePicture: string;
+}
+
+export type { IUser, INotify, IQuestion, IComment, IHistory, ISO, IQuiz, IDataQuiz, IListFlashcard, IProgress, Flashcard, Progress, Example, IMessage, IChat, IChatCommunity, IChatCommunityMessage };

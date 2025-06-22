@@ -30,7 +30,7 @@ export async function generateMetadata() {
 export default async function page() {
     const quizData = await getCachedQuizzet();
     return (
-        <div className="px-3 md:px-0">
+        <div className=" py-20">
             <CQuiz quizData={quizData} />
         </div>
     );

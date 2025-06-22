@@ -105,7 +105,7 @@ export default function AddSO() {
                     <p>Tên bài (*)</p>
                     <div className="flex gap-2 items-center">
                         <input type="text" placeholder="Nhập tiêu đề của bài" autoFocus tabIndex="1" onChange={(e) => setData({ ...data, title: e.target.value })} value={data.title} />
-                        <Link href={`https://www.google.com/search?q=${data.title}&udm=2`} target="_black" className="block btn btn-primary h-full">
+                        <Link href={`https://www.google.com/search?q=${data.title}&udm=2`} target="_black" className="block h-full">
                             <FiSearch />
                         </Link>
                     </div>
@@ -113,15 +113,15 @@ export default function AddSO() {
                 <div className="">
                     <p>Hình ảnh (*)</p>
                     <div className="flex gap-2 items-center">
-                        <button className="btn btn-primary" onClick={handlePaste}>
+                        <Button className="" onClick={handlePaste}>
                             <MdContentPaste />
-                        </button>
+                        </Button>
                         <input type="text" placeholder="Nhập URL hình ảnh" tabIndex="2" onChange={(e) => setData({ ...data, image: e.target.value })} value={data.image} />
                     </div>
                 </div>
-                <button className="btn btn-second flex items-center gap-1" onClick={showModalAI}>
+                <Button className="btn btn-second flex items-center gap-1" onClick={showModalAI}>
                     <FaBrain size={20} /> AI Generate
-                </button>
+                </Button>
                 <Modal
                     title="AI Generate Quiz"
                     open={isModalOpenAI}
@@ -150,7 +150,7 @@ export default function AddSO() {
                     <p>Câu hỏi/đáp án (*)</p>
                     <textarea type="text" className="h-[250px] md:h-[350px]" placeholder="Nhập Data" tabIndex="3" onChange={(e) => handleChangeJSON(e)} value={promptValue} />
                 </div>
-                <button className="btn btn-primary">Tạo bài</button>
+                <Button className="">Tạo bài</Button>
             </div>
             <div className="flex-1 bg-white rounded-lg p-5 shadow-md">
                 <h1>Bộ đề môn: {data?.title}</h1>

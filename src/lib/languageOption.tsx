@@ -1,26 +1,8 @@
-export const languageOption = [
-    {
-        value: "english",
-        label: "Tiếng Anh-Mỹ",
-    },
-    {
-        value: "chinese",
-        label: "Tiếng Trung",
-    },
-    {
-        value: "korea",
-        label: "Tiếng Hàn",
-    },
-    {
-        value: "japan",
-        label: "Tiếng Nhật",
-    },
-    {
-        value: "france",
-        label: "Tiếng Pháp",
-    },
-    {
-        value: "germany",
-        label: "Tiếng Đức",
-    },
+export const languages = [
+    { value: "english", label: "🇬🇧 English", name: "Tiếng Anh" },
+    { value: "chinese", label: "🇨🇳 中文", name: "Tiếng Trung" },
+    { value: "japan", label: "🇯🇵 日本語", name: "Tiếng Nhật" },
+    { value: "korea", label: "🇰🇷 한국어", name: "Tiếng Hàn" },
+    { value: "france", label: "🇫🇷 Français", name: "Tiếng Pháp" },
+    { value: "germany", label: "🇩🇪 Deutsch", name: "Tiếng Đức" },
 ];

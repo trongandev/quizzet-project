@@ -15,9 +15,10 @@ import { SiQuizlet } from "react-icons/si";
 import { FaPeopleGroup } from "react-icons/fa6";
 import { AiFillHome } from "react-icons/ai";
 import { FaFileAlt } from "react-icons/fa";
-import { GiCardPick } from "react-icons/gi";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { FaRegCreditCard } from "react-icons/fa";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function RootLayout({ children }: any) {
     const pathname = usePathname();
@@ -47,49 +48,51 @@ export default function RootLayout({ children }: any) {
                 <Script async src="https://www.googletagmanager.com/gtag/js?id=G-L681038P5E"></Script>
                 <Script defer src="https://cloud.umami.is/script.js" data-website-id="01e0d2d3-5b2d-460e-b7e0-b3dff7bc0294"></Script>
             </head>
-            <body className="bg-linear dark:!bg-gray-700">
-                <UserProvider>
-                    <SocketProvider>
-                        <CHeader token={token || ""} />
-                        <div className=" relative dark:bg-gray-700 dark:text-white">
-                            <div className="">{children}</div>
-
-                            <div className="fixed bottom-0 bg-gray-100 dark:bg-slate-800/90 dark:text-white  text-black h-[48px] w-full block md:hidden z-10">
-                                <ul className="flex h-full">
-                                    <li className="flex-1">
-                                        <Link href="/" className={`flex items-center h-full justify-center ${pathname == "/" ? "active" : ""}`}>
-                                            <AiFillHome size={25} />
-                                        </Link>
-                                    </li>
-                                    <li className="flex-1">
-                                        <Link href="/quiz" className={`flex items-center h-full justify-center ${pathname.startsWith("/quiz") ? "active" : ""}`}>
-                                            <SiQuizlet size={21} />
-                                        </Link>
-                                    </li>
-                                    <li className="flex-1">
-                                        <Link href="/decuong" className={`flex items-center h-full justify-center ${pathname.startsWith("/decuong") ? "active" : ""}`}>
-                                            <FaFileAlt size={22} />
-                                        </Link>
-                                    </li>
-                                    <li className="flex-1">
-                                        <Link href="/congdong" className={`flex items-center h-full justify-center ${pathname.startsWith("/congdong") ? "active" : ""}`}>
-                                            <FaPeopleGroup size={25} />
-                                        </Link>
-                                    </li>
-                                    <li className="flex-1">
-                                        <Link href="/flashcard" className={`flex items-center h-full justify-center ${pathname.startsWith("/flashcard") ? "active" : ""}`}>
-                                            <FaRegCreditCard size={25} />
-                                        </Link>
-                                    </li>
-                                </ul>
+            <body className="bg-linear">
+                <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+                    <UserProvider>
+                        <SocketProvider>
+                            <CHeader token={token || ""} />
+                            <div className=" relative dark:bg-gray-700 dark:text-white">
+                                <div className="">{children}</div>
+                                <Toaster />
+                                <div className="fixed bottom-0 bg-gray-100 dark:bg-slate-800/90 dark:text-white  text-black h-[48px] w-full block md:hidden z-10">
+                                    <ul className="flex h-full">
+                                        <li className="flex-1">
+                                            <Link href="/" className={`flex items-center h-full justify-center ${pathname == "/" ? "active" : ""}`}>
+                                                <AiFillHome size={25} />
+                                            </Link>
+                                        </li>
+                                        <li className="flex-1">
+                                            <Link href="/quiz" className={`flex items-center h-full justify-center ${pathname.startsWith("/quiz") ? "active" : ""}`}>
+                                                <SiQuizlet size={21} />
+                                            </Link>
+                                        </li>
+                                        <li className="flex-1">
+                                            <Link href="/decuong" className={`flex items-center h-full justify-center ${pathname.startsWith("/decuong") ? "active" : ""}`}>
+                                                <FaFileAlt size={22} />
+                                            </Link>
+                                        </li>
+                                        <li className="flex-1">
+                                            <Link href="/congdong" className={`flex items-center h-full justify-center ${pathname.startsWith("/congdong") ? "active" : ""}`}>
+                                                <FaPeopleGroup size={25} />
+                                            </Link>
+                                        </li>
+                                        <li className="flex-1">
+                                            <Link href="/flashcard" className={`flex items-center h-full justify-center ${pathname.startsWith("/flashcard") ? "active" : ""}`}>
+                                                <FaRegCreditCard size={25} />
+                                            </Link>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
-                    </SocketProvider>
-                </UserProvider>
-                <CFooter />
-                <Analytics />
-                <GoogleAnalytics gaId="G-L681038P5E" />
-                <SpeedInsights />
+                        </SocketProvider>
+                    </UserProvider>
+                    <CFooter />
+                    <Analytics />
+                    <GoogleAnalytics gaId="G-L681038P5E" />
+                    <SpeedInsights />
+                </ThemeProvider>
             </body>
         </html>
     );

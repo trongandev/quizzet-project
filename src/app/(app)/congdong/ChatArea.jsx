@@ -85,13 +85,13 @@ const ChatArea = ({
                             trigger="click"
                             open={open}
                             onOpenChange={handleOpenChange}>
-                            <button className="btn btn-primary !rounded-md">
+                            <Button className="!rounded-md">
                                 <MdOutlineInsertEmoticon size={20} />
-                            </button>
+                            </Button>
                         </Popover>
-                        <button type="submit" disabled={loading} onClick={handleSendMessage} className="btn btn-primary !rounded-md">
+                        <Button type="submit" disabled={loading} onClick={handleSendMessage} className="!rounded-md">
                             {loading ? <Spin indicator={<LoadingOutlined spin />} size="default" /> : <IoSend />}
-                        </button>
+                        </Button>
                     </div>
                     {imageReview && (
                         <div className="relative w-[100px] h-[100px] mt-3">

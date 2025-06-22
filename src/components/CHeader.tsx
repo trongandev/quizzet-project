@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Popover, Badge, Modal, Switch } from "antd";
+import { Popover, Badge, Modal } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { FiLogOut } from "react-icons/fi";
 import { IoMdNotificationsOutline } from "react-icons/io";
@@ -9,7 +9,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useUser } from "../context/userContext";
-import { MdDarkMode, MdEmail, MdOutlineHistory } from "react-icons/md";
+import { MdEmail, MdOutlineHistory } from "react-icons/md";
 import { GET_API, POST_API } from "@/lib/fetchAPI";
 import CNotify from "./CNotify";
 import CChat from "./CChat";
@@ -17,7 +17,9 @@ import { BsDiscord, BsMailbox } from "react-icons/bs";
 import TextArea from "antd/es/input/TextArea";
 import Swal from "sweetalert2";
 import { BiCopy } from "react-icons/bi";
-import { CiDark, CiLight } from "react-icons/ci";
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
+import { Button } from "@/components/ui/button";
 export default function CHeader({ token }: { token: string }) {
     const [open, setOpen] = useState(false);
     const [openNoti, setOpenNoti] = useState(false);
@@ -27,7 +29,11 @@ export default function CHeader({ token }: { token: string }) {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [feedback, setFeedback] = useState("");
-    const [darkTheme, setDarkTheme] = useState(false);
+    const { theme, setTheme } = useTheme();
+
+    useEffect(() => {
+        console.log("Current theme:", theme);
+    }, [theme]);
     const handleOpenChange = (newOpen: boolean) => {
         setOpen(newOpen);
     };
@@ -61,27 +67,7 @@ export default function CHeader({ token }: { token: string }) {
         if (user) {
             fetchAPI();
         }
-        const dark = localStorage.getItem("dark");
-        if (dark === "true") {
-            setDarkTheme(true);
-        } else {
-            setDarkTheme(false);
-        }
     }, [user, token]);
-
-    useEffect(() => {
-        const root = document.documentElement;
-        if (darkTheme) {
-            root.classList.add("dark");
-        } else {
-            root.classList.remove("dark");
-        }
-    }, [darkTheme]);
-
-    const handleSetTheme = (value: boolean) => {
-        setDarkTheme(value);
-        localStorage.setItem("dark", JSON.stringify(value));
-    };
 
     const handleRouterNotify = async (item: any) => {
         const req = await GET_API(`/notify/${item?._id}`, token);
@@ -129,7 +115,7 @@ export default function CHeader({ token }: { token: string }) {
     };
 
     return (
-        <header className="bg-white text-primary dark:text-white dark:bg-gray-800 w-full flex items-center justify-center fixed z-20 border-b border-white/70 dark:border-white/10">
+        <header className="bg-white text-primary dark:text-white dark:bg-gray-800 w-full flex items-center justify-center fixed z-10 border-b border-white/70 dark:border-white/10">
             <div className="flex items-center justify-between px-5 py-1 md:px-0 md:py-0 w-full md:w-[1000px] xl:w-[1200px]">
                 <Link href="/">
                     <Image unoptimized src="/logo.png" alt="" width={120} height={30} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"></Image>
@@ -164,17 +150,20 @@ export default function CHeader({ token }: { token: string }) {
                 </ul>
                 <div className="flex items-center gap-5">
                     <div className="flex items-center gap-2">
-                        {darkTheme ? <MdDarkMode size={20} /> : <CiLight size={20} />}
-                        <Switch onChange={(value) => handleSetTheme(value)} value={darkTheme} />
+                        {theme === "dark" ? (
+                            <Sun size={20} className="cursor-pointer hover:text-blue-500/50" onClick={() => setTheme("light")} />
+                        ) : (
+                            <Moon size={20} className="cursor-pointer hover:text-blue-500/50" onClick={() => setTheme("dark")} />
+                        )}
                     </div>
                     {!user ? (
                         <div className=" ">
                             <Link href="/login" className="relative">
                                 <div className="-z-1 absolute inset-0 bg-purple-500 rounded-full blur opacity-30 group-hover:opacity-50 transition duration-1000  animate-pulse "></div>
-                                <button className="z-1 relative group overflow-hidden btn btn-primary bg-gradient-to-r from-blue-600 to-purple-600 font-bold hover:shadow-md">
+                                <Button className="z-1 relative group overflow-hidden bg-gradient-to-r from-blue-600 to-purple-600 font-bold group-hover:scale-105 transition-all duration-500 px-4 py-2 rounded-lg text-white">
                                     Đăng nhập
                                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50  dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
-                                </button>
+                                </Button>
                             </Link>
                         </div>
                     ) : (

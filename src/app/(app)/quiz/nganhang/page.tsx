@@ -28,7 +28,7 @@ export default function NganHang() {
                                 <input type="number" value={input} onChange={(e) => setInput(Number(e.target.value))} />
                             </div>
                             <Link href={`/quiz/nganhang/lsd?limit=${input}`} className="block">
-                                <button className="w-full btn btn-primary">Thi thử</button>
+                                <Button className="w-full btn btn-primary">Thi thử</Button>
                             </Link>
                         </div>
                     </div>

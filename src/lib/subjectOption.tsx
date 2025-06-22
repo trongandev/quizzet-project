@@ -20,10 +20,6 @@ export const subjectOption = [
         label: "Triết học",
     },
     {
-        value: "daicuong",
-        label: "Đại cương",
-    },
-    {
         value: "taichinh",
         label: "Tài chính - ngân hàng",
     },

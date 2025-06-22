@@ -1,86 +1,36 @@
 "use client";
 
 import React, { useState, useCallback, useMemo } from "react";
-import { message, Progress, Spin } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { BsQuestion } from "react-icons/bs";
-import Swal from "sweetalert2";
-
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, CheckCircle, XCircle, Brain } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { IDataQuiz, IHistory } from "@/types/type";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import Loading from "@/components/ui/loading";
 // Constants
 const AI_MODEL = "gemini-1.5-flash";
-const ANSWER_LABELS = ["A", "B", "C", "D"] as const;
-
-// Types
-interface QuizResult {
-    id: string;
-    quiz_id?: {
-        title: string;
-        content: string;
-    };
-    score: number;
-    time: number;
-    questions?: {
-        data_history: any[];
-    };
-}
-
-interface QuestionItem {
-    id: string;
-    question_name: string;
-    question: string;
-    answers: string[];
-    answer_correct: number;
-    answer_choose: number;
-    correct: number;
-}
 
 interface CAnswerProps {
-    quiz: QuizResult;
-    question: QuestionItem[];
+    history: IHistory;
+    question: IDataQuiz[];
 }
 
-// Utility functions
-const formatTime = (totalSeconds: number): string => {
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-    return `${hours}h:${minutes}p:${seconds}s`;
-};
-
-const calculateAccuracyPercentage = (correctAnswers: number, totalQuestions: number): number => {
-    return Math.floor((correctAnswers / totalQuestions) * 100);
-};
-
-const calculateErrorPercentage = (correctAnswers: number, totalQuestions: number): number => {
-    const wrongAnswers = totalQuestions - correctAnswers;
-    return Math.floor((wrongAnswers / totalQuestions) * 100);
-};
-
-export default function CAnswer({ quiz, question: questionList }: CAnswerProps) {
+export default function CAnswer({ history, question }: CAnswerProps) {
+    const router = useRouter();
     const [loadingQuestionIndex, setLoadingQuestionIndex] = useState<number | null>(null);
-    const [messageApi, contextHolder] = message.useMessage();
-
+    const [showExplanation, setShowExplanation] = useState<number | null>(null);
+    const [explain, setExplain] = useState<string | null>(null);
     // Memoized values
-    const genAI = useMemo(() => new GoogleGenerativeAI(process.env.NEXT_PUBLIC_API_KEY_AI || ""), []);
+    const genAI = useMemo(() => new GoogleGenerativeAI(process.env.API_KEY_AI || ""), []);
 
-    const statisticsData = useMemo(
-        () => ({
-            totalQuestions: questionList?.length || 0,
-            correctAnswers: quiz?.score || 0,
-            wrongAnswers: (questionList?.length || 0) - (quiz?.score || 0),
-            accuracyPercentage: calculateAccuracyPercentage(quiz?.score || 0, questionList?.length || 1),
-            errorPercentage: calculateErrorPercentage(quiz?.score || 0, questionList?.length || 1),
-            formattedTime: formatTime(quiz?.time || 0),
-        }),
-        [quiz?.score, quiz?.time, questionList?.length]
-    );
-
-    const generateAIPrompt = useCallback((questionItem: QuestionItem): string => {
+    const generateAIPrompt = useCallback((questionItem: any): string => {
         const basePrompt = `
-            Giải thích lựa chọn câu nào, tại sao lại lựa chọn.
+            Giải thích câu trả lời.
             Yêu cầu: ngắn gọn xúc tích dễ hiểu, đúng vào trọng tâm, không lòng vòng.
-            Không cần nói tóm lại, không cần nói lại sự kì vọng ở cuối câu.
+            Không cần nói tóm lại, không cần nói lại câu hỏi và sự kì vọng ở cuối câu.
             Trả ra định dạng HTML có format rõ ràng.
         `;
 
@@ -90,14 +40,14 @@ export default function CAnswer({ quiz, question: questionList }: CAnswerProps) 
             B: ${questionItem.answers[1]}
             C: ${questionItem.answers[2]}
             D: ${questionItem.answers[3]}
-            Đáp án đúng: ${questionItem.answers[questionItem.correct]}
+            Đáp án đúng: ${questionItem.answers[Number(questionItem.correct)]}
         `;
 
         return questionContent + basePrompt;
     }, []);
 
     const handleExplainAnswer = useCallback(
-        async (questionItem: QuestionItem, questionIndex: number): Promise<void> => {
+        async (questionItem: IDataQuiz, questionIndex: number): Promise<void> => {
             try {
                 setLoadingQuestionIndex(questionIndex);
 
@@ -110,121 +60,122 @@ export default function CAnswer({ quiz, question: questionList }: CAnswerProps) 
                     .replace(/```html/g, "")
                     .replace(/```/g, "");
 
-                await Swal.fire({
-                    title: "Giải thích đáp án",
-                    html: cleanedResponse,
-                    icon: "info",
-                    confirmButtonText: "Đã hiểu",
-                });
+                setExplain(cleanedResponse);
+                console.log("Generated explanation:", cleanedResponse);
             } catch (error) {
                 const errorMessage = error instanceof Error ? error.message : "Đã xảy ra lỗi không xác định";
-                messageApi.error(`Không thể tạo giải thích: ${errorMessage}`);
+                toast.error(`Không thể lấy giải thích`, {
+                    description: errorMessage,
+                    position: "top-center",
+                    duration: 5000,
+                });
+                setShowExplanation(null);
             } finally {
                 setLoadingQuestionIndex(null);
             }
         },
-        [genAI, generateAIPrompt, messageApi]
+        [genAI, generateAIPrompt]
     );
 
-    const renderAnswerOption = useCallback((answer: string, answerIndex: number, questionItem: QuestionItem, questionIndex: number) => {
-        const isCorrectAnswer = questionItem.answer_correct === answerIndex;
-        const isChosenAnswer = questionItem.answer_choose === answerIndex;
-        const answerLabel = ANSWER_LABELS[answerIndex];
-
-        const getLabelClassName = (): string => {
-            if (isCorrectAnswer) return "!bg-primary !text-white";
-            if (isChosenAnswer) return "!bg-red-500 text-white";
-            return "";
-        };
-
-        return (
-            <div key={answerIndex} className={`relative flex items-center ${isCorrectAnswer ? "text-primary font-bold" : ""}`}>
-                <input type="radio" name={`question-${questionItem.id}`} className="w-1 invisible" disabled id={`question-${questionIndex}-answer-${answerIndex}`} defaultChecked={isCorrectAnswer} />
-                <label htmlFor={`question-${questionIndex}-answer-${answerIndex}`} className={`absolute font-bold w-10 h-10 flex items-center justify-center rounded-lg ${getLabelClassName()}`}>
-                    {answerLabel}
-                </label>
-                <label htmlFor={`question-${questionIndex}-answer-${answerIndex}`} className="block w-full ml-10 p-3 cursor-pointer">
-                    {answer}
-                </label>
-            </div>
-        );
-    }, []);
+    const toggleExplanation = (questionId: number) => {
+        setExplain(null);
+        setShowExplanation(showExplanation === questionId ? null : questionId);
+        if (showExplanation === questionId) {
+            setExplain(null);
+            return;
+        }
+        handleExplainAnswer(question[questionId], questionId);
+    };
 
     // Loading state
-    if (!questionList?.length) {
-        return (
-            <div className="flex items-center justify-center h-screen">
-                <Spin size="large" />
-            </div>
-        );
-    }
-
+    // if (!question.length) {
+    //     return (
+    //         <div className="flex items-center justify-center h-screen">
+    //             <Spin size="large" />
+    //         </div>
+    //     );
+    // }
     return (
-        <>
-            {contextHolder}
-            <div className="px-3 md:px-0 text-third dark:text-white min-h-[80vh]">
-                {/* Quiz Header */}
-                <div className="flex justify-between flex-col md:flex-row gap-5 md:gap-0 mb-8">
-                    <div className="space-y-2">
-                        {quiz?.quiz_id && (
-                            <>
-                                <h1 className="text-2xl font-bold text-primary">Bài quiz về chủ đề: {quiz.quiz_id.title}</h1>
-                                <p className="text-secondary dark:text-white/70">Nội dung: {quiz.quiz_id.content}</p>
-                            </>
-                        )}
-                        <p className="font-medium">
-                            Tổng số câu đúng: {statisticsData.correctAnswers}/{statisticsData.totalQuestions} câu
-                        </p>
-                        <p className="font-medium">Tổng thời gian làm: {statisticsData.formattedTime}</p>
-                    </div>
-
-                    {/* Statistics */}
-                    <div className="flex gap-5 text-center justify-center">
-                        <div>
-                            <Progress type="circle" percent={statisticsData.errorPercentage} strokeColor="#ff4d4f" size={80} />
-                            <p className="text-gray-600 dark:text-white/70 mt-1">Câu sai: {statisticsData.wrongAnswers}</p>
-                        </div>
-                        <div>
-                            <Progress type="circle" percent={statisticsData.accuracyPercentage} strokeColor="#2187d5" size={80} />
-                            <p className="text-gray-600 dark:text-white/70 mt-1">Câu đúng: {statisticsData.correctAnswers}</p>
-                        </div>
-                    </div>
+        <div className="flex items-center justify-center dark:text-white/80 text-gray-400">
+            <div className="w-full md:w-[1000px] xl:w-[1200px] py-16">
+                <div className="mb-6">
+                    <Button variant="ghost" onClick={() => router.back()} className="mb-4 text-gray-500 dark:text-white/80">
+                        <ArrowLeft className="h-4 w-4 mr-2" />
+                        Quay lại trang lịch sử
+                    </Button>
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white/80">Chi tiết từng câu hỏi</h1>
                 </div>
 
-                {/* Questions List */}
-                <div className="space-y-5">
-                    {questionList.map((questionItem, questionIndex) => {
-                        const isCorrectAnswer = questionItem.answer_correct === questionItem.answer_choose;
+                <div className="space-y-6">
+                    {question &&
+                        question.map((question: any) => (
+                            <Card key={question.id} className="border border-transparent dark:border-white/10 shadow-md">
+                                <CardHeader>
+                                    <div className="flex items-start justify-between">
+                                        <CardTitle className="text-lg">
+                                            Câu {question.id}: {question.question}
+                                        </CardTitle>
+                                        <Badge variant={history.userAnswers[question.id] == question.correct ? "default" : "destructive"} className="ml-4">
+                                            {history.userAnswers[question.id] == question.correct ? "Đúng" : "Sai"}
+                                        </Badge>
+                                    </div>
+                                </CardHeader>
 
-                        return (
-                            <div key={questionItem.id} className="bg-linear-item-2 p-5 border border-white/10 rounded-md">
-                                {/* Question Header */}
-                                <div className={`mb-3 flex gap-2 items-center ${isCorrectAnswer ? "text-primary" : "text-red-500"}`}>
-                                    <h2 className="text-lg font-bold">
-                                        Câu {questionIndex + 1}: {questionItem.question_name}
-                                    </h2>
-                                    <span className={`text-white px-3 rounded-md text-xs ${isCorrectAnswer ? "bg-primary" : "bg-red-500"}`}>{isCorrectAnswer ? "Đúng" : "Sai"}</span>
-                                </div>
+                                <CardContent className="space-y-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        {question.answers.map((option: any, index: number) => (
+                                            <div
+                                                key={index}
+                                                className={`p-3 rounded-lg border-2 transition-colors flex items-center ${
+                                                    index === Number(question.correct)
+                                                        ? "border-green-500 bg-green-50 text-green-800 dark:bg-green-800/50 dark:text-green-200 dark:border-green-700"
+                                                        : index === Number(history.userAnswers[question.id]) && index !== Number(question.correct)
+                                                        ? "border-red-500 bg-red-50 text-red-800 dark:bg-red-800/50 dark:text-red-200 dark:border-red-700"
+                                                        : "border-gray-200 bg-gray-50 dark:border-white/10 dark:bg-gray-800/50"
+                                                }`}>
+                                                <div className="flex items-center space-x-2">
+                                                    <span className="font-semibold ml-2 mr-3">{String.fromCharCode(65 + Number(index))}</span>
+                                                    <span>{option}</span>
+                                                    {Number(history.userAnswers[question.id]) === index && index === Number(question.correct) && (
+                                                        <CheckCircle className="h-4 w-4 text-green-600 ml-auto dark:text-green-200" />
+                                                    )}
+                                                    {Number(history.userAnswers[question.id]) === index && index !== Number(question.correct) && (
+                                                        <XCircle className="h-4 w-4 text-red-600 ml-auto dark:text-red-200" />
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
 
-                                {/* AI Explain Button */}
-                                <button
-                                    disabled={loadingQuestionIndex === questionIndex}
-                                    className="flex items-center gap-1 btn btn-primary !py-1 text-xs mb-3"
-                                    onClick={() => handleExplainAnswer(questionItem, questionIndex)}
-                                    aria-label={`Giải thích câu ${questionIndex + 1} bằng AI`}>
-                                    {loadingQuestionIndex === questionIndex ? <Spin indicator={<LoadingOutlined spin />} size="small" /> : <BsQuestion />}
-                                    Giải thích bằng AI
-                                </button>
+                                    <div className="flex items-start flex-col gap-2">
+                                        <div className="relative group overflow-hidden">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => toggleExplanation(question.id)}
+                                                className="bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:text-white">
+                                                {loadingQuestionIndex === question.id ? (
+                                                    <Loading className="border-x-white" />
+                                                ) : (
+                                                    <Brain className="h-4 w-4 mr-2 transition-all duration-500 rotate-0 group-hover:rotate-180" />
+                                                )}
 
-                                {/* Answer Options */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    {questionItem.answers?.map((answer, answerIndex) => renderAnswerOption(answer, answerIndex, questionItem, questionIndex))}
-                                </div>
-                            </div>
-                        );
-                    })}
+                                                {showExplanation === question.id && explain ? "Ẩn giải thích" : "Giải thích bằng AI"}
+                                            </Button>
+                                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50  dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
+                                        </div>
+
+                                        {showExplanation === question.id && explain && (
+                                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 dark:bg-blue-900/50 dark:border-blue-700">
+                                                <div className="text-blue-800 dark:text-blue-200" dangerouslySetInnerHTML={{ __html: explain || "" }} />
+                                            </div>
+                                        )}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
                 </div>
             </div>
-        </>
+        </div>
     );
 }

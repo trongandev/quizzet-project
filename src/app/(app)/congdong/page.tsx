@@ -12,6 +12,14 @@ import MessageList from "./MessageList";
 import ChatArea from "./ChatArea";
 
 import OnlineUsers from "./OnlineUsers";
+import { Bell, EllipsisVertical, Hash, Heart, ImagePlus, MessageCircle, Minus, Paperclip, Search, Send, Share, Smile, Users } from "lucide-react";
+import Image from "next/image";
+import ChatCard from "@/components/community/ChatCard";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { IChatCommunityMessage } from "@/types/type";
+import Link from "next/link";
+import { toast } from "sonner";
 
 const debounce = (func: any, wait: any) => {
     let timeout: NodeJS.Timeout;
@@ -30,69 +38,38 @@ export default function CongDong() {
     const user = userContext ? userContext.user : null;
     const token = Cookies.get("token") || "";
     const lastMessageRef = useRef<HTMLDivElement>(null);
-    const [messageApi, contextHolder] = message.useMessage();
+    const [messages, setMessages] = useState<IChatCommunityMessage[]>([]);
+    const [skip, setSkip] = useState(0);
     const { socket, onlineUsers } = useSocket();
-
-    const [messages, setMessages] = useState<{ _id: string; [key: string]: any }[]>([]);
-    const [sendMess, setSendMess] = useState(false);
-    const [newMessage, setNewMessage] = useState("");
-    const userId = user?._id;
+    const [isTyping, setIsTyping] = useState(false); // quản lí trạng thái đang gõ của người dùng
+    const [loading, setLoading] = useState(false);
+    const inputRef = useRef<HTMLInputElement | null>(null); // tham chiếu đến input
     const [image, setImage] = useState(null);
     const [imageReview, setImageReview] = useState<string | null>(null);
-    const [skip, setSkip] = useState(0);
-    const [hasMore, setHasMore] = useState(false);
-    const [emoji, setEmoji] = useState<{ unicodeName: string }[]>([]);
-    const [emojiData, setEmojiData] = useState<{ unicodeName: string }[]>([]);
-    const [searchEmoji, setSearchEmoji] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [replyingTo, setReplyingTo] = useState(null);
-    const [loadingIcon, setLoadingIcon] = useState(false);
-
+    const [replyingTo, setReplyingTo] = useState(null); // quản lí trạng thái đang trả lời tin nhắn nào
+    const [newMessage, setNewMessage] = useState(""); // tạo tin nhắn mới
     const fetchInitialMessages = useCallback(async () => {
         const req = await GET_API_WITHOUT_COOKIE(`/chatcommu?skip=${skip}&limit=50`);
         if (req.ok) {
             const sortedMessages = req.messages.sort((a: any, b: any) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
             setMessages(sortedMessages);
-            setHasMore(req?.hasMore);
+            // setHasMore(req?.hasMore);
             // setSkip(50);
         }
     }, [skip]);
 
     useEffect(() => {
-        if (lastMessageRef.current) {
-            lastMessageRef.current.scrollIntoView({ behavior: "smooth" });
-        }
-    }, [messages]);
-
-    const fetchEmojis = useCallback(async () => {
-        try {
-            const reqEmoji = await fetch("https://emoji-api.com/emojis?access_key=bf409e3ed3d59cc01d12b7f1a9512896fe36f4f1");
-            const dataEmoji = await reqEmoji.json();
-            setEmoji(dataEmoji);
-            setEmojiData(dataEmoji);
-        } catch (error) {
-            console.error("Error fetching emojis:", error);
-        }
-    }, []);
-
-    useEffect(() => {
         fetchInitialMessages();
-        fetchEmojis();
 
         return () => {
             // Cleanup if needed
         };
     }, []);
 
-    // Optimized text handler
-    const handleNewMessage = useCallback((text: { _id: string; [key: string]: any }) => {
-        setMessages((prev) => [...prev, text]);
-    }, []);
-
     const messageHandlers = useMemo(
         () => ({
             updateMessages: (newMessage: { _id: string; [key: string]: any }) => {
-                setMessages((prev) => [...prev, newMessage]); // Sử dụng setMessages thay vì setChatState
+                setMessages((prev: any) => [...prev, newMessage]); // Sử dụng setMessages thay vì setChatState
             },
             handleUnsend: (messageId: string) => {
                 setMessages((prev) => prev.map((msg) => (msg._id === messageId ? { ...msg, unsend: true } : msg)));
@@ -113,27 +90,20 @@ export default function CongDong() {
         };
     }, [socket, messageHandlers]);
 
-    // const loadMoreMessages = async () => {
-    //     setLoading(true);
-    //     setSkip((prevSkip) => prevSkip + 50);
-    //     try {
-    //         const newMessages = await GET_API(`/chatcommu?skip=${skip}&limit=50`, token); // Gọi API để tải tin nhắn
-    //         setMessages((prevMessages) => [...newMessages.messages, ...prevMessages]);
-    //         setHasMore(newMessages.length > 0);
-    //     } catch (error) {
-    //         messageApi.open({
-    //             type: "error",
-    //             content: error,
-    //         });
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-
     const handleSendMessage = useCallback(async () => {
         if (!inputRef.current?.value.trim() && !image) return;
+        // Gửi typing nếu chưa từng gửi
+        // if (!isTyping) {
+        //   socket.emit("typing", { roomId: "community", userId: user?._id });
+        //   setIsTyping(true);
+        // }
 
-        setLoading(true);
+        //   clearTimeout(typingTimeout);
+        // typingTimeout = setTimeout(() => {
+        //     socket.emit("stopTyping", { roomId: "community", userId });
+        //     typing = false;
+        // }, 3000); // 3s không gõ thì gửi stopTyping
+        //     setLoading(true);
         try {
             let imageUrl = "";
             if (image) {
@@ -161,7 +131,8 @@ export default function CongDong() {
             }
             setImage(null);
         } catch (error: any) {
-            messageApi.error("Failed to send text", error);
+            toast.error("Lỗi khi gửi tin nhắn: " + error.message);
+            console.error("Error sending message:", error);
         } finally {
             setLoading(false);
         }
@@ -180,132 +151,6 @@ export default function CongDong() {
         }
     };
 
-    const handleImageChange = (e: any) => {
-        const file = e.target.files[0];
-        setImage(file);
-        setImageReview(file ? URL.createObjectURL(file) : null);
-    };
-
-    const [open, setOpen] = useState(false);
-
-    const handleOpenChange = (newOpen: any) => {
-        setOpen(newOpen);
-    };
-
-    const debouncedSearchEmoji = useCallback(
-        debounce((searchTerm: any) => {
-            const filteredData = emoji.filter((item) => item?.unicodeName.toLowerCase().includes(searchTerm.toLowerCase()));
-            setEmojiData(filteredData);
-        }, 300),
-        [emoji]
-    );
-
-    const handleSearchEmoji = useCallback(
-        (e: any) => {
-            const searchTerm = e.target.value;
-            setSearchEmoji(searchTerm);
-            debouncedSearchEmoji(searchTerm);
-        },
-        [debouncedSearchEmoji]
-    );
-
-    const handleUnsend = async (messageId: string) => {
-        setLoading(true);
-        socket.emit("unsendMessageCommu", { messageId, userId: user?._id, token });
-        // const req = await POST_API(`/chatcommu/unsend`, { messageId, userId: user._id }, "POST", token);
-        // const res = await req.json();
-        // if (res.ok) {
-        //     setMessages((prevMessages) => prevMessages.map((msg) => (msg._id === messageId ? { ...msg, unsend: true } : msg)));
-        //     messageApi.open({
-        //         type: "success",
-        //         content: res.text,
-        //     });
-        // } else {
-        //     messageApi.open({
-        //         type: "error",
-        //         content: res.text,
-        //     });
-        // }
-        setLoading(false);
-    };
-
-    const handleReactIcon = async (messageId: string, emoji: any) => {
-        setLoadingIcon(true);
-        if (!user) return;
-        const req = await POST_API(`/chatcommu/react`, { messageId, userId: user._id, emoji }, "POST", token);
-        if (req) {
-            const res = await req.json();
-            if (res.ok) {
-                setMessages((prevMessages) => prevMessages.map((msg) => (msg._id === messageId ? { ...msg, reactions: res.reactions } : msg)));
-            } else {
-                messageApi.open({
-                    type: "error",
-                    content: res.text,
-                });
-            }
-        }
-        setLoadingIcon(false);
-    };
-
-    const reactIconList = useMemo(
-        () => [
-            "https://static.xx.fbcdn.net/images/emoji.php/v9/tb6/1/32/1f44d.png",
-            "https://static.xx.fbcdn.net/images/emoji.php/v9/t72/1/32/2764.png",
-            "https://static.xx.fbcdn.net/images/emoji.php/v9/t8e/1/32/1f606.png",
-            "https://static.xx.fbcdn.net/images/emoji.php/v9/t7b/1/32/1f62e.png",
-            "https://static.xx.fbcdn.net/images/emoji.php/v9/tc8/1/32/1f622.png",
-            "https://static.xx.fbcdn.net/images/emoji.php/v9/t47/1/32/1f621.png",
-        ],
-        []
-    );
-
-    const [isModalOpen, setIsModalOpen] = useState(null);
-
-    const showModal = (messageId: any) => {
-        setIsModalOpen(messageId);
-    };
-
-    const handleCancel = () => {
-        setIsModalOpen(null);
-    };
-
-    const [isModalOpenEditMess, setIsModalOpenEditMess] = useState(null);
-    const [editMess, setEditMess] = useState<{ _id?: string; message?: string }>({});
-
-    const showModalEditMess = (messageId: any) => {
-        setIsModalOpenEditMess(messageId);
-    };
-
-    const handleOkEditMess = async () => {
-        if (!editMess.message) return;
-        const newMess = { messageId: editMess._id, userId: user?._id, newMessage: editMess.message };
-        setLoading(true);
-        const req = await POST_API(`/chatcommu/editmess`, newMess, "PUT", token);
-        if (req) {
-            const res = await req.json();
-            if (res.ok) {
-                setMessages((prevMessages) => prevMessages.map((msg) => (msg._id === editMess._id ? { ...msg, message: editMess.message, isEdit: true } : msg)));
-            } else {
-                messageApi.open({
-                    type: "error",
-                    content: res.message,
-                });
-            }
-        }
-        handleCancelEditMess();
-        setLoading(false);
-        setEditMess({});
-    };
-
-    const handleCancelEditMess = () => {
-        setIsModalOpenEditMess(null);
-    };
-
-    const handleEditMess = async (msg: any) => {
-        setEditMess(msg);
-        showModalEditMess(msg._id);
-    };
-    const inputRef = useRef<HTMLInputElement | null>(null);
     const handleMessageChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         if (inputRef.current) {
             inputRef.current.value = e.target.value;
@@ -321,82 +166,115 @@ export default function CongDong() {
         [handleSendMessage]
     );
 
-    const handleSetDefaultImage = () => {
-        setImage(null);
-        setImageReview(null);
-    };
-
-    if (!messages.length) {
-        return (
-            <div className="flex items-center justify-center h-screen">
-                <Spin size="large" />
-            </div>
-        );
-    }
-
     return (
         <div className="flex items-center justify-center">
-            <div className="w-full md:w-[1000px] xl:w-[1200px] py-5 pt-20">
-                <div className="text-third dark:text-white flex gap-5 flex-wrap px-3 md:px-0 min-h-[85vh]">
-                    {contextHolder}
+            <div className="w-full md:w-[1000px] xl:w-[1200px] py-5 pt-16">
+                <div className="text-third dark:text-white flex flex-row px-3 md:px-0 min-h-[85vh] dark:border-white/10 border  shadow-xl w-full rounded-xl overflow-hidden">
+                    <div className=" flex-1">
+                        {/* {khung chat ben trái} */}
+                        <div className="border-b border-b-white/10 flex items-center justify-between  h-16 px-5 bg-white dark:bg-slate-800/50 ">
+                            {/* header */}
+                            <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-3">
+                                    <Hash className="text-4xl font-bold dark:text-gray-400" />
+                                    <h3>Quizzet Community</h3>
+                                </div>
+                                <div className="w-0.5 h-6 bg-gray-300 dark:bg-gray-600 "></div>
+                                <p className="dark:text-white/60">Kênh thảo luận chung cho cộng đồng</p>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <div className="h-10 w-10 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
+                                    <Bell size={18} />
+                                </div>
+                                <div className="h-10 w-10 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
+                                    <Search size={18} />
+                                </div>
+                                <div className="h-10 w-10 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
+                                    <EllipsisVertical size={18} />
+                                </div>
+                            </div>
+                        </div>
+                        {/* nội dung chính */}
+                        <div className="flex flex-col">
+                            <div className="py-5 px-3 flex-1 max-h-[calc(80vh-100px)] min-h-[calc(80vh-100px)] overflow-y-auto  flex flex-col gap-2">
+                                {messages &&
+                                    messages.map((message, index) => (
+                                        <ChatCard key={index} message={message} isLast={index === messages.length - 1} ref={index === messages.length - 1 ? lastMessageRef : null} />
+                                    ))}
 
-                    <div className=" w-full md:w-[700px] p-3 md:p-5  border border-primary  rounded-md">
-                        <MessageList
-                            messages={messages}
-                            lastMessageRef={lastMessageRef}
-                            setReplyingTo={setReplyingTo}
-                            handleReactIcon={handleReactIcon}
-                            user={user}
-                            token={token}
-                            isModalOpen={isModalOpen}
-                            reactIconList={reactIconList}
-                            loadingIcon={loadingIcon}
-                            emoji={emojiData}
-                            onReply={(id: any) => setReplyingTo(id)}
-                            onModalOpen={showModal}
-                            onOpenChange={handleOpenChange}
-                            onModalCancel={handleCancel}
-                            handleUnsend={handleUnsend}
-                            loading={loading}
-                            handleEditMess={handleEditMess}
-                            isModalOpenEditMess={isModalOpenEditMess}
-                            handleOkEditMess={handleOkEditMess}
-                            setEditMess={setEditMess}
-                            handleCancelEditMess={handleCancelEditMess}
-                            showModalEditMess={showModalEditMess}
-                            editMess={editMess}
-                            onEdit={handleEditMess}
-                            onModalOk={handleOkEditMess}
-                            onModalOpenEditMess={showModalEditMess}
-                        />
-                        <ChatArea
-                            user={user}
-                            setReplyingTo={setReplyingTo}
-                            handleOpenChange={handleOpenChange}
-                            inputRef={inputRef}
-                            handleMessageChange={handleMessageChange}
-                            handleSendMessage={handleSendMessage}
-                            // image={image}
-                            imageReview={imageReview}
-                            handleImageChange={handleImageChange}
-                            handleSetDefaultImage={handleSetDefaultImage}
-                            handleKeyPress={handleKeyPress}
-                            handlePaste={handlePaste}
-                            open={open}
-                            emojiData={emojiData}
-                            searchEmoji={searchEmoji}
-                            handleSearchEmoji={handleSearchEmoji}
-                            replyingTo={replyingTo}
-                            newMessage={newMessage}
-                            loading={loading}
-                            onEmojiSelect={(emoji: any) => {
-                                if (inputRef.current) {
-                                    inputRef.current.value += emoji;
-                                }
-                            }}
-                        />
+                                {/* <ChatCard />
+                                <ChatCard />
+                                <ChatCard /> */}
+                            </div>
+                            <div className="p-5 border-t border-t-white/10 bg-white dark:bg-slate-800/50 h-[100px]">
+                                <div className="px-3 border border-white/10 rounded-xl h-full w-full flex items-center justify-between">
+                                    <div className="h-10 w-10 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
+                                        <Paperclip size={18} />
+                                    </div>
+                                    <Input
+                                        value={newMessage}
+                                        onChange={handleMessageChange}
+                                        ref={inputRef}
+                                        onKeyPress={handleKeyPress}
+                                        placeholder="Nhắn tin tới # cộng đồng quizzet "
+                                        className="flex-1 text-xl border-none ring-0 outline-none focus-visible:ring-0"></Input>
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-10 w-10 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
+                                            <ImagePlus size={18} />
+                                        </div>
+                                        <div className="h-10 w-10 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
+                                            <Smile size={18} />
+                                        </div>
+                                        <Button
+                                            onClick={handleSendMessage}
+                                            className="bg-gradient-to-r from-blue-500 to-purple-500  text-white h-10 px-4 rounded-lg hover:scale-[1.02] transition-all duration-200">
+                                            <Send></Send>
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <OnlineUsers onlineUsers={onlineUsers} />
+                    <div className="w-[300px] p-4 bg-white dark:bg-slate-800/50 border-s border-s-white/10 ">
+                        {/* Online Users List */}
+                        <div className="flex items-center gap-2 text-lg">
+                            <Users className="text-gray-400" size={20} />{" "}
+                            <span className="inline-flex items-end">
+                                Thành viên <Minus /> {onlineUsers.lenght || "0"}
+                            </span>
+                        </div>
+                        <div className="space-y-3 mt-8 h-full">
+                            {/* {onlineUsers && onlineUsers.map((user: any, index: number) => <OnlineUsers key={index} onlineUsers={user} />)} */}
+                            {onlineUsers &&
+                                onlineUsers.map((user: any, index: number) => {
+                                    if (user._id === userContext?.user?._id) return null; // Skip the current user
+                                    return (
+                                        <Link
+                                            href={`/profile/${user?._id}` || ""}
+                                            className="flex items-center justify-between group hover:bg-white/20 p-3 rounded-lg transition-all duration-300 cursor-pointer"
+                                            key={index}>
+                                            <div className="flex items-center gap-3">
+                                                <div className="relative w-12 h-12">
+                                                    <Image src={user?.profilePicture || "/avatar.jpg"} alt="" fill className="absolute object-cover rounded-full"></Image>
+                                                    <div className="absolute w-3 h-3 bg-green-500 rounded-full bottom-0 right-0"></div>
+                                                </div>
+                                                <div className="">
+                                                    <h1 className="text-lg font-semibold line-clamp-1 group-hover:text-primary transition-all duration-300">
+                                                        {" "}
+                                                        {user?.displayName || "Khách vãng lai"}
+                                                    </h1>
+                                                    <p className="text-gray-500 dark:text-gray-400 ">Đang online...</p>
+                                                </div>
+                                            </div>
+                                            <div className="text-white/60 hidden group-hover:block transition-all duration-300">
+                                                <EllipsisVertical size={18} />
+                                            </div>
+                                        </Link>
+                                    );
+                                })}
+                            <div className="">{onlineUsers && !onlineUsers.length && <div className="text-center text-gray-400">Không có thành viên nào đang online...</div>}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

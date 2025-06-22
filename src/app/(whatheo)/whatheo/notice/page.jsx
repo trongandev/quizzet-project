@@ -94,10 +94,10 @@ export default function Notice() {
             <div className="">
                 <div className="flex justify-between items-center">
                     <h1 className="text-lg text-primary font-bold">Quản lí thông báo trên trang chủ</h1>
-                    <button onClick={showModal} className="flex gap-1 items-center btn btn-primary">
+                    <Button onClick={showModal} className="flex gap-1 items-center btn btn-primary">
                         <IoAdd />
                         Thêm mới
-                    </button>
+                    </Button>
                     <Modal title="Thêm bài mới" open={open} onOk={handleOk} confirmLoading={confirmLoading} onCancel={handleCancel}>
                         <div className="space-y-3">
                             <div>
@@ -168,12 +168,12 @@ export default function Notice() {
                                         </td>
                                         <td className="px-6 py-4">{handleCompareDate(item?.created_at)}</td>
                                         <td className="px-6 py-4 ">
-                                            <button className="mr-1 btn btn-primary ">
+                                            <Button className="mr-1 ">
                                                 <BiEdit />
-                                            </button>
-                                            <button className="btn btn-primary !bg-red-500" onClick={() => handleDelete(item?._id)}>
+                                            </Button>
+                                            <Button className="!bg-red-500" onClick={() => handleDelete(item?._id)}>
                                                 <CiTrash />
-                                            </button>
+                                            </Button>
                                         </td>
                                     </tr>
                                 ))}

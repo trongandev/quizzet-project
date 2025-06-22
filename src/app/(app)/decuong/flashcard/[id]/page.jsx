@@ -3,6 +3,7 @@ import { GET_API_WITHOUT_COOKIE } from "@/lib/fetchAPI";
 import React, { useEffect, useState, useCallback } from "react";
 import { Spin, message } from "antd";
 import { GrFormNext, GrFormPrevious } from "react-icons/gr";
+import { Button } from "@/components/ui/button";
 const FEATURES = {
     FLASHCARD: 1,
     QUIZ: 2,
@@ -229,27 +230,20 @@ export default function TaiLieuFlashcard({ params }) {
                                             <p className="text-lg mb-6">{flashcards[index]?.question}</p>
                                             <div className="grid grid-cols-2 gap-5 flex-1">
                                                 {quizOptions.map((option, idx) => (
-                                                    <button
+                                                    <Button
                                                         key={idx}
+                                                        variant="secondary"
                                                         onClick={() => handleQuizAnswer(option, idx)}
                                                         disabled={selectedAnswers[idx]}
-                                                        className={`
-                                              flex items-center h-full border dark:border-white/10 rounded-lg group 
-                                              transition-colors disabled:!bg-transparent
-                                              ${selectedAnswers[idx] === "correct" ? "!border-green-500 border-2 tada" : ""}
-                                              ${selectedAnswers[idx] === "incorrect" ? "!border-red-500 border-2 shake" : ""}
-                                            `}>
-                                                        <div
-                                                            className={`
-                                              w-[50px] h-full flex items-center justify-center border-r dark:border-r-white/10
-                                               transition-colors
-                                              ${selectedAnswers[idx] === "correct" ? "!border-r-green-500" : ""}
-                                              ${selectedAnswers[idx] === "incorrect" ? "!border-r-red-500" : ""}
-                                            `}>
+                                                        className={` h-full w-full relative text-white transition-colors
+                                                                    ${selectedAnswers[idx] === "correct" ? "!border-green-500 border-2 tada" : ""}
+                                                                    ${selectedAnswers[idx] === "incorrect" ? "!border-red-500 border-2 shake" : ""}
+                                                                    `}>
+                                                        <div className="absolute top-1 left-1 h-8 w-8 flex items-center justify-center rounded-full bg-gray-500 text-gray-900 dark:text-white/80  dark:bg-slate-900/50">
                                                             {idx + 1}
                                                         </div>
-                                                        <p className="flex-1 text-center px-2">{option}</p>
-                                                    </button>
+                                                        <p className="flex-1 text-center px-2 break-words whitespace-normal">{option}</p>
+                                                    </Button>
                                                 ))}
                                                 {quizOptions.length < 4 && <p className="text-red-500">Cảnh báo: Chưa đủ đáp án để trộn ngẫu nhiên (Yêu cầu trên 4)</p>}
                                             </div>
@@ -284,14 +278,13 @@ export default function TaiLieuFlashcard({ params }) {
                                             Flashcard: FEATURES.FLASHCARD,
                                             Quiz: FEATURES.QUIZ,
                                         }).map(([name, value]) => (
-                                            <button
+                                            <Button
                                                 key={value}
                                                 onClick={() => setFeature(value)}
-                                                className={`px-4 py-2 rounded-lg transition-colors  border border-white/10 ${
-                                                    feature === value ? "bg-primary text-white" : "bg-gray-100 dark:bg-slate-800/50 hover:bg-gray-200"
-                                                }`}>
+                                                variant={feature === value ? "default" : "secondary"}
+                                                className={`text-white transition-colors  border border-white/10 `}>
                                                 {name}
-                                            </button>
+                                            </Button>
                                         ))}
                                     </div>
                                 </div>

@@ -170,25 +170,25 @@ export default function EditTool({ params }) {
                         <h1 className="text-md text-primary font-bold line-clamp-1 h-[24px]">{quiz?.title || "Chưa có tiêu đề?"}</h1>
                         <p className="text-gray-500 line-clamp-1 text-sm h-[20px]">{quiz?.content || "Chưa có nội dung"}</p>
                     </div>
-                    <button className="btn btn-primary !bg-orange-500 flex items-center gap-1" onClick={showModal}>
+                    <Button className="!bg-orange-500 flex items-center gap-1" onClick={showModal}>
                         <FaRegEdit size={20} />
                         Bấm vào để sửa
-                    </button>
+                    </Button>
                     <Modal title="Thêm hình ảnh" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
                         <p className="text-gray-500 text-[12px]">* Nhập tiêu đề xong bấm tìm hình ảnh</p>
                         <div className="mt-b flex justify-between gap-1">
                             <input type="text" className="flex-1" onChange={(e) => handleTitle(e)} name="title" id="title" placeholder="Nhập tiêu đề..." value={quiz?.title} />
                             <Link href={`https://www.google.com/search?q=${quiz?.title}&udm=2`} target="_black">
-                                <button className="btn btn-primary h-full">
+                                <Button className="h-full">
                                     <BiSearch />
-                                </button>
+                                </Button>
                             </Link>
                         </div>
 
                         <div className="flex gap-1 mt-3 h-[32px]">
-                            <button className="btn btn-primary" onClick={handlePaste}>
+                            <Button className="" onClick={handlePaste}>
                                 <MdContentPaste />
-                            </button>
+                            </Button>
                             <input type="text" className="" onChange={(e) => handleImage(e)} name="image" id="image" placeholder="Dán URL hình ảnh ở đây..." value={quiz?.image} />
                         </div>
                         <Select
@@ -224,21 +224,21 @@ export default function EditTool({ params }) {
                                     onChange={(e) => handleInputChange(index, "answer", e.target.value)}
                                 />
                             </div>
-                            <button className="" onClick={handleDelete(index)}>
+                            <Button className="" onClick={handleDelete(index)}>
                                 <BiTrash />
-                            </button>
+                            </Button>
                         </div>
                     ))}
                 </div>
                 <div className="mt-5">
                     <div className="flex justify-between items-center">
-                        <button className="btn btn-second flex gap-1 items-center" onClick={showModalAddQuest}>
+                        <Button className="btn btn-second flex gap-1 items-center" onClick={showModalAddQuest}>
                             <CiCirclePlus size={20} />
                             Thêm câu hỏi
-                        </button>
-                        <button onClick={handlePost} className="btn btn-primary">
+                        </Button>
+                        <Button onClick={handlePost} className="btn btn-primary">
                             Cập nhật bài
-                        </button>
+                        </Button>
                     </div>
                     <Modal
                         title="Thêm câu hỏi"

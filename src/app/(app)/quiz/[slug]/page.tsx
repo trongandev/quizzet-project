@@ -1,6 +1,7 @@
 import React from "react";
 import CQuizDetail from "@/components/CQuizDetail";
 import { getCachedQuiz } from "@/lib/cacheData";
+import QuizExam from "@/components/quiz/QuizExam";
 
 export async function generateMetadata({ params }: { params: any }) {
     const { slug } = params;
@@ -21,5 +22,10 @@ export async function generateMetadata({ params }: { params: any }) {
 export default async function Quiz({ params }: { params: any }) {
     const quiz = await getCachedQuiz(params.slug)();
     const question = quiz.quiz?.questions?.data_quiz;
-    return <CQuizDetail QuizData={quiz.quiz} QuestData={question} />;
+    // return <CQuizDetail QuizData={quiz.quiz} QuestData={question} />;
+    return (
+        <div className="py-20">
+            <QuizExam {...quiz.quiz} />;
+        </div>
+    );
 }

@@ -10,79 +10,17 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+.text-primary {
+    color: #2187d5;
+}
+
 pre {
     font-family: "Maven Pro", sans-serif;
-}
-
-.btn {
-    padding: 6px 16px;
-    border-radius: 5px;
-    transition: all 0.1s;
-    cursor: pointer;
-    border: none;
-    color: white;
-}
-
-.btn-primary {
-    background-color: #2187d5;
-    color: white;
-}
-
-.btn-primary:hover {
-    background-color: #0e5a8a;
-}
-
-.btn-second {
-    padding: 5px 15px;
-    border-radius: 5px;
-    border: 1px solid #2187d5;
-    color: #2187d5;
-}
-
-.btn-second:hover {
-    background-color: #2187d5;
-    color: white;
-}
-
-.btn-small {
-    padding: 2px 12px;
-    border-radius: 12px;
-    font-size: 10px;
-    color: white;
-    background-color: #2187d5;
-}
-
-.btn-small-outline {
-    padding: 1px 11px;
-    border-radius: 11px;
-    font-size: 10px;
-    color: #2187d5;
-    border: 1px solid #2187d5;
-}
-
-button:disabled,
-button[disabled] {
-    cursor: not-allowed;
 }
 
 .active {
     color: #2187d5;
     font-weight: bold;
-}
-
-/* input,
-textarea,
-select {
-    padding: 5px 15px;
-    border: 1px solid #ccc;
-    width: 100%;
-    border-radius: 5px;
-} */
-
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible {
-    outline: none;
 }
 
 .helvetica {
@@ -246,5 +184,70 @@ mark {
     }
     100% {
         transform: scale(1) rotate(0);
+    }
+}
+
+@layer base {
+    :root {
+        --background: 0 0% 100%;
+        --foreground: 0 0% 3.9%;
+        --card: 0 0% 100%;
+        --card-foreground: 0 0% 3.9%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 0 0% 3.9%;
+        --primary: 205 100% 47%; /* #2187d5 */
+        --primary-foreground: 0 0% 98%;
+        --secondary: 0 0% 96.1%;
+        --secondary-foreground: 0 0% 9%;
+        --muted: 0 0% 96.1%;
+        --muted-foreground: 0 0% 45.1%;
+        --accent: 0 0% 96.1%;
+        --accent-foreground: 0 0% 9%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 0 0% 89.8%;
+        --input: 0 0% 89.8%;
+        --ring: 205 100% 47%;
+        --radius: 0.5rem;
+    }
+
+    .dark {
+        --background: 217 19% 27%;
+        --foreground: 0 0% 98%;
+        --card: 217 19% 27%;
+        --card-foreground: 0 0% 98%;
+        --popover: 217 19% 27%;
+        --popover-foreground: 0 0% 98%;
+        --primary: 205 100% 47%; /* Keep same primary color */
+        --primary-foreground: 0 0% 9%;
+        --secondary: 217 15% 35%;
+        --secondary-foreground: 0 0% 98%;
+        --muted: 217 15% 35%;
+        --muted-foreground: 0 0% 63.9%;
+        --accent: 217 15% 35%;
+        --accent-foreground: 0 0% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 217 12% 45%; /* Subtle contrast border */
+        --input: 217 15% 35%;
+        --ring: 205 100% 47%;
+    }
+
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+        margin: 0;
+        font-family: "Maven Pro", sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+}
+
+@layer utilities {
+    .border-border {
+        border-color: hsl(var(--border));
     }
 }

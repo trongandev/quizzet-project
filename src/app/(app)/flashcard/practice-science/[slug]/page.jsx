@@ -371,7 +371,7 @@ export default function PractiveFlashcard({ params }) {
                                             style={{ backfaceVisibility: "hidden" }}>
                                             <div className="flex items-center gap-2 mb-4">
                                                 <p className="text-2xl font-semibold">{currentCard.title}</p>
-                                                <button
+                                                <Button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         speakWord(currentCard?.title, speakLang, currentCard?._id);
@@ -379,7 +379,7 @@ export default function PractiveFlashcard({ params }) {
                                                     className="p-2 hover:bg-gray-100 rounded-full"
                                                     disabled={loadingAudio}>
                                                     {loadingAudio === currentCard?._id ? <Spin indicator={<LoadingOutlined spin />} /> : <HiMiniSpeakerWave size={24} />}
-                                                </button>
+                                                </Button>
                                             </div>
                                             <p className="text-gray-500 dark:text-white text-lg font-bold">{currentCard?.transcription}</p>
 
@@ -430,7 +430,7 @@ export default function PractiveFlashcard({ params }) {
                                         <p className="text-lg mb-6">{currentCard?.define}</p>
                                         <div className="grid grid-cols-2 gap-5 flex-1">
                                             {quizOptions.map((option, idx) => (
-                                                <button
+                                                <Button
                                                     key={idx}
                                                     onClick={() => checkAnswer(option, idx)}
                                                     disabled={selectedAnswers[idx]}
@@ -450,7 +450,7 @@ export default function PractiveFlashcard({ params }) {
                                                         {idx + 1}
                                                     </div>
                                                     <p className="flex-1 text-center px-2">{option}</p>
-                                                </button>
+                                                </Button>
                                             ))}
                                             {quizOptions.length < 4 && <p className="text-red-500">Cảnh báo: Chưa đủ đáp án để trộn ngẫu nhiên (Yêu cầu trên 4)</p>}
                                         </div>
@@ -465,18 +465,18 @@ export default function PractiveFlashcard({ params }) {
                                             <span className="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm">Listening</span>
                                         </div>
                                         <div className="flex gap-4 mb-6">
-                                            <button
+                                            <Button
                                                 onClick={() => speakWord(currentCard?.title, 1, currentCard?._id)}
                                                 className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-primary">
                                                 <HiMiniSpeakerWave />
                                                 <span>UK</span>
-                                            </button>
-                                            <button
+                                            </Button>
+                                            <Button
                                                 onClick={() => speakWord(currentCard?.title, 2, currentCard?._id)}
                                                 className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-primary">
                                                 <HiMiniSpeakerWave />
                                                 <span>US</span>
-                                            </button>
+                                            </Button>
                                         </div>
                                         <div className="flex-1">
                                             <p className="text-gray-700 dark:text-white/70 mb-2">Định nghĩa:</p>
@@ -493,15 +493,15 @@ export default function PractiveFlashcard({ params }) {
         `}
                                             />
                                             <div className="flex justify-end">
-                                                <button className="btn btn-primary mt-3 flex items-center  gap-2" onClick={() => checkAnswer(inputAnswer)}>
+                                                <Button className="mt-3 flex items-center  gap-2" onClick={() => checkAnswer(inputAnswer)}>
                                                     <IoSend /> Gửi
-                                                </button>
+                                                </Button>
                                             </div>
                                         </div>
-                                        <button onClick={() => setInputAnswer(currentCard.title)} className="flex items-center gap-2 text-gray-600 hover:text-primary mt-4">
+                                        <Button onClick={() => setInputAnswer(currentCard.title)} className="flex items-center gap-2 text-gray-600 hover:text-primary mt-4">
                                             <BiSlideshow />
                                             <span>Hiển thị đáp án</span>
-                                        </button>
+                                        </Button>
                                     </div>
                                 )}
 
@@ -534,15 +534,15 @@ export default function PractiveFlashcard({ params }) {
                                             `}
                                             />
                                             <div className="flex justify-end">
-                                                <button className="btn btn-primary mt-3 flex items-center  gap-2" onClick={() => checkAnswer(inputAnswer)}>
+                                                <Button className="mt-3 flex items-center  gap-2" onClick={() => checkAnswer(inputAnswer)}>
                                                     <IoSend /> Gửi
-                                                </button>
+                                                </Button>
                                             </div>
                                         </div>
-                                        <button onClick={() => setInputAnswer(currentCard.title)} className="flex items-center gap-2 text-blue-500 hover:text-blue-600 mt-4">
+                                        <Button onClick={() => setInputAnswer(currentCard.title)} className="flex items-center gap-2 text-blue-500 hover:text-blue-600 mt-4">
                                             <BiSlideshow />
                                             <span>Hiển thị đáp án</span>
-                                        </button>
+                                        </Button>
                                     </div>
                                 )}
                             </div>
@@ -595,13 +595,13 @@ export default function PractiveFlashcard({ params }) {
                                         Listening: FEATURES.LISTENING,
                                         "Fill Blank": FEATURES.FILL_BLANK,
                                     }).map(([name, value]) => (
-                                        <button
+                                        <Button
                                             key={value}
                                             className={`px-4 py-2 rounded-lg transition-colors cursor-default border border-white/10 ${
                                                 feature === value ? "bg-primary text-white" : "bg-gray-100 dark:bg-slate-800/50 text-gray-600"
                                             }`}>
                                             {name}
-                                        </button>
+                                        </Button>
                                     ))}
                                 </div>
                             </div>

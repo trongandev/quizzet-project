@@ -8,6 +8,7 @@ import { POST_API } from "@/lib/fetchAPI";
 import handleCompareDate from "@/lib/CompareDate";
 import { LoadingOutlined } from "@ant-design/icons";
 import { IQuiz, IQuestion } from "../types/type";
+import { Button } from "@/components/ui/button";
 export default function CQuizDetail({ QuizData, QuestData }: { QuizData?: IQuiz; QuestData: IQuestion[] }) {
     const [selectedAnswers, setSelectedAnswers] = useState<{ [key: string]: string }>({});
     const [loading, setLoading] = useState(false);
@@ -171,10 +172,10 @@ export default function CQuizDetail({ QuizData, QuestData }: { QuizData?: IQuiz;
                                     {Math.floor(seconds / 3600)}h:{Math.floor((seconds % 3600) / 60)}p:{seconds % 60}s
                                 </h1>
                                 {token != undefined ? (
-                                    <button type="submit" className="btn btn-primary" disabled={loading}>
+                                    <Button type="submit" className="btn btn-primary" disabled={loading}>
                                         {loading && <Spin indicator={<LoadingOutlined spin />} className="mr-2" size="small" />}
                                         Nộp bài
-                                    </button>
+                                    </Button>
                                 ) : (
                                     ""
                                 )}

@@ -8,7 +8,7 @@ import { FaPeopleGroup } from "react-icons/fa6";
 import { Book, Bug, HandHelping, MessageCircleQuestionMark, Scroll } from "lucide-react";
 export default function CFooter() {
     return (
-        <footer className="bg-gray-200/80 dark:bg-gray-900 text-secondary dark:text-white  py-12 pb-5 px-4 sm:px-6 lg:px-8">
+        <footer className="bg-gray-200/80 dark:bg-gray-900 text-slate-800 dark:text-white  py-12 pb-5 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
                 <div className="grid md:grid-cols-4 gap-8">
                     <div>

@@ -1,21 +1,22 @@
 "use client";
 import handleCompareDate from "@/lib/CompareDate";
 import { IQuiz } from "@/types/type";
-import { SearchOutlined } from "@ant-design/icons";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useCallback, useState } from "react";
 import { FaRegEye, FaRegQuestionCircle } from "react-icons/fa";
-import { Dropdown } from "./dropdown/Dropdown";
-import { DropdownItem } from "./dropdown/DropdownItem";
-import { BiChevronDown } from "react-icons/bi";
-import { ArrowDownNarrowWide, ArrowUpNarrowWide, ChevronLeft, ChevronRight, Funnel, Grid2X2, Grid3x3, Play, Plus } from "lucide-react";
+import { ArrowDownNarrowWide, ArrowUpNarrowWide, ChevronLeft, ChevronRight, Filter, Grid2X2, Grid3x3, Play, Plus, Search } from "lucide-react";
 import { SiQuizlet } from "react-icons/si";
 import { Tooltip } from "antd";
 import { subjectOption } from "@/lib/subjectOption";
-
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem } from "@/components/ui/pagination";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 export default function CTaiLieu({ toolData }: any) {
     const [toggleBtnSortNumber, setToggleBtnSortNumber] = useState(true);
+    const [searchTerm, setSearchTerm] = useState("");
     const [sortOrder, setSortOrder] = useState("asc"); // "asc" or "desc"
     const [viewMode, setViewMode] = useState(4); // "grid 4x2" or "grid3x2"
     const [data, setData] = useState(toolData);
@@ -46,17 +47,19 @@ export default function CTaiLieu({ toolData }: any) {
     );
 
     const handleSearch = (value: any) => {
+        setSearchTerm(value);
         const search = toolData.filter((item: any) => item.title.toLowerCase().includes(value.toLowerCase()));
         setData(search);
     };
 
-    const handleSearchSubject = (label: string, value: string) => {
+    const handleSearchSubject = (value: string) => {
+        console.log(value);
         if (value === "none") {
             setData(toolData);
             setCurrentPage(1);
             return;
         }
-        setSubject(label);
+        setSubject(value);
         const search = toolData.filter((item: any) => item.subject == value);
         setData(search);
         setCurrentPage(1); // Reset to first page after filter
@@ -65,7 +68,7 @@ export default function CTaiLieu({ toolData }: any) {
     // Pagination handlers
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        // window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     const handlePrevious = () => {
@@ -116,22 +119,12 @@ export default function CTaiLieu({ toolData }: any) {
         return pages;
     };
 
-    const [isOpen, setIsOpen] = useState(false);
-
-    function toggleDropdown() {
-        setIsOpen(!isOpen);
-    }
-
-    function closeDropdown() {
-        setIsOpen(false);
-    }
-
     return (
         <div className="flex items-center justify-center">
-            <div className="w-full md:w-[1000px] xl:w-[1200px] py-5">
-                <div className="p-2 md:p-5 flex flex-col gap-5  bg-gray-200/80 dark:bg-gray-800 border border-gray-400/50 dark:border-white/10 rounded-lg mb-4 shadow-sm">
+            <div className="w-full md:w-[1000px] xl:w-[1200px]">
+                <div className="p-2 md:p-5 flex flex-col gap-5  bg-white/80 dark:bg-gray-800 border border-gray-400/50 dark:border-white/10 rounded-lg mb-4 shadow-sm">
                     <div className="flex items-center gap-3 ">
-                        <div className="w-1/6 h-14 md:w-14  flex items-center justify-center bg-gradient-to-r from-blue-500/80 to-purple-500/80 rounded-lg text-white">
+                        <div className="w-1/6 h-14 md:w-14  flex items-center justify-center bg-gradient-to-r from-red-500/80 to-yellow-500/80 rounded-lg text-white">
                             <SiQuizlet size={21} />
                         </div>
                         <div className="flex-1">
@@ -140,38 +133,34 @@ export default function CTaiLieu({ toolData }: any) {
                         </div>
                     </div>
                     <div className="flex md:items-center gap-3 justify-between flex-col md:flex-row">
-                        <div className="flex items-center  border border-gray-400/50 dark:border-white/10 h-11 w-full md:w-1/3 overflow-hidden rounded-lg hover:border-gray-400 transition-all duration-300">
-                            <SearchOutlined className="text-gray-500 px-3" />
-                            <input
-                                type="text"
+                        <div className="flex-1 relative">
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                            <Input
                                 placeholder="Tìm tên câu hỏi mà bạn cần..."
-                                className="bg-transparent w-full line-clamp-1 outline-none border-none"
+                                value={searchTerm}
                                 onChange={(e) => handleSearch(e.target.value)}
+                                className="pl-10 h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500/20"
                             />
                         </div>
                         <div className="w-[0.4px] h-10 bg-gray-500/50 hidden md:block"></div>
                         <div className="flex items-center gap-2 justify-between md:justify-start">
                             <div className="relative flex-1">
-                                <button
-                                    onClick={toggleDropdown}
-                                    className="w-full md:w-40 h-11 flex px-3 items-center justify-between border border-gray-400/50 dark:border-white/10  rounded-lg hover:border-gray-400 transition-all duration-300">
-                                    <Funnel size={18} className="text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 pr-1" />
-                                    <div className="flex items-center gap-2">
-                                        <span>Tất cả</span>
-                                        <BiChevronDown className="w-5 h-5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-300" />
-                                    </div>
-                                </button>
-                                <Dropdown isOpen={isOpen} onClose={closeDropdown} className="w-40 p-2 max-h-80 overflow-scroll dark:!bg-gray-700">
-                                    {subjectOption.map((item, index) => (
-                                        <DropdownItem
-                                            key={index}
-                                            onClick={() => handleSearchSubject(item.value, item.value)}
-                                            onItemClick={closeDropdown}
-                                            className="flex w-full font-normal text-left text-gray-500 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300">
-                                            {item.label}
-                                        </DropdownItem>
-                                    ))}
-                                </Dropdown>
+                                <Select value={subject} onValueChange={handleSearchSubject}>
+                                    <SelectTrigger className="w-[140px] h-11 border-gray-200">
+                                        <Filter className="w-4 h-4 mr-2" />
+                                        <SelectValue placeholder="Danh mục" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectLabel>Chọn danh mục</SelectLabel>
+                                            {subjectOption.map((option) => (
+                                                <SelectItem key={option.value} value={option.value}>
+                                                    {option.label}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
                             </div>
                             <div className="flex items-center border border-gray-400/50 dark:border-white/10 rounded-s-md rounded-r-md overflow-hidden">
                                 <Tooltip placement="top" title="Sắp xếp theo số lượt làm tăng dần">
@@ -239,8 +228,8 @@ export default function CTaiLieu({ toolData }: any) {
                             </Tooltip>
                         </div>
                     </div>
-                    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-${viewMode} gap-4`}>
-                        {data?.map((item: any, index: any) => (
+                    <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 ${viewMode === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
+                        {displaySO?.map((item: any, index: any) => (
                             <div
                                 className="bg-white dark:bg-slate-800/50 hover:shadow-md rounded-xl h-[200px] flex flex-col md:flex-row overflow-hidden shadow-sm border border-white/10 group hover:scale-105 transition-all duration-300"
                                 key={index}>
@@ -272,7 +261,7 @@ export default function CTaiLieu({ toolData }: any) {
                                     <div className="">
                                         <p className="text-[12px]">{handleCompareDate(item.date)}</p>
                                         <Link href={`/decuong/${item.slug}`}>
-                                            <button className="text-sm w-full btn btn-primary !rounded-md">Xem ngay</button>
+                                            <Button className="text-sm w-full !rounded-md">Xem ngay</Button>
                                         </Link>
                                     </div>
                                 </div>
@@ -282,57 +271,56 @@ export default function CTaiLieu({ toolData }: any) {
                     </div>
                     {/* Pagination */}
                     {totalPages > 1 && (
-                        <div className="flex items-center justify-center gap-2">
-                            {/* Previous Button */}
-                            <button
-                                onClick={handlePrevious}
-                                disabled={currentPage === 1}
-                                className={`flex items-center justify-center w-10 h-10 rounded-lg border transition-all duration-200 ${
-                                    currentPage === 1
-                                        ? "border-gray-300 text-gray-400 cursor-not-allowed"
-                                        : "border-gray-400 text-gray-600 hover:bg-primary hover:text-white hover:border-primary dark:border-white/20 dark:text-gray-300 dark:hover:bg-primary dark:hover:border-primary"
-                                }`}>
-                                <ChevronLeft className="w-4 h-4" />
-                            </button>
+                        <Pagination>
+                            <PaginationContent>
+                                <PaginationItem>
+                                    <button
+                                        onClick={handlePrevious}
+                                        disabled={currentPage === 1}
+                                        className={cn("gap-1 pl-2.5", buttonVariants({ variant: "ghost" }), currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer")}>
+                                        <ChevronLeft className="h-4 w-4" />
+                                        <span>Previous</span>
+                                    </button>
+                                </PaginationItem>
 
-                            {/* Page Numbers */}
-                            {getPageNumbers().map((page, index) => (
-                                <React.Fragment key={index}>
-                                    {page === "..." ? (
-                                        <span className="flex items-center justify-center w-10 h-10 text-gray-400">...</span>
-                                    ) : (
-                                        <button
-                                            onClick={() => handlePageChange(page as number)}
-                                            className={`flex items-center justify-center w-10 h-10 rounded-lg border transition-all duration-200 ${
-                                                currentPage === page
-                                                    ? "bg-primary text-white border-primary"
-                                                    : "border-gray-400 text-gray-600 hover:bg-primary hover:text-white hover:border-primary dark:border-white/20 dark:text-gray-300 dark:hover:bg-primary dark:hover:border-primary"
-                                            }`}>
-                                            {page}
-                                        </button>
-                                    )}
-                                </React.Fragment>
-                            ))}
+                                {getPageNumbers().map((page, index) => (
+                                    <PaginationItem key={index}>
+                                        {page === "..." ? (
+                                            <PaginationEllipsis />
+                                        ) : (
+                                            <button
+                                                onClick={() => handlePageChange(page as number)}
+                                                className={cn(
+                                                    buttonVariants({
+                                                        variant: currentPage === page ? "outline" : "ghost",
+                                                        size: "sm",
+                                                    }),
+                                                    "cursor-pointer"
+                                                )}
+                                                aria-current={currentPage === page ? "page" : undefined}>
+                                                {page}
+                                            </button>
+                                        )}
+                                    </PaginationItem>
+                                ))}
 
-                            {/* Next Button */}
-                            <button
-                                onClick={handleNext}
-                                disabled={currentPage === totalPages}
-                                className={`flex items-center justify-center w-10 h-10 rounded-lg border transition-all duration-200 ${
-                                    currentPage === totalPages
-                                        ? "border-gray-300 text-gray-400 cursor-not-allowed"
-                                        : "border-gray-400 text-gray-600 hover:bg-primary hover:text-white hover:border-primary dark:border-white/20 dark:text-gray-300 dark:hover:bg-primary dark:hover:border-primary"
-                                }`}>
-                                <ChevronRight className="w-4 h-4" />
-                            </button>
-                        </div>
-                    )}
-
+                                <PaginationItem>
+                                    <button
+                                        onClick={handleNext}
+                                        disabled={currentPage === totalPages}
+                                        className={cn("gap-1 pr-2.5", buttonVariants({ variant: "ghost" }), currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer")}>
+                                        <span>Next</span>
+                                        <ChevronRight className="h-4 w-4" />
+                                    </button>
+                                </PaginationItem>
+                            </PaginationContent>
+                        </Pagination>
+                    )}{" "}
                     {/* Pagination Info */}
                     {totalPages > 1 && (
                         <div className="flex justify-center">
                             <p className="text-sm text-gray-500 dark:text-gray-400">
-                                Hiển thị {startIndex + 1}-{Math.min(endIndex, totalItems)} trên tổng {totalItems} quiz
+                                Hiển thị {startIndex + 1}-{Math.min(endIndex, totalItems)} trên tổng {totalItems} quiz | Trang {currentPage} / {totalPages}
                             </p>
                         </div>
                     )}

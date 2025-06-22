@@ -1,3 +1,4 @@
+import { Toaster } from "sonner";
 import "../../globals.css";
 import AdminNav from "./AdminNav";
 export const metadata = {
@@ -13,6 +14,7 @@ export default function RootLayout({ children }: any) {
                         <AdminNav />
                     </div>
                     <div className="w-[80%] bg-white p-5">{children}</div>
+                    <Toaster />
                 </div>
             </body>
         </html>

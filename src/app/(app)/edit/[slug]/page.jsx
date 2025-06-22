@@ -213,25 +213,25 @@ export default function Edit({ params }) {
                         <h1 className="text-md text-primary font-bold line-clamp-1 h-[24px]">{quiz?.title || "Chưa có tiêu đề?"}</h1>
                         <p className="text-gray-500 line-clamp-1 text-sm h-[20px]">{quiz?.content || "Chưa có nội dung"}</p>
                     </div>
-                    <button className="btn btn-primary hover:text-red-500 flex items-center gap-1" onClick={showModal}>
+                    <Button className="hover:text-red-500 flex items-center gap-1" onClick={showModal}>
                         <FaRegEdit size={20} />
                         Bấm vào để sửa
-                    </button>
+                    </Button>
                     <Modal title="Thêm hình ảnh" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
                         <p className="text-gray-500 text-[12px]">* Nhập tiêu đề xong bấm tìm hình ảnh</p>
                         <div className="mt-b flex items-center justify-between gap-1">
                             <input type="text" className="rounded-none" onChange={(e) => handleTitle(e)} name="title" id="title" placeholder="Nhập tiêu đề..." value={quiz?.title} />
                             <Link href={`https://www.google.com/search?q=${quiz?.title}&udm=2`} target="_black">
-                                <button className="btn btn-primary">Tìm hình ảnh này</button>
+                                <Button className="">Tìm hình ảnh này</Button>
                             </Link>
                         </div>
                         <div className="mt-3">
                             <Input type="text" onChange={(e) => handleContent(e)} name="content" id="content" placeholder="Nhập nội dung..." value={quiz?.content} />
                         </div>
                         <div className="flex items-center gap-1 mt-3 h-[32px]">
-                            <button className="btn btn-primary" onClick={handlePaste}>
+                            <Button className="" onClick={handlePaste}>
                                 <MdContentPaste />
-                            </button>
+                            </Button>
                             <input type="text" className="rounded-none h-full" onChange={(e) => handleImage(e)} name="image" id="image" placeholder="Dán URL hình ảnh ở đây..." value={quiz?.img} />
                             <Popover
                                 content={<Image width={400} src="./guide4.png" alt="" className="" />}
@@ -239,7 +239,7 @@ export default function Edit({ params }) {
                                 trigger="click"
                                 open={open}
                                 onOpenChange={handleOpenChange}>
-                                <button className="btn btn-second text-gray-500 font-bold">?</button>
+                                <Button className="btn btn-second text-gray-500 font-bold">?</Button>
                             </Popover>
                         </div>
                         <Select
@@ -263,12 +263,12 @@ export default function Edit({ params }) {
                                     Câu {index + 1}: {item.question}
                                 </h1>
                                 <div className="flex items-center gap-1">
-                                    <button onClick={() => handleUpdateQuest(item.id)} className="btn btn-primary hover:text-white hover:border-white">
+                                    <Button onClick={() => handleUpdateQuest(item.id)} className="hover:text-white hover:border-white">
                                         <MdEdit size={18} />
-                                    </button>
-                                    <button className="btn btn-primary !bg-red-500" onClick={handleDelete(index)}>
+                                    </Button>
+                                    <Button className="!bg-red-500" onClick={handleDelete(index)}>
                                         <IoIosClose size={20} />
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -298,13 +298,13 @@ export default function Edit({ params }) {
                 </div>
                 <div className="mt-5">
                     <div className="flex justify-between items-center">
-                        <button className="flex gap-2 items-center btn btn-second" onClick={showModalAddQuest}>
+                        <Button className="flex gap-2 items-center btn btn-second" onClick={showModalAddQuest}>
                             <CiCirclePlus size={20} />
                             Thêm câu hỏi
-                        </button>
-                        <button onClick={handlePost} className="btn btn-primary">
+                        </Button>
+                        <Button onClick={handlePost} className="btn btn-primary">
                             Cập nhật bài
-                        </button>
+                        </Button>
                     </div>
                     <Modal
                         title="Thêm câu hỏi"
@@ -312,12 +312,12 @@ export default function Edit({ params }) {
                         onOk={handleOkAddQuest}
                         onCancel={handleCancelAddQuest}
                         footer={[
-                            <button key="back" className="btn btn-primary mr-3 !bg-red-500" onClick={handleClearField}>
+                            <Button key="back" className="mr-3 !bg-red-500" onClick={handleClearField}>
                                 Xoá
-                            </button>,
-                            <button key="submit" type="primary" className="btn btn-primary " onClick={handleOkAddQuest}>
+                            </Button>,
+                            <Button key="submit" type="primary" className="" onClick={handleOkAddQuest}>
                                 Thêm/Cập nhật
-                            </button>,
+                            </Button>,
                         ]}>
                         <Input placeholder="Nhập câu hỏi?" name="quest" value={questAddEdit.question} onChange={(e) => setQuestAddEdit({ ...questAddEdit, question: e.target.value })}></Input>
                         <div className="flex flex-col gap-3 mt-5">

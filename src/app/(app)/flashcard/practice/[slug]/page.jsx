@@ -9,6 +9,9 @@ import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import { BiSlideshow } from "react-icons/bi";
 import { IoSend } from "react-icons/io5";
 import { EdgeSpeechTTS } from "@lobehub/tts";
+import { Button } from "@/components/ui/button";
+import { Eye, Lightbulb, Send } from "lucide-react";
+import { Input } from "@/components/ui/input";
 const FEATURES = {
     FLASHCARD: 1,
     QUIZ: 2,
@@ -51,6 +54,7 @@ export default function PractiveFlashcard({ params }) {
         const fetchFlashCards = async () => {
             const token = Cookies.get("token");
             const req = await GET_API(`/flashcards/${params?.slug}`, token);
+            console.log(req);
             if (req.ok) {
                 const result = req?.listFlashCards?.flashcards;
 
@@ -290,7 +294,25 @@ export default function PractiveFlashcard({ params }) {
         <div className=" py-5 pt-20 flex justify-center items-center">
             <div className="w-full md:w-[1000px] xl:w-[1200px] px-3 md:px-0 focus-visible:outline-none min-h-screen" onKeyDown={handleKeyDown} tabIndex={0}>
                 {contextHolder}
-                <div className="w-full flex items-center justify-center h-[90%] flex-col gap-5">
+                <div className="w-full flex items-center justify-center h-[90%] flex-col gap-2">
+                    {/* Progress Display */}
+                    <div className="space-y-2 block md:hidden w-full">
+                        <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg">
+                            <div className="flex justify-between mb-2">
+                                <span>Đã học:</span>
+                                <span>{progress.known.length}</span>
+                            </div>
+
+                            <div className="mt-2 h-2 bg-gray-200 dark:bg-gray-500/50 rounded-full overflow-hidden">
+                                <div
+                                    className="h-full bg-primary"
+                                    style={{
+                                        width: `${(progress.known.length / flashcards.length) * 100}%`,
+                                    }}
+                                />
+                            </div>
+                        </div>
+                    </div>
                     <div className="w-full flex flex-col md:flex-row gap-5 items-start">
                         <div className="w-full flex flex-col gap-5">
                             {/* Main Flashcard Container */}
@@ -309,14 +331,15 @@ export default function PractiveFlashcard({ params }) {
                                             style={{ backfaceVisibility: "hidden" }}>
                                             <div className="flex items-center gap-2 mb-4">
                                                 <p className="text-2xl font-semibold">{flashcards[index]?.title}</p>
-                                                <button
+                                                <Button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         speakWord(flashcards[index]?.title, speakLang, flashcards[index]?._id);
                                                     }}
-                                                    className="p-2 hover:bg-gray-100 rounded-full">
+                                                    className=""
+                                                    variant="secondary">
                                                     {loadingAudio === flashcards[index]?._id ? <Spin indicator={<LoadingOutlined spin />} /> : <HiMiniSpeakerWave size={24} />}
-                                                </button>
+                                                </Button>
                                             </div>
                                             <p className="text-gray-500 text-lg font-bold">{flashcards[index]?.transcription}</p>
 
@@ -333,18 +356,23 @@ export default function PractiveFlashcard({ params }) {
                                             {isFlipped && <p className="text-lg ">{flashcards[index]?.define}</p>}
 
                                             {flashcards[index]?.example && (
-                                                <div className="mt-4 p-4 bg-gray-50 dark:bg-slate-800 rounded-lg w-full">
+                                                <div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-800/50 dark:text-yellow-200 rounded-lg w-full">
                                                     {isFlipped && (
                                                         <>
                                                             {" "}
-                                                            <p className="font-medium mb-2">Ví dụ:</p>
-                                                            <div className="mb-2">
-                                                                <p className="font-bold italic text-gray-600 dark:text-white/50">{flashcards[index].example[0]?.en}</p>
-                                                                <p className="italic text-gray-600 dark:text-white/50">{flashcards[index].example[0]?.vi}</p>
-                                                            </div>
-                                                            <div className="mb-2">
-                                                                <p className="font-bold italic text-gray-600 dark:text-white/50">{flashcards[index].example[1]?.en}</p>
-                                                                <p className="italic text-gray-600 dark:text-white/50">{flashcards[index].example[1]?.vi}</p>
+                                                            <p className="font-medium mb-2 inline-flex gap-2 items-center">
+                                                                <Lightbulb />
+                                                                Ví dụ:
+                                                            </p>
+                                                            <div className="text-yellow-800 dark:text-yellow-400/80">
+                                                                <div className="mb-2">
+                                                                    <p className="font-bold italic">{flashcards[index].example[0]?.en}</p>
+                                                                    <p className="italic">{flashcards[index].example[0]?.vi}</p>
+                                                                </div>
+                                                                <div className="mb-2">
+                                                                    <p className="font-bold italic">{flashcards[index].example[1]?.en}</p>
+                                                                    <p className="italic">{flashcards[index].example[1]?.vi}</p>
+                                                                </div>
                                                             </div>
                                                         </>
                                                     )}
@@ -367,27 +395,20 @@ export default function PractiveFlashcard({ params }) {
                                         <p className="text-lg mb-6">{flashcards[index]?.define}</p>
                                         <div className="grid grid-cols-2 gap-5 flex-1">
                                             {quizOptions.map((option, idx) => (
-                                                <button
+                                                <Button
                                                     key={idx}
                                                     onClick={() => handleQuizAnswer(option, idx)}
                                                     disabled={selectedAnswers[idx]}
-                                                    className={`
-                                              flex items-center h-full border dark:border-white/10 rounded-lg group 
-                                              transition-colors disabled:!bg-transparent
-                                              ${selectedAnswers[idx] === "correct" ? "!border-green-500 border-2 tada" : ""}
-                                              ${selectedAnswers[idx] === "incorrect" ? "!border-red-500 border-2 shake" : ""}
+                                                    variant="secondary"
+                                                    className={`h-full relative text-white transition-colors
+                                                                ${selectedAnswers[idx] === "correct" ? "!border-green-500 border-2 tada" : ""}
+                                                                ${selectedAnswers[idx] === "incorrect" ? "!border-red-500 border-2 shake" : ""}
                                             `}>
-                                                    <div
-                                                        className={`
-                                              w-[50px] h-full flex items-center justify-center border-r dark:border-r-white/10
-                                               transition-colors
-                                              ${selectedAnswers[idx] === "correct" ? "!border-r-green-500" : ""}
-                                              ${selectedAnswers[idx] === "incorrect" ? "!border-r-red-500" : ""}
-                                            `}>
+                                                    <div className="absolute top-1 left-1 h-8 w-8 flex items-center justify-center rounded-full bg-gray-500 text-gray-900 dark:text-white/80  dark:bg-slate-900/50">
                                                         {idx + 1}
                                                     </div>
                                                     <p className="flex-1 text-center px-2">{option}</p>
-                                                </button>
+                                                </Button>
                                             ))}
                                             {quizOptions.length < 4 && <p className="text-red-500">Cảnh báo: Chưa đủ đáp án để trộn ngẫu nhiên (Yêu cầu trên 4)</p>}
                                         </div>
@@ -402,18 +423,18 @@ export default function PractiveFlashcard({ params }) {
                                             <span className="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm">Listening</span>
                                         </div>
                                         <div className="flex gap-4 mb-6">
-                                            <button
+                                            <Button
                                                 onClick={() => speakWord(flashcards[index]?.title, 1, flashcards[index]?._id)}
                                                 className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-primary">
                                                 <HiMiniSpeakerWave />
                                                 <span>UK</span>
-                                            </button>
-                                            <button
+                                            </Button>
+                                            <Button
                                                 onClick={() => speakWord(flashcards[index]?.title, 2, flashcards[index]?._id)}
                                                 className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-primary">
                                                 <HiMiniSpeakerWave />
                                                 <span>US</span>
-                                            </button>
+                                            </Button>
                                         </div>
                                         <div className="flex-1">
                                             <p className=" mb-2">Định nghĩa:</p>
@@ -430,15 +451,15 @@ export default function PractiveFlashcard({ params }) {
         `}
                                             />
                                             <div className="flex justify-end">
-                                                <button className="btn btn-primary mt-3 flex items-center  gap-2" onClick={checkListeningAnswer}>
+                                                <Button className="mt-3 flex items-center  gap-2" onClick={checkListeningAnswer}>
                                                     <IoSend /> Gửi
-                                                </button>
+                                                </Button>
                                             </div>
                                         </div>
-                                        <button onClick={() => setInputAnswer(flashcards[index].title)} className="flex items-center gap-2 text-gray-600 hover:text-primary mt-4">
-                                            <BiSlideshow />
-                                            <span>Hiển thị đáp án</span>
-                                        </button>
+                                        <Button onClick={() => setInputAnswer(flashcards[index].title)} className="text-white" size="lg">
+                                            <Eye />
+                                            Hiển thị đáp án
+                                        </Button>
                                     </div>
                                 )}
 
@@ -457,7 +478,7 @@ export default function PractiveFlashcard({ params }) {
                                                     {showAns ? flashcards[index]?.example?.[0]?.en : flashcards[index]?.example?.[0]?.en.replace(new RegExp(flashcards[index]?.title, "gi"), "______")}
                                                 </p>
                                             </div>
-                                            <input
+                                            <Input
                                                 type="text"
                                                 value={inputAnswer}
                                                 onChange={(e) => setInputAnswer(e.target.value)}
@@ -468,21 +489,21 @@ export default function PractiveFlashcard({ params }) {
                                                 }}
                                                 placeholder="Điền từ còn thiếu..."
                                                 autoFocus
-                                                className={`w-full p-3 border transition-colors dark:bg-gray-500/50 text-third dark:text-white
+                                                className={`w-full h-12 border transition-colors dark:bg-gray-500/50 text-third dark:text-white
                                                 ${isCorrectAns === "correct" ? "!border-green-500 border-2" : ""}
                                                 ${isCorrectAns === "incorrect" ? "!border-red-500 border-2 shake" : ""}
                                             `}
                                             />
-                                            <div className="flex justify-end">
-                                                <button className="btn btn-primary mt-3 flex items-center  gap-2" onClick={checkListeningAnswer}>
-                                                    <IoSend /> Gửi
-                                                </button>
+                                            <div className="flex justify-end mt-3">
+                                                <Button className="text-white" onClick={checkListeningAnswer}>
+                                                    <Send /> Gửi
+                                                </Button>
                                             </div>
                                         </div>
-                                        <button onClick={() => setShowAns(!showAns)} className="flex items-center gap-2 text-blue-500 hover:text-blue-600 mt-4">
-                                            <BiSlideshow />
-                                            <span>{showAns ? "Ẩn đáp án" : "Hiển thị đáp án"}</span>
-                                        </button>
+                                        <Button onClick={() => setShowAns(!showAns)} className=" mt-4 text-white" size="lg">
+                                            <Eye />
+                                            {showAns ? "Ẩn đáp án" : "Hiển thị đáp án"}
+                                        </Button>
                                     </div>
                                 )}
                             </div>
@@ -539,20 +560,15 @@ export default function PractiveFlashcard({ params }) {
                                         Listening: FEATURES.LISTENING,
                                         "Fill Blank": FEATURES.FILL_BLANK,
                                     }).map(([name, value]) => (
-                                        <button
-                                            key={value}
-                                            onClick={() => setFeature(value)}
-                                            className={`px-4 py-2 rounded-lg transition-colors  border border-white/10 ${
-                                                feature === value ? "bg-primary text-white" : "bg-gray-100 dark:bg-slate-800/50 hover:bg-gray-200"
-                                            }`}>
+                                        <Button key={value} onClick={() => setFeature(value)} variant={feature === value ? "default" : "secondary"}>
                                             {name}
-                                        </button>
+                                        </Button>
                                     ))}
                                 </div>
                             </div>
 
                             {/* Progress Display */}
-                            <div className="space-y-2">
+                            <div className="space-y-2 hidden md:block">
                                 <h2 className="font-medium">Tiến trình</h2>
                                 <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg">
                                     <div className="flex justify-between mb-2">

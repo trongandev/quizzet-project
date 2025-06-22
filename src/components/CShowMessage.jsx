@@ -15,7 +15,6 @@ import { MdOutlineInsertEmoticon, MdOutlineReply } from "react-icons/md";
 import axios from "axios";
 export default function CShowMessage({ chatMessId, handleDeleteChat, token, socket, checkOnline }) {
     const lastMessageRef = useRef(null);
-
     const [messages, setMessages] = useState([]);
     const [chats, setChats] = useState([]);
     const [newMessage, setNewMessage] = useState("");
@@ -464,16 +463,16 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
                                                 trigger="click"
                                                 open={open}
                                                 onOpenChange={handleOpenChange}>
-                                                <button className="text-gray-500 hover:text-primary cursor-pointer">
+                                                <Button className="text-gray-500 hover:text-primary cursor-pointer">
                                                     <MdOutlineInsertEmoticon size={20} />
-                                                </button>
+                                                </Button>
                                             </Popover>
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" disabled={loading} onClick={handleSendMessage} className="text-gray-500 hover:text-primary cursor-pointer !bg-transparent">
+                                <Button type="submit" disabled={loading} onClick={handleSendMessage} className="text-gray-500 hover:text-primary cursor-pointer !bg-transparent">
                                     {loading ? <Spin indicator={<LoadingOutlined spin />} size="default" /> : <IoSend />}
-                                </button>
+                                </Button>
                             </div>
                         </div>
                     </div>

@@ -6,15 +6,19 @@ import Cookies from "js-cookie";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { GET_API, POST_API } from "@/lib/fetchAPI";
-import { message, Spin } from "antd";
-import { GoogleOutlined, LoadingOutlined } from "@ant-design/icons";
-import { IoIosArrowBack } from "react-icons/io";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ArrowLeft } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import Loading from "@/components/ui/loading";
+import { toast } from "sonner";
+
 export default function LoginForm() {
     const router = useRouter();
     const token = Cookies.get("token") || "";
     const [loading, setLoading] = React.useState(false);
-    const [messageApi, contextHolder] = message.useMessage();
     const fetchProfile = async () => {
         try {
             const res = await GET_API("/profile", token);
@@ -42,40 +46,42 @@ export default function LoginForm() {
             password: Yup.string().required("Vui lòng nhập password"),
         }),
         onSubmit: (values) => {
-            setLoading(true);
             fetchLogin(values);
         },
     });
 
     const fetchLogin = async (values: any) => {
         try {
+            setLoading(true);
             const res = await POST_API("/auth/login", values, "POST", token);
             if (res) {
                 const data = await res.json();
                 if (res.ok) {
+                    toast.success("Đăng nhập thành công!", {
+                        description: "Đang chuyển hướng đến trang chính...",
+                        position: "top-center",
+                    });
                     Cookies.set("token", data.token, { expires: 30 });
                     router.push("/");
                 } else {
-                    messageApi.open({
-                        type: "warning",
-                        content: data.message,
-                    });
+                    toast.warning(data.message);
                 }
             }
-            setLoading(false);
         } catch (error) {
-            messageApi.open({
-                type: "error",
-                content: (error as Error).message,
-            });
+            toast.error((error as Error).message);
+        } finally {
+            setLoading(false);
         }
     };
 
-    const handleBackRouter = () => {
+    const handleBackRouter = (e: any) => {
+        e.preventDefault();
         router.back();
     };
 
-    const handleLoginGoogle = async () => {
+    const handleLoginGoogle = async (e: any) => {
+        e.preventDefault();
+        if (loading) return; // Prevent multiple clicks
         window.location.href = process.env.API_ENDPOINT + "/auth/google";
     };
 
@@ -89,73 +95,104 @@ export default function LoginForm() {
                 await GET_API("/profile", token);
             };
             fetchAPI();
-
+            toast.success("Đăng nhập thành công!", {
+                description: "Đang chuyển hướng đến trang chính...",
+                position: "top-center",
+            });
             router.push("/");
         }
-    }, []);
+    }, [token, router]);
 
     return (
-        <div className="flex justify-center flex-col items-center h-full bg-white p-5 rounded-xl">
-            {contextHolder}
-            <div className="text-third">
-                <form onSubmit={formik.handleSubmit}>
-                    <div onClick={handleBackRouter}>
-                        <IoIosArrowBack size={25} />
+        <div className="min-h-screen flex items-center justify-center p-4">
+            <div className="">
+                <form className="dark:bg-slate-800/80 bg-white border dark:border-white/10 rounded-2xl shadow-xl p-6 md:p-8 space-y-6" onSubmit={formik.handleSubmit}>
+                    {/* Header */}
+                    <div className="flex items-center space-x-4">
+                        <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={handleBackRouter}>
+                            <ArrowLeft className="h-4 w-4" />
+                        </Button>
+                        <Link href="/">
+                            <Image unoptimized alt="" width={150} height={150} src="/logo.png"></Image>
+                        </Link>
                     </div>
-                    <Image unoptimized alt="" width={150} height={150} src="/logo.png"></Image>
 
-                    <h1 className="text-2xl font-bold text-primary">Đăng nhập</h1>
-                    <p>Đăng nhập để trải nghiệm Quizzet tốt hơn nhé</p>
+                    {/* Title */}
+                    <div className="text-center space-y-2">
+                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white/80">Đăng nhập</h1>
+                        <p className="text-gray-600 dark:text-gray-400">Đăng nhập để trải nghiệm Quizzet tốt hơn nhé</p>
+                    </div>
 
-                    <div className="mb-1 mt-5">
-                        <input type="email" placeholder="Email của bạn..." name="email" id="email" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.email} />
-                        {formik.touched.email && formik.errors.email ? <div className="text-red-500 mt-1 mb-3 mx-5 text-sm">{formik.errors.email}</div> : null}{" "}
+                    {/* Google Login - Highlighted */}
+                    <div className="space-y-4">
+                        <Button
+                            variant="outline"
+                            onClick={handleLoginGoogle}
+                            className="relative group overflow-hidden w-full h-12 bg-gradient-to-r from-red-800/90 via-yellow-800/90 to-blue-800/90 text-white border-0 shadow-md transform hover:scale-105 transition-all duration-200 ">
+                            <Image src="https://www.svgrepo.com/show/303108/google-icon-logo.svg" alt="" width={30} height={30} className="mr-3"></Image>
+                            Đăng nhập bằng Google
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/80  dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
+                        </Button>
+
+                        <div className="text-center">
+                            <span className="text-xs text-gray-500 bg-white px-3 dark:bg-slate-800/80 dark:text-gray-400">Nhanh chóng & Bảo mật</span>
+                        </div>
                     </div>
-                    <div className="mb-5">
-                        <input
-                            type="password"
-                            placeholder="Mật khẩu của bạn..."
-                            name="password"
-                            id="password"
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            value={formik.values.password}
-                        />
-                        {formik.touched.password && formik.errors.password ? <div className="text-red-500 mt-1 mb-3 mx-5 text-sm">{formik.errors.password}</div> : null}{" "}
+
+                    {/* Separator */}
+                    <div className="relative">
+                        <Separator />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <span className="bg-white px-4 text-sm text-gray-500 dark:bg-slate-800/80 dark:text-gray-400">Hoặc</span>
+                        </div>
                     </div>
-                    <div className="mb-5">
-                        <button type="submit" className="btn btn-primary w-full flex gap-5 items-center justify-center" disabled={loading}>
-                            {loading && <Spin className="text-white" indicator={<LoadingOutlined spin />} size="default" />}
+
+                    {/* Email/Password Form */}
+                    <div className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="email" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Email
+                            </Label>
+                            <Input id="email" type="email" placeholder="Nhập email của bạn..." className="h-11" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.email} />
+                            {formik.touched.email && formik.errors.email ? <div className="text-red-500 mt-1 mb-3 mx-5 text-sm">{formik.errors.email}</div> : null}
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                Mật khẩu
+                            </Label>
+                            <Input
+                                id="password"
+                                type="password"
+                                placeholder="Nhập mật khẩu của bạn"
+                                className="h-11"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.password}
+                            />
+                        </div>
+
+                        <Button className="relative group overflow-hidden w-full h-11 bg-primary  text-white hover:scale-105 transition-all duration-200" disabled={loading}>
+                            {loading && <Loading />}
                             Đăng nhập
-                        </button>
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/80  dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
+                        </Button>
                     </div>
-                    <div className="mt-5 flex justify-between items-center text-sm">
-                        <p>
-                            <Link href="/register" className="underline text-primary">
-                                Đăng ký
-                            </Link>
-                        </p>
-                        <Link href="/forget" className="underline text-primary">
+
+                    {/* Footer Links */}
+                    <div className="flex justify-between items-center text-sm">
+                        <Link href="/register" className="text-primary hover:underline">
+                            Đăng ký
+                        </Link>
+                        <Link href="/forgot-password" className="text-primary hover:underline">
                             Quên mật khẩu?
                         </Link>
                     </div>
                 </form>
-                <div className="my-5">
-                    <div className="relative mb-3">
-                        <div className="absolute w-full h-[1px] bg-gray-300"></div>
-                        <div className="absolute w-full flex items-center justify-center bottom-[-9px]">
-                            <p className=" bg-white px-2 text-gray-500 text-sm">Hoặc</p>
-                        </div>
-                    </div>
-                    {/* onClick={() => googleLogin()} */}
-                </div>
-                <div className="mt-10 pt-3">
-                    <button
-                        className="flex items-center gap-2 w-full border border-gray-300 text-gray-500 rounded-full overflow-hidden px-5 py-2  hover:bg-gray-100 duration-200 hover:text-gray-800"
-                        onClick={handleLoginGoogle}>
-                        <GoogleOutlined size={40} />
-                        <p className="text-sm">Đăng nhập bằng Google</p>
-                    </button>
+
+                {/* Additional CTA */}
+                <div className="mt-6 text-center">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Đăng nhập bằng Google để truy cập nhanh chóng và an toàn</p>
                 </div>
             </div>
         </div>

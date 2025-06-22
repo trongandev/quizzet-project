@@ -386,9 +386,9 @@ Câu hỏi 2
                         </div>
                     </div>
                     <div className="mt-3 text-right">
-                        <button type="submit" className=" ">
+                        <Button type="submit" className=" ">
                             Thêm bài viết này
-                        </button>
+                        </Button>
                     </div>
                 </Form>
             </div>

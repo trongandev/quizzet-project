@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import React from "react";
 import { BsLightning } from "react-icons/bs";
+import { Button } from "@/components/ui/button";
 
 export async function generateMetadata() {
     return {
@@ -38,12 +39,12 @@ export default async function HomePage() {
                     <p className="text-md md:text-lg text-white/80">Tham gia cộng đồng hơn 300 học viên đang học tập hiệu quả cùng Quizzet</p>
                     <div className="flex items-center gap-5">
                         <Link href="/login">
-                            <button className="relative group overflow-hidden inline-flex items-center gap-2 btn btn-primary !rounded-md !bg-white !text-primary text-lg font-bold border border-white/10 group hover:!text-yellow-500 hover:bg-white/10 transition-all duration-200">
-                                <BsLightning className="w-5 h-5 " /> Bắt đầu miễn phí
-                                <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-0 transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%] group-hover:opacity-100"></div>
-                            </button>
+                            <Button className="relative group overflow-hidden inline-flex items-center gap-2  font-bold border border-white/10 group transition-all duration-200 text-lg">
+                                <BsLightning className="w-5 h-5 group-hover:text-yellow-200  rotate-0 group-hover:rotate-180 transition-all duration-300" /> Bắt đầu miễn phí
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
+                            </Button>
                         </Link>
-                        <button className=" btn btn-primary !rounded-md !bg-white !text-secondary text-lg">Tìm hiểu thêm</button>
+                        <Button className="text-lg">Tìm hiểu thêm</Button>
                     </div>
                 </div>
             )}
