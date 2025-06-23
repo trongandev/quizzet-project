@@ -168,21 +168,21 @@ export default function CongDong() {
 
     return (
         <div className="flex items-center justify-center">
-            <div className="w-full md:w-[1000px] xl:w-[1200px] py-5 pt-16">
-                <div className="text-third dark:text-white flex flex-row px-3 md:px-0 min-h-[85vh] dark:border-white/10 border  shadow-xl w-full rounded-xl overflow-hidden">
+            <div className="w-full md:w-[1000px] xl:w-[1200px] py-5 pt-16 mx-3 md:mx-0">
+                <div className="text-third dark:text-white flex flex-col md:flex-row px-0 min-h-[85vh] dark:border-white/10 border  shadow-xl w-full rounded-xl overflow-hidden ">
                     <div className=" flex-1">
                         {/* {khung chat ben trái} */}
-                        <div className="border-b border-b-white/10 flex items-center justify-between  h-16 px-5 bg-white dark:bg-slate-800/50 ">
+                        <div className="w-auto border-b border-b-white/10 flex items-center md:justify-between  h-16 md:px-5 px-3 bg-white dark:bg-slate-800/50 ">
                             {/* header */}
                             <div className="flex items-center gap-3">
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-3 ">
                                     <Hash className="text-4xl font-bold dark:text-gray-400" />
                                     <h3>Quizzet Community</h3>
                                 </div>
                                 <div className="w-0.5 h-6 bg-gray-300 dark:bg-gray-600 "></div>
-                                <p className="dark:text-white/60">Kênh thảo luận chung cho cộng đồng</p>
+                                <p className="dark:text-white/60 line-clamp-1 hidden md:block">Kênh thảo luận chung cho cộng đồng</p>
                             </div>
-                            <div className="flex items-center gap-3">
+                            <div className="hidden md:flex items-center gap-3">
                                 <div className="h-10 w-10 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
                                     <Bell size={18} />
                                 </div>
@@ -209,7 +209,7 @@ export default function CongDong() {
                             <div className="p-5 border-t border-t-white/10 bg-white dark:bg-slate-800/50 h-[100px]">
                                 <div className="px-3 border border-white/10 rounded-xl h-full w-full flex items-center justify-between">
                                     <div className="h-10 w-10 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
-                                        <Paperclip size={18} />
+                                        <ImagePlus size={18} />
                                     </div>
                                     <Input
                                         value={newMessage}
@@ -217,12 +217,9 @@ export default function CongDong() {
                                         ref={inputRef}
                                         onKeyPress={handleKeyPress}
                                         placeholder="Nhắn tin tới # cộng đồng quizzet "
-                                        className="flex-1 text-xl border-none ring-0 outline-none focus-visible:ring-0"></Input>
+                                        className="flex-1 text-sm md:text-xl border-none ring-0 outline-none focus-visible:ring-0"></Input>
                                     <div className="flex items-center gap-3">
-                                        <div className="h-10 w-10 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
-                                            <ImagePlus size={18} />
-                                        </div>
-                                        <div className="h-10 w-10 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
+                                        <div className="hidden md:flex h-10 w-10 items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
                                             <Smile size={18} />
                                         </div>
                                         <Button
@@ -235,9 +232,9 @@ export default function CongDong() {
                             </div>
                         </div>
                     </div>
-                    <div className="w-[300px] p-4 bg-white dark:bg-slate-800/50 border-s border-s-white/10 ">
+                    <div className="w-full md:w-[300px] p-4 bg-white dark:bg-slate-800/50 md:border-s md:border-s-white/10 border-t md:border-t-white/10">
                         {/* Online Users List */}
-                        <div className="flex items-center gap-2 text-lg">
+                        <div className="flex items-center gap-2 text-md md:text-lg">
                             <Users className="text-gray-400" size={20} />{" "}
                             <span className="inline-flex items-end">
                                 Thành viên <Minus /> {onlineUsers.lenght || "0"}

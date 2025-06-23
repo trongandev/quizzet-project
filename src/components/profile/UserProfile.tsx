@@ -43,7 +43,7 @@ export default function UserProfile({ profile, quiz }: PropsProfile) {
     return (
         <div className="flex items-center justify-center dark:text-white/80 text-gray-400">
             <div className="w-full md:w-[1000px] xl:w-[1200px] ">
-                <div className="p-2 md:px-5 md:py-20 flex flex-col gap-5 min-h-screen">
+                <div className="p-2 md:px-5 py-20 flex flex-col gap-5 min-h-screen">
                     <Card className="mb-8 dark:border-white/10 dark:bg-slate-800/50">
                         <CardContent className="pt-6">
                             <div className="flex flex-col md:flex-row items-center md:items-start gap-6">

@@ -127,12 +127,12 @@ export default function QuizExam(QuizData: IQuiz) {
 
     if (!isQuizStarted) {
         return (
-            <div className="min-h-screen ">
+            <div className="min-h-screen px-3 md:px-0">
                 <div className="max-w-2xl bg-white rounded-xl dark:bg-slate-900/50 mx-auto">
                     <Card className="shadow-xl">
                         <CardHeader className="text-center pb-8">
                             <CardTitle className="text-3xl font-bold text-gray-800 dark:text-white mb-4">{QuizData.title}</CardTitle>
-                            <div className="flex items-center justify-center gap-6 text-gray-600 dark:text-gray-300 mb-6">
+                            <div className="flex flex-wrap items-center justify-center gap-3 md:gap-6 text-gray-600 dark:text-gray-300 mb-6">
                                 <div className="flex items-center gap-2">
                                     <User className="w-4 h-4" />
                                     <span>{QuizData.uid?.displayName}</span>
@@ -161,7 +161,7 @@ export default function QuizExam(QuizData: IQuiz) {
                         </CardHeader>
                         <CardContent className="text-center w-full flex items-center justify-center flex-col gap-3">
                             <Select defaultValue="30" onValueChange={(value) => setTimeLimit(Number(value))}>
-                                <SelectTrigger className="w-[180px]">
+                                <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Chọn thời gian" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -183,7 +183,7 @@ export default function QuizExam(QuizData: IQuiz) {
                                     setTimeLeft(timeLimit * 60);
                                 }}
                                 size="lg"
-                                className="px-8 py-3 text-lg font-semibold text-white">
+                                className="px-8 py-3 text-lg font-semibold text-white w-full">
                                 Bắt đầu làm bài
                             </Button>
                         </CardContent>
@@ -342,7 +342,7 @@ export default function QuizExam(QuizData: IQuiz) {
                                 <CardTitle className="text-lg font-semibold">Danh sách câu hỏi</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="grid grid-cols-12 lg:grid-cols-5 gap-2 max-h-[250px] overflow-scroll">
+                                <div className="grid md:grid-cols-12 grid-cols-6 gap-2 max-h-[250px] overflow-scroll">
                                     {QuizData?.questions &&
                                         QuizData?.questions.data_quiz.map((_, index) => {
                                             const status = getQuestionStatus(index);

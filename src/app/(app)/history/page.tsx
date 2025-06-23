@@ -61,7 +61,7 @@ export default function History() {
     return (
         <div className="flex items-center justify-center dark:text-white/80 text-gray-400">
             <div className="w-full md:w-[1000px] xl:w-[1200px] ">
-                <div className="p-2 md:px-5 md:py-20 flex flex-col gap-5 min-h-screen">
+                <div className="p-2 md:px-5 py-20 flex flex-col gap-5 min-h-screen">
                     <div className="">
                         <div className="mb-8">
                             <h1 className="text-3xl font-bold text-gray-900 mb-2 dark:text-white/80">Lịch Sử Quiz</h1>

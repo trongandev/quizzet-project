@@ -8,7 +8,7 @@ export default function UserFC({ item }: any) {
     return (
         <Link
             href={`/flashcard/${item?._id}`}
-            className="relative group overflow-hidden w-full  bg-gray-200/80  dark:bg-slate-800/50 border border-white/10 rounded-md shadow-sm px-5 py-3 hover:shadow-md transition-all duration-300 flex flex-col gap-3">
+            className="relative group overflow-hidden w-full  bg-white/80  dark:bg-slate-800/50 border border-white/10 rounded-md shadow-sm px-5 py-3 hover:shadow-md transition-all duration-300 flex flex-col gap-3">
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
             <div className="flex items-start justify-between mt-0">
                 <div className="">

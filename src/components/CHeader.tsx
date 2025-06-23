@@ -193,7 +193,7 @@ export default function CHeader({ token }: { token: string }) {
                                                 <p>Quản lí tài khoản</p>
                                             </Link>
                                             {token && (
-                                                <Link href={`/lichsu`} className="flex items-center gap-2 p-2 hover:bg-gray-100">
+                                                <Link href={`/history`} className="flex items-center gap-2 p-2 hover:bg-gray-100">
                                                     <MdOutlineHistory />
                                                     <p>Lịch sử làm bài</p>
                                                 </Link>

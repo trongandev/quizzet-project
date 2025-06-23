@@ -188,7 +188,7 @@ export default function CTaiLieu({ toolData }: any) {
                                     </div>
                                 </Tooltip>
                             </div>
-                            <div className="flex items-center border border-gray-400/50 dark:border-white/10 rounded-s-md rounded-r-md overflow-hidden">
+                            <div className="hidden md:flex items-center border border-gray-400/50 dark:border-white/10 rounded-s-md rounded-r-md overflow-hidden">
                                 <Tooltip placement="top" title="Dạng lưới 4x2">
                                     <div
                                         className={`h-11 w-10  flex items-center justify-center dark:hover:text-gray-300 cursor-pointer ${
@@ -228,7 +228,7 @@ export default function CTaiLieu({ toolData }: any) {
                             </Tooltip>
                         </div>
                     </div>
-                    <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 ${viewMode === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
+                    <div className={`grid grid-cols-2 md:grid-cols-3 gap-4 ${viewMode === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
                         {displaySO?.map((item: any, index: any) => (
                             <div
                                 className="bg-white dark:bg-slate-800/50 hover:shadow-md rounded-xl h-[200px] flex flex-col md:flex-row overflow-hidden shadow-sm border border-white/10 group hover:scale-105 transition-all duration-300"
@@ -261,7 +261,7 @@ export default function CTaiLieu({ toolData }: any) {
                                     <div className="">
                                         <p className="text-[12px]">{handleCompareDate(item.date)}</p>
                                         <Link href={`/decuong/${item.slug}`}>
-                                            <Button className="text-sm w-full !rounded-md">Xem ngay</Button>
+                                            <Button className="text-white">Xem ngay</Button>
                                         </Link>
                                     </div>
                                 </div>

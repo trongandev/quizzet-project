@@ -13,10 +13,10 @@ interface MessageCardProps {
 export default function ChatCard({ message, isLast, ref }: MessageCardProps) {
     return (
         <div className="flex items-start gap-3 py-5 px-3 hover:bg-gray-200/10 rounded-xl group" ref={ref}>
-            <div className="w-16 h-16 relative rounded-full overflow-hidden ">
+            <div className="w-10 md:w-12 h-10 md:h-12 relative rounded-full overflow-hidden ">
                 <Image src={message?.userId.profilePicture} alt="" fill className="absolute w-full h-full object-cover "></Image>
             </div>
-            <div className="flex-1 space-y-2">
+            <div className="flex-1 w-full space-y-2">
                 <div className="flex items-center justify-between h-7">
                     <div className="flex items-center gap-2">
                         <h3>{message?.userId?.displayName}</h3>
@@ -34,8 +34,8 @@ export default function ChatCard({ message, isLast, ref }: MessageCardProps) {
                         </div>
                     </div>
                 </div>
-                <div className="bg-gray-500/50 p-3  md:py-3 md:px-5 rounded-xl">
-                    <p>{message?.message}</p>
+                <div className="w-full bg-gray-500/50 px-3 py-2  md:py-3 md:px-5 rounded-md md:rounded-xl ">
+                    <p className="break-words  whitespace-normal">{message?.message}</p>
                 </div>
                 <div className="flex items-center gap-2">
                     <div className="bg-gray-500/50 px-2.5 py-0.5 rounded-xl text-gray-400 text-sm">🤩 2</div>

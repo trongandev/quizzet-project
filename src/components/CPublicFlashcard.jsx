@@ -91,8 +91,8 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                             Flashcard là một trong những cách tốt nhất để ghi nhớ những kiến thức quan trọng. Hãy cùng Quizzet tham khảo và tạo những bộ flashcards bạn nhé!
                         </p>
                     </div>
-                    <div className="flex gap-5 items-center">
-                        <div className="flex-1 h-24 px-5 bg-green-200/60 dark:bg-green-800/50 rounded-xl flex items-center justify-between border border-green-500/50  dark:border-white/10 shadow-sm shadow-green-500/50">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-5">
+                        <div className="w-full  h-24 px-5 bg-green-300/60 dark:bg-green-800/50 rounded-xl flex items-center justify-between border border-green-500/50  dark:border-white/10 shadow-sm shadow-green-500/50">
                             <div className="">
                                 <p className="text-gray-600 dark:text-white/60">Đã học</p>
                                 <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">0</h3>
@@ -101,7 +101,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                                 <BookOpen />
                             </div>
                         </div>
-                        <div className="flex-1 h-24 px-5 bg-blue-200/60 dark:bg-blue-800/50 rounded-xl flex items-center justify-between border border-blue-500/50  dark:border-white/10 shadow-sm shadow-blue-500/50">
+                        <div className="w-full h-24 px-5 bg-blue-300/60 dark:bg-blue-800/50 rounded-xl flex items-center justify-between border border-blue-500/50  dark:border-white/10 shadow-sm shadow-blue-500/50">
                             <div className="">
                                 <p className="text-gray-600 dark:text-white/60">Đã nhớ</p>
                                 <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">0</h3>
@@ -110,7 +110,7 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                                 <Brain />
                             </div>
                         </div>
-                        <div className="flex-1 h-24 px-5 bg-red-200/60 dark:bg-red-800/50 rounded-xl flex items-center justify-between border border-red-500/50  dark:border-white/10 shadow-sm shadow-red-500/50">
+                        <div className="col-span-2 w-full  md:col-span-1 h-24 px-5 bg-red-300/60 dark:bg-red-800/50 rounded-xl flex items-center justify-between border border-red-500/50  dark:border-white/10 shadow-sm shadow-red-500/50">
                             <div className="">
                                 <p className="text-gray-600 dark:text-white/60">Cần ôn tập</p>
                                 <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">0</h3>
@@ -138,13 +138,13 @@ export default function CPublicFlashCard({ publicFlashcards }) {
                             </TabsTrigger>
                         </TabsList>
 
-                        <div className="flex items-center gap-3">
-                            <div className="relative">
+                        <div className="flex items-center flex-col md:flex-row gap-3">
+                            <div className="relative w-full ">
                                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                                <Input placeholder="Tìm kiếm flashcard..." className="pl-10 w-64" value={searchFC} onChange={handleSearchFC} />
+                                <Input placeholder="Tìm kiếm flashcard..." className="pl-10 w-full md:w-64 " value={searchFC} onChange={handleSearchFC} />
                             </div>
                             <CreateFlashcardModal listFlashCard={listFlashCard} setListFlashCard={setListFlashCard} filterFlashcard={filterFlashcard} setFilterFlashcard={setFilterFlashcard}>
-                                <Button className="bg-blue-600 hover:bg-blue-700">
+                                <Button className="text-white w-full md:w-auto">
                                     <Plus className="w-4 h-4 mr-2" />
                                     Tạo mới
                                 </Button>

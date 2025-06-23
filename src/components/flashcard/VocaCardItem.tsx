@@ -5,17 +5,22 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Volume2, BookOpen, MessageCircle, Lightbulb, MoreVertical, Edit3, Trash2, ChevronUp, ChevronDown } from "lucide-react";
+import { Volume2, BookOpen, MessageCircle, Lightbulb, MoreVertical, Edit3, ChevronUp, ChevronDown } from "lucide-react";
 import { Flashcard } from "@/types/type";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import handleCompareDate from "@/lib/CompareDate";
-import { EdgeSpeechTTS } from "@lobehub/tts";
 import { toast } from "sonner";
-export default function VocaCardItem(data: Flashcard) {
+import Loading from "../ui/loading";
+
+interface Props {
+    data: Flashcard;
+    speakWord: (word: string, id?: string) => void;
+    loadingAudio: any;
+}
+export default function VocaCardItem({ data, speakWord, loadingAudio }: Props) {
     const [showExamples, setShowExamples] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
-    const [disableAudio, setDisableAudio] = useState(false);
-    const [loadingAudio, setLoadingAudio] = useState(null);
+
     const [editData, setEditData] = useState({
         title: data.title,
         transcription: data.transcription,
@@ -50,63 +55,8 @@ export default function VocaCardItem(data: Flashcard) {
         }
     };
 
-    const [tts] = useState(() => new EdgeSpeechTTS({ locale: "en-US" }));
-
-    // Function để lấy voice dựa trên language và type
-    const getVoiceByLanguage = useCallback((language: string, type: number) => {
-        if (language === "english" && type === 1) return "en-GB-SoniaNeural";
-        if (language === "english" && type === 2) return "en-US-GuyNeural";
-        if (language === "vietnamese") return "vi-VN-HoaiMyNeural";
-        if (language === "germany") return "de-DE-KatjaNeural";
-        if (language === "france") return "fr-FR-DeniseNeural";
-        if (language === "japan") return "ja-JP-NanamiNeural";
-        if (language === "korea") return "ko-KR-SunHiNeural";
-        if (language === "chinese") return "zh-CN-XiaoxiaoNeural";
-        return "en-US-GuyNeural"; // default
-    }, []);
-
-    const speakWord = useCallback(
-        async (text: string, type: number, id: any) => {
-            if (disableAudio) return;
-
-            const voice = getVoiceByLanguage("english", type);
-
-            try {
-                setLoadingAudio(id);
-                setDisableAudio(true);
-
-                const response = await tts.create({
-                    input: text,
-                    options: {
-                        voice: voice,
-                    },
-                });
-
-                const audioBuffer = await response.arrayBuffer();
-                const blob = new Blob([audioBuffer], { type: "audio/mpeg" });
-                const url = URL.createObjectURL(blob);
-                const audio = new Audio(url);
-
-                audio.addEventListener("ended", () => {
-                    URL.revokeObjectURL(url);
-                });
-
-                audio.play();
-            } catch (error) {
-                console.error("TTS Error:", error);
-                toast.error("Đã có lỗi xảy ra khi phát âm, vui lòng thử lại sau");
-            } finally {
-                setLoadingAudio(null);
-                setTimeout(() => {
-                    setDisableAudio(false);
-                }, 1000);
-            }
-        },
-        [disableAudio, tts, getVoiceByLanguage]
-    );
-
     return (
-        <Card className="w-full max-w-2xl mx-auto shadow-sm hover:shadow-md transition-shadow duration-200 border-l-4 border-l-blue-500 dark:border-l-blue-400 overflow-hidden h-full">
+        <Card className="md:w-full max-w-2xl md:max-w-full mx-auto shadow-sm hover:shadow-md transition-shadow duration-200 border-l-4 border-l-blue-500 dark:border-l-blue-400 overflow-hidden h-full">
             <CardContent className="p-0 dark:bg-slate-800/50 h-full">
                 {/* Header with status */}
                 <div className="flex items-center justify-between p-4 pb-2">
@@ -145,12 +95,8 @@ export default function VocaCardItem(data: Flashcard) {
                                 <h3 className="text-xl font-medium text-gray-900 dark:text-white/80 leading-relaxed mb-2">{data.title}</h3>
                                 <div className="flex items-center gap-2 mb-3">
                                     <p className="text-base text-blue-600 font-mono">{data.transcription}</p>
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="h-6 w-6 p-0 text-blue-600 hover:text-blue-700"
-                                        onClick={() => speakWord(data.title, data.type_of_word === "noun" ? 1 : 2, data._id)}>
-                                        <Volume2 className="w-4 h-4" />
+                                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-blue-600 hover:text-blue-700" disabled={loadingAudio} onClick={() => speakWord(data.title, data._id)}>
+                                        {loadingAudio ? <Loading /> : <Volume2 className="w-4 h-4" />}
                                     </Button>
                                 </div>
                             </div>
@@ -188,7 +134,7 @@ export default function VocaCardItem(data: Flashcard) {
 
                         {showExamples && (
                             <div className="space-y-4">
-                                {data.example.map((exa, index) => (
+                                {data.example.map((exa, index: any) => (
                                     <div key={index} className="border-l-2 border-gray-200 dark:border-gray-600 pl-4">
                                         <div className="space-y-2">
                                             {/* Chinese exa */}
@@ -198,9 +144,10 @@ export default function VocaCardItem(data: Flashcard) {
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
+                                                    disabled={loadingAudio}
                                                     className="h-6 w-6 p-0 text-gray-400 hover:text-gray-600 dark:text-white/60 dark:hover:text-gray-300"
-                                                    onClick={() => speakWord(exa.en, data.type_of_word === "noun" ? 1 : 2, index)}>
-                                                    <Volume2 className="w-3 h-3" />
+                                                    onClick={() => speakWord(exa.en, index)}>
+                                                    {loadingAudio ? <Loading /> : <Volume2 className="w-3 h-3" />}
                                                 </Button>
                                             </div>
 

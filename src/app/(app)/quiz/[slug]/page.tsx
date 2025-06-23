@@ -25,7 +25,7 @@ export default async function Quiz({ params }: { params: any }) {
     // return <CQuizDetail QuizData={quiz.quiz} QuestData={question} />;
     return (
         <div className="py-20">
-            <QuizExam {...quiz.quiz} />;
+            <QuizExam {...quiz.quiz} />
         </div>
     );
 }

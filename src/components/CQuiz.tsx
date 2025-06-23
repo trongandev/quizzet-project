@@ -126,7 +126,7 @@ export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
     return (
         <div className="flex items-center justify-center">
             <div className="w-full md:w-[1000px] xl:w-[1200px]">
-                <div className="p-2 md:p-5 flex flex-col gap-5  bg-white/80 dark:bg-gray-800 border border-gray-400/50 dark:border-white/10 rounded-lg mb-4 shadow-sm">
+                <div className="p-5 flex flex-col gap-5  bg-white/80 dark:bg-gray-800 border border-gray-400/50 dark:border-white/10 rounded-lg mb-4 shadow-sm">
                     <div className="flex items-center gap-3 ">
                         <div className="w-1/6 h-14 md:w-14  flex items-center justify-center bg-gradient-to-r from-blue-500/80 to-purple-500/80 rounded-lg text-white">
                             <SiQuizlet size={21} />
@@ -192,7 +192,7 @@ export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
                                     </div>
                                 </Tooltip>
                             </div>
-                            <div className="flex items-center border border-gray-400/50 dark:border-white/10 rounded-s-md rounded-r-md overflow-hidden">
+                            <div className="hidden md:flex items-center border border-gray-400/50 dark:border-white/10 rounded-s-md rounded-r-md overflow-hidden">
                                 <Tooltip placement="top" title="Dạng lưới 4x2">
                                     <div
                                         className={`h-11 w-10  flex items-center justify-center dark:hover:text-gray-300 cursor-pointer ${
@@ -277,7 +277,7 @@ export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
                                             </Link>
 
                                             <Link href={`/quiz/${item.slug}`} className="">
-                                                <Button>
+                                                <Button className="text-white">
                                                     Làm bài <IoArrowForwardCircleOutline />
                                                 </Button>
                                             </Link>

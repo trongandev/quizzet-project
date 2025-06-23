@@ -212,4 +212,17 @@ interface UserId {
     profilePicture: string;
 }
 
+export interface Voice {
+    id: string;
+    name: string;
+    gender: string;
+    language: string;
+    country: string;
+    description: string;
+    premium: boolean;
+    popular: boolean;
+    avatar: string;
+    sample: string;
+}
+
 export type { IUser, INotify, IQuestion, IComment, IHistory, ISO, IQuiz, IDataQuiz, IListFlashcard, IProgress, Flashcard, Progress, Example, IMessage, IChat, IChatCommunity, IChatCommunityMessage };

@@ -1,7 +1,7 @@
 "use client";
-import { GET_API_WITHOUT_COOKIE, POST_API } from "@/lib/fetchAPI";
+import { POST_API } from "@/lib/fetchAPI";
+import { useFlashcard } from "@/hooks/useOptimizedFetch";
 import React, { useEffect, useState, useCallback } from "react";
-import { message, Modal, Popconfirm, Popover, Select, Spin, Switch } from "antd";
 import { FaBrain, FaTrash } from "react-icons/fa6";
 import { LoadingOutlined } from "@ant-design/icons";
 import { IoIosArrowBack, IoMdAdd } from "react-icons/io";
@@ -28,7 +28,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { AlertCircle, ArrowLeft, BookOpen, Brain, CheckCircle, Clock, Flag, Flame, Grid3x3, PencilLine, Plus, RotateCcw, Target, Timer, Trash2, TrendingUp, User } from "lucide-react";
+import { AlertCircle, ArrowLeft, BookOpen, Brain, CheckCircle, Clock, Flag, Flame, Grid3x3, PencilLine, Plus, RotateCcw, Target, Timer, Trash2, TrendingUp, User, Volume2 } from "lucide-react";
 import { EditFlashcardModal } from "./EditFlashcardModal";
 import AddVocaModal from "./AddVocaModal";
 import { Badge } from "../ui/badge";
@@ -37,6 +37,7 @@ import VocaCardItem from "./VocaCardItem";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
 import Loading from "../ui/loading";
+import VoiceSelectionModal from "./VoiceSelectionModal";
 const getLanguageFlag = (lang: string) => {
     const flags: { [key: string]: string } = {
         english: "🇺🇸",
@@ -57,42 +58,90 @@ const getLanguageName = (lang: string) => {
     return names[lang] || "Khác";
 };
 
-export default function CFlashcardDetail({ id_flashcard }: any) {
+export default function CFlashcardDetail({ id_flashcard, initialData }: { id_flashcard: any; initialData?: any }) {
     const [isOpenVocaModal, setIsOpenVocaModal] = useState(false);
     const [loading, setLoading] = useState(false);
     const [loadingConfirm, setLoadingConfirm] = useState(false);
     const [flashcard, setFlashcard] = useState<Flashcard>(); // các flashcard
-    const [filteredFlashcards, setFilteredFlashcards] = useState<Flashcard[]>();
-    const [listFlashcard, setListFlashcard] = useState<IListFlashcard>(); // danh sách flashcard
-    const [editListFlashcard, setEditListFlashcard] = useState<IEditFlashcard>(); // danh sách flashcard
-
+    const [loadingAudio, setLoadingAudio] = useState(null);
+    const [disableAudio, setDisableAudio] = useState(false);
+    const [selectedVoice, setSelectedVoice] = useState("");
     const token = Cookies.get("token") || "";
     const router = useRouter();
+
     const sortFlashcards = (flashcards: any) => {
         return flashcards?.sort(({ a, b }: any) => {
             return new Date(b?.created_at).getTime() - new Date(a?.created_at).getTime();
         });
     };
-    useEffect(() => {
-        const fetchAPI = async () => {
-            const req = await GET_API_WITHOUT_COOKIE(`/flashcards/${id_flashcard}`);
-            if (req.ok) {
-                const sortedFlashcards = sortFlashcards(req?.listFlashCards?.flashcards);
-                setFlashcard(sortedFlashcards);
 
-                setFilteredFlashcards(sortedFlashcards);
-                setListFlashcard(req?.listFlashCards);
-                setEditListFlashcard({
-                    _id: req?.listFlashCards?._id,
-                    title: req?.listFlashCards?.title,
-                    language: req?.listFlashCards?.language,
-                    desc: req?.listFlashCards?.desc,
-                    public: req?.listFlashCards?.public,
-                });
-            }
+    const [filteredFlashcards, setFilteredFlashcards] = useState<Flashcard[]>(initialData?.flashcards ? sortFlashcards(initialData.flashcards) : undefined);
+    const [listFlashcard, setListFlashcard] = useState<IListFlashcard>(initialData); // danh sách flashcard
+    const [editListFlashcard, setEditListFlashcard] = useState<IEditFlashcard | undefined>(
+        initialData
+            ? {
+                  _id: initialData._id,
+                  title: initialData.title,
+                  language: initialData.language,
+                  desc: initialData.desc,
+                  public: initialData.public,
+              }
+            : undefined
+    ); // danh sách flashcard    // ✅ Use optimized hook instead of useEffect
+    const { data: fetchedData, loading: fetchLoading, error: fetchError } = useFlashcard(id_flashcard, initialData);
+
+    // Update local state when optimized data changes
+    useEffect(() => {
+        if (fetchedData && !listFlashcard) {
+            const sortedFlashcards = sortFlashcards(fetchedData.flashcards);
+            setFlashcard(sortedFlashcards);
+            setFilteredFlashcards(sortedFlashcards);
+            setListFlashcard(fetchedData);
+            setEditListFlashcard({
+                _id: fetchedData._id,
+                title: fetchedData.title,
+                language: fetchedData.language,
+                desc: fetchedData.desc,
+                public: fetchedData.public,
+            });
+        }
+    }, [fetchedData, listFlashcard]);
+
+    useEffect(() => {
+        if (!listFlashcard?.language) return; // Đợi listFlashcard load xong
+
+        const defaultVoices = {
+            english: "en-GB-SoniaNeural",
+            vietnamese: "vi-VN-HoaiMyNeural",
+            germany: "de-DE-KatjaNeural",
+            france: "fr-FR-DeniseNeural",
+            japan: "ja-JP-NanamiNeural",
+            korea: "ko-KR-SunHiNeural",
+            chinese: "zh-CN-XiaoxiaoNeural",
         };
-        fetchAPI();
-    }, [id_flashcard]);
+
+        // Lấy hoặc tạo mới defaultVoices trong localStorage
+        let savedVoices;
+        const savedVoiceString = localStorage.getItem("defaultVoices");
+
+        if (savedVoiceString) {
+            try {
+                savedVoices = JSON.parse(savedVoiceString);
+            } catch (error) {
+                console.error("Error parsing saved voices:", error);
+                savedVoices = defaultVoices;
+                localStorage.setItem("defaultVoices", JSON.stringify(defaultVoices));
+            }
+        } else {
+            savedVoices = defaultVoices;
+            localStorage.setItem("defaultVoices", JSON.stringify(defaultVoices));
+        }
+
+        // Lấy voice cho ngôn ngữ hiện tại
+        const currentVoice = savedVoices[listFlashcard.language as keyof typeof defaultVoices] || defaultVoices.english;
+        console.log("Setting voice for language:", listFlashcard.language, "->", currentVoice);
+        setSelectedVoice(currentVoice);
+    }, [listFlashcard?.language]);
 
     const handleAddVoca = async (values: any) => {
         // try {
@@ -136,13 +185,69 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
             setLoadingConfirm(false);
         }
     };
+    const [tts] = useState(() => new EdgeSpeechTTS({ locale: "en-US" }));
+    // Function để lấy voice dựa trên language và type
+    // const getVoiceByLanguage = useCallback((language: string | undefined) => {
+    //     if (language === "english") return "en-GB-SoniaNeural";
+    //     if (language === "vietnamese") return "vi-VN-HoaiMyNeural";
+    //     if (language === "germany") return "de-DE-KatjaNeural";
+    //     if (language === "france") return "fr-FR-DeniseNeural";
+    //     if (language === "japan") return "ja-JP-NanamiNeural";
+    //     if (language === "korea") return "ko-KR-SunHiNeural";
+    //     if (language === "chinese") return "zh-CN-XiaoxiaoNeural";
+    //     return "en-US-GuyNeural"; // default
+    // }, []);
+
+    const speakWord = useCallback(
+        async (text: string, id: any) => {
+            if (disableAudio) return;
+
+            const voice = selectedVoice;
+
+            try {
+                setLoadingAudio(id);
+                setDisableAudio(true);
+
+                const response = await tts.create({
+                    input: text,
+                    options: {
+                        voice: voice,
+                    },
+                });
+
+                const audioBuffer = await response.arrayBuffer();
+                const blob = new Blob([audioBuffer], { type: "audio/mpeg" });
+                const url = URL.createObjectURL(blob);
+                const audio = new Audio(url);
+
+                audio.addEventListener("ended", () => {
+                    URL.revokeObjectURL(url);
+                });
+
+                audio.play();
+            } catch (error) {
+                console.error("TTS Error:", error);
+                toast.error("Có lỗi sảy ra", {
+                    description: error instanceof Error ? error.message : "Lỗi không xác định",
+                    duration: 3000,
+                    position: "top-center",
+                });
+            } finally {
+                setLoadingAudio(null);
+                setTimeout(() => {
+                    setDisableAudio(false);
+                }, 1000);
+            }
+        },
+        [disableAudio, listFlashcard?.language, tts, selectedVoice]
+    );
 
     return (
-        <div className="w-full space-y-5 relative z-[10] dark:bg-slate-700">
+        <div className="w-full space-y-5 relative z-[10] dark:bg-slate-700 bg-gray-200">
             <div className="bg-white dark:bg-slate-800 p-5 border-b border-gray-200 dark:border-white/10 space-y-3">
-                <div className="flex items-center justify-between flex-col md:flex-row gap-5 md:gap-0">
-                    <div className="flex items-center gap-5">
-                        <Button className="" variant="ghost" onClick={() => router.back()}>
+                <div className="flex justify-between  items-start md:items-center flex-col md:flex-row gap-5 md:gap-0">
+                    <div className="flex items-center gap-5 justify-between md:justify-start flex-1">
+                        <Button className="" variant="outline" onClick={() => router.back()}>
                             <ArrowLeft /> Quay lại
                         </Button>
                         <div className="">
@@ -151,17 +256,22 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
                         </div>
                     </div>
                     <div className="flex items-center gap-1 md:gap-3 flex-wrap dark:text-white/80">
+                        <VoiceSelectionModal selectedVoice={selectedVoice} setSelectedVoice={setSelectedVoice} language={listFlashcard?.language}>
+                            <Button className="dark:text-white" variant="outline">
+                                <Volume2 /> Chọn giọng nói
+                            </Button>
+                        </VoiceSelectionModal>
                         <EditFlashcardModal>
-                            <Button className="dark:text-white">
+                            <Button className="dark:text-white" variant="outline" disabled>
                                 <PencilLine /> Chỉnh Sửa
                             </Button>
                         </EditFlashcardModal>
                         <AddVocaModal onAdd={handleAddVoca} token={token} filteredFlashcards={filteredFlashcards} setFilteredFlashcards={setFilteredFlashcards} listFlashcard={listFlashcard}>
-                            <Button className="dark:text-white">
+                            <Button className="dark:text-white" variant="outline">
                                 <Plus /> Thêm
                             </Button>
                         </AddVocaModal>
-                        <Button className="dark:text-white">
+                        <Button className="dark:text-white" variant="outline" disabled>
                             <Grid3x3 /> Thêm nhiều
                         </Button>
                         <AlertDialog>
@@ -185,7 +295,7 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
                         </AlertDialog>
                     </div>
                 </div>
-                <div className="flex items-center gap-6 text-sm text-gray-600 dark:text-white/60">
+                <div className="flex items-center gap-2 md:gap-6 flex-wrap text-sm text-gray-600 dark:text-white/60">
                     <div className="flex items-center gap-2">
                         <Flag className="w-4 h-4" />
                         <span>Ngôn ngữ:</span>
@@ -228,7 +338,7 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
                     </div> */}
 
                     {/* Statistics Cards with Dynamic Layout */}
-                    <div className={`grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-5`}>
+                    <div className={`grid gap-2 md:gap-4 grid-cols-2 lg:grid-cols-5`}>
                         {/* Total Cards - Enhanced */}
                         <div className={`bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200 dark:from-blue-800/50 dark:to-blue-900/50 dark:border-white/10`}>
                             <div className="flex items-center justify-between mb-3">
@@ -295,7 +405,8 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
                         </div>
 
                         {/* Accuracy Percentage */}
-                        <div className={`bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-6 border border-indigo-200 dark:from-indigo-800/50 dark:to-indigo-900/50 dark:border-white/10`}>
+                        <div
+                            className={`w-full col-span-2 md:col-span-1 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-6 border border-indigo-200 dark:from-indigo-800/50 dark:to-indigo-900/50 dark:border-white/10`}>
                             <div className="flex items-center justify-between mb-3">
                                 <div className="p-2 bg-indigo-600 rounded-lg">
                                     <Target className="w-5 h-5 text-white" />
@@ -333,21 +444,23 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
                     </div>
                 </div>
             </div>
-            <div className="flex items-center px-5 gap-5">
+            <div className="flex items-center px-5 gap-2 md:gap-5 flex-wrap">
                 <Link href={`/flashcard/practice/${id_flashcard}`} className="flex-1">
-                    <Button className="w-full h-16 dark:text-white text-xl uppercase hover:scale-105 transition-all duration-300">Luyện tập</Button>
+                    <Button className="w-full h-16 dark:text-white text-xl uppercase hover:scale-105 transition-all duration-300">
+                        <Target /> Luyện tập
+                    </Button>
                 </Link>
                 <Link href={`/flashcard/practice-science/${id_flashcard}`} className="flex-1">
-                    <Button variant="outline" className="w-full h-16 dark:text-white text-xl uppercase hover:scale-105 transition-all duration-300">
+                    <Button variant="secondary" className="w-full h-16 dark:text-white text-xl uppercase hover:scale-105 transition-all duration-300">
                         Luyện tập theo khoa học (beta)
                     </Button>
                 </Link>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 py-5">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 p-5 w-full">
                 {filteredFlashcards && filteredFlashcards?.length > 0 ? (
-                    filteredFlashcards.map((item: Flashcard) => <VocaCardItem key={item._id} {...item} />)
+                    filteredFlashcards.map((item: Flashcard) => <VocaCardItem key={item._id} data={item} speakWord={speakWord} loadingAudio={loadingAudio} />)
                 ) : (
-                    <div className="col-span-2 text-center text-gray-500 h-60 flex items-center justify-center">Không có từ vựng nào trong flashcard này</div>
+                    <div className="col-span-3 text-center text-gray-500 h-60 flex items-center justify-center">Không có từ vựng nào trong flashcard này</div>
                 )}
             </div>
         </div>
