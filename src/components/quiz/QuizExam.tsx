@@ -86,7 +86,6 @@ export default function QuizExam(QuizData: IQuiz) {
     const calculateScore = () => {
         let correct = 0;
         QuizData.questions.data_quiz.forEach((question: IDataQuiz) => {
-            console.log(answers[Number(question.id)]);
             if (answers[Number(question.id)] == question.correct) {
                 correct++;
             }

@@ -53,7 +53,6 @@ export default function CTaiLieu({ toolData }: any) {
     };
 
     const handleSearchSubject = (value: string) => {
-        console.log(value);
         if (value === "none") {
             setData(toolData);
             setCurrentPage(1);

@@ -71,7 +71,6 @@ export default function ChangePasswordForm() {
             setLoading(true);
             const res = await POST_API("/auth/change-password", profile, "POST", token);
             const data = await res?.json();
-            console.log(data);
             if (data?.ok) {
                 toast.success(data.message, {
                     position: "top-center",

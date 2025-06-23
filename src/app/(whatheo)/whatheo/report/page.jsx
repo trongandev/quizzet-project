@@ -38,7 +38,6 @@ export default function Report() {
 
     const handleOk = async () => {
         setConfirmLoading(true);
-        console.log(open);
         const req = await POST_API(`/report/${open}`, { ...violation }, "PATCH", token);
         const res = await req.json();
         if (req.ok) {

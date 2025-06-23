@@ -15,6 +15,7 @@ import { DialogTrigger } from "@radix-ui/react-dialog";
 import { optimizedPromptFCSingle } from "@/lib/optimizedPrompt";
 import { POST_API } from "@/lib/fetchAPI";
 import { toast } from "sonner";
+import Loading from "../ui/loading";
 
 interface AddVocabularyModalProps {
     children: React.ReactNode;
@@ -41,14 +42,15 @@ interface VocabularyData {
 export default function AddVocaModal({ children, onAdd, listFlashcard, token, filteredFlashcards, setFilteredFlashcards }: AddVocabularyModalProps) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [formData, setFormData] = useState<VocabularyData>({
+    const defaultData: VocabularyData = {
         title: "",
         transcription: "",
         define: "",
         type_of_word: "",
         examples: [{ en: "", trans: "", vi: "" }],
         note: "",
-    });
+    };
+    const [formData, setFormData] = useState<VocabularyData>(defaultData);
 
     const [isGenerating, setIsGenerating] = useState(false);
 
@@ -87,18 +89,7 @@ export default function AddVocaModal({ children, onAdd, listFlashcard, token, fi
                     setFilteredFlashcards([res?.flashcard, ...filteredFlashcards]);
                     setOpen(false);
                     // Reset form data with AI generated content
-                    setFormData({
-                        title: res.flashcard.title,
-                        transcription: res.flashcard.transcription || "",
-                        define: res.flashcard.define,
-                        type_of_word: res.flashcard.type_of_word || "",
-                        examples: res.flashcard.examples.map((ex: any) => ({
-                            en: ex.en || "",
-                            trans: ex.transcription || "",
-                            vi: ex.vi || "",
-                        })),
-                        note: res.flashcard.note || "",
-                    });
+                    setFormData(defaultData);
                 }
             }
         } catch (error) {
@@ -110,7 +101,6 @@ export default function AddVocaModal({ children, onAdd, listFlashcard, token, fi
 
     const handleSubmit = () => {
         onAdd(formData);
-        setOpen(false);
         // Reset form
         setFormData({
             title: "",
@@ -120,6 +110,12 @@ export default function AddVocaModal({ children, onAdd, listFlashcard, token, fi
             examples: [{ en: "", trans: "", vi: "" }],
             note: "",
         });
+    };
+
+    const handleEnterKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+            handleAIGenerate();
+        }
     };
 
     const isFormValid = formData.title.trim() && formData.define.trim();
@@ -159,15 +155,19 @@ export default function AddVocaModal({ children, onAdd, listFlashcard, token, fi
                                             id="title"
                                             value={formData.title}
                                             onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
+                                            autoFocus
+                                            autoComplete="off"
+                                            onKeyDown={handleEnterKey}
                                             placeholder="Nhập từ hoặc câu tiếng Trung..."
                                             className="flex-1"
                                         />
                                         <Button
                                             type="button"
                                             onClick={handleAIGenerate}
-                                            disabled={!formData.title.trim() || isGenerating}
-                                            className="gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
-                                            <Sparkles className="w-4 h-4" />
+                                            disabled={isGenerating}
+                                            className="dark:text-white gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
+                                            {isGenerating ? <Loading /> : <Sparkles className="w-4 h-4" />}
+
                                             {isGenerating ? "Đang tạo..." : "Tạo bằng AI"}
                                         </Button>
                                     </div>

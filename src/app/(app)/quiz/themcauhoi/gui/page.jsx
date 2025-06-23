@@ -277,7 +277,6 @@ export default function PostGUI() {
             setQuest([...quest, ...JSON.parse(parse)]);
             setPromptValue("");
         } catch (error) {
-            console.log(error);
             message.error("Đã có lỗi xảy ra: ", error.message);
         } finally {
             setLoading(false);

@@ -29,7 +29,7 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { AlertCircle, ArrowLeft, BookOpen, Brain, CheckCircle, Clock, Flag, Flame, Grid3x3, PencilLine, Plus, RotateCcw, Target, Timer, Trash2, TrendingUp, User, Volume2 } from "lucide-react";
-import { EditFlashcardModal } from "./EditFlashcardModal";
+import { EditFlashcardModal, EditListFlashcardModal } from "./EditListFlashcardModal";
 import AddVocaModal from "./AddVocaModal";
 import { Badge } from "../ui/badge";
 import { Flashcard, IEditFlashcard, IListFlashcard } from "@/types/type";
@@ -38,6 +38,8 @@ import Cookies from "js-cookie";
 import { toast } from "sonner";
 import Loading from "../ui/loading";
 import VoiceSelectionModal from "./VoiceSelectionModal";
+import { revalidateCache } from "@/lib/revalidate";
+
 const getLanguageFlag = (lang: string) => {
     const flags: { [key: string]: string } = {
         english: "🇺🇸",
@@ -145,14 +147,13 @@ export default function CFlashcardDetail({ id_flashcard, initialData }: { id_fla
 
         // Lấy voice cho ngôn ngữ hiện tại
         const currentVoice = savedVoices[listFlashcard.language as keyof typeof defaultVoices] || defaultVoices.english;
-        console.log("Setting voice for language:", listFlashcard.language, "->", currentVoice);
         setSelectedVoice(currentVoice);
     }, [listFlashcard?.language]);
 
     const handleAddVoca = async (values: any) => {
         // try {
         //     setLoading(true);
-        //     const req = await POST_API("/flashcards", { ...newFlashcard, list_flashcard_id: listFlashcard._id }, "POST", token);
+        //     const req = await POST_API("/flashcards", { ...newFlashcard, list_flashcard_id: listFlashCard._id }, "POST", token);
         //     const res = await req.json();
         //     if (req.ok) {
         //         setOpen(false);
@@ -164,7 +165,6 @@ export default function CFlashcardDetail({ id_flashcard, initialData }: { id_fla
         // } finally {
         //     setLoading(false);
         // }
-        console.log("Adding vocabulary:", values);
     };
     const handleDeleteListFlashcard = async () => {
         try {
@@ -189,6 +189,38 @@ export default function CFlashcardDetail({ id_flashcard, initialData }: { id_fla
             });
         } finally {
             setLoadingConfirm(false);
+        }
+    };
+
+    const handleEditListFlashcard = async (values: any) => {
+        try {
+            setLoading(true);
+
+            const req = await POST_API(`/list-flashcards/${values._id}`, values, "PATCH", token);
+            const res = await req?.json();
+
+            if (res.ok) {
+                setListFlashcard(res.listFlashCard || values);
+
+                // ✅ Revalidate multiple caches
+                await revalidateCache({
+                    tag: [`flashcard_${id_flashcard}`, "flashcards"],
+                    path: `/flashcard/${id_flashcard}`,
+                });
+
+                // ✅ Revalidate public cache if needed
+                if (values.public) {
+                    await revalidateCache({
+                        tag: "flashcard_public",
+                    });
+                }
+
+                toast.success("Cập nhật thành công!");
+            }
+        } catch (error) {
+            toast.error("Có lỗi xảy ra", { description: error instanceof Error ? error.message : "Lỗi không xác định", duration: 3000, position: "top-center" });
+        } finally {
+            setLoading(false);
         }
     };
     const [tts] = useState(() => new EdgeSpeechTTS({ locale: "en-US" }));
@@ -269,11 +301,11 @@ export default function CFlashcardDetail({ id_flashcard, initialData }: { id_fla
                         </VoiceSelectionModal>
 
                         <div className={` items-center gap-2 md:gap-3 flex-wrap ${user?._id === listFlashcard?.userId._id ? "flex" : "hidden"}`}>
-                            <EditFlashcardModal>
-                                <Button className="dark:text-white" variant="outline" disabled>
+                            <EditListFlashcardModal handleEditListFlashcard={handleEditListFlashcard} editListFlashcard={editListFlashcard} setEditListFlashcard={setEditListFlashcard} token={token}>
+                                <Button className="dark:text-white" variant="outline" onClick={() => setEditListFlashcard({ ...listFlashcard })}>
                                     <PencilLine /> Chỉnh Sửa
                                 </Button>
-                            </EditFlashcardModal>
+                            </EditListFlashcardModal>
                             <AddVocaModal onAdd={handleAddVoca} token={token} filteredFlashcards={filteredFlashcards} setFilteredFlashcards={setFilteredFlashcards} listFlashcard={listFlashcard}>
                                 <Button className="dark:text-white" variant="outline">
                                     <Plus /> Thêm
@@ -465,7 +497,7 @@ export default function CFlashcardDetail({ id_flashcard, initialData }: { id_fla
                     </Button>
                 </Link>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 p-5 w-full">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:p-5 w-full px-3">
                 {filteredFlashcards && filteredFlashcards?.length > 0 ? (
                     filteredFlashcards.map((item: Flashcard) => <VocaCardItem key={item._id} data={item} speakWord={speakWord} loadingAudio={loadingAudio} />)
                 ) : (

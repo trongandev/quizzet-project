@@ -226,7 +226,6 @@ export default function CFlashcardDetailS({ id_flashcard }) {
         try {
             const req = await POST_API("/flashcards/list", { prompt: optimizedPrompt, list_flashcard_id: listFlashcard._id }, "POST", token);
             const data = await req.json();
-            console.log("data:::", data);
             if (req.ok) {
                 messageApi.success(data.message);
                 setFilteredFlashcards([...data?.flashcards, ...filteredFlashcards]);

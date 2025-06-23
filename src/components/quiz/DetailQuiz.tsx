@@ -34,7 +34,6 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
     const [review, setReview] = useState("");
 
     const router = useRouter();
-    console.log("Quiz data:", data);
     const token = Cookies.get("token") || "";
     const handleSubmitComment = async () => {
         const newComment: IComment = {
@@ -51,7 +50,6 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
             if (req) {
                 const res = await req.json();
                 if (res.ok) {
-                    console.log(res);
                     if (res?.exist) {
                         setComment((item) => item.map((i) => (i._id == res?.id ? { ...i, review, created_at: new Date() } : i)));
                     } else {
@@ -76,7 +74,6 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
     const handleReport = () => {
         if (reportReason) {
             // Handle report submission
-            console.log("Report submitted:", reportReason);
             setReportReason("");
             setIsReportModalOpen(false);
         }

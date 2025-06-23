@@ -67,7 +67,6 @@ export default function UpdatePasswordForm() {
                 new_password: values.password,
                 re_new_password: values.re_new_password,
             };
-            console.log("Profile to update password:", profile);
             fetchingUpdatePassword(profile);
         },
     });
@@ -77,7 +76,6 @@ export default function UpdatePasswordForm() {
             setLoading(true);
             const res = await POST_API("/auth/update-password", profile, "POST", token);
             const data = await res?.json();
-            console.log(data);
             if (data?.ok) {
                 toast.success(data.message, {
                     position: "top-center",

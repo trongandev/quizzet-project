@@ -31,9 +31,6 @@ export default function CHeader({ token }: { token: string }) {
     const [feedback, setFeedback] = useState("");
     const { theme, setTheme } = useTheme();
 
-    useEffect(() => {
-        console.log("Current theme:", theme);
-    }, [theme]);
     const handleOpenChange = (newOpen: boolean) => {
         setOpen(newOpen);
     };

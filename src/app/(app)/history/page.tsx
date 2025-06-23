@@ -20,7 +20,6 @@ export default function History() {
     useEffect(() => {
         const fetchHistory = async () => {
             const req = await GET_API("/history", token);
-            console.log(req);
             setHistoryData(req?.history);
             setLoading(true);
         };

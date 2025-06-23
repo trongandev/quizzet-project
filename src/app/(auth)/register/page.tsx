@@ -54,7 +54,6 @@ export default function RegisterForm() {
             setLoading(true);
             const res = await POST_API("/auth/register", profile, "POST", token);
             const data = await res?.json();
-            console.log(data);
             if (data?.ok) {
                 toast.success("Đăng ký thành công!", {
                     description: "Đang chuyển hướng đến trang đăng nhập...",

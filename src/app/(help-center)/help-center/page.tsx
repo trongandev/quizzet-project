@@ -183,7 +183,6 @@ export default function HelpCenter() {
     const handleContactSubmit = async (values: any) => {
         try {
             // Here you would typically send the form data to your backend
-            console.log("Contact form submitted:", values);
             messageApi.success("Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi trong vòng 24 giờ.");
             form.resetFields();
         } catch (error) {

@@ -6,8 +6,11 @@ export const getCachedQuizzet = unstable_cache(
         const response = await GET_API_WITHOUT_COOKIE("/quiz");
         return response.quiz;
     },
-    ["quizzet"], // Key cache
-    { revalidate: 60 * 60 * 8 } // TTL = 8 giờ
+    ["quizzet"],
+    {
+        revalidate: 60 * 60 * 8,
+        tags: ["quizzet"], // ✅ Thêm tags
+    }
 );
 
 export const getCachedQuiz = (slug: string) =>
@@ -16,8 +19,11 @@ export const getCachedQuiz = (slug: string) =>
             const response = await GET_API_WITHOUT_COOKIE(`/quiz/${slug}`);
             return response;
         },
-        [`quiz_${slug}`], // Key cache
-        { revalidate: 60 * 60 * 24 } // TTL = 24 giờ
+        [`quiz_${slug}`],
+        {
+            revalidate: 60 * 60 * 24,
+            tags: [`quiz_${slug}`, "quiz"], // ✅ Thêm tags
+        }
     );
 
 export const getCachedTool = unstable_cache(
@@ -34,8 +40,11 @@ export const getCachedFlashcardPublic = unstable_cache(
         const response = await GET_API_WITHOUT_COOKIE("/list-flashcards/public");
         return response;
     },
-    ["flashcard_public"], // Key cache
-    { revalidate: 60 } // TTL =24 tieng
+    ["flashcard_public"],
+    {
+        revalidate: 60,
+        tags: ["flashcard_public", "flashcards"], // ✅ Thêm tags
+    }
 );
 
 export const getCachedFlashcardUser = (token: string) =>
@@ -45,7 +54,7 @@ export const getCachedFlashcardUser = (token: string) =>
             return response;
         },
         [`flashcard_${token}`], // Key cache
-        { revalidate: 30 } // TTL = 24 giờ
+        { revalidate: 30 } // TTL = 30s
     );
 
 export const getCachedFlashcardDetail = (id: string) =>
@@ -54,8 +63,11 @@ export const getCachedFlashcardDetail = (id: string) =>
             const response = await GET_API_WITHOUT_COOKIE(`/flashcards/${id}`);
             return response;
         },
-        [`flashcard_${id}`], // Key cache
-        { revalidate: 30 } // TTL = 24 giờ
+        [`flashcard_${id}`],
+        {
+            revalidate: 30,
+            tags: [`flashcard_${id}`, "flashcards"], // ✅ Thêm tags
+        }
     );
 
 export const getEmoji = unstable_cache(

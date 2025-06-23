@@ -61,7 +61,6 @@ export default function CAnswer({ history, question }: CAnswerProps) {
                     .replace(/```/g, "");
 
                 setExplain(cleanedResponse);
-                console.log("Generated explanation:", cleanedResponse);
             } catch (error) {
                 const errorMessage = error instanceof Error ? error.message : "Đã xảy ra lỗi không xác định";
                 toast.error(`Không thể lấy giải thích`, {

@@ -10,6 +10,7 @@ import { BiSlideshow } from "react-icons/bi";
 import { IoSend } from "react-icons/io5";
 import { TbConfetti } from "react-icons/tb";
 import { BsCheckCircleFill, BsEmojiAstonished, BsEmojiFrown, BsEmojiLaughing, BsXCircleFill } from "react-icons/bs";
+import { Button } from "@/components/ui/button";
 const FEATURES = {
     FLASHCARD: 1,
     QUIZ: 2,
@@ -349,8 +350,8 @@ export default function PractiveFlashcard({ params }) {
     }
 
     return (
-        <div className=" py-5 pt-20 flex justify-center items-center">
-            <div className="px-3 md:px-0 focus-visible:outline-none text-third dark:text-white min-h-screen" onKeyDown={handleKeyDown} tabIndex={0}>
+        <div className=" py-5 pt-20  w-full">
+            <div className="px-3 md:px-20 focus-visible:outline-none text-third dark:text-white min-h-screen" onKeyDown={handleKeyDown} tabIndex={0}>
                 {contextHolder}
                 <div className="w-full flex items-center justify-center h-[90%] flex-col gap-5">
                     <div className="w-full flex flex-col md:flex-row gap-5 items-start">

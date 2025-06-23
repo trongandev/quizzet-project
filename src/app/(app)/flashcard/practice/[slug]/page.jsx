@@ -10,8 +10,9 @@ import { BiSlideshow } from "react-icons/bi";
 import { IoSend } from "react-icons/io5";
 import { EdgeSpeechTTS } from "@lobehub/tts";
 import { Button } from "@/components/ui/button";
-import { Eye, Lightbulb, Send } from "lucide-react";
+import { ArrowLeft, Eye, Lightbulb, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { useRouter } from "next/navigation";
 const FEATURES = {
     FLASHCARD: 1,
     QUIZ: 2,
@@ -37,7 +38,7 @@ export default function PractiveFlashcard({ params }) {
     const [selectedAnswers, setSelectedAnswers] = useState({});
     const [isCorrectAns, setIsCorrectAns] = useState(null);
     const [language, setLanguage] = useState({});
-
+    const router = useRouter();
     const shuffle = (array) => {
         let currentIndex = array.length,
             randomIndex;
@@ -54,7 +55,6 @@ export default function PractiveFlashcard({ params }) {
         const fetchFlashCards = async () => {
             const token = Cookies.get("token");
             const req = await GET_API(`/flashcards/${params?.slug}`, token);
-            console.log(req);
             if (req.ok) {
                 const result = req?.listFlashCards?.flashcards;
 
@@ -291,10 +291,14 @@ export default function PractiveFlashcard({ params }) {
     }
 
     return (
-        <div className=" py-5 pt-20 flex justify-center items-center">
-            <div className="w-full md:w-[1000px] xl:w-[1200px] px-3 md:px-0 focus-visible:outline-none min-h-screen" onKeyDown={handleKeyDown} tabIndex={0}>
+        <div className="relative z-10 bg-slate-700 py-5 px-3 flex justify-center items-center">
+            <div className="w-full md:w-[1000px] xl:w-[1200px] focus-visible:outline-none min-h-screen" onKeyDown={handleKeyDown} tabIndex={0}>
                 {contextHolder}
                 <div className="w-full flex items-center justify-center h-[90%] flex-col gap-2">
+                    <Button className="w-full md:w-auto" variant="outline" onClick={() => router.back()}>
+                        <ArrowLeft /> Quay lại
+                    </Button>
+
                     {/* Progress Display */}
                     <div className="space-y-2 block md:hidden w-full">
                         <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg">
@@ -560,7 +564,7 @@ export default function PractiveFlashcard({ params }) {
                                         Listening: FEATURES.LISTENING,
                                         "Fill Blank": FEATURES.FILL_BLANK,
                                     }).map(([name, value]) => (
-                                        <Button key={value} onClick={() => setFeature(value)} variant={feature === value ? "default" : "secondary"}>
+                                        <Button className="dark:text-white" key={value} onClick={() => setFeature(value)} variant={feature === value ? "default" : "secondary"}>
                                             {name}
                                         </Button>
                                     ))}

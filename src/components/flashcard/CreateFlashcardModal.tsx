@@ -38,7 +38,6 @@ export function CreateFlashcardModal({ children, listFlashCard, setListFlashCard
             e.preventDefault();
             setLoading(true);
 
-            console.log("Form data:", formData);
             const req = await POST_API("/list-flashcards", { ...formData }, "POST", token);
             if (req) {
                 const res = await req.json();

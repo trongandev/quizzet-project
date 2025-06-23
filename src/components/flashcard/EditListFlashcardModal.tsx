@@ -17,44 +17,38 @@ import { toast } from "sonner";
 import { languages } from "@/lib/languageOption";
 interface EditFlashcardModalProps {
     children: React.ReactNode;
+    handleEditListFlashcard?: any;
+    editListFlashcard?: any;
+    setEditListFlashcard?: React.Dispatch<React.SetStateAction<any>>;
+    token?: any;
 }
 
-export function EditFlashcardModal({ children }: EditFlashcardModalProps) {
+export function EditListFlashcardModal({ children, editListFlashcard, setEditListFlashcard, handleEditListFlashcard, token }: EditFlashcardModalProps) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    const token = Cookies.get("token") || "";
     const [formData, setFormData] = useState({
-        title: "",
-        language: "",
-        desc: "",
-        public: false, // Already boolean
+        title: editListFlashcard?.title || "",
+        language: editListFlashcard?.language || "en",
+        desc: editListFlashcard?.desc || "",
+        public: editListFlashcard?.public || false,
     });
     const handleSubmit = async (e: React.FormEvent) => {
         try {
             e.preventDefault();
             setLoading(true);
 
-            console.log("Form data:", formData);
-            const req = await POST_API("/list-flashcards", { ...formData }, "POST", token);
-            if (req) {
-                const res = await req.json();
-                if (req.ok) {
-                    toast.success("Tạo thành công flashcard");
-                    setOpen(false);
-                    // setListFlashCard([res?.listFlashCard, ...listFlashCard]);
-                    setFormData({
-                        title: "",
-                        language: "",
-                        desc: "",
-                        public: false,
-                    });
-                }
+            const req = await POST_API("/list-flashcards/" + editListFlashcard?._id, { ...formData }, "PATCH", token);
+            const res = await req?.json();
+            if (res.ok) {
+                toast.success("Cập nhật thành công", { description: res.message, position: "top-center" });
+                handleEditListFlashcard(res?.listFlashCard);
+                // setListFlashCard([res?.listFlashCard, ...listFlashCard]);
+                setOpen(false);
             }
         } catch (error) {
             toast.error("Đã có lỗi xảy ra, vui lòng thử lại sau", { description: error instanceof Error ? error.message : "Lỗi không xác định" });
         } finally {
             setLoading(false);
-            setOpen(false);
         }
     };
     const handleInputChange = (field: string, value: string | boolean) => {
@@ -169,7 +163,7 @@ export function EditFlashcardModal({ children }: EditFlashcardModalProps) {
                             Hủy
                         </Button>{" "}
                         <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700 dark:text-white" disabled={!formData.title || !formData.language || loading}>
-                            {loading ? "Đang tạo..." : "Tạo flashcard"}
+                            {loading ? "Đang tạo..." : "Cập nhật flashcard"}
                         </Button>
                     </div>
                 </form>

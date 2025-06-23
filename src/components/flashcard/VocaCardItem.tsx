@@ -56,7 +56,7 @@ export default function VocaCardItem({ data, speakWord, loadingAudio }: Props) {
     };
 
     return (
-        <Card className="md:w-full max-w-2xl md:max-w-full mx-auto shadow-sm hover:shadow-md transition-shadow duration-200 border-l-4 border-l-blue-500 dark:border-l-blue-400 overflow-hidden h-full">
+        <Card className="w-full max-w-2xl md:max-w-full mx-auto shadow-sm hover:shadow-md transition-shadow duration-200 border-l-4 border-l-blue-500 dark:border-l-blue-400 overflow-hidden h-full">
             <CardContent className="p-0 dark:bg-slate-800/50 h-full">
                 {/* Header with status */}
                 <div className="flex items-center justify-between p-4 pb-2">
