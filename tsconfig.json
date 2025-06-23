@@ -39,7 +39,8 @@
         "src/app/(app)/dapan/[slug]/page.jsx",
         "src/app/(app)/congdong/ChatArea.jsx",
         "src/app/(app)/congdong/ChatArea.jsx",
-        "src/app/(app)/congdong/page.jsx"
+        "src/app/(app)/congdong/page.jsx",
+        "src/components/CPublicFlashcard.jsx"
     ],
     "exclude": ["node_modules"]
 }

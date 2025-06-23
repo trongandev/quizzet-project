@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, CheckCircle, Lock, Mail } from "lucide-react";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
 import Loading from "@/components/ui/loading";
 import { toast } from "sonner";
 
@@ -52,7 +51,7 @@ export default function ForgotPasswordForm() {
     const fetchForgotPassword = async (values: any) => {
         setLoading(true);
         try {
-            const res = await POST_API("/auth/forget", { email: values.email }, "POST", token);
+            const res = await POST_API("/auth/forgot-password", { email: values.email }, "POST", token);
             if (res) {
                 const data = await res.json();
                 if (res.ok) {

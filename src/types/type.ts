@@ -108,7 +108,7 @@ interface IListFlashcard {
     _id: string;
     userId: IUser;
     title: string;
-    language: string;
+    language: "chinese" | "english" | "french" | "germany" | "japanese" | "korean";
     desc: string;
     public: boolean;
     flashcards: Flashcard[];

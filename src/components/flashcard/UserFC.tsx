@@ -22,7 +22,7 @@ export default function UserFC({ item }: any) {
                 </div>
                 <Image src={`/flag/${item.language}.svg`} alt="" width={25} height={25} className="rounded-sm brightness-90 group-hover:brightness-100 duration-300"></Image>
             </div>
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-start md:justify-between flex-col md:flex-row">
                 <Badge className="px-3 py-[0.4px] bg-blue-200/80 text-blue-700 font-medium text-xs">{item?.flashcards?.length} từ</Badge>
                 <p className="line-clamp-1 text-xs text-gray-500">{handleCompareDate(item?.created_at)}</p>
             </div>

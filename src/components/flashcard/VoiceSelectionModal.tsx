@@ -17,7 +17,7 @@ interface VoiceSelectionModalProps {
     children: React.ReactNode;
     selectedVoice: string;
     setSelectedVoice: (voiceId: string) => void;
-    language: string; // Thêm prop language nếu cần thiết
+    language: "chinese" | "english" | "french" | "germany" | "japanese" | "korean"; // Thêm prop language nếu cần thiết
 }
 
 export default function VoiceSelectionModal({ children, selectedVoice, setSelectedVoice, language }: VoiceSelectionModalProps) {
@@ -40,7 +40,7 @@ export default function VoiceSelectionModal({ children, selectedVoice, setSelect
         //     toast.error("Không thể load nói đã chọn, vui lòng đổi trình duyệt Chome");
         // }
         console.log("Selected voice on mount:", selectedVoice);
-        const languageMap: { [key: string]: string } = {
+        const languageMap = {
             chinese: "中文",
             english: "English",
             french: "Français",
@@ -49,14 +49,9 @@ export default function VoiceSelectionModal({ children, selectedVoice, setSelect
             korean: "한국어",
         };
 
-        const targetLanguage = languageMap[language];
-        if (targetLanguage) {
-            const filteredVoices = voices.filter((voice) => voice.language === targetLanguage);
-            setFilterLanguage(filteredVoices);
-        } else {
-            setFilterLanguage(voices); // Fallback to all voices if language not found
-        }
-    }, [language]);
+        const filteredVoices = voices.filter((voice) => voice.language === languageMap[language]);
+        setFilterLanguage(filteredVoices);
+    }, [language, setSelectedVoice, selectedVoice]);
     const handlePlaySample = (text: string, voiceId: string) => {
         if (playingVoice === voiceId) {
             // Nếu đang phát cùng voice, thì dừng lại
@@ -135,8 +130,12 @@ export default function VoiceSelectionModal({ children, selectedVoice, setSelect
         }
     };
 
-    const handleSelectVoice = (voiceId: string) => {
+    const handleSelectVoice = (sample: string, voiceId: string) => {
         setSelectedVoice(voiceId);
+        // Check if current screen size is mobile
+        if (window.innerWidth <= 768) {
+            handlePlaySample(sample, voiceId);
+        }
         try {
             const savedVoice = JSON.parse(localStorage.getItem("defaultVoices") || "");
             console.log("Saved voice:", savedVoice);
@@ -181,6 +180,7 @@ export default function VoiceSelectionModal({ children, selectedVoice, setSelect
             AU: "🇦🇺",
             CA: "🇨🇦",
             AT: "🇦🇹 ",
+            VN: "🇻🇳",
         };
         return flags[country] || "🌐";
     };
@@ -194,20 +194,20 @@ export default function VoiceSelectionModal({ children, selectedVoice, setSelect
                         <Volume2 className="w-5 h-5 text-blue-600" />
                         Chọn giọng nói
                     </DialogTitle>
-                    <DialogDescription>Lựa chọn giọng nói phù hợp để cải thiện trải nghiệm học tập của bạn</DialogDescription>
+                    <DialogDescription>Lựa chọn giọng nói phù hợp để cải thiện trải nghiệm học tập của bạn, một số giọng cần thời gian để phát âm</DialogDescription>
                 </DialogHeader>
 
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="grid w-full grid-cols-5">
+                    <TabsList className="grid w-full grid-cols-3 md:grid-cols-5">
                         <TabsTrigger value="all" className="gap-1">
                             <Globe className="w-3 h-3" />
                             Tất cả
                         </TabsTrigger>
-                        <TabsTrigger value="popular" className="gap-1">
+                        <TabsTrigger value="popular" className="gap-1 hidden md:flex">
                             <Star className="w-3 h-3" />
                             Phổ biến
                         </TabsTrigger>
-                        <TabsTrigger value="premium" className="gap-1">
+                        <TabsTrigger value="premium" className="gap-1 hidden md:flex">
                             <Badge variant="secondary" className="w-2 h-2 p-0" />
                             Premium
                         </TabsTrigger>
@@ -226,15 +226,20 @@ export default function VoiceSelectionModal({ children, selectedVoice, setSelect
                             {getFilteredVoices().map((voice) => (
                                 <Card
                                     key={voice.id}
-                                    className={`cursor-pointer transition-all duration-200 hover:shadow-md border-b-4 ${
-                                        selectedVoice === voice.id ? "border-b-blue-500 bg-blue-50" : "hover:bg-gray-50"
+                                    className={`w-full cursor-pointer transition-all duration-200 border dark:border-white/10 border-gray-300/50  ${
+                                        selectedVoice === voice.id ? "border-b-4 border-b-blue-500 bg-blue-50 dark:bg-blue-900/50" : "hover:bg-gray-50 dark:hover:bg-gray-700/50"
                                     }`}
-                                    onClick={() => handleSelectVoice(voice.id)}>
+                                    onClick={() => handleSelectVoice(voice.sample, voice.id)}>
                                     <CardContent className="p-4">
                                         <div className="flex items-center gap-4">
                                             {/* Avatar */}
                                             <Avatar className="w-12 h-12">
-                                                <AvatarFallback className={`text-sm font-medium ${voice.gender === "female" ? "bg-pink-100 text-pink-700" : "bg-blue-100 text-blue-700"}`}>
+                                                <AvatarFallback
+                                                    className={`text-sm font-medium ${
+                                                        voice.gender === "female"
+                                                            ? "bg-pink-100 text-pink-700 dark:bg-pink-900/50 dark:text-pink-300"
+                                                            : "bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300"
+                                                    }`}>
                                                     {voice.avatar}
                                                 </AvatarFallback>
                                             </Avatar>
@@ -242,20 +247,20 @@ export default function VoiceSelectionModal({ children, selectedVoice, setSelect
                                             {/* Voice Info */}
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-center gap-2 mb-1">
-                                                    <h3 className="font-medium text-gray-900">{voice.name}</h3>
+                                                    <h3 className="font-medium text-gray-900 dark:text-gray-200">{voice.name}</h3>
                                                     <Badge variant="outline" className="text-xs">
                                                         {getCountryFlag(voice.country)} {voice.language}
                                                     </Badge>
-                                                    {voice.premium && <Badge className="text-xs bg-gradient-to-r from-purple-600 to-blue-600">Premium</Badge>}
+                                                    {voice.premium && <Badge className="text-xs bg-gradient-to-r from-purple-600 to-blue-600 dark:text-white">Premium</Badge>}
                                                     {voice.popular && (
-                                                        <Badge variant="secondary" className="text-xs gap-1">
+                                                        <Badge variant="secondary" className="text-xs gap-1 hidden md:flex">
                                                             <Star className="w-3 h-3" />
                                                             Phổ biến
                                                         </Badge>
                                                     )}
                                                 </div>
-                                                <p className="text-sm text-gray-600 mb-2">{voice.description}</p>
-                                                <p className="text-xs text-gray-500 italic">&quot;{voice.sample}&quot;</p>
+                                                <p className="text-sm text-gray-600 mb-2 dark:text-gray-400">{voice.description}</p>
+                                                <p className="text-xs text-gray-500 italic dark:text-gray-300">&quot;{voice.sample}&quot;</p>
                                             </div>
 
                                             {/* Controls - Cải thiện UI */}
@@ -267,7 +272,9 @@ export default function VoiceSelectionModal({ children, selectedVoice, setSelect
                                                         e.stopPropagation();
                                                         handlePlaySample(voice.sample, voice.id);
                                                     }}
-                                                    className={`gap-1 transition-all duration-500 ${playingVoice === voice.id ? "bg-blue-600 hover:bg-blue-700 text-white animate-pulse" : ""}`}
+                                                    className={`hidden md:flex gap-1 transition-all duration-500 ${
+                                                        playingVoice === voice.id ? "bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-800 animate-pulse" : ""
+                                                    }`}
                                                     // disabled={playingVoice !== null && playingVoice !== voice.id} // Disable other buttons khi đang phát
                                                 >
                                                     {playingVoice === voice.id ? (
@@ -284,7 +291,7 @@ export default function VoiceSelectionModal({ children, selectedVoice, setSelect
                                                 </Button>
 
                                                 {selectedVoice === voice.id && (
-                                                    <div className="flex items-center gap-1 text-blue-600">
+                                                    <div className=" items-center gap-1 text-blue-600 dark:text-blue-400 hidden md:flex">
                                                         <Check className="w-4 h-4" />
                                                         <span className="text-sm font-medium">Đã chọn</span>
                                                     </div>
@@ -302,7 +309,7 @@ export default function VoiceSelectionModal({ children, selectedVoice, setSelect
                     <Button variant="outline" onClick={() => handleDialogChange(false)}>
                         Hủy
                     </Button>
-                    <Button onClick={() => handleDialogChange(false)} className="gap-2">
+                    <Button onClick={() => handleDialogChange(false)} className="gap-2 text-white">
                         <Check className="w-4 h-4" />
                         Xác nhận
                     </Button>

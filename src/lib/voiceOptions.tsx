@@ -430,7 +430,7 @@ export const voices = [
         language: "Tiếng Việt",
         country: "VN",
         description: "Giọng nam Việt Nam chuyên nghiệp, rõ ràng và tự tin",
-        premium: true,
+        premium: false,
         popular: true,
         avatar: "NM",
         sample: "Chào bạn, tôi là Nam Minh. Hãy để tôi giúp bạn học tiếng Việt nhé.",

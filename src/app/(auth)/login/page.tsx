@@ -105,48 +105,47 @@ export default function LoginForm() {
 
     return (
         <div className="min-h-screen flex items-center justify-center p-4">
-            <div className="">
-                <form className="dark:bg-slate-800/80 bg-white border dark:border-white/10 rounded-2xl shadow-xl p-6 md:p-8 space-y-6" onSubmit={formik.handleSubmit}>
-                    {/* Header */}
-                    <div className="flex items-center space-x-4">
-                        <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={handleBackRouter}>
-                            <ArrowLeft className="h-4 w-4" />
-                        </Button>
-                        <Link href="/">
-                            <Image unoptimized alt="" width={150} height={150} src="/logo.png"></Image>
-                        </Link>
+            <div className="dark:bg-slate-800/80 bg-white border dark:border-white/10 rounded-2xl shadow-xl p-6 md:p-8 space-y-6">
+                {/* Header */}
+                <div className="flex items-center space-x-4">
+                    <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={handleBackRouter}>
+                        <ArrowLeft className="h-4 w-4" />
+                    </Button>
+                    <Link href="/">
+                        <Image unoptimized alt="" width={150} height={150} src="/logo.png"></Image>
+                    </Link>
+                </div>
+
+                {/* Title */}
+                <div className="text-center space-y-2">
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-white/80">Đăng nhập</h1>
+                    <p className="text-gray-600 dark:text-gray-400">Đăng nhập để trải nghiệm Quizzet tốt hơn nhé</p>
+                </div>
+
+                {/* Google Login - Highlighted */}
+                <div className="space-y-4">
+                    <Button
+                        variant="outline"
+                        onClick={handleLoginGoogle}
+                        className="relative group overflow-hidden w-full h-12 bg-gradient-to-r from-red-800/90 via-yellow-800/90 to-blue-800/90 text-white border-0 shadow-md transform hover:scale-105 transition-all duration-200 ">
+                        <Image src="https://www.svgrepo.com/show/303108/google-icon-logo.svg" alt="" width={30} height={30} className="mr-3"></Image>
+                        Đăng nhập bằng Google
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/80  dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
+                    </Button>
+
+                    <div className="text-center">
+                        <span className="text-xs text-gray-500 bg-white px-3 dark:bg-slate-800/80 dark:text-gray-400">Nhanh chóng & Bảo mật</span>
                     </div>
+                </div>
 
-                    {/* Title */}
-                    <div className="text-center space-y-2">
-                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white/80">Đăng nhập</h1>
-                        <p className="text-gray-600 dark:text-gray-400">Đăng nhập để trải nghiệm Quizzet tốt hơn nhé</p>
+                {/* Separator */}
+                <div className="relative">
+                    <Separator />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="bg-white px-4 text-sm text-gray-500 dark:bg-slate-800/80 dark:text-gray-400">Hoặc</span>
                     </div>
-
-                    {/* Google Login - Highlighted */}
-                    <div className="space-y-4">
-                        <Button
-                            variant="outline"
-                            onClick={handleLoginGoogle}
-                            className="relative group overflow-hidden w-full h-12 bg-gradient-to-r from-red-800/90 via-yellow-800/90 to-blue-800/90 text-white border-0 shadow-md transform hover:scale-105 transition-all duration-200 ">
-                            <Image src="https://www.svgrepo.com/show/303108/google-icon-logo.svg" alt="" width={30} height={30} className="mr-3"></Image>
-                            Đăng nhập bằng Google
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/80  dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
-                        </Button>
-
-                        <div className="text-center">
-                            <span className="text-xs text-gray-500 bg-white px-3 dark:bg-slate-800/80 dark:text-gray-400">Nhanh chóng & Bảo mật</span>
-                        </div>
-                    </div>
-
-                    {/* Separator */}
-                    <div className="relative">
-                        <Separator />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="bg-white px-4 text-sm text-gray-500 dark:bg-slate-800/80 dark:text-gray-400">Hoặc</span>
-                        </div>
-                    </div>
-
+                </div>
+                <form className="" onSubmit={formik.handleSubmit}>
                     {/* Email/Password Form */}
                     <div className="space-y-4">
                         <div className="space-y-2">
@@ -172,23 +171,22 @@ export default function LoginForm() {
                             />
                         </div>
 
-                        <Button className="relative group overflow-hidden w-full h-11 bg-primary  text-white hover:scale-105 transition-all duration-200" disabled={loading}>
+                        <Button type="submit" className="relative group overflow-hidden w-full h-11 bg-primary  text-white hover:scale-105 transition-all duration-200" disabled={loading}>
                             {loading && <Loading />}
                             Đăng nhập
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/80  dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
                         </Button>
                     </div>
-
-                    {/* Footer Links */}
-                    <div className="flex justify-between items-center text-sm">
-                        <Link href="/register" className="text-primary hover:underline">
-                            Đăng ký
-                        </Link>
-                        <Link href="/forgot-password" className="text-primary hover:underline">
-                            Quên mật khẩu?
-                        </Link>
-                    </div>
                 </form>
+                {/* Footer Links */}
+                <div className="flex justify-between items-center text-sm">
+                    <Link href="/register" className="text-primary hover:underline">
+                        Đăng ký
+                    </Link>
+                    <Link href="/forgot-password" className="text-primary hover:underline">
+                        Quên mật khẩu?
+                    </Link>
+                </div>
 
                 {/* Additional CTA */}
                 <div className="mt-6 text-center">

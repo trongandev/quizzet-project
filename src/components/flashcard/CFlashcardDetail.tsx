@@ -44,6 +44,9 @@ const getLanguageFlag = (lang: string) => {
         chinese: "🇨🇳",
         japan: "🇯🇵",
         korea: "🇰🇷",
+        vietnamese: "🇻🇳",
+        germany: "🇩🇪",
+        france: "🇫🇷",
     };
     return flags[lang] || "🌐";
 };
@@ -54,6 +57,9 @@ const getLanguageName = (lang: string) => {
         chinese: "中文",
         japan: "日本語",
         korea: "한국어",
+        vietnamese: "Tiếng Việt",
+        germany: "Deutsch",
+        france: "Français",
     };
     return names[lang] || "Khác";
 };
@@ -68,7 +74,7 @@ export default function CFlashcardDetail({ id_flashcard, initialData }: { id_fla
     const [selectedVoice, setSelectedVoice] = useState("");
     const token = Cookies.get("token") || "";
     const router = useRouter();
-
+    const { user } = useUser() || { user: undefined };
     const sortFlashcards = (flashcards: any) => {
         return flashcards?.sort(({ a, b }: any) => {
             return new Date(b?.created_at).getTime() - new Date(a?.created_at).getTime();
@@ -246,8 +252,8 @@ export default function CFlashcardDetail({ id_flashcard, initialData }: { id_fla
         <div className="w-full space-y-5 relative z-[10] dark:bg-slate-700 bg-gray-200">
             <div className="bg-white dark:bg-slate-800 p-5 border-b border-gray-200 dark:border-white/10 space-y-3">
                 <div className="flex justify-between  items-start md:items-center flex-col md:flex-row gap-5 md:gap-0">
-                    <div className="flex items-center gap-5 justify-between md:justify-start flex-1">
-                        <Button className="" variant="outline" onClick={() => router.back()}>
+                    <div className="flex w-full md:items-center flex-col md:flex-row gap-5 justify-between md:justify-start flex-1">
+                        <Button className="w-full md:w-auto" variant="outline" onClick={() => router.back()}>
                             <ArrowLeft /> Quay lại
                         </Button>
                         <div className="">
@@ -255,44 +261,47 @@ export default function CFlashcardDetail({ id_flashcard, initialData }: { id_fla
                             <p className="text-gray-400 dark:text-white/50 text-sm">{listFlashcard?.desc || "Không có mô tả..."} </p>
                         </div>
                     </div>
-                    <div className="flex items-center gap-1 md:gap-3 flex-wrap dark:text-white/80">
+                    <div className="flex items-center gap-2 md:gap-3 flex-wrap dark:text-white/80">
                         <VoiceSelectionModal selectedVoice={selectedVoice} setSelectedVoice={setSelectedVoice} language={listFlashcard?.language}>
-                            <Button className="dark:text-white" variant="outline">
+                            <Button className="dark:text-white" variant="secondary">
                                 <Volume2 /> Chọn giọng nói
                             </Button>
                         </VoiceSelectionModal>
-                        <EditFlashcardModal>
-                            <Button className="dark:text-white" variant="outline" disabled>
-                                <PencilLine /> Chỉnh Sửa
-                            </Button>
-                        </EditFlashcardModal>
-                        <AddVocaModal onAdd={handleAddVoca} token={token} filteredFlashcards={filteredFlashcards} setFilteredFlashcards={setFilteredFlashcards} listFlashcard={listFlashcard}>
-                            <Button className="dark:text-white" variant="outline">
-                                <Plus /> Thêm
-                            </Button>
-                        </AddVocaModal>
-                        <Button className="dark:text-white" variant="outline" disabled>
-                            <Grid3x3 /> Thêm nhiều
-                        </Button>
-                        <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Button variant="destructive">
-                                    <Trash2 /> Xóa
+
+                        <div className={` items-center gap-2 md:gap-3 flex-wrap ${user?._id === listFlashcard?.userId._id ? "flex" : "hidden"}`}>
+                            <EditFlashcardModal>
+                                <Button className="dark:text-white" variant="outline" disabled>
+                                    <PencilLine /> Chỉnh Sửa
                                 </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Bạn có chắc muốn xóa flashcard này không?</AlertDialogTitle>
-                                    <AlertDialogDescription>Sau khi xóa bạn sẽ không thể khôi phục lại được nữa</AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>Từ chối</AlertDialogCancel>
-                                    <AlertDialogAction onClick={handleDeleteListFlashcard} disabled={loadingConfirm} className="dark:text-white">
-                                        {loadingConfirm && <Loading />}Xóa
-                                    </AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
+                            </EditFlashcardModal>
+                            <AddVocaModal onAdd={handleAddVoca} token={token} filteredFlashcards={filteredFlashcards} setFilteredFlashcards={setFilteredFlashcards} listFlashcard={listFlashcard}>
+                                <Button className="dark:text-white" variant="outline">
+                                    <Plus /> Thêm
+                                </Button>
+                            </AddVocaModal>
+                            <Button className="dark:text-white" variant="outline" disabled>
+                                <Grid3x3 /> Thêm nhiều
+                            </Button>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button variant="destructive">
+                                        <Trash2 /> Xóa
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Bạn có chắc muốn xóa flashcard này không?</AlertDialogTitle>
+                                        <AlertDialogDescription>Sau khi xóa bạn sẽ không thể khôi phục lại được nữa</AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Từ chối</AlertDialogCancel>
+                                        <AlertDialogAction onClick={handleDeleteListFlashcard} disabled={loadingConfirm} className="dark:text-white">
+                                            {loadingConfirm && <Loading />}Xóa
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </div>
                     </div>
                 </div>
                 <div className="flex items-center gap-2 md:gap-6 flex-wrap text-sm text-gray-600 dark:text-white/60">
@@ -446,12 +455,12 @@ export default function CFlashcardDetail({ id_flashcard, initialData }: { id_fla
             </div>
             <div className="flex items-center px-5 gap-2 md:gap-5 flex-wrap">
                 <Link href={`/flashcard/practice/${id_flashcard}`} className="flex-1">
-                    <Button className="w-full h-16 dark:text-white text-xl uppercase hover:scale-105 transition-all duration-300">
+                    <Button className="w-full h-16 dark:text-white text-md md:text-xl uppercase hover:scale-105 transition-all duration-300">
                         <Target /> Luyện tập
                     </Button>
                 </Link>
                 <Link href={`/flashcard/practice-science/${id_flashcard}`} className="flex-1">
-                    <Button variant="secondary" className="w-full h-16 dark:text-white text-xl uppercase hover:scale-105 transition-all duration-300">
+                    <Button variant="secondary" className="w-full h-16 dark:text-white text-md md:text-xl uppercase hover:scale-105 transition-all duration-300">
                         Luyện tập theo khoa học (beta)
                     </Button>
                 </Link>
