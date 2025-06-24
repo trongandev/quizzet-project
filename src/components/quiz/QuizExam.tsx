@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import handleCompareDate from "@/lib/CompareDate";
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import Loading from "../ui/loading";
 export default function QuizExam(QuizData: IQuiz) {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -111,6 +112,12 @@ export default function QuizExam(QuizData: IQuiz) {
                 if (req.ok) {
                     toast.success(data?.message);
                     setLinkHistory(data?.id_history);
+                    console.log("Quiz submitted successfully:", data);
+                } else {
+                    toast.error("Lỗi khi nộp bài quiz", {
+                        description: data?.message,
+                        position: "top-center",
+                    });
                 }
             }
         } catch (error) {
@@ -127,8 +134,8 @@ export default function QuizExam(QuizData: IQuiz) {
     if (!isQuizStarted) {
         return (
             <div className="min-h-screen px-3 md:px-0">
-                <div className="max-w-2xl bg-white rounded-xl dark:bg-slate-900/50 mx-auto">
-                    <Card className="shadow-xl">
+                <div className="max-w-2xl  mx-auto">
+                    <Card className="shadow-xl bg-white rounded-xl dark:bg-slate-900/50">
                         <CardHeader className="text-center pb-8">
                             <CardTitle className="text-3xl font-bold text-gray-800 dark:text-white mb-4">{QuizData.title}</CardTitle>
                             <div className="flex flex-wrap items-center justify-center gap-3 md:gap-6 text-gray-600 dark:text-gray-300 mb-6">
@@ -182,7 +189,7 @@ export default function QuizExam(QuizData: IQuiz) {
                                     setTimeLeft(timeLimit * 60);
                                 }}
                                 size="lg"
-                                className="px-8 py-3 text-lg font-semibold text-white w-full">
+                                className="h-12 text-lg font-semibold text-white w-full">
                                 Bắt đầu làm bài
                             </Button>
                         </CardContent>
@@ -199,32 +206,32 @@ export default function QuizExam(QuizData: IQuiz) {
         return (
             <div className="min-h-screen  p-4">
                 <div className="max-w-2xl mx-auto pt-20">
-                    <Card className="shadow-xl">
+                    <Card className="shadow-xl dark:border-white/10 dark:bg-slate-900/50">
                         <CardHeader className="text-center pb-8">
-                            <CardTitle className="text-3xl font-bold text-gray-800 mb-4">Kết quả bài quiz</CardTitle>
+                            <CardTitle className="text-3xl font-bold text-gray-800 mb-4 dark:text-white/80">Kết quả bài quiz</CardTitle>
                             <div className="text-6xl font-bold text-blue-600 mb-4">{percentage}%</div>
-                            <p className="text-xl text-gray-600 mb-6">
+                            <p className="text-xl text-gray-600 dark:text-gray-400 mb-6">
                                 Bạn đã trả lời đúng {score}/{QuizData.questions?.data_quiz?.length} câu
                             </p>
-                            <div className="bg-gray-50 p-4 rounded-lg">
-                                <h3 className="font-semibold text-gray-800 mb-2">Chi tiết:</h3>
-                                <div className="grid grid-cols-2 gap-4 text-sm">
+                            <div className="bg-gray-50 p-4 rounded-lg dark:bg-gray-600/50 dark:border-white/10">
+                                <h3 className="font-semibold text-gray-800 mb-2 dark:text-white/60">Chi tiết:</h3>
+                                <div className="grid grid-cols-2 gap-3 text-sm">
                                     <div>
-                                        Câu đúng: <span className="font-semibold text-green-600">{score}</span>
+                                        Câu đúng: <span className="font-semibold text-green-600 text-xl">{score}</span>
                                     </div>
                                     <div>
-                                        Câu sai: <span className="font-semibold text-red-600">{QuizData.questions?.data_quiz?.length - score}</span>
+                                        Câu sai: <span className="font-semibold text-red-600 text-xl">{QuizData.questions?.data_quiz?.length - score}</span>
                                     </div>
                                     <div>
-                                        Thời gian còn lại: <span className="font-semibold">{formatTime(timeLeft)}</span>
+                                        Thời gian còn lại: <span className="font-semibold text-xl">{formatTime(timeLeft)}</span>
                                     </div>
                                     <div>
-                                        Tỷ lệ: <span className="font-semibold text-blue-600">{percentage}%</span>
+                                        Tỷ lệ: <span className="font-semibold text-blue-600 text-xl">{percentage}%</span>
                                     </div>
                                 </div>
                             </div>
                         </CardHeader>
-                        <CardContent className=" flex items-center gap-2 justify-center">
+                        <CardContent className=" flex items-center gap-10 justify-center">
                             <Button
                                 onClick={() => {
                                     setCurrentQuestion(0);
@@ -234,13 +241,19 @@ export default function QuizExam(QuizData: IQuiz) {
                                     setIsQuizCompleted(false);
                                 }}
                                 size="lg"
-                                className="px-8 py-3 text-lg font-semibold">
+                                variant="outline"
+                                className="h-12 text-lg font-semibold dark:text-white">
                                 <RefreshCcw />
                                 Làm lại
                             </Button>
-                            <Button size="lg" className="px-8 py-3 text-lg font-semibold" onClick={() => router.push("/dapan/" + linkHistory)} disabled={loading}>
-                                <ReceiptText />
-                                Xem chi tiết bài
+                            <Button
+                                size="lg"
+                                variant="outline"
+                                className="h-12 text-lg font-semibold  dark:text-white"
+                                onClick={() => router.push("/dapan/" + linkHistory)}
+                                disabled={loading || !linkHistory}>
+                                {loading ? <Loading /> : <ReceiptText className="w-5 h-5 mr-2" />}
+                                {loading ? "Đang tải..." : linkHistory ? "Xem đáp án" : "Bạn chưa đăng nhập để xem đáp án"}
                             </Button>
                         </CardContent>
                     </Card>
@@ -318,7 +331,7 @@ export default function QuizExam(QuizData: IQuiz) {
                                     </Button>
 
                                     {currentQuestion === QuizData.questions.data_quiz.length - 1 ? (
-                                        <Button onClick={() => handleSubmitQuiz()} className="bg-green-600 hover:bg-green-700">
+                                        <Button onClick={() => handleSubmitQuiz()} className="bg-green-600 hover:bg-green-700 dark:text-white">
                                             Hoàn thành
                                         </Button>
                                     ) : (
@@ -341,7 +354,7 @@ export default function QuizExam(QuizData: IQuiz) {
                                 <CardTitle className="text-lg font-semibold">Danh sách câu hỏi</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="grid md:grid-cols-12 grid-cols-6 gap-2 max-h-[250px] overflow-scroll">
+                                <div className="grid md:grid-cols-12 lg:grid-cols-4 xl:grid-cols-5 grid-cols-6  gap-2 max-h-[250px] overflow-scroll">
                                     {QuizData?.questions &&
                                         QuizData?.questions.data_quiz.map((_, index) => {
                                             const status = getQuestionStatus(index);

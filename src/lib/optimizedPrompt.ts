@@ -80,3 +80,29 @@ export function optimizedPromptFCMore(prompt: string, language: string) {
         }]
         `;
 }
+
+export function optimizedPromptQuiz(topic: string, description: string, questionCount: number, difficulty: string) {
+    return `Tôi cần một đối tượng JSON chứa ${questionCount} câu hỏi về chủ đề **${topic}**, tập    trung vào **${description}**.
+    
+            **Yêu cầu chi tiết:**
+            * **Số lượng câu hỏi:** Chính xác ${questionCount} câu.
+            * **Độ khó:** ${difficulty}.
+            * **Loại câu hỏi:** Tất cả câu hỏi phải là trắc nghiệm (multiple-choice).
+                * Mỗi câu hỏi có **4 lựa chọn** ("options").
+                * Chỉ **một lựa chọn duy nhất** là đáp án đúng ("correct").
+
+            **Cấu trúc JSON mong muốn cho MỖI câu hỏi:**
+            Mỗi câu hỏi phải là một đối tượng JSON riêng biệt và bao gồm tất cả các trường sau:
+            * "id": Một số nguyên duy nhất cho từng câu hỏi (bắt đầu từ 1).
+            * "question": Nội dung đầy đủ của câu hỏi.
+            * "answers": Một mảng chứa 4 chuỗi, mỗi chuỗi là một lựa chọn.
+            * "correct": Vị trí phần tử đúng trong mảng "answers" (ví dụ: 0 cho lựa chọn đầu tiên, 1 cho lựa chọn thứ hai, v.v.).
+
+            **Định dạng đặc biệt (nếu có):**
+            * Nếu chủ đề hoặc câu hỏi yêu cầu biểu thức toán học, công thức khoa học, hoặc các ký hiệu đặc biệt, vui lòng sử dụng định dạng **LaTeX** chuẩn.
+                * Sử dụng dấu $ cho các công thức trong dòng (inline math), ví dụ: $\$f(x) = x^2\$$.
+                * Sử dụng dấu \$\$ cho các công thức hiển thị (display math), nếu cần (mặc dù với câu hỏi trắc nghiệm, inline thường đủ).
+
+            **Đầu ra:**
+            Toàn bộ đầu ra phải là một **mảng JSON hợp lệ** chứa tất cả các đối tượng câu hỏi. Tuyệt đối không bao gồm bất kỳ văn bản, lời mở đầu, hoặc kết luận nào ngoài cấu trúc JSON.`;
+}

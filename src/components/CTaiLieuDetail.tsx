@@ -1,14 +1,10 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Spin } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
-import { GiCardPick } from "react-icons/gi";
 import Link from "next/link";
 import { GET_API_WITHOUT_COOKIE } from "@/lib/fetchAPI";
-import { Award, BookOpen, ChevronRight, Clock, Play, Search, Star, Target, Zap } from "lucide-react";
+import { BookOpen, Clock, Search, Star, Target, Zap } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { Badge } from "./ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import Loading from "./ui/loading";
 import { ISO } from "@/types/type";
@@ -99,7 +95,7 @@ export default function CTaiLieuDetail({ DeCuongData }: { DeCuongData: ISO | nul
                                         </div>
                                     </CardHeader>
                                     <CardContent className="pt-0">
-                                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900 dark:to-indigo-900 rounded-xl p-4 border border-blue-100 dark:border-white/10">
+                                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/50 dark:to-indigo-900/50 rounded-xl p-4 border border-blue-100 dark:border-white/10">
                                             <p className="text-blue-800 dark:text-blue-200 font-medium">{question.answer}</p>
                                         </div>
                                     </CardContent>

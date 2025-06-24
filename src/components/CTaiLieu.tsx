@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useCallback, useState } from "react";
 import { FaRegEye, FaRegQuestionCircle } from "react-icons/fa";
-import { ArrowDownNarrowWide, ArrowUpNarrowWide, ChevronLeft, ChevronRight, Filter, Grid2X2, Grid3x3, Play, Plus, Search } from "lucide-react";
+import { ArrowDownNarrowWide, ArrowUpNarrowWide, ChevronLeft, ChevronRight, Filter, Grid2X2, Grid3x3, Mail, Play, Plus, Search } from "lucide-react";
 import { SiQuizlet } from "react-icons/si";
 import { Tooltip } from "antd";
 import { subjectOption } from "@/lib/subjectOption";
@@ -134,33 +134,10 @@ export default function CTaiLieu({ toolData }: any) {
                     <div className="flex md:items-center gap-3 justify-between flex-col md:flex-row">
                         <div className="flex-1 relative">
                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                            <Input
-                                placeholder="Tìm tên câu hỏi mà bạn cần..."
-                                value={searchTerm}
-                                onChange={(e) => handleSearch(e.target.value)}
-                                className="pl-10 h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500/20"
-                            />
+                            <Input placeholder="Tìm tên câu hỏi mà bạn cần..." value={searchTerm} onChange={(e) => handleSearch(e.target.value)} className="pl-10 h-11" />
                         </div>
                         <div className="w-[0.4px] h-10 bg-gray-500/50 hidden md:block"></div>
                         <div className="flex items-center gap-2 justify-between md:justify-start">
-                            <div className="relative flex-1">
-                                <Select value={subject} onValueChange={handleSearchSubject}>
-                                    <SelectTrigger className="w-[140px] h-11 border-gray-200">
-                                        <Filter className="w-4 h-4 mr-2" />
-                                        <SelectValue placeholder="Danh mục" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            <SelectLabel>Chọn danh mục</SelectLabel>
-                                            {subjectOption.map((option) => (
-                                                <SelectItem key={option.value} value={option.value}>
-                                                    {option.label}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                            </div>
                             <div className="flex items-center border border-gray-400/50 dark:border-white/10 rounded-s-md rounded-r-md overflow-hidden">
                                 <Tooltip placement="top" title="Sắp xếp theo số lượt làm tăng dần">
                                     <div
@@ -210,24 +187,24 @@ export default function CTaiLieu({ toolData }: any) {
                         </div>
                         <div className="w-[0.4px] h-10 bg-gray-500/50  hidden md:block"></div>
                         <div className="flex items-center gap-2">
-                            <Link
-                                href="/quiz/themcauhoi"
-                                className="w-full md:w-auto border border-gray-500/50 dark:border-white/10 rounded-md flex items-center justify-center md:justify-start gap-2 h-11 px-3 text-gray-500">
-                                <Plus className="h-4 w-4" />
-                                Thêm đề cương
+                            <Link href="/quiz/themcauhoi" className="">
+                                <Button className="h-11 text-white">
+                                    <Plus className="h-4 w-4" />
+                                    Thêm đề cương
+                                </Button>
                             </Link>
                             <Tooltip placement="top" title="Nếu bạn có đề cương hoặc tài liệu, đừng ngần ngại hãy gửi cho tôi">
-                                <Link
-                                    href="mailto:trongandev@gmail.com"
-                                    className="relative group overflow-hidden w-full md:w-auto flex items-center justify-center md:justify-start gap-4 bg-gradient-to-r from-blue-500 to-purple-500 px-4 h-11 rounded-md text-white">
-                                    <Play className="h-4 w-4" />
-                                    Gửi Mail
-                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50  dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
+                                <Link href="mailto:trongandev@gmail.com" className=" ">
+                                    <Button className="h-11 bg-gradient-to-r from-blue-500 to-purple-500 text-white relative group overflow-hidden">
+                                        <Mail className="h-4 w-4" />
+                                        Gửi Mail
+                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50  dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
+                                    </Button>
                                 </Link>
                             </Tooltip>
                         </div>
                     </div>
-                    <div className={`grid grid-cols-2 md:grid-cols-3 gap-4 ${viewMode === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
+                    <div className={`grid grid-cols-2 md:grid-cols-3 gap-4 ${viewMode === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"} h-[416px] overflow-y-scroll`}>
                         {displaySO?.map((item: any, index: any) => (
                             <div
                                 className="bg-white dark:bg-slate-800/50 hover:shadow-md rounded-xl h-[200px] flex flex-col md:flex-row overflow-hidden shadow-sm border border-white/10 group hover:scale-105 transition-all duration-300"

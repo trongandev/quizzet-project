@@ -44,7 +44,6 @@ export const POST_API_CLOUD = async (url: string, data: any, token: string) => {
         const res = await fetch(`${API_ENDPOINT}${url}`, {
             method: "POST",
             headers: {
-                "Content-Type": "multipart/form-data",
                 Authorization: `Bearer ${token}`,
             },
             body: data,

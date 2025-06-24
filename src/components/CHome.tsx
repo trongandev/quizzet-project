@@ -7,11 +7,10 @@ import CTaiLieu from "@/components/CTaiLieu";
 import CQuiz from "./CQuiz";
 import { IListFlashcard, IQuiz, ISO } from "@/types/type";
 import { Button } from "@/components/ui/button";
-import PublicFC from "./flashcard/PublicFC";
-import { FaRegCreditCard } from "react-icons/fa";
 import { ArrowRight, BookOpen, Brain, Chrome, FileText, Github, Info, Save, Star, TrendingUp, Users, Zap } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { Card, CardContent } from "./ui/card";
+import PublicFCHome from "./flashcard/PublicFCHome";
 
 export default function CHome({ quizData, toolData, publicFlashcards }: { quizData: IQuiz[]; toolData: ISO[]; publicFlashcards: IListFlashcard[] }) {
     return (
@@ -95,61 +94,8 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
                         </CardContent>
                     </Card>
                 </div>
-                {/* <div className="mt-10 flex flex-wrap gap-5">
-                    <div className="h-[500px] bg-linear-item-purple flex-1 rounded-3xl flex items-center justify-center flex-col">
-                        <div className="w-[250px] h-[280px] overflow-hidden relative">
-                            <Image src="/item3.png" alt="" className="absolute w-full h-full" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"></Image>
-                        </div>
-                        <div className="bg-white dark:bg-gray-700  text-center p-4 rounded-xl w-[350px] space-y-2">
-                            <h1 className="text-2xl font-bold">Flashcard</h1>
-                            <p className="">Flashcard là một trong những cách tốt nhất để ghi nhớ những kiến thức quan trọng.</p>
-                            <Link href="/flashcard">
-                                <Button className="">Tìm hiểu thêm</Button>
-                            </Link>
-                        </div>
-                    </div>
-                    <div className="h-[500px] bg-linear-item-blue flex-1 rounded-3xl flex items-center justify-center flex-col">
-                        <div className="w-[250px] h-[280px] overflow-hidden relative">
-                            <Image src="/item1.png" alt="" className="absolute w-full h-full object-contain" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"></Image>
-                        </div>
-                        <div className="bg-white dark:bg-gray-700 dark:text-white text-center p-4 rounded-xl w-[350px] space-y-2">
-                            <h1 className="text-2xl font-bold">Quiz</h1>
-                            <p className="">Tổng hợp những bài quiz để bạn kiểm tra thử kiến thức của bản thân </p>
-                            <Link href="/quiz">
-                                <Button className="">Tìm hiểu thêm</Button>
-                            </Link>
-                        </div>
-                    </div>
-                    <div className="h-[500px] bg-linear-item-pink flex-1 rounded-3xl flex items-center justify-center flex-col">
-                        <div className="w-[250px] h-[280px] overflow-hidden relative">
-                            <Image src="/item2.png" alt="" className="absolute w-full h-full object-contain" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"></Image>
-                        </div>
-                        <div className="bg-white dark:bg-gray-700 dark:text-white text-center p-4 rounded-xl w-[350px] space-y-2">
-                            <h1 className="text-2xl font-bold">Đề cương</h1>
-                            <p className="">Tổng hợp những đề cương của nhiều môn luôn sẵn sàng để bạn ôn bài hiệu quả nhất.</p>
-                            <Link href="/decuong">
-                                <Button className="">Tìm hiểu thêm</Button>
-                            </Link>
-                        </div>
-                    </div>
-                </div> */}
-
-                <div className="mt-10 mb-5 dark:text-white  flex flex-col gap-5  bg-white/80 dark:bg-gray-800 border border-gray-400/50 dark:border-white/10 rounded-lg shadow-sm p-5">
-                    <div className="flex items-center gap-3">
-                        <div className="w-1/6 h-14 md:w-14 flex items-center justify-center bg-gradient-to-r from-pink-500/80 to-yellow-500/80 rounded-lg text-white">
-                            <FaRegCreditCard size={21} />
-                        </div>
-                        <div className="flex-1">
-                            <h1 className="text-3xl font-bold">Flashcard</h1>
-                            <p>Flashcard là một trong những cách tốt nhất để ghi nhớ những kiến thức quan trọng</p>
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5 h-[500px] md:h-[300px] overflow-scroll">
-                        {publicFlashcards && publicFlashcards.map((item) => <PublicFC item={item} key={item?._id} />)}
-                        {publicFlashcards?.length <= 0 && <div className="h-[350px] col-span-12 flex items-center justify-center text-gray-700">Không có dữ liệu...</div>}
-                    </div>
-                </div>
+                {/* Public Flashcards */}
+                <PublicFCHome publicFlashcards={publicFlashcards} />
                 <div className="my-5 mt-10">
                     <CQuiz quizData={quizData} />
                 </div>

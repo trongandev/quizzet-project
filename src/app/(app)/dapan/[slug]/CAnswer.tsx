@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Loading from "@/components/ui/loading";
 // Constants
-const AI_MODEL = "gemini-1.5-flash";
+const AI_MODEL = "gemini-2.5-flash";
 
 interface CAnswerProps {
     history: IHistory;
