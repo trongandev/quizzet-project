@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "../ui/input";
 import { LinkIcon, Save, Upload } from "lucide-react";
@@ -8,10 +7,8 @@ import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import { toast } from "sonner";
-import { useUser } from "@/context/userContext";
 import Cookies from "js-cookie";
 import { POST_API, POST_API_CLOUD } from "@/lib/fetchAPI";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 import Loading from "../ui/loading";
 interface QuizQuestion {
@@ -32,7 +29,6 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz }: Props
     const [tempQuiz, setTempQuiz] = useState({ title: "", subject: "", content: "", img: "" });
     const [loading, setLoading] = useState(false);
     const [avatarInputType, setAvatarInputType] = useState<"file" | "url">("file");
-    const { user } = useUser() || { user: null };
     const token = Cookies.get("token") || "";
     const router = useRouter();
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {

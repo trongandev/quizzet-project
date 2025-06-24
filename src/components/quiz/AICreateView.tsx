@@ -13,11 +13,10 @@ import { AIResultPreview } from "./AIResuiltPreview";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { toast } from "sonner";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Game2048 } from "./Game2048Clean";
 import { optimizedPromptQuiz } from "@/lib/optimizedPrompt";
-import Loading from "../ui/loading";
 
 import DialogAddMoreInfoQuiz from "./DialogAddMoreInfoQuiz";
+import { Game2048Smooth } from "./Game2048Smooth";
 interface QuizQuestion {
     id: string;
     type: "multiple-choice" | "true-false" | "short-answer";
@@ -27,12 +26,6 @@ interface QuizQuestion {
     points: number;
 }
 
-// interface ITempQuiz {
-//     title: string;
-//     subject: string;
-//     content: string;
-//     img: string;
-// }
 interface HomeViewProps {
     onViewChange: (view: string) => void;
 }
@@ -318,7 +311,7 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                                 Chơi game 2048
                             </Button>
                         </DialogTrigger>
-                        <DialogContent className="max-w-lg">
+                        <DialogContent className="max-w-lg min-h-[80vh] overflow-y-scroll">
                             <DialogHeader>
                                 <DialogTitle className="flex items-center gap-5">
                                     Giải trí trong lúc đợi AI tạo Quiz {!generatedQuiz ? <Clock className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4 text-green-500" />}
@@ -337,7 +330,7 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                             </DialogHeader>
 
                             <div className="flex justify-center">
-                                <Game2048 />
+                                <Game2048Smooth />
                             </div>
 
                             <DialogFooter>

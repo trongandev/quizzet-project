@@ -3,7 +3,7 @@ import handleCompareDate from "@/lib/CompareDate";
 import { IQuiz } from "@/types/type";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { CiTimer } from "react-icons/ci";
 import { FaRegEye } from "react-icons/fa";
 import { IoArrowForwardCircleOutline } from "react-icons/io5";
@@ -27,7 +27,7 @@ export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
     const [subject, setSubject] = useState("Tất cả");
     // Pagination states
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(8);
+    const [itemsPerPage, setItemsPerPage] = useState(8);
     // Calculate pagination
     const totalItems = data.length;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -36,7 +36,18 @@ export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
     const currentItems = data.slice(startIndex, endIndex);
 
     const displayQuizs = currentItems;
+    const [isMobile, setIsMobile] = useState(false);
+    useEffect(() => {
+        const checkMobile = () => {
+            const mobile = window.innerWidth < 768;
+            setIsMobile(mobile);
+            setItemsPerPage(mobile ? 4 : 8);
+        };
 
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
     const handleSortByNumber = useCallback(
         (key: keyof IQuiz, direction = "asc") => {
             const sortedData = [...data].sort((a, b) => {
@@ -90,33 +101,45 @@ export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
     // Generate page numbers for pagination
     const getPageNumbers = () => {
         const pages = [];
-        const maxVisiblePages = 5;
+        const maxVisiblePages = isMobile ? 3 : 5; // Ít hơn trên mobile
 
         if (totalPages <= maxVisiblePages) {
             for (let i = 1; i <= totalPages; i++) {
                 pages.push(i);
             }
         } else {
-            if (currentPage <= 3) {
-                for (let i = 1; i <= 4; i++) {
-                    pages.push(i);
-                }
-                pages.push("...");
-                pages.push(totalPages);
-            } else if (currentPage >= totalPages - 2) {
-                pages.push(1);
-                pages.push("...");
-                for (let i = totalPages - 3; i <= totalPages; i++) {
-                    pages.push(i);
+            if (isMobile) {
+                // ✅ Logic đơn giản hơn cho mobile
+                if (currentPage === 1) {
+                    pages.push(1, 2, "...", totalPages);
+                } else if (currentPage === totalPages) {
+                    pages.push(1, "...", totalPages - 1, totalPages);
+                } else {
+                    pages.push(1, "...", currentPage, "...", totalPages);
                 }
             } else {
-                pages.push(1);
-                pages.push("...");
-                for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-                    pages.push(i);
+                // Logic cũ cho desktop
+                if (currentPage <= 3) {
+                    for (let i = 1; i <= 4; i++) {
+                        pages.push(i);
+                    }
+                    pages.push("...");
+                    pages.push(totalPages);
+                } else if (currentPage >= totalPages - 2) {
+                    pages.push(1);
+                    pages.push("...");
+                    for (let i = totalPages - 3; i <= totalPages; i++) {
+                        pages.push(i);
+                    }
+                } else {
+                    pages.push(1);
+                    pages.push("...");
+                    for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+                        pages.push(i);
+                    }
+                    pages.push("...");
+                    pages.push(totalPages);
                 }
-                pages.push("...");
-                pages.push(totalPages);
             }
         }
 

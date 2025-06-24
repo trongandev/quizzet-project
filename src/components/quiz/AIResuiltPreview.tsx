@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Edit, Trash2, Plus, Save, CheckCircle, Bot } from "lucide-react";
+import { Edit, Trash2, Plus, CheckCircle, Bot } from "lucide-react";
 
 interface Question {
     id: string;
@@ -100,18 +100,18 @@ export function AIResultPreview({ open, onOpenChange, title_quiz, desc, quiz, on
         }));
     };
 
-    const getQuestionTypeLabel = (type: string) => {
-        switch (type) {
-            case "multiple-choice":
-                return "Trắc nghiệm";
-            case "true-false":
-                return "Đúng/Sai";
-            case "short-answer":
-                return "Tự luận ngắn";
-            default:
-                return type;
-        }
-    };
+    // const getQuestionTypeLabel = (type: string) => {
+    //     switch (type) {
+    //         case "multiple-choice":
+    //             return "Trắc nghiệm";
+    //         case "true-false":
+    //             return "Đúng/Sai";
+    //         case "short-answer":
+    //             return "Tự luận ngắn";
+    //         default:
+    //             return type;
+    //     }
+    // };
 
     const renderQuestionForm = () => (
         <div className="space-y-4">
@@ -310,10 +310,10 @@ export function AIResultPreview({ open, onOpenChange, title_quiz, desc, quiz, on
                             <Button variant="outline" onClick={() => onOpenChange(false)}>
                                 Đóng
                             </Button>
-                            <Button className="text-white bg-gradient-to-r from-purple-500 to-pink-500">
+                            {/* <Button className="text-white bg-gradient-to-r from-purple-500 to-pink-500">
                                 <Save className="mr-2 h-4 w-4" />
                                 Lưu và xuất bản Quiz
-                            </Button>
+                            </Button> */}
                         </div>
                     </div>
                 </DialogContent>

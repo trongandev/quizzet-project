@@ -45,7 +45,9 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
                                 Flashcard là một trong những cách tốt nhất để ghi nhớ những kiến thức quan trọng. Học thông minh với hệ thống lặp lại ngắt quãng.
                             </p>
                             <div className="flex items-center justify-between">
-                                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">Tìm hiểu thêm</Button>
+                                <Link href="/flashcard" className="block">
+                                    <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">Tìm hiểu thêm</Button>
+                                </Link>
                                 <Badge variant="secondary" className="bg-blue-100 text-blue-700 dark:bg-blue-800 dark:text-blue-200">
                                     <TrendingUp className="w-3 h-3 mr-1" />
                                     Phổ biến
@@ -65,7 +67,9 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
                                 Tổng hợp những bài quiz để bạn kiểm tra thử kiến thức của bản thân. Thử thách bản thân và cải thiện kết quả học tập.
                             </p>
                             <div className="flex items-center justify-between">
-                                <Button className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white">Tìm hiểu thêm</Button>
+                                <Link href="/quiz" className="block">
+                                    <Button className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white">Tìm hiểu thêm</Button>
+                                </Link>
                                 <Badge variant="secondary" className="bg-cyan-100 text-cyan-700 dark:bg-cyan-800 dark:text-cyan-200">
                                     <Star className="w-3 h-3 mr-1" />
                                     Thú vị
@@ -85,7 +89,9 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
                                 Tổng hợp những đề cương của nhiều môn luôn sẵn sàng để bạn ôn bài hiệu quả nhất. Chuẩn bị tốt cho mọi kỳ thi.
                             </p>
                             <div className="flex items-center justify-between">
-                                <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white">Tìm hiểu thêm</Button>
+                                <Link href="/decuong" className="block">
+                                    <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white">Tìm hiểu thêm</Button>
+                                </Link>
                                 <Badge variant="secondary" className="bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200">
                                     <Users className="w-3 h-3 mr-1" />
                                     Cộng đồng

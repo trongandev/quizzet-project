@@ -18,6 +18,7 @@ import Image from "next/image";
 import { POST_API } from "@/lib/fetchAPI";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
+import Link from "next/link";
 interface PropsDetailQuiz {
     quiz: IQuestion[];
     data?: IQuiz;
@@ -199,10 +200,12 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                                 <span className="ml-2 text-sm  ">{data?.comment?.length} đánh giá</span>
                                             </div>
                                         </div>
-                                        <Button variant="default" className="mt-4 text-white">
-                                            <BookOpen className="h-4 w-4 mr-2" />
-                                            Làm bài quiz
-                                        </Button>
+                                        <Link href={`/quiz/${data?.slug}`}>
+                                            <Button variant="default" className="mt-4 text-white">
+                                                <BookOpen className="h-4 w-4 mr-2" />
+                                                Làm bài quiz
+                                            </Button>
+                                        </Link>
                                     </div>
                                 </div>
                             </CardContent>

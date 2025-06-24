@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { FileText, Search, Edit, Trash2, Eye, Calendar, Clock, Bot, Upload, Plus, AlertCircle } from "lucide-react";
 import handleCompareDate from "@/lib/CompareDate";
+import { AIResultPreview } from "./AIResuiltPreview";
 
 interface DraftQuiz {
     id: string;
@@ -17,9 +18,18 @@ interface DraftQuiz {
     createdAt: Date;
     updatedAt: Date;
     questionCount: number;
+    questions: Question[];
     createdBy: "ai" | "manual" | "file";
     status: "draft" | "in-progress";
     difficulty: "easy" | "medium" | "hard";
+}
+interface Question {
+    id: string;
+    type: "multiple-choice" | "true-false" | "short-answer";
+    question: string;
+    answers?: string[];
+    correct: string;
+    points: number;
 }
 interface HomeViewProps {
     onViewChange: (view: string) => void;
@@ -30,6 +40,7 @@ export function DraftsView({ onViewChange }: HomeViewProps) {
     const [selectedDraft, setSelectedDraft] = useState<DraftQuiz | null>(null);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [draftToDelete, setDraftToDelete] = useState<DraftQuiz | null>(null);
+    const [showPreview, setShowPreview] = useState(false);
 
     const [drafts, setDrafts] = useState<DraftQuiz[]>([]);
     useEffect(() => {
@@ -231,9 +242,10 @@ export function DraftsView({ onViewChange }: HomeViewProps) {
                     ))}
                 </div>
             )}
+            {/* {selectedDraft && <AIResultPreview open={showPreview} onOpenChange={setShowPreview} quiz={selectedDraft.questions} title_quiz={selectedDraft.title} desc={selectedDraft.description} onQuizUpdate={handleQuizUpdate} />} */}
 
             {/* Preview Dialog */}
-            <Dialog open={!!selectedDraft} onOpenChange={() => setSelectedDraft(null)}>
+            {/* <Dialog open={!!selectedDraft} onOpenChange={() => setSelectedDraft(null)}>
                 <DialogContent className="max-w-2xl">
                     <DialogHeader>
                         <DialogTitle>Xem trước Quiz</DialogTitle>
@@ -277,7 +289,7 @@ export function DraftsView({ onViewChange }: HomeViewProps) {
                         </div>
                     )}
                 </DialogContent>
-            </Dialog>
+            </Dialog> */}
 
             {/* Delete Confirmation Dialog */}
             <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
