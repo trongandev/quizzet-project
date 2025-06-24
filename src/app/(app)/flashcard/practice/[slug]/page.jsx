@@ -32,6 +32,7 @@ export default function PractiveFlashcard({ params }) {
     const [progress, setProgress] = useState({ known: [], unknown: [] });
     const [quizOptions, setQuizOptions] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
+    const [voicePerson, setVoicePerson] = useState();
     // random moder
     const [isRandomMode, setIsRandomMode] = useState(false);
     const [isRandomFeature, setIsRandomFeature] = useState(false);
@@ -61,6 +62,10 @@ export default function PractiveFlashcard({ params }) {
                 setLanguage(req?.listFlashCards?.language);
                 setFlashcards(shuffle(result));
                 generateQuizOptions(result[0]);
+
+                const savedVoiceString = JSON.parse(localStorage.getItem("defaultVoices") || "");
+                const savedVoices = savedVoiceString[req?.listFlashCards?.language];
+                setVoicePerson(savedVoices ? savedVoices : "en-US-GuyNeural");
             } else {
                 messageApi.error(req.message);
             }
@@ -99,29 +104,14 @@ export default function PractiveFlashcard({ params }) {
 
     const [tts] = useState(() => new EdgeSpeechTTS({ locale: "en-US" }));
 
-    // Function để lấy voice dựa trên language và type
-    const getVoiceByLanguage = useCallback((language, type) => {
-        if (language === "english" && type === 1) return "en-GB-SoniaNeural";
-        if (language === "english" && type === 2) return "en-US-GuyNeural";
-        if (language === "vietnamese") return "vi-VN-HoaiMyNeural";
-        if (language === "germany") return "de-DE-KatjaNeural";
-        if (language === "france") return "fr-FR-DeniseNeural";
-        if (language === "japan") return "ja-JP-NanamiNeural";
-        if (language === "korea") return "ko-KR-SunHiNeural";
-        if (language === "chinese") return "zh-CN-XiaoxiaoNeural";
-        return "en-US-GuyNeural"; // default
-    }, []);
-
     const speakWord = useCallback(
-        async (text, type, id) => {
-            const voice = getVoiceByLanguage(language, type);
-
+        async (text, id) => {
             try {
                 setLoadingAudio(id);
                 const response = await tts.create({
                     input: text,
                     options: {
-                        voice: voice,
+                        voice: voicePerson,
                     },
                 });
 
@@ -142,7 +132,7 @@ export default function PractiveFlashcard({ params }) {
                 setLoadingAudio(null);
             }
         },
-        [tts, getVoiceByLanguage, messageApi]
+        [tts, voicePerson, messageApi]
     );
 
     // Navigation handlers
@@ -165,12 +155,12 @@ export default function PractiveFlashcard({ params }) {
             setShowAns(false);
 
             if (feature === FEATURES.FLASHCARD || feature === FEATURES.LISTENING) {
-                await speakWord(flashcards[newIndex].title, speakLang, flashcards[newIndex]._id);
+                await speakWord(flashcards[newIndex].title, flashcards[newIndex]._id);
             }
 
             generateQuizOptions(flashcards[newIndex]);
         },
-        [index, flashcards, feature, speakLang, isRandomMode, isRandomFeature]
+        [index, flashcards, feature, isRandomMode, isRandomFeature]
     );
 
     // Progress tracking
@@ -216,7 +206,7 @@ export default function PractiveFlashcard({ params }) {
         });
         if (isCorrect) {
             handlePlayAudio("correct");
-            await speakWord(flashcards[index].title, speakLang, flashcards[index]._id);
+            await speakWord(flashcards[index].title, flashcards[index]._id);
 
             setTimeout(() => {
                 handleProgress("known");
@@ -275,7 +265,7 @@ export default function PractiveFlashcard({ params }) {
                     break;
                 case "shift":
                     // Phát âm thanh với accent đang được chọn
-                    speakWord(flashcards[index]?.title, speakLang, flashcards[index]?._id);
+                    speakWord(flashcards[index]?.title, flashcards[index]?._id);
                     break;
             }
         },
@@ -291,11 +281,11 @@ export default function PractiveFlashcard({ params }) {
     }
 
     return (
-        <div className="relative z-10 bg-slate-700 py-5 px-3 flex justify-center items-center">
+        <div className="relative z-10  dark:bg-slate-700 py-5 px-3 flex justify-center items-center">
             <div className="w-full md:w-[1000px] xl:w-[1200px] focus-visible:outline-none min-h-screen" onKeyDown={handleKeyDown} tabIndex={0}>
                 {contextHolder}
-                <div className="w-full flex items-center justify-center h-[90%] flex-col gap-2">
-                    <Button className="w-full md:w-auto" variant="outline" onClick={() => router.back()}>
+                <div className="w-full flex items-center justify-center h-[90%] flex-col gap-2 md:pt-14">
+                    <Button className="w-full md:w-auto block md:hidden" variant="outline" onClick={() => router.back()}>
                         <ArrowLeft /> Quay lại
                     </Button>
 
@@ -338,7 +328,7 @@ export default function PractiveFlashcard({ params }) {
                                                 <Button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        speakWord(flashcards[index]?.title, speakLang, flashcards[index]?._id);
+                                                        speakWord(flashcards[index]?.title, flashcards[index]?._id);
                                                     }}
                                                     className=""
                                                     variant="secondary">
@@ -404,11 +394,11 @@ export default function PractiveFlashcard({ params }) {
                                                     onClick={() => handleQuizAnswer(option, idx)}
                                                     disabled={selectedAnswers[idx]}
                                                     variant="secondary"
-                                                    className={`h-full relative text-white transition-colors
+                                                    className={`h-full relative text-gray-700 dark:text-white  transition-colors
                                                                 ${selectedAnswers[idx] === "correct" ? "!border-green-500 border-2 tada" : ""}
                                                                 ${selectedAnswers[idx] === "incorrect" ? "!border-red-500 border-2 shake" : ""}
                                             `}>
-                                                    <div className="absolute top-1 left-1 h-8 w-8 flex items-center justify-center rounded-full bg-gray-500 text-gray-900 dark:text-white/80  dark:bg-slate-900/50">
+                                                    <div className="absolute top-1 left-1 h-8 w-8 flex items-center justify-center rounded-full bg-gray-300 text-gray-900 dark:text-white   dark:bg-slate-900/50">
                                                         {idx + 1}
                                                     </div>
                                                     <p className="flex-1 text-center px-2">{option}</p>
@@ -428,13 +418,13 @@ export default function PractiveFlashcard({ params }) {
                                         </div>
                                         <div className="flex gap-4 mb-6">
                                             <Button
-                                                onClick={() => speakWord(flashcards[index]?.title, 1, flashcards[index]?._id)}
+                                                onClick={() => speakWord(flashcards[index]?.title, flashcards[index]?._id)}
                                                 className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-primary">
                                                 <HiMiniSpeakerWave />
                                                 <span>UK</span>
                                             </Button>
                                             <Button
-                                                onClick={() => speakWord(flashcards[index]?.title, 2, flashcards[index]?._id)}
+                                                onClick={() => speakWord(flashcards[index]?.title, flashcards[index]?._id)}
                                                 className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-primary">
                                                 <HiMiniSpeakerWave />
                                                 <span>US</span>

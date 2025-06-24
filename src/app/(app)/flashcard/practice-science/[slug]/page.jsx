@@ -11,6 +11,7 @@ import { IoSend } from "react-icons/io5";
 import { TbConfetti } from "react-icons/tb";
 import { BsCheckCircleFill, BsEmojiAstonished, BsEmojiFrown, BsEmojiLaughing, BsXCircleFill } from "react-icons/bs";
 import { Button } from "@/components/ui/button";
+import { EdgeSpeechTTS } from "@lobehub/tts";
 const FEATURES = {
     FLASHCARD: 1,
     QUIZ: 2,
@@ -41,6 +42,8 @@ export default function PractiveFlashcard({ params }) {
     const [isCheckAns, setIsCheckAns] = useState(false);
     const [remainingFeatures, setRemainingFeatures] = useState({});
     const [wordRepetitions, setWordRepetitions] = useState({});
+    const [voicePerson, setVoicePerson] = useState();
+
     const [sessionData, setSessionData] = useState({
         reviewQueue: [],
         masteredWords: new Set(),
@@ -78,6 +81,10 @@ export default function PractiveFlashcard({ params }) {
                 ...prev,
                 wordStatus: initialStatus,
             }));
+
+            const savedVoiceString = JSON.parse(localStorage.getItem("defaultVoices") || "");
+            const savedVoices = savedVoiceString[req?.listFlashCards?.language];
+            setVoicePerson(savedVoices ? savedVoices : "en-US-GuyNeural");
             setRemainingFeatures(initialFeatures);
             setWordRepetitions(initialRepetitions);
             setFeature(FEATURES.FLASHCARD);
@@ -85,7 +92,7 @@ export default function PractiveFlashcard({ params }) {
 
             // Auto-play audio for first card if it's flashcard
             if (shuffledCards[0]) {
-                await speakWord(shuffledCards[0].title, speakLang, shuffledCards[0]._id);
+                await speakWord(shuffledCards[0].title, shuffledCards[0]._id);
             }
         } else {
             messageApi.error(req.message);
@@ -193,35 +200,38 @@ export default function PractiveFlashcard({ params }) {
     };
 
     const [disableAudio, setDisableAudio] = useState(false);
+    const [tts] = useState(() => new EdgeSpeechTTS({ locale: "en-US" }));
 
-    // Handle audio playback
-    const speakWord = async (text, type, id) => {
-        if (disableAudio) return;
-        else {
-            setLoadingAudio(id);
-            setDisableAudio(true);
+    const speakWord = useCallback(
+        async (text, id) => {
+            try {
+                setLoadingAudio(id);
+                const response = await tts.create({
+                    input: text,
+                    options: {
+                        voice: voicePerson,
+                    },
+                });
 
-            if (language == "english") {
-                const req = await fetch(`${process.env.API_ENDPOINT}/proxy?audio=${text}&type=${type}`);
-                const blob = await req.blob();
+                const audioBuffer = await response.arrayBuffer();
+                const blob = new Blob([audioBuffer], { type: "audio/mpeg" });
                 const url = URL.createObjectURL(blob);
                 const audio = new Audio(url);
-                audio.play();
-            } else {
-                if ("speechSynthesis" in window) {
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    if (language == "japan") utterance.lang = "ja-JP"; // Thiết lập ngôn ngữ tiếng Nhật
-                    if (language == "korea") utterance.lang = "ko-KR"; // Thiết lập ngôn ngữ tiếng Hàn
-                    if (language == "chinese") utterance.lang = "zh-CN"; // Thiết lập ngôn ngữ tiếng Trung
-                    window.speechSynthesis.speak(utterance);
-                } else {
-                    alert("Trình duyệt của bạn không hỗ trợ Text-to-Speech.");
-                }
+
+                audio.addEventListener("ended", () => {
+                    URL.revokeObjectURL(url);
+                });
+
+                await audio.play();
+            } catch (error) {
+                console.error("TTS Error:", error);
+                messageApi.error("Lỗi khi phát âm thanh: " + error.message);
+            } finally {
+                setLoadingAudio(null);
             }
-            setLoadingAudio(null);
-            setDisableAudio(false);
-        }
-    };
+        },
+        [tts, voicePerson, messageApi]
+    );
 
     const handlePlayAudio = (method) => {
         if (method == "correct") {
@@ -248,7 +258,7 @@ export default function PractiveFlashcard({ params }) {
             if (isCorrect) {
                 handlePlayAudio("correct");
                 if (feature === FEATURES.QUIZ) {
-                    speakWord(currentCard.title, speakLang, currentCard._id);
+                    speakWord(currentCard.title, currentCard._id);
                 }
                 const currentFeature = feature;
                 const updatedFeatures = remainingFeatures[currentCard._id].filter((f) => f !== currentFeature);
@@ -336,7 +346,7 @@ export default function PractiveFlashcard({ params }) {
     useEffect(() => {
         if (currentCard && feature === FEATURES.FLASHCARD) {
             setTimeout(() => {
-                speakWord(currentCard.title, speakLang, currentCard._id);
+                speakWord(currentCard.title, currentCard._id);
             }, 500);
         }
     }, [feature, currentIndex]);
@@ -371,11 +381,11 @@ export default function PractiveFlashcard({ params }) {
                                             className="absolute inset-0 bg-white dark:bg-slate-800/50 rounded-md flex flex-col items-center justify-center backface-hidden p-5"
                                             style={{ backfaceVisibility: "hidden" }}>
                                             <div className="flex items-center gap-2 mb-4">
-                                                <p className="text-2xl font-semibold">{currentCard.title}</p>
+                                                <p className="text-2xl font-semibold text-slate-800 dark:text-white/80">{currentCard.title}</p>
                                                 <Button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        speakWord(currentCard?.title, speakLang, currentCard?._id);
+                                                        speakWord(currentCard?.title, currentCard?._id);
                                                     }}
                                                     className="p-2 hover:bg-gray-100 rounded-full"
                                                     disabled={loadingAudio}>
@@ -433,21 +443,13 @@ export default function PractiveFlashcard({ params }) {
                                             {quizOptions.map((option, idx) => (
                                                 <Button
                                                     key={idx}
-                                                    onClick={() => checkAnswer(option, idx)}
+                                                    onClick={() => handleQuizAnswer(option, idx)}
                                                     disabled={selectedAnswers[idx]}
-                                                    className={`
-                                              flex items-center h-full border rounded-lg group text-third dark:text-white/70
-                                              hover:border-primary transition-colors disabled:!bg-transparent
-                                              ${selectedAnswers[idx] === "correct" ? "!border-green-500 border-2 tada" : ""}
-                                              ${selectedAnswers[idx] === "incorrect" ? "!border-red-500 border-2 shake" : ""}
-                                            `}>
-                                                    <div
-                                                        className={`
-                                              w-[50px] h-full flex items-center justify-center border-r
-                                              group-hover:border-r-primary transition-colors
-                                              ${selectedAnswers[idx] === "correct" ? "!border-r-green-500" : ""}
-                                              ${selectedAnswers[idx] === "incorrect" ? "!border-r-red-500" : ""}
-                                            `}>
+                                                    variant="secondary"
+                                                    className={`h-full relative text-gray-900 dark:text-white  transition-colors
+                                                        ${selectedAnswers[idx] === "correct" ? "!border-green-500 border-2 tada" : ""}
+                                                        ${selectedAnswers[idx] === "incorrect" ? "!border-red-500 border-2 shake" : ""}`}>
+                                                    <div className="absolute top-1 left-1 h-8 w-8 flex items-center justify-center rounded-full dark:bg-gray-500 bg-gray-400 text-gray-700 dark:text-white/80  dark:bg-slate-900/50">
                                                         {idx + 1}
                                                     </div>
                                                     <p className="flex-1 text-center px-2">{option}</p>
@@ -467,13 +469,13 @@ export default function PractiveFlashcard({ params }) {
                                         </div>
                                         <div className="flex gap-4 mb-6">
                                             <Button
-                                                onClick={() => speakWord(currentCard?.title, 1, currentCard?._id)}
+                                                onClick={() => speakWord(currentCard?.title, currentCard?._id)}
                                                 className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-primary">
                                                 <HiMiniSpeakerWave />
                                                 <span>UK</span>
                                             </Button>
                                             <Button
-                                                onClick={() => speakWord(currentCard?.title, 2, currentCard?._id)}
+                                                onClick={() => speakWord(currentCard?.title, currentCard?._id)}
                                                 className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-primary">
                                                 <HiMiniSpeakerWave />
                                                 <span>US</span>
@@ -499,7 +501,7 @@ export default function PractiveFlashcard({ params }) {
                                                 </Button>
                                             </div>
                                         </div>
-                                        <Button onClick={() => setInputAnswer(currentCard.title)} className="flex items-center gap-2 text-gray-600 hover:text-primary mt-4">
+                                        <Button onClick={() => setInputAnswer(currentCard.title)} className="text-white">
                                             <BiSlideshow />
                                             <span>Hiển thị đáp án</span>
                                         </Button>
@@ -540,7 +542,7 @@ export default function PractiveFlashcard({ params }) {
                                                 </Button>
                                             </div>
                                         </div>
-                                        <Button onClick={() => setInputAnswer(currentCard.title)} className="flex items-center gap-2 text-blue-500 hover:text-blue-600 mt-4">
+                                        <Button onClick={() => setInputAnswer(currentCard.title)} className="text-white">
                                             <BiSlideshow />
                                             <span>Hiển thị đáp án</span>
                                         </Button>
@@ -576,18 +578,6 @@ export default function PractiveFlashcard({ params }) {
                         {/* Feature Selection Panel */}
                         <div className="w-full md:w-auto flex flex-col gap-4">
                             <div className="space-y-2">
-                                <div className="flex items-center gap-2">
-                                    <HiMiniSpeakerWave size={20} />
-                                    <span>Phát âm giọng UK, US</span>
-                                </div>
-                                <Switch
-                                    checkedChildren={speakLang === 1 && "UK"}
-                                    unCheckedChildren={speakLang === 2 && "US"}
-                                    checked={speakLang === 1}
-                                    onChange={(checked) => setSpeakLang(checked ? 1 : 2)}
-                                />
-                            </div>
-                            <div className="space-y-2">
                                 <h2 className="font-medium">Chế độ học</h2>
                                 <div className="flex flex-wrap gap-2">
                                     {Object.entries({
@@ -596,11 +586,7 @@ export default function PractiveFlashcard({ params }) {
                                         Listening: FEATURES.LISTENING,
                                         "Fill Blank": FEATURES.FILL_BLANK,
                                     }).map(([name, value]) => (
-                                        <Button
-                                            key={value}
-                                            className={`px-4 py-2 rounded-lg transition-colors cursor-default border border-white/10 ${
-                                                feature === value ? "bg-primary text-white" : "bg-gray-100 dark:bg-slate-800/50 text-gray-600"
-                                            }`}>
+                                        <Button className="dark:text-white" key={value} onClick={() => setFeature(value)} variant={feature === value ? "default" : "secondary"}>
                                             {name}
                                         </Button>
                                     ))}

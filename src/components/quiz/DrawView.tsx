@@ -46,7 +46,6 @@ export function DraftsView({ onViewChange }: HomeViewProps) {
     useEffect(() => {
         const draftQuiz = JSON.parse(localStorage.getItem("draftQuiz") || "") as DraftQuiz[];
         setDrafts(draftQuiz || []);
-        console.log("Drafts loaded from localStorage:", draftQuiz);
     }, []);
 
     const filteredDrafts = drafts.filter((draft) => draft.title.toLowerCase().includes(searchTerm.toLowerCase()) || draft.description.toLowerCase().includes(searchTerm.toLowerCase()));
