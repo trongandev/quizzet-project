@@ -29,7 +29,7 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { AlertCircle, ArrowLeft, BookOpen, Brain, CheckCircle, Clock, Flag, Flame, Grid3x3, PencilLine, Plus, RotateCcw, Target, Timer, Trash2, TrendingUp, User, Volume2 } from "lucide-react";
-import { EditFlashcardModal, EditListFlashcardModal } from "./EditListFlashcardModal";
+import { EditListFlashcardModal } from "./EditListFlashcardModal";
 import AddVocaModal from "./AddVocaModal";
 import { Badge } from "../ui/badge";
 import { Flashcard, IEditFlashcard, IListFlashcard } from "@/types/type";

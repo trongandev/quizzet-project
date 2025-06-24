@@ -17,7 +17,7 @@ interface VoiceSelectionModalProps {
     children: React.ReactNode;
     selectedVoice: string;
     setSelectedVoice: (voiceId: string) => void;
-    language: "chinese" | "english" | "french" | "germany" | "japan" | "korea"; // Thêm prop language nếu cần thiết
+    language: "chinese" | "english" | "french" | "germany" | "japan" | "korea" | "vietnamese"; // Thêm prop language nếu cần thiết
 }
 
 export default function VoiceSelectionModal({ children, selectedVoice, setSelectedVoice, language }: VoiceSelectionModalProps) {
@@ -47,6 +47,7 @@ export default function VoiceSelectionModal({ children, selectedVoice, setSelect
             germany: "Deutsch",
             japan: "日本語",
             korea: "한국어",
+            vietnamese: "Tiếng Việt",
         };
 
         const filteredVoices = voices.filter((voice) => voice.language == languageMap[language]);
