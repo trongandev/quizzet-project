@@ -199,11 +199,19 @@ interface IChatCommunityMessage {
     message: string;
     image: string;
     isEdit: boolean;
-    replyTo: null;
+    replyTo: IReplyTo;
     unsend: boolean;
     reactions: any[];
     timestamp: Date;
     __v: number;
+}
+
+interface IReplyTo {
+    _id: string;
+    userId: UserId;
+    message: string;
+    image: string;
+    unsend: boolean;
 }
 
 interface UserId {

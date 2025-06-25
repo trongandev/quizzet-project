@@ -1,19 +1,8 @@
 import CQuiz from "@/components/CQuiz";
-import { getCachedQuizzet, getCachedTool } from "@/lib/cacheData";
+import { getCachedQuizzet } from "@/lib/cacheData";
 import React from "react";
 
 export async function generateMetadata() {
-    // const quiz = await getCachedQuizzet();
-    // const tool = await getCachedTool();
-    // let data = "";
-    // let dataTool = "";
-    // quiz?.map((item) => {
-    //     data += item.content + " | ";
-    // });
-    // tool?.map((item) => {
-    //     dataTool += item.title + " | ";
-    // });
-
     return {
         title: `Quizzet | Trang chủ`,
         description: `Quizzet`,
@@ -21,8 +10,8 @@ export async function generateMetadata() {
             title: `Quizzet | Trang chủ`,
             description: `Quizzet`,
             type: "website",
-            // images: quiz[0]?.img,
-            url: "https://quizzet.site",
+            images: "/quiz.png",
+            url: "https://quizzet.site/quiz",
         },
     };
 }

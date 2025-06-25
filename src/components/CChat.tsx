@@ -1,17 +1,17 @@
 "use client";
 import handleCompareDate from "@/lib/CompareDate";
 import { GET_API, POST_API } from "@/lib/fetchAPI";
-import { LoadingOutlined } from "@ant-design/icons";
-import { Badge, Popover, Spin } from "antd";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { BiSearch } from "react-icons/bi";
-import { RiMessengerLine } from "react-icons/ri";
 import CShowMessage from "./CShowMessage";
 import { FaArrowLeft } from "react-icons/fa";
 import { useSocket } from "@/context/socketContext";
 import { IChat, IUser } from "@/types/type";
-
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import Loading from "./ui/loading";
+import { Mail, MessageCircle, Search } from "lucide-react";
+import { Input } from "./ui/input";
 function useDebounce(value: any, duration = 300) {
     const [debounceValue, setDebounceValue] = useState(value);
     useEffect(() => {
@@ -118,123 +118,111 @@ export default function CChat({ token, user, router }: { token: string; user: IU
     };
     return (
         <>
-            <Popover
-                content={
-                    <div className="w-full md:w-[400px] max-h-[600px] overflow-y-scroll ">
-                        <div className="min-h-[600px]">
-                            <div className="flex gap-2 items-center h-9  mb-3">
-                                {isSearch && (
-                                    <div
-                                        className="h-full flex items-center justify-center text-gray-500 hover:text-primary cursor-pointer"
-                                        onClick={() => {
-                                            setIsSearch(false);
-                                            setInput("");
-                                        }}>
-                                        <FaArrowLeft />
-                                    </div>
-                                )}
-
-                                <div className="flex flex-1 items-center h-full bg-white rounded-lg border border-gray-200" onClick={() => setIsSearch(true)}>
-                                    <div className="flex items-center justify-center w-9 h-full">
-                                        <BiSearch size={16} />
-                                    </div>
-                                    <input
-                                        type="text"
-                                        placeholder="Tìm mọi người..."
-                                        className="h-full p-0 border-none bg-transparent hover:border-none focus-visible:border-none"
-                                        value={input}
-                                        onChange={(e) => setInput(e.target.value)}></input>
+            <Popover>
+                <PopoverTrigger asChild>
+                    <Mail size={18} />
+                </PopoverTrigger>
+                <PopoverContent className="w-full md:w-[400px] max-h-[600px] overflow-y-scroll " side="bottom" align="end">
+                    <div className="min-h-[600px]">
+                        <div className="flex gap-2 items-center h-9  mb-3">
+                            {isSearch && (
+                                <div
+                                    className="h-full flex items-center justify-center text-gray-500 hover:text-primary cursor-pointer"
+                                    onClick={() => {
+                                        setIsSearch(false);
+                                        setInput("");
+                                    }}>
+                                    <FaArrowLeft />
                                 </div>
-                            </div>
-                            {!isSearch &&
-                                chat?.map((item, index) => {
-                                    const otherParticipant = item?.participants.find((p: any) => p?.userId?._id !== user?._id);
-                                    return (
-                                        <div
-                                            onClick={() => otherParticipant?.userId?._id && handleCreateAndCheckRoomChat(otherParticipant.userId._id, index)}
-                                            key={index}
-                                            className="p-2 hover:bg-gray-200 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
-                                            <div className="w-[56px] h-[56px] relative">
-                                                <Image
-                                                    src={otherParticipant?.userId?.profilePicture || "/avatar.jpg"}
-                                                    alt=""
-                                                    className="object-cover h-full absolute overflow-hidden rounded-full"
-                                                    fill
-                                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                />
-                                                {otherParticipant?.userId?._id && checkOnline(otherParticipant.userId._id) && (
-                                                    <div className="absolute z-1 right-1 bottom-0 w-3 h-3 rounded-full bg-[#3fbb46]" />
-                                                )}
-                                            </div>
-                                            <div className="flex-1">
-                                                <p className="text-gray-700 line-clamp-2">
-                                                    <label htmlFor="" className="font-bold">
-                                                        {otherParticipant?.userId?.displayName}
-                                                    </label>
-                                                    {/* {item?.content} */}
-                                                </p>
-                                                {item?.last_message ? (
-                                                    <div className="text-gray-500 text-[12px] ">
-                                                        <p className="line-clamp-1"> {item?.last_message} </p>
-                                                        <p className="font-medium">{item?.last_message_date && handleCompareDate(item?.last_message_date)}</p>
-                                                    </div>
-                                                ) : (
-                                                    <p className="text-gray-500 text-[12px]">Chưa có tin nhắn!</p>
-                                                )}
-                                            </div>
-                                            {loadingChat === index && <Spin indicator={<LoadingOutlined spin />} size="default" />}
+                            )}
 
-                                            {loadingChat !== index && item?.is_read && <div className="w-3 h-3 rounded-full bg-primary"></div>}
-                                        </div>
-                                    );
-                                })}
-                            {isSearch &&
-                                search?.map((item, index) => (
+                            <div className="relative w-full ">
+                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                <Input placeholder="Tìm mọi người..." className="pl-10 w-full md:w-64 " value={input} onChange={(e) => setInput(e.target.value)} />
+                            </div>
+                        </div>
+                        {!isSearch &&
+                            chat?.map((item, index) => {
+                                const otherParticipant = item?.participants.find((p: any) => p?.userId?._id !== user?._id);
+                                return (
                                     <div
-                                        onClick={() => handleCreateAndCheckRoomChat(item?._id, index)}
+                                        onClick={() => otherParticipant?.userId?._id && handleCreateAndCheckRoomChat(otherParticipant.userId._id, index)}
                                         key={index}
                                         className="p-2 hover:bg-gray-200 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
                                         <div className="w-[56px] h-[56px] relative">
                                             <Image
-                                                src={item?.profilePicture || "/avatar.jpg"}
+                                                src={otherParticipant?.userId?.profilePicture || "/avatar.jpg"}
                                                 alt=""
                                                 className="object-cover h-full absolute overflow-hidden rounded-full"
                                                 fill
                                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                             />
-                                            {checkOnline(user?._id === item?._id ? item?._id : item?._id) && <div className="absolute z-1 right-1 bottom-0 w-3 h-3 rounded-full bg-[#3fbb46]" />}
+                                            {otherParticipant?.userId?._id && checkOnline(otherParticipant.userId._id) && (
+                                                <div className="absolute z-1 right-1 bottom-0 w-3 h-3 rounded-full bg-[#3fbb46]" />
+                                            )}
                                         </div>
-
                                         <div className="flex-1">
-                                            <p className="text-gray-700 line-clamp-2">
+                                            <p className="text-gray-700 dark:text-gray-300 line-clamp-2">
                                                 <label htmlFor="" className="font-bold">
-                                                    {item?.displayName}
-                                                </label>{" "}
+                                                    {otherParticipant?.userId?.displayName}
+                                                </label>
                                                 {/* {item?.content} */}
                                             </p>
-                                            <p className="text-gray-500 text-[12px]">Tham gia {item?.created_at && handleCompareDate(item?.created_at)}</p>
+                                            {item?.last_message ? (
+                                                <div className="text-gray-500 text-[12px] ">
+                                                    <p className="line-clamp-1"> {item?.last_message} </p>
+                                                    <p className="font-medium">{item?.last_message_date && handleCompareDate(item?.last_message_date)}</p>
+                                                </div>
+                                            ) : (
+                                                <p className="text-gray-500 text-[12px]">Chưa có tin nhắn!</p>
+                                            )}
                                         </div>
-                                        {loadingChat === index && <Spin indicator={<LoadingOutlined spin />} size="default" />}
-                                    </div>
-                                ))}
+                                        {loadingChat === index && <Loading />}
 
-                            {!isSearch && !loading && chat?.length === 0 && <div className="text-center text-gray-500">Bạn chưa có tin nhắn nào...</div>}
-                            {loading && (
-                                <div className="flex items-center justify-center w-full">
-                                    <Spin indicator={<LoadingOutlined spin />} size="default" />
+                                        {loadingChat !== index && item?.is_read && <div className="w-3 h-3 rounded-full bg-primary"></div>}
+                                    </div>
+                                );
+                            })}
+                        {isSearch &&
+                            search?.map((item, index) => (
+                                <div
+                                    onClick={() => handleCreateAndCheckRoomChat(item?._id, index)}
+                                    key={index}
+                                    className="p-2 hover:bg-gray-200 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
+                                    <div className="w-[56px] h-[56px] relative">
+                                        <Image
+                                            src={item?.profilePicture || "/avatar.jpg"}
+                                            alt=""
+                                            className="object-cover h-full absolute overflow-hidden rounded-full"
+                                            fill
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                        />
+                                        {checkOnline(user?._id === item?._id ? item?._id : item?._id) && <div className="absolute z-1 right-1 bottom-0 w-3 h-3 rounded-full bg-[#3fbb46]" />}
+                                    </div>
+
+                                    <div className="flex-1">
+                                        <p className="text-gray-700 line-clamp-2">
+                                            <label htmlFor="" className="font-bold">
+                                                {item?.displayName}
+                                            </label>{" "}
+                                            {/* {item?.content} */}
+                                        </p>
+                                        <p className="text-gray-500 text-[12px]">Tham gia {item?.created_at && handleCompareDate(item?.created_at)}</p>
+                                    </div>
+                                    {loadingChat === index && <Loading />}
                                 </div>
-                            )}
-                        </div>
+                            ))}
+
+                        {!isSearch && !loading && chat?.length === 0 && <div className="text-center text-gray-500">Bạn chưa có tin nhắn nào...</div>}
+                        {loading && (
+                            <div className="flex items-center justify-center w-full">
+                                <Loading />
+                            </div>
+                        )}
                     </div>
-                }
-                trigger="click"
-                open={openChat}
-                onOpenChange={handleOpenChat}
-                title="Chat">
-                <Badge count={unreadCountChat} offset={[-5, 5]} size="small" className="text-primary hover:text-secondary cursor-pointer">
-                    <RiMessengerLine size={26} />
-                </Badge>
+                </PopoverContent>
             </Popover>
+
             <CShowMessage chatMessId={chatMessId} handleDeleteChat={handleDeleteChat} token={token} socket={socket} checkOnline={checkOnline} />
         </>
     );

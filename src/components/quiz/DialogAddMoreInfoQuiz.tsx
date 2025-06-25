@@ -91,7 +91,7 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz }: Props
                     action: {
                         label: "Xem bài quiz",
                         onClick: () => {
-                            router.push(`/quiz/detail/${data?.slug}`);
+                            router.push(`/quiz/detail/${data?.quiz?.slug}`);
                         },
                     },
                 });
