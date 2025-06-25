@@ -135,9 +135,13 @@ export default function CHeader({ token }: { token: string }) {
                 <div className="flex items-center gap-3">
                     <div className="flex items-center gap-2">
                         {theme === "dark" ? (
-                            <Sun size={18} className="cursor-pointer hover:text-blue-500/50" onClick={() => setTheme("light")} />
+                            <div className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-primary dark:text-white/60 hover:text-white">
+                                <Sun size={18} className="" onClick={() => setTheme("light")} />
+                            </div>
                         ) : (
-                            <Moon size={18} className="cursor-pointer hover:text-blue-500/50" onClick={() => setTheme("dark")} />
+                            <div className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-primary dark:text-white/60 hover:text-white">
+                                <Moon size={18} className="" onClick={() => setTheme("dark")} />
+                            </div>
                         )}
                     </div>
                     {!user ? (
@@ -155,7 +159,9 @@ export default function CHeader({ token }: { token: string }) {
                             <div className="flex gap-3 items-center">
                                 <Popover>
                                     <PopoverTrigger asChild>
-                                        <Bell size={18} />
+                                        <div className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-primary dark:text-white/60 hover:text-white">
+                                            <Bell size={18} />
+                                        </div>
                                     </PopoverTrigger>
                                     <PopoverContent className="w-80">
                                         <div className="w-full md:w-[400px] max-h-[600px] overflow-y-scroll">

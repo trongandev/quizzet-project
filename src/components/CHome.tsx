@@ -35,10 +35,11 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
                 {/* Feature Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-8 mt-10">
                     {/* Flashcard */}
-                    <Card className="dark:border-white/10 group hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 border-0 dark:border  dark:from-blue-900/50 dark:to-purple-900/50 dark:hover:from-blue-900 dark:hover:to-purple-900">
+                    <Card className="dark:border-white/10 group hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 border-0 dark:border  dark:from-blue-900/50 dark:to-purple-900/50 dark:hover:from-blue-900 dark:hover:to-purple-900 overflow-hidden relative hover:scale-105 ">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
                         <CardContent className="p-5 md:p-8">
                             <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                                <BookOpen className="w-8 h-8 text-white" />
+                                <BookOpen className="w-8 h-8 text-white rotate-0 group-hover:rotate-180 transition-all duration-500" />
                             </div>
                             <h3 className="text-2xl font-bold text-slate-900 mb-4 dark:text-slate-200">Flashcard</h3>
                             <p className="text-slate-600 mb-6 leading-relaxed break-words dark:text-slate-400 line-clamp-3">
@@ -57,7 +58,9 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
                     </Card>
 
                     {/* Quiz */}
-                    <Card className="dark:border-white/10 group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-cyan-50 to-blue-50 hover:from-cyan-100 hover:to-blue-100 dark:border  dark:from-cyan-900/50 dark:to-blue-900/50 dark:hover:from-cyan-900 dark:hover:to-blue-900">
+                    <Card className="dark:border-white/10 group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-cyan-50 to-blue-50 hover:from-cyan-100 hover:to-blue-100 dark:border  dark:from-cyan-900/50 dark:to-blue-900/50 dark:hover:from-cyan-900 dark:hover:to-blue-900 overflow-hidden relative hover:scale-105 ">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
+
                         <CardContent className="p-5 md:p-8">
                             <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                                 <Brain className="w-8 h-8 text-white" />
@@ -79,7 +82,9 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
                     </Card>
 
                     {/* Đề cương */}
-                    <Card className="dark:border-white/10 group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 dark:border  dark:from-purple-900/50 dark:to-pink-900/50 dark:hover:from-purple-900 dark:hover:to-pink-900">
+                    <Card className="dark:border-white/10 group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 dark:border  dark:from-purple-900/50 dark:to-pink-900/50 dark:hover:from-purple-900 dark:hover:to-pink-900 overflow-hidden relative hover:scale-105 ">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
+
                         <CardContent className="p-5 md:p-8">
                             <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                                 <FileText className="w-8 h-8 text-white" />

@@ -215,10 +215,10 @@ export default function ChatCommunity() {
     return (
         <div className="flex items-center justify-center">
             <div className="w-full md:w-[1000px] xl:w-[1200px] py-5 pt-16 mx-3 md:mx-0">
-                <div className="text-third dark:text-white flex flex-col md:flex-row px-0 min-h-[85vh] dark:border-white/10 border  shadow-xl w-full rounded-xl overflow-hidden ">
+                <div className="text-third dark:text-white flex flex-col md:flex-row px-0 min-h-[85vh] border-t-gray-300/50 dark:border-white/10 border  shadow-xl w-full rounded-xl overflow-hidden ">
                     <div className=" flex-1">
                         {/* {khung chat ben trái} */}
-                        <div className="w-auto border-b border-b-white/10 flex items-center md:justify-between  h-16 md:px-5 px-3 bg-white dark:bg-slate-800/50 ">
+                        <div className="w-auto border-b border-t-gray-300/50 dark:border-b-white/10 flex items-center md:justify-between  h-16 md:px-5 px-3 bg-white dark:bg-slate-800/50 ">
                             {/* header */}
                             <div className="flex items-center gap-3">
                                 <div className="flex items-center gap-3 ">
@@ -243,7 +243,7 @@ export default function ChatCommunity() {
                         {/* nội dung chính */}
                         <div className="flex flex-col">
                             <div
-                                className={`py-5 px-3 flex-1 ${
+                                className={`py-5 px-3 flex-1 light:bg-white/80  ${
                                     replyingTo && imageReview
                                         ? "max-h-[calc(80vh-249px)] min-h-[calc(80vh-249px)]"
                                         : imageReview
@@ -265,17 +265,13 @@ export default function ChatCommunity() {
                                             user={user}
                                         />
                                     ))}
-
-                                {/* <ChatCard />
-                                <ChatCard />
-                                <ChatCard /> */}
                             </div>
                             <div
-                                className={`border-t border-t-white/10 bg-white dark:bg-slate-800/50 ${
+                                className={`border-t border-t-gray-300/50 dark:border-t-white/10 bg-white dark:bg-slate-800/50 ${
                                     replyingTo && imageReview ? "h-[249px]" : imageReview ? "h-[200px]" : replyingTo ? "h-[150px]" : "h-[100px]"
                                 }`}>
                                 {replyingTo && (
-                                    <div className="px-5  border-b border-b-white/10 ">
+                                    <div className="px-5  border-b border-t-gray-300/50 dark:border-b-white/10 ">
                                         <div className="h-12 flex items-center justify-between ">
                                             <p className="">
                                                 Bạn đang trả lời <span className="font-bold"> {user?._id === replyingTo.userId._id ? "chính bản thân" : replyingTo.userId.displayName}</span>{" "}
@@ -288,7 +284,7 @@ export default function ChatCommunity() {
                                 )}
 
                                 {imageReview && (
-                                    <div className="px-5  border-b border-b-white/10 ">
+                                    <div className="px-5  border-b border-t-gray-300/50 dark:border-b-white/10 ">
                                         <div className="relative h-12 w-12 md:h-24 md:w-36 overflow-hidden">
                                             <Image src={imageReview} alt="Image preview" fill className="w-full h-full py-2  absolute object-cover rounded-md" />
                                             <div
@@ -304,7 +300,7 @@ export default function ChatCommunity() {
                                 )}
                                 {user ? (
                                     <div className="p-5 ">
-                                        <div className="px-3  border border-white/10 rounded-xl h-16 w-full flex items-center justify-between">
+                                        <div className="px-3  border border-gray-300/50 shadow-sm dark:border-white/10 rounded-xl h-16 w-full flex items-center justify-between">
                                             {/* <DialogAddImage image={image} setImage={setImage}>
                                         </DialogAddImage> */}
                                             <div className="">
@@ -321,7 +317,7 @@ export default function ChatCommunity() {
                                                 onPaste={handlePaste}
                                                 onKeyPress={handleKeyPress}
                                                 placeholder="Nhắn tin tới # cộng đồng quizzet "
-                                                className="flex-1 text-sm md:text-md border-none ring-0 outline-none focus-visible:ring-0"></Input>
+                                                className="flex-1 text-sm md:text-md border-none shadow-none ring-0 outline-none focus-visible:ring-0"></Input>
                                             <div className="flex items-center gap-3">
                                                 <div className="hidden md:flex h-10 w-10 items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
                                                     <Smile size={18} />
@@ -343,7 +339,7 @@ export default function ChatCommunity() {
                             </div>
                         </div>
                     </div>
-                    <div className="w-full md:w-[300px] p-4 bg-white dark:bg-slate-800/50 md:border-s md:border-s-white/10 border-t md:border-t-white/10">
+                    <div className="w-full md:w-[300px] p-4 bg-white dark:bg-slate-800/50 md:border-s  md:border-s-gray-300/50 dark:md:border-s-white/10 border-t md:border-t-gray-300/50 dark:border-t-white/10">
                         {/* Online Users List */}
                         <div className="flex items-center gap-2 text-md md:text-lg">
                             <Users className="text-gray-400" size={20} />{" "}

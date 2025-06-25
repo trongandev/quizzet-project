@@ -120,11 +120,13 @@ export default function CChat({ token, user, router }: { token: string; user: IU
         <>
             <Popover>
                 <PopoverTrigger asChild>
-                    <Mail size={18} />
+                    <div className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-primary dark:text-white/60 hover:text-white">
+                        <Mail size={18} />
+                    </div>
                 </PopoverTrigger>
                 <PopoverContent className="w-full md:w-[400px] max-h-[600px] overflow-y-scroll " side="bottom" align="end">
                     <div className="min-h-[600px]">
-                        <div className="flex gap-2 items-center h-9  mb-3">
+                        <div className="flex gap-2 items-center h-9  mb-3 w-full">
                             {isSearch && (
                                 <div
                                     className="h-full flex items-center justify-center text-gray-500 hover:text-primary cursor-pointer"
@@ -136,9 +138,14 @@ export default function CChat({ token, user, router }: { token: string; user: IU
                                 </div>
                             )}
 
-                            <div className="relative w-full ">
+                            <div className="relative w-full border border-gray-300/50 dark:border-white/10 rounded-lg">
                                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                                <Input placeholder="Tìm mọi người..." className="pl-10 w-full md:w-64 " value={input} onChange={(e) => setInput(e.target.value)} />
+                                <Input
+                                    placeholder="Tìm mọi người..."
+                                    className="pl-10 w-full md:w-64 border-none outline-none focus-visible:ring-0 "
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
+                                />
                             </div>
                         </div>
                         {!isSearch &&
@@ -148,7 +155,7 @@ export default function CChat({ token, user, router }: { token: string; user: IU
                                     <div
                                         onClick={() => otherParticipant?.userId?._id && handleCreateAndCheckRoomChat(otherParticipant.userId._id, index)}
                                         key={index}
-                                        className="p-2 hover:bg-gray-200 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
+                                        className="p-2 hover:bg-gray-200 dark:hover:bg-gray-600/50 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
                                         <div className="w-[56px] h-[56px] relative">
                                             <Image
                                                 src={otherParticipant?.userId?.profilePicture || "/avatar.jpg"}

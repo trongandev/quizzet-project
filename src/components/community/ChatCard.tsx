@@ -31,14 +31,16 @@ const ChatCard = forwardRef<HTMLDivElement, MessageCardProps>(({ message, isLast
             ref={isLastMessage ? ref : null}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}>
-            <div className="w-10 md:w-12 h-10 md:h-12 relative rounded-full overflow-hidden">
+            <Link href={`/profile/${message.userId._id}`} className="block w-10 md:w-12 h-10 md:h-12 relative rounded-full overflow-hidden">
                 <Image src={message?.userId.profilePicture} alt="" fill className="absolute w-full h-full object-cover" />
-            </div>
+            </Link>
             <div className="flex-1 w-full space-y-2">
                 <div className="flex items-center justify-between h-7">
                     <div className="flex items-center gap-2">
-                        <h3>{message?.userId?.displayName}</h3>
-                        <p className="text-gray-400 text-xs">{handleCompareDate(message?.timestamp)}</p>
+                        <Link href={`/profile/${message.userId._id}`} className="font-medium hover:underline">
+                            {message?.userId?.displayName}
+                        </Link>
+                        <p className="text-gray-500 dark:text-gray-400 text-xs">{handleCompareDate(message?.timestamp)}</p>
                         {message?.isEdit && <span className="text-xs text-gray-400"> (Đã chỉnh sửa)</span>}
                         {message?.replyTo && (
                             <span className="text-xs text-gray-400 max-w-[350px] truncate">
@@ -54,19 +56,19 @@ const ChatCard = forwardRef<HTMLDivElement, MessageCardProps>(({ message, isLast
                     {/* ✅ Hiển thị actions khi hover hoặc popover mở */}
                     <div className={`items-center gap-2 transition-all duration-200 ${shouldShowActions ? "flex" : "hidden"}`}>
                         <PopperEmoji open={emojiPopoverOpen} setOpen={setEmojiPopoverOpen} handleReactIcon={handleReactIcon} messageId={message?._id}>
-                            <div className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
+                            <div className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-800 dark:text-gray-400 dark:text-white/60 hover:text-white">
                                 <Heart size={14} />
                             </div>
                         </PopperEmoji>
                         <div
-                            className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white"
+                            className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-800 dark:text-gray-400 dark:text-white/60 hover:text-white"
                             onClick={() => setReplyingTo(message)}>
                             <MessageCircle size={14} />
                         </div>
                         <Dialog open={open} onOpenChange={setOpen}>
                             <DialogTrigger asChild>
                                 {user?._id === message?.userId._id && (
-                                    <div className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
+                                    <div className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-800 dark:text-gray-400 dark:text-white/60 hover:text-white">
                                         <Trash size={14} />
                                     </div>
                                 )}
@@ -94,7 +96,7 @@ const ChatCard = forwardRef<HTMLDivElement, MessageCardProps>(({ message, isLast
                     </div>
                 </div>
 
-                <div className="w-full bg-gray-500/50 px-3 py-2 md:py-3 md:px-5 rounded-md md:rounded-xl">
+                <div className="w-full bg-gray-300/50 dark:bg-gray-500/50 px-3 py-2 md:py-3 md:px-5 rounded-md md:rounded-xl">
                     {message?.unsend ? (
                         <p className="break-words whitespace-normal text-xs text-gray-400">Tin nhắn đã bị gỡ...</p>
                     ) : (
@@ -103,7 +105,7 @@ const ChatCard = forwardRef<HTMLDivElement, MessageCardProps>(({ message, isLast
                 </div>
                 <div className="flex items-center gap-2">
                     {message?.reactions?.map((react, index) => (
-                        <div className="flex rounded-full items-center px-3 py-1 bg-slate-900/50 cursor-pointer " key={index}>
+                        <div className="flex rounded-full items-center px-3 py-1 bg-slate-300/50 dark:bg-slate-900/50 cursor-pointer " key={index}>
                             <Image src={react.emoji} alt="" width={15} height={15} className="" />
                         </div>
                     ))}

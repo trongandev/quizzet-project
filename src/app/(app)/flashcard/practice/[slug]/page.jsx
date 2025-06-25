@@ -10,7 +10,7 @@ import { BiSlideshow } from "react-icons/bi";
 import { IoSend } from "react-icons/io5";
 import { EdgeSpeechTTS } from "@lobehub/tts";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Eye, Lightbulb, Send } from "lucide-react";
+import { ArrowLeft, Eye, Lightbulb, Send, Speaker, Volume2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 const FEATURES = {
@@ -256,6 +256,11 @@ export default function PractiveFlashcard({ params }) {
                     e.preventDefault();
                     if (feature === FEATURES.FLASHCARD) {
                         setIsFlipped((prev) => !prev);
+                    } else if (feature === FEATURES.LISTENING || feature === FEATURES.FILL_BLANK) {
+                        setShowAns((prev) => !prev);
+                        if (!showAns) {
+                            setInputAnswer(flashcards[index].title); // Hiển thị đáp án khi bấm space
+                        }
                     }
                     break;
                 case "enter":
@@ -311,7 +316,7 @@ export default function PractiveFlashcard({ params }) {
                         <div className="w-full flex flex-col gap-5">
                             {/* Main Flashcard Container */}
                             <div
-                                className=" relative w-full h-[500px] border border-white/10 rounded-lg  shadow-md bg-white dark:bg-slate-800/50 dark:text-white"
+                                className=" relative w-full h-[500px] border border-white/10 rounded-md  shadow-md bg-white dark:bg-slate-800/50 dark:text-white"
                                 style={{ perspective: "1000px" }}
                                 onClick={feature === FEATURES.FLASHCARD ? () => setIsFlipped(!isFlipped) : undefined}>
                                 {/* Flashcard Feature */}
@@ -417,40 +422,31 @@ export default function PractiveFlashcard({ params }) {
                                             <span className="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm">Listening</span>
                                         </div>
                                         <div className="flex gap-4 mb-6">
-                                            <Button
-                                                onClick={() => speakWord(flashcards[index]?.title, flashcards[index]?._id)}
-                                                className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-primary">
-                                                <HiMiniSpeakerWave />
-                                                <span>UK</span>
-                                            </Button>
-                                            <Button
-                                                onClick={() => speakWord(flashcards[index]?.title, flashcards[index]?._id)}
-                                                className="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-gray-100 hover:text-primary">
-                                                <HiMiniSpeakerWave />
-                                                <span>US</span>
+                                            <Button onClick={() => speakWord(flashcards[index]?.title, flashcards[index]?._id)} className="" variant="outline">
+                                                <Volume2 />
                                             </Button>
                                         </div>
                                         <div className="flex-1">
                                             <p className=" mb-2">Định nghĩa:</p>
                                             <p className="text-gray-600 dark:text-white/70 mb-4">{flashcards[index]?.define}</p>
-                                            <input
+                                            <Input
                                                 type="text"
                                                 value={inputAnswer}
                                                 onChange={(e) => setInputAnswer(e.target.value)}
                                                 placeholder="Điền từ bạn nghe được"
                                                 autoFocus
-                                                className={`w-full p-3 border transition-colors dark:bg-gray-500/50 text-third dark:text-white
-            ${isCorrectAns === "correct" ? "!border-green-500 border-2" : ""}
-            ${isCorrectAns === "incorrect" ? "!border-red-500 border-2 shake" : ""}
+                                                className={`w-full h-14 dark:border-white/10 border outline-none focus-visible:ring-0 rounded-md transition-colors dark:bg-gray-500/50 text-third dark:text-white
+            ${isCorrectAns === "correct" ? "!border-green-500 dark:!border-green-300 border-2" : ""}
+            ${isCorrectAns === "incorrect" ? "!border-red-500 dark:!border-red-300 border-2 shake" : ""}
         `}
                                             />
                                             <div className="flex justify-end">
-                                                <Button className="mt-3 flex items-center  gap-2" onClick={checkListeningAnswer}>
-                                                    <IoSend /> Gửi
+                                                <Button className="mt-3 text-white" onClick={checkListeningAnswer}>
+                                                    <Send /> Kiểm tra
                                                 </Button>
                                             </div>
                                         </div>
-                                        <Button onClick={() => setInputAnswer(flashcards[index].title)} className="text-white" size="lg">
+                                        <Button onClick={() => setInputAnswer(flashcards[index].title)} className="text-white" variant="outline" size="lg">
                                             <Eye />
                                             Hiển thị đáp án
                                         </Button>
@@ -483,18 +479,18 @@ export default function PractiveFlashcard({ params }) {
                                                 }}
                                                 placeholder="Điền từ còn thiếu..."
                                                 autoFocus
-                                                className={`w-full h-12 border transition-colors dark:bg-gray-500/50 text-third dark:text-white
-                                                ${isCorrectAns === "correct" ? "!border-green-500 border-2" : ""}
-                                                ${isCorrectAns === "incorrect" ? "!border-red-500 border-2 shake" : ""}
+                                                className={`h-14 dark:border-white/10 w-full border outline-none focus-visible:ring-0 rounded-md transition-colors dark:bg-gray-500/50 text-third dark:text-white
+                                                ${isCorrectAns === "correct" ? "dark:!border-green-300 !border-green-500 border-2" : ""}
+                                                ${isCorrectAns === "incorrect" ? "dark:!border-red-300 !border-red-500 border-2 shake" : ""}
                                             `}
                                             />
                                             <div className="flex justify-end mt-3">
                                                 <Button className="text-white" onClick={checkListeningAnswer}>
-                                                    <Send /> Gửi
+                                                    <Send /> Kiểm tra
                                                 </Button>
                                             </div>
                                         </div>
-                                        <Button onClick={() => setShowAns(!showAns)} className=" mt-4 text-white" size="lg">
+                                        <Button onClick={() => setShowAns(!showAns)} variant={showAns ? "outline" : "secondary"} className=" mt-4 text-white " size="lg">
                                             <Eye />
                                             {showAns ? "Ẩn đáp án" : "Hiển thị đáp án"}
                                         </Button>
@@ -595,7 +591,7 @@ export default function PractiveFlashcard({ params }) {
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Space</kbd>
-                                        <span className="">Lật thẻ </span>
+                                        <span className="">Lật thẻ/Show đáp án</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Enter</kbd>
