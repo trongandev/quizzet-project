@@ -1,5 +1,7 @@
-import CPublicFlashcard from "@/components/CPublicFlashcard";
+import CPublicFlashcard from "@/components/flashcard/CPublicFlashcard";
 import { getCachedFlashcardPublic } from "@/lib/cacheData";
+import { GET_API } from "@/lib/fetchAPI";
+import { cookies } from "next/headers";
 import React from "react";
 export async function generateMetadata() {
     return {
@@ -16,6 +18,9 @@ export async function generateMetadata() {
 }
 
 export default async function page() {
+    const cookieStore = cookies();
+    const token = cookieStore.get("token")?.value || "";
     const publicFlashcards = await getCachedFlashcardPublic();
-    return <CPublicFlashcard publicFlashcards={publicFlashcards} />;
+    const summary = await GET_API("/flashcard/summary", token);
+    return <CPublicFlashcard publicFlashcards={publicFlashcards} summary={summary} />;
 }

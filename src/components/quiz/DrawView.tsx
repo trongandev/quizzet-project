@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { FileText, Search, Edit, Trash2, Eye, Calendar, Clock, Bot, Upload, Plus, AlertCircle } from "lucide-react";
 import handleCompareDate from "@/lib/CompareDate";
 import { AIResultPreview } from "./AIResuiltPreview";
+import Link from "next/link";
 
 interface DraftQuiz {
     id: string;
@@ -44,6 +45,10 @@ export function DraftsView({ onViewChange }: HomeViewProps) {
 
     const [drafts, setDrafts] = useState<DraftQuiz[]>([]);
     useEffect(() => {
+        const getDrawQuiz = localStorage.getItem("draftQuiz") || "";
+        if (!getDrawQuiz) {
+            localStorage.setItem("draftQuiz", JSON.stringify([]));
+        }
         const draftQuiz = JSON.parse(localStorage.getItem("draftQuiz") || "") as DraftQuiz[];
         setDrafts(draftQuiz || []);
     }, []);
@@ -167,9 +172,9 @@ export function DraftsView({ onViewChange }: HomeViewProps) {
                     <CardContent className="p-12 text-center">
                         <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                         <h3 className="text-lg font-medium mb-2">{searchTerm ? "Không tìm thấy quiz nào" : "Chưa có quiz nháp nào"}</h3>
-                        <p className="text-muted-foreground mb-4">{searchTerm ? "Thử tìm kiếm với từ khóa khác" : "Các quiz bạn tạo sẽ được lưu tự động ở đây"}</p>
+                        <p className="text-muted-foreground mb-4">{searchTerm ? "Thử tìm kiếm với từ khóa khác" : "Các quiz bạn tạo sẽ được lưu tự động ở đây nếu gặp lỗi"}</p>
                         {!searchTerm && (
-                            <Button className="dark:text-white">
+                            <Button className="dark:text-white" onClick={() => onViewChange("ai-create")} variant="outline">
                                 <Plus className="mr-2 h-4 w-4" />
                                 Tạo quiz đầu tiên
                             </Button>

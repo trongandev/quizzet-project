@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Cookies from "js-cookie";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { GET_API, POST_API } from "@/lib/fetchAPI";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ import { toast } from "sonner";
 export default function LoginForm() {
     const router = useRouter();
     const token = Cookies.get("token") || "";
+    const pathname = usePathname();
     const [loading, setLoading] = React.useState(false);
     const fetchProfile = async () => {
         try {
@@ -62,7 +63,11 @@ export default function LoginForm() {
                         position: "top-center",
                     });
                     Cookies.set("token", data.token, { expires: 30 });
-                    router.push("/");
+                    // check router if router == /login then redirect to home
+                    if (pathname === "/login") {
+                        router.push("/");
+                    }
+                    router.back();
                 } else {
                     toast.warning(data.message);
                 }

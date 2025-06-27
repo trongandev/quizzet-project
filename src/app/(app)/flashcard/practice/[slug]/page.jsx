@@ -279,8 +279,13 @@ export default function PractiveFlashcard({ params }) {
 
     if (!flashcards.length) {
         return (
-            <div className="flex items-center justify-center h-screen">
-                <Spin size="large" />
+            <div className="flex items-center justify-center h-screen flex-col gap-3">
+                <p className="text-gray-500">Vui lòng thêm từ mới vào danh sách flashcard.</p>
+                <BiSlideshow size={50} className="text-gray-400" />
+                <h1>Không có từ nào trong bộ flashcard này</h1>
+                <Button variant="secondary" onClick={() => router.back()}>
+                    <ArrowLeft /> Quay lại
+                </Button>
             </div>
         );
     }
@@ -514,27 +519,12 @@ export default function PractiveFlashcard({ params }) {
 
                         {/* Feature Selection Panel */}
                         <div className="w-full md:w-auto flex flex-col gap-4">
-                            {feature === FEATURES.FLASHCARD && language == "english" && (
-                                <div className="space-y-2">
-                                    <div className="flex items-center gap-2">
-                                        <HiMiniSpeakerWave size={20} />
-                                        <span>Phát âm giọng UK, US</span>
-                                    </div>
-                                    <Switch
-                                        checkedChildren={speakLang === 1 && "UK"}
-                                        unCheckedChildren={speakLang === 2 && "US"}
-                                        checked={speakLang === 1}
-                                        onChange={(checked) => setSpeakLang(checked ? 1 : 2)}
-                                    />
-                                </div>
-                            )}
-
                             <div className="space-y-2">
                                 <h2 className="font-medium">Cài đặt Random</h2>
                                 <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg space-y-3">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-2">
-                                            <span className="text-gray-600 dark:text-white">Random câu hỏi</span>
+                                            <span className="text-gray-600 dark:text-white">Bật Random</span>
                                             <Switch checked={isRandomMode} onChange={(checked) => setIsRandomMode(checked)} className="bg-gray-300 dark:bg-slate-500" />
                                         </div>
                                     </div>

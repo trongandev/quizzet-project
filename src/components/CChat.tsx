@@ -94,7 +94,7 @@ export default function CChat({ token, user, router }: { token: string; user: IU
         const req = await POST_API(
             "/chat/create-chat",
             {
-                participants: [user._id, id_another_user],
+                participants: [user?._id, id_another_user],
             },
             "POST",
             token

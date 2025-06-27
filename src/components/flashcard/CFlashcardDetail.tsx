@@ -28,7 +28,28 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { AlertCircle, ArrowLeft, BookOpen, Brain, CheckCircle, Clock, Flag, Flame, Grid3x3, PencilLine, Plus, RotateCcw, Target, Timer, Trash2, TrendingUp, User, Volume2 } from "lucide-react";
+import {
+    AlertCircle,
+    ArrowLeft,
+    BookOpen,
+    Brain,
+    CheckCircle,
+    Clock,
+    Flag,
+    Flame,
+    GalleryVerticalEnd,
+    Gift,
+    Grid3x3,
+    PencilLine,
+    Plus,
+    RotateCcw,
+    Target,
+    Timer,
+    Trash2,
+    TrendingUp,
+    User,
+    Volume2,
+} from "lucide-react";
 import { EditListFlashcardModal } from "./EditListFlashcardModal";
 import AddVocaModal from "./AddVocaModal";
 import { Badge } from "../ui/badge";
@@ -66,8 +87,8 @@ const getLanguageName = (lang: string) => {
     return names[lang] || "Khác";
 };
 
-export default function CFlashcardDetail({ id_flashcard, initialData }: { id_flashcard: any; initialData?: any }) {
-    const [isOpenVocaModal, setIsOpenVocaModal] = useState(false);
+export default function CFlashcardDetail({ id_flashcard, initialData, statusCounts }: any) {
+    console.log(initialData);
     const [loading, setLoading] = useState(false);
     const [loadingConfirm, setLoadingConfirm] = useState(false);
     const [flashcard, setFlashcard] = useState<Flashcard>(); // các flashcard
@@ -76,7 +97,7 @@ export default function CFlashcardDetail({ id_flashcard, initialData }: { id_fla
     const [selectedVoice, setSelectedVoice] = useState("");
     const token = Cookies.get("token") || "";
     const router = useRouter();
-    const { user } = useUser() || { user: undefined };
+    const { user } = useUser() || {};
     const sortFlashcards = (flashcards: any) => {
         return flashcards?.sort(({ a, b }: any) => {
             return new Date(b?.created_at).getTime() - new Date(a?.created_at).getTime();
@@ -105,6 +126,7 @@ export default function CFlashcardDetail({ id_flashcard, initialData }: { id_fla
             setFlashcard(sortedFlashcards);
             setFilteredFlashcards(sortedFlashcards);
             setListFlashcard(fetchedData);
+            console.log("fetchedData", fetchedData);
             setEditListFlashcard({
                 _id: fetchedData._id,
                 title: fetchedData.title,
@@ -114,6 +136,13 @@ export default function CFlashcardDetail({ id_flashcard, initialData }: { id_fla
             });
         }
     }, [fetchedData, listFlashcard]);
+
+    const summaryUsers = [
+        { label: "Tất cả thẻ", filter: "all", value: listFlashcard?.flashcards?.length || 0, icon: <GalleryVerticalEnd />, color: "indigo" },
+        { label: "Đã nhớ", filter: "learned", value: statusCounts?.learned || 0, icon: <BookOpen />, color: "green" },
+        { label: "Đang ghi nhớ", filter: "remembered", value: statusCounts?.remembered || 0, icon: <Brain />, color: "blue" },
+        { label: "Cần ôn tập", filter: "reviewing", value: statusCounts?.reviewing || 0, icon: <RotateCcw />, color: "red" },
+    ];
 
     useEffect(() => {
         if (!listFlashcard?.language) return; // Đợi listFlashcard load xong
@@ -150,35 +179,13 @@ export default function CFlashcardDetail({ id_flashcard, initialData }: { id_fla
         setSelectedVoice(currentVoice);
     }, [listFlashcard?.language]);
 
-    const handleAddVoca = async (values: any) => {
-        // try {
-        //     setLoading(true);
-        //     const req = await POST_API("/flashcards", { ...newFlashcard, list_flashcard_id: listFlashCard._id }, "POST", token);
-        //     const res = await req.json();
-        //     if (req.ok) {
-        //         setOpen(false);
-        //         setFilteredFlashcards([res?.flashcard, ...flashcard]);
-        //         setNewFlashcard(defaultFlashcard);
-        //     }
-        // } catch (error) {
-        //     messageApi.error(error.message);
-        // } finally {
-        //     setLoading(false);
-        // }
-    };
     const handleDeleteListFlashcard = async () => {
         try {
             setLoadingConfirm(true);
             const req = await POST_API(`/list-flashcards/${id_flashcard}`, {}, "DELETE", token);
             const res = await req?.json();
-            if (req?.ok) {
+            if (res?.ok) {
                 router.back();
-            } else {
-                toast.error("Xoá flashcard không thành công", {
-                    description: res?.message || "Đã có lỗi xảy ra, vui lòng thử lại sau",
-                    duration: 3000,
-                    position: "top-center",
-                });
             }
         } catch (error) {
             console.error("Error deleting list flashcard:", error);
@@ -224,17 +231,6 @@ export default function CFlashcardDetail({ id_flashcard, initialData }: { id_fla
         }
     };
     const [tts] = useState(() => new EdgeSpeechTTS({ locale: "en-US" }));
-    // Function để lấy voice dựa trên language và type
-    // const getVoiceByLanguage = useCallback((language: string | undefined) => {
-    //     if (language === "english") return "en-GB-SoniaNeural";
-    //     if (language === "vietnamese") return "vi-VN-HoaiMyNeural";
-    //     if (language === "germany") return "de-DE-KatjaNeural";
-    //     if (language === "france") return "fr-FR-DeniseNeural";
-    //     if (language === "japan") return "ja-JP-NanamiNeural";
-    //     if (language === "korea") return "ko-KR-SunHiNeural";
-    //     if (language === "chinese") return "zh-CN-XiaoxiaoNeural";
-    //     return "en-US-GuyNeural"; // default
-    // }, []);
 
     const speakWord = useCallback(
         async (text: string, id: any) => {
@@ -280,6 +276,49 @@ export default function CFlashcardDetail({ id_flashcard, initialData }: { id_fla
         [disableAudio, listFlashcard?.language, tts, selectedVoice]
     );
 
+    const handleDelete = async (id: string) => {
+        try {
+            setLoadingConfirm(true);
+            const req = await POST_API(`/flashcards/${id}`, { list_flashcard_id: listFlashcard?._id }, "DELETE", token);
+            const res = await req?.json();
+            if (res.ok) {
+                setFilteredFlashcards((prev) => prev.filter((item) => item._id !== id));
+            }
+            setLoadingConfirm(false);
+        } catch (error) {
+            console.error("Error deleting flashcard:", error);
+            toast.error("Xoá flashcard không thành công", {
+                description: error instanceof Error ? error.message : "Lỗi không xác định",
+                duration: 10000,
+                position: "top-center",
+            });
+        } finally {
+            setLoadingConfirm(false);
+        }
+    };
+
+    const handleFilter = (filter: string) => {
+        if (!listFlashcard?.flashcards) return;
+
+        let filtered = listFlashcard.flashcards;
+
+        switch (filter) {
+            case "learned":
+                filtered = listFlashcard.flashcards.filter((item) => item.status === "learned");
+                break;
+            case "remembered":
+                filtered = listFlashcard.flashcards.filter((item) => item.status === "remembered");
+                break;
+            case "reviewing":
+                filtered = listFlashcard.flashcards.filter((item) => item.status === "reviewing");
+                break;
+            default:
+                filtered = listFlashcard.flashcards;
+        }
+
+        setFilteredFlashcards(sortFlashcards(filtered));
+    };
+
     return (
         <div className="w-full space-y-5 relative z-[10] dark:bg-slate-700 bg-gray-200">
             <div className="bg-white dark:bg-slate-800 p-5 border-b border-gray-200 dark:border-white/10 space-y-3">
@@ -300,17 +339,13 @@ export default function CFlashcardDetail({ id_flashcard, initialData }: { id_fla
                             </Button>
                         </VoiceSelectionModal>
 
-                        <div className={` items-center gap-2 md:gap-3 flex-wrap ${user?._id === listFlashcard?.userId._id ? "flex" : "hidden"}`}>
+                        <div className={` items-center gap-2 md:gap-3 flex-wrap ${user?._id === String(listFlashcard?.userId._id) ? "flex" : "hidden"}`}>
                             <EditListFlashcardModal handleEditListFlashcard={handleEditListFlashcard} editListFlashcard={editListFlashcard} setEditListFlashcard={setEditListFlashcard} token={token}>
                                 <Button className="dark:text-white" variant="outline" onClick={() => setEditListFlashcard({ ...listFlashcard })}>
                                     <PencilLine /> Chỉnh Sửa
                                 </Button>
                             </EditListFlashcardModal>
-                            <AddVocaModal onAdd={handleAddVoca} token={token} filteredFlashcards={filteredFlashcards} setFilteredFlashcards={setFilteredFlashcards} listFlashcard={listFlashcard}>
-                                <Button className="dark:text-white" variant="outline">
-                                    <Plus /> Thêm
-                                </Button>
-                            </AddVocaModal>
+
                             <Button className="dark:text-white" variant="outline" disabled>
                                 <Grid3x3 /> Thêm nhiều
                             </Button>
@@ -350,10 +385,6 @@ export default function CFlashcardDetail({ id_flashcard, initialData }: { id_fla
                         <span>Người chia sẻ:</span>
                         <span className="font-medium">{listFlashcard?.userId?.displayName || "N/A"}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <span>Tổng số thẻ:</span>
-                        <Badge variant="outline">{listFlashcard?.flashcards?.length || 0}</Badge>
-                    </div>
                 </div>
             </div>
 
@@ -377,96 +408,25 @@ export default function CFlashcardDetail({ id_flashcard, initialData }: { id_fla
                             </div>
                         </div>
                     </div> */}
-
-                    {/* Statistics Cards with Dynamic Layout */}
-                    <div className={`grid gap-2 md:gap-4 grid-cols-2 lg:grid-cols-5`}>
-                        {/* Total Cards - Enhanced */}
-                        <div className={`bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200 dark:from-blue-800/50 dark:to-blue-900/50 dark:border-white/10`}>
-                            <div className="flex items-center justify-between mb-3">
-                                <div className="p-2 bg-blue-600 rounded-lg">
-                                    <BookOpen className="w-5 h-5 text-white" />
+                    {user?._id === String(listFlashcard?.userId?._id) && (
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
+                            {summaryUsers.map((item) => (
+                                <div
+                                    key={item.filter}
+                                    onClick={() => handleFilter(item.filter)}
+                                    className={`w-full h-24 px-5 bg-${item.color}-300/60 dark:bg-${item.color}-800/50 rounded-xl flex items-center justify-between border border-${item.color}-500/50 dark:border-white/10 shadow-sm shadow-${item.color}-500/50 hover:scale-105 transition-transform cursor-pointer duration-500  dark:hover:bg-${item.color}-700`}>
+                                    <div className="">
+                                        <p className="text-gray-600 dark:text-white/60">{item.label}</p>
+                                        <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">{item.value}</h3>
+                                    </div>
+                                    <div className={`w-10 h-10 flex items-center justify-center bg-${item.color}-500 text-white rounded-full`}>{item.icon}</div>
                                 </div>
-                                <Badge variant="secondary" className="text-xs">
-                                    Tổng
-                                </Badge>
-                            </div>
-                            <div className="text-3xl font-bold text-blue-900 dark:text-blue-400 mb-1">{listFlashcard?.flashcards?.length}</div>
-                            <div className="text-sm text-blue-700 dark:text-blue-300">Tất cả từ vựng</div>
-                            <div className="mt-2 text-xs text-blue-600 flex items-center gap-1">
-                                <TrendingUp className="w-3 h-3" />
-                                +2 tuần này
-                            </div>
+                            ))}
                         </div>
-
-                        {/* Learned Cards */}
-                        <div className={`bg-gradient-to-br from-green-50 to-green-100 dark:from-green-800/50 dark:to-green-900/50 dark:border-white/10 rounded-xl p-6 border border-green-200 `}>
-                            <div className="flex items-center justify-between mb-3">
-                                <div className="p-2 bg-green-600 rounded-lg">
-                                    <CheckCircle className="w-5 h-5 text-white" />
-                                </div>
-                                <Badge className="text-xs bg-green-100 text-green-800">Hoàn thành</Badge>
-                            </div>
-                            <div className="text-3xl font-bold text-green-900 dark:text-green-400 mb-1">0</div>
-                            <div className="text-sm text-green-700 dark:text-green-300">Đã học thuộc</div>
-                            <div className="mt-2 w-full bg-green-200 rounded-full h-2">
-                                <div className="bg-green-600 h-2 rounded-full" style={{ width: "0%" }}></div>
-                            </div>
-                        </div>
-
-                        {/* Known Cards */}
-                        <div className={`bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200 dark:from-purple-800/50 dark:to-purple-900/50 dark:border-white/10`}>
-                            <div className="flex items-center justify-between mb-3">
-                                <div className="p-2 bg-purple-600 rounded-lg">
-                                    <Brain className="w-5 h-5 text-white" />
-                                </div>
-                                <Badge className="text-xs bg-purple-100 text-purple-800">Ghi nhớ</Badge>
-                            </div>
-                            <div className="text-3xl font-bold text-purple-900 mb-1 dark:text-purple-300">0</div>
-                            <div className="text-sm text-purple-700 dark:text-purple-400">Đã nhớ lâu</div>
-                            <div className="mt-2 text-xs text-purple-600 flex items-center gap-1">
-                                <Clock className="w-3 h-3" />
-                                Cần ôn lại
-                            </div>
-                        </div>
-
-                        {/* Review Cards */}
-                        <div className={`bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 border border-orange-200 dark:from-orange-800/50 dark:to-orange-900/50 dark:border-white/10`}>
-                            <div className="flex items-center justify-between mb-3">
-                                <div className="p-2 bg-orange-600 rounded-lg">
-                                    <RotateCcw className="w-5 h-5 text-white" />
-                                </div>
-                                <Badge className="text-xs bg-orange-100 text-orange-800">Cần ôn</Badge>
-                            </div>
-                            <div className="text-3xl font-bold text-orange-900 dark:text-orange-400 mb-1">{listFlashcard?.flashcards?.length}</div>
-                            <div className="text-sm text-orange-700 dark:text-orange-300">Cần ôn tập</div>
-                            <div className="mt-2 text-xs text-orange-600 dark:text-orange-400 flex items-center gap-1">
-                                <AlertCircle className="w-3 h-3" />
-                                Ưu tiên cao
-                            </div>
-                        </div>
-
-                        {/* Accuracy Percentage */}
-                        <div
-                            className={`w-full col-span-2 md:col-span-1 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-6 border border-indigo-200 dark:from-indigo-800/50 dark:to-indigo-900/50 dark:border-white/10`}>
-                            <div className="flex items-center justify-between mb-3">
-                                <div className="p-2 bg-indigo-600 rounded-lg">
-                                    <Target className="w-5 h-5 text-white" />
-                                </div>
-                                <Badge className="text-xs bg-indigo-100 text-indigo-800">Độ chính xác</Badge>
-                            </div>
-                            <div className="text-3xl font-bold text-indigo-900 dark:text-indigo-400 mb-1">0%</div>
-                            <div className="text-sm text-indigo-700 dark:text-indigo-300">Tỷ lệ đúng</div>
-                            <div className="mt-2 flex items-center gap-2">
-                                <div className="flex-1 bg-indigo-200 rounded-full h-2">
-                                    <div className="bg-indigo-600 h-2 rounded-full" style={{ width: "0%" }}></div>
-                                </div>
-                                <span className="text-xs text-indigo-600 dark:text-indigo-400">0/10</span>
-                            </div>
-                        </div>
-                    </div>
+                    )}
 
                     {/* Quick Stats Summary */}
-                    <div className="mt-4 p-4 bg-gray-50 dark:bg-slate-800/50 rounded-lg border border-gray-200 dark:border-white/10">
+                    {/* <div className="mt-4 p-4 bg-gray-50 dark:bg-slate-800/50 rounded-lg border border-gray-200 dark:border-white/10">
                         <div className="flex items-center justify-between text-sm">
                             <div className="flex items-center gap-4">
                                 <span className="text-gray-600 dark:text-white/60">Học hôm nay:</span>
@@ -482,26 +442,47 @@ export default function CFlashcardDetail({ id_flashcard, initialData }: { id_fla
                                 <span className="font-medium ">0 phút</span>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <div className="flex items-center px-5 gap-2 md:gap-5 flex-wrap">
                 <Link href={`/flashcard/practice/${id_flashcard}`} className="flex-1">
-                    <Button className="w-full h-16 dark:text-white text-md md:text-xl uppercase hover:scale-105 transition-all duration-300">
-                        <Target /> Luyện tập
+                    <Button variant="outline" className=" w-full h-16 dark:text-white text-md md:text-xl uppercase">
+                        <Target /> ôn từ vựng
                     </Button>
                 </Link>
-                <Link href={`/flashcard/practice-science/${id_flashcard}`} className="flex-1">
-                    <Button variant="secondary" className="w-full h-16 dark:text-white text-md md:text-xl uppercase hover:scale-105 transition-all duration-300">
-                        Luyện tập theo khoa học (beta)
+                <AddVocaModal token={token} filteredFlashcards={filteredFlashcards} setFilteredFlashcards={setFilteredFlashcards} listFlashcard={listFlashcard}>
+                    <Button className="dark:text-white h-16 text-md md:text-xl uppercase bg-gradient-to-r from-indigo-500 to-purple-500 text-white md:px-10">
+                        <Plus size={24} /> Thêm từ vựng
                     </Button>
-                </Link>
+                </AddVocaModal>
+                {user?._id === String(listFlashcard?.userId?._id) && (
+                    <Link href={`/flashcard/practice-science`} className="flex-1">
+                        <Button variant="outline" className="w-full h-16 dark:text-white text-md md:text-xl uppercase">
+                            <Gift></Gift>
+                            Luyện tập
+                        </Button>
+                    </Link>
+                )}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:p-5 w-full px-3">
                 {filteredFlashcards && filteredFlashcards?.length > 0 ? (
-                    filteredFlashcards.map((item: Flashcard) => <VocaCardItem key={item._id} data={item} speakWord={speakWord} loadingAudio={loadingAudio} />)
+                    filteredFlashcards.map((item: Flashcard) => (
+                        <VocaCardItem
+                            key={item._id}
+                            data={item}
+                            speakWord={speakWord}
+                            loadingAudio={loadingAudio}
+                            handleDelete={handleDelete}
+                            loadingConfirm={loadingConfirm}
+                            setLoadingConfirm={setLoadingConfirm}
+                        />
+                    ))
                 ) : (
-                    <div className="col-span-3 text-center text-gray-500 h-60 flex items-center justify-center">Không có từ vựng nào trong flashcard này</div>
+                    <div className="col-span-3 text-center h-[80vh] flex flex-col gap-2 items-center justify-center">
+                        <h1 className="text-xl">Không có từ vựng nào trong flashcard này</h1>
+                        <p className="text-gray-500 ">Bạn hãy bấm vào nút thêm từ vựng để học nhé</p>
+                    </div>
                 )}
             </div>
         </div>

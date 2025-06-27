@@ -28,18 +28,6 @@ export default function VoiceSelectionModal({ children, selectedVoice, setSelect
     const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null); // Thêm state để track audio hiện tại
     const [tts] = useState(() => new EdgeSpeechTTS({ locale: "zh-CN" })); // Đổi locale thành zh-CN cho phù hợp
     useEffect(() => {
-        // Lấy giọng nói đã lưu trong localStorage hoặc sử dụng mặc định
-        // try {
-        //     const savedVoice = JSON.parse(localStorage.getItem("defaultVoices") || "{}");
-        //     console.log("Saved voice:", savedVoice);
-        //     // Set voice based on current language or use saved voice
-        //     const currentVoice = savedVoice[language];
-        //     setSelectedVoice(currentVoice);
-        // } catch (error) {
-        //     console.warn("LocalStorage not available, using session storage as fallback:", error);
-        //     toast.error("Không thể load nói đã chọn, vui lòng đổi trình duyệt Chome");
-        // }
-        console.log("Selected voice on mount:", selectedVoice);
         const languageMap = {
             chinese: "中文",
             english: "English",
@@ -51,9 +39,6 @@ export default function VoiceSelectionModal({ children, selectedVoice, setSelect
         };
 
         const filteredVoices = voices.filter((voice) => voice.language == languageMap[language]);
-        console.log("Filtered voices:", filteredVoices);
-        console.log(languageMap[language], "languageMap[language]");
-        console.log("Selected language:", language);
         setFilterLanguage(filteredVoices);
     }, [language, setSelectedVoice, selectedVoice]);
     const handlePlaySample = (text: string, voiceId: string) => {
@@ -145,9 +130,6 @@ export default function VoiceSelectionModal({ children, selectedVoice, setSelect
             console.log("Saved voice:", savedVoice);
             savedVoice[language] = voiceId; // Lưu voice đã chọn vào localStorage
             localStorage.setItem("defaultVoices", JSON.stringify(savedVoice));
-            // // Set voice based on current language or use saved voice
-            // const currentVoice = savedVoice || defaultVoices[listFlashcard?.language as keyof typeof defaultVoices] || defaultVoices.english;
-            // setSelectedVoice(currentVoice);
         } catch (error) {
             console.warn("LocalStorage not available, using session storage as fallback:", error);
             toast.error("Không thể lưu giọng nói đã chọn, vui lòng đổi trình duyệt Chome");

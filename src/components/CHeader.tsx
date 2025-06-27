@@ -1,56 +1,33 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { UserOutlined } from "@ant-design/icons";
-import { FiLogOut } from "react-icons/fi";
-import { IoMdNotificationsOutline } from "react-icons/io";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useUser } from "../context/userContext";
-import { MdEmail, MdOutlineHistory } from "react-icons/md";
-import { GET_API, POST_API } from "@/lib/fetchAPI";
+import { GET_API } from "@/lib/fetchAPI";
 import CNotify from "./CNotify";
 import CChat from "./CChat";
-import { BsDiscord, BsMailbox } from "react-icons/bs";
-import TextArea from "antd/es/input/TextArea";
-import Swal from "sweetalert2";
-import { BiCopy } from "react-icons/bi";
 import { Bell, History, LogOut, Mailbox, Moon, Sun, User } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-export default function CHeader({ token }: { token: string }) {
-    const [open, setOpen] = useState(false);
+import { toast } from "sonner";
+export default function CHeader() {
     const [openNoti, setOpenNoti] = useState(false);
     const [notify, setNotify] = useState([]);
     const [unreadCountNotify, setUnreadCountNotify] = useState<number>(0);
     const pathname = usePathname();
     const router = useRouter();
-    const [loading, setLoading] = useState(false);
-    const [feedback, setFeedback] = useState("");
     const { theme, setTheme } = useTheme();
+    const token = Cookies.get("token") || "";
 
-    const handleOpenChange = (newOpen: boolean) => {
-        setOpen(newOpen);
-    };
-
-    const handleOpenNoti = (newOpen: boolean) => {
-        setOpenNoti(newOpen);
-    };
-
-    const userContext = useUser();
-    const user = userContext?.user;
-    const clearUser = userContext?.clearUser;
+    const { user, clearUser } = useUser() || { user: undefined, clearUser: () => {} };
 
     const handleLogout = async () => {
         const req = await GET_API("/auth/logout", token);
-        if (req.ok) {
-            Cookies.remove("token");
-            localStorage.removeItem("listFlashCards");
-            clearUser?.();
-        }
+        clearUser();
     };
 
     useEffect(() => {
@@ -74,28 +51,6 @@ export default function CHeader({ token }: { token: string }) {
             router.push(item?.link);
             setOpenNoti(false);
         }
-    };
-
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const showModal = () => {
-        setIsModalOpen(true);
-    };
-
-    const handleOk = async () => {
-        setLoading(true);
-        const req = await POST_API("/profile/feedback", { feedback, username: user?.displayName }, "POST", token);
-        if (req) {
-            setFeedback("");
-            Swal.fire({
-                icon: "success",
-                title: "Gửi góp ý thành công, cảm ơn bạn rất nhiều",
-                showConfirmButton: false,
-                timer: 1500,
-            });
-        }
-        setLoading(false);
-        setIsModalOpen(false);
     };
 
     return (
@@ -144,7 +99,7 @@ export default function CHeader({ token }: { token: string }) {
                             </div>
                         )}
                     </div>
-                    {!user ? (
+                    {!token ? (
                         <div className=" ">
                             <Link href="/login" className="relative">
                                 <div className="-z-1 absolute inset-0 bg-purple-500 rounded-full blur opacity-30 group-hover:opacity-50 transition duration-1000  animate-pulse "></div>
@@ -169,7 +124,7 @@ export default function CHeader({ token }: { token: string }) {
                                         </div>
                                     </PopoverContent>
                                 </Popover>
-                                <CChat token={token} user={user} router={router} />
+                                {user && <CChat token={token} user={user} router={router} />}
 
                                 <DropdownMenu>
                                     <DropdownMenuTrigger>
@@ -199,7 +154,7 @@ export default function CHeader({ token }: { token: string }) {
                                             <Mailbox />
                                             Góp ý
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem onClick={() => handleLogout()} className="dark:text-red-300 text-red-500 hover:text-red-600">
+                                        <DropdownMenuItem onClick={handleLogout} className="dark:text-red-300 text-red-500 hover:text-red-600">
                                             <LogOut /> Đăng xuất
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>

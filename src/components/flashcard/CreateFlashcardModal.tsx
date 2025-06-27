@@ -21,9 +21,10 @@ interface CreateFlashcardModalProps {
     setListFlashCard: React.Dispatch<React.SetStateAction<any[]>>;
     filterFlashcard: any;
     setFilterFlashcard: React.Dispatch<React.SetStateAction<any>>;
+    setTabFlashcard: any;
 }
 
-export function CreateFlashcardModal({ children, listFlashCard, setListFlashCard, filterFlashcard, setFilterFlashcard }: CreateFlashcardModalProps) {
+export function CreateFlashcardModal({ children, listFlashCard, setListFlashCard, filterFlashcard, setFilterFlashcard, setTabFlashcard }: CreateFlashcardModalProps) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const token = Cookies.get("token") || "";
@@ -46,7 +47,7 @@ export function CreateFlashcardModal({ children, listFlashCard, setListFlashCard
                     setOpen(false);
                     setListFlashCard([res?.listFlashCard, ...listFlashCard]);
                     setFilterFlashcard([res?.listFlashCard, ...filterFlashcard]);
-
+                    setTabFlashcard("my-sets");
                     setFormData({
                         title: "",
                         language: "",

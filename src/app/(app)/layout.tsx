@@ -6,8 +6,6 @@ import CHeader from "../../components/CHeader";
 import CFooter from "../../components/Footer";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Cookies from "js-cookie";
-import { useEffect, useState } from "react";
 import { Analytics } from "@vercel/analytics/react";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import Script from "next/script";
@@ -22,10 +20,7 @@ import { Toaster } from "@/components/ui/sonner";
 
 export default function RootLayout({ children }: any) {
     const pathname = usePathname();
-    const [token, setToken] = useState<string | null>(null);
-    useEffect(() => {
-        setToken(Cookies.get("token") || null);
-    }, []);
+
     return (
         <html lang="en">
             <head>
@@ -52,7 +47,7 @@ export default function RootLayout({ children }: any) {
                 <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
                     <UserProvider>
                         <SocketProvider>
-                            <CHeader token={token || ""} />
+                            <CHeader />
                             <div className=" relative dark:bg-gray-700 dark:text-white">
                                 <div className="">{children}</div>
                                 <Toaster />

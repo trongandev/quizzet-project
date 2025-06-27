@@ -46,12 +46,13 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
 // ✅ 3. Main Page Component với caching
 export default async function FlashcardPage({ params }: { params: { id: string } }) {
     let flashcardData = null;
-
+    let statusCounts = null;
     try {
         // Fetch data tại build time hoặc ISR
         const req = await GET_API_WITHOUT_COOKIE(`/flashcards/${params.id}`);
         if (req.ok) {
             flashcardData = req.listFlashCards;
+            statusCounts = req.statusCounts || {};
         }
     } catch (error) {
         console.error("Error fetching flashcard:", error);
@@ -61,6 +62,7 @@ export default async function FlashcardPage({ params }: { params: { id: string }
         <CFlashcardDetail
             id_flashcard={params.id}
             initialData={flashcardData} // Pass data từ SSG
+            statusCounts={statusCounts}
         />
     );
 }

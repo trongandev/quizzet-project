@@ -23,6 +23,9 @@ interface AddVocabularyModalProps {
     token: any;
     filteredFlashcards: any;
     setFilteredFlashcards: any;
+    openEdit: boolean;
+    setOpenEdit: (open: boolean) => void;
+    oldFlashcard: VocabularyData;
 }
 
 interface VocabularyData {
@@ -39,8 +42,7 @@ interface VocabularyData {
     note: string;
 }
 
-export default function AddVocaModal({ children, listFlashcard, token, filteredFlashcards, setFilteredFlashcards }: AddVocabularyModalProps) {
-    const [open, setOpen] = useState(false);
+export default function EditVocaModal({ children, listFlashcard, oldFlashcard, token, filteredFlashcards, setFilteredFlashcards, openEdit, setOpenEdit }: AddVocabularyModalProps) {
     const [loading, setLoading] = useState(false);
     const defaultData: VocabularyData = {
         title: "",
@@ -89,7 +91,7 @@ export default function AddVocaModal({ children, listFlashcard, token, filteredF
                     toast.success("Tạo flashcard thành công từ AI");
 
                     setFilteredFlashcards([res?.flashcard, ...filteredFlashcards]);
-                    setOpen(false);
+                    setOpenEdit(false);
                     // Reset form data with AI generated content
                     setFormData(defaultData);
                 }
@@ -108,7 +110,7 @@ export default function AddVocaModal({ children, listFlashcard, token, filteredF
             const res = await req?.json();
             if (res.ok) {
                 toast.success("Tạo flashcard thành công");
-                setOpen(false);
+                setOpenEdit(false);
                 setFilteredFlashcards([res?.flashcard, ...filteredFlashcards]);
                 setFormData(defaultData);
             }
@@ -131,7 +133,7 @@ export default function AddVocaModal({ children, listFlashcard, token, filteredF
     const isFormValid = formData.title.trim() && formData.define.trim();
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={openEdit} onOpenChange={setOpenEdit}>
             <DialogTrigger asChild>{children}</DialogTrigger>
             <DialogContent className="sm:max-w-[700px] max-h-[92vh] overflow-hidden">
                 <DialogHeader className="pb-4">
@@ -319,7 +321,7 @@ export default function AddVocaModal({ children, listFlashcard, token, filteredF
                 <Separator className="my-4" />
 
                 <DialogFooter className="gap-2">
-                    <Button variant="outline" onClick={() => setOpen(false)} className="gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-slate-700 dark:hover:bg-slate-600">
+                    <Button variant="outline" onClick={() => setOpenEdit(false)} className="gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-slate-700 dark:hover:bg-slate-600">
                         Hủy
                     </Button>
                     <Button onClick={handleSubmit} disabled={!isFormValid || loading} className="gap-2 bg-primary hover:bg-primary/80 text-white">

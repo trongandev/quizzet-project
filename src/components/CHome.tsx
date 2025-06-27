@@ -11,8 +11,10 @@ import { ArrowRight, BookOpen, Brain, Chrome, FileText, Github, Info, Save, Star
 import { Badge } from "./ui/badge";
 import { Card, CardContent } from "./ui/card";
 import PublicFCHome from "./flashcard/PublicFCHome";
+import { useRouter } from "next/navigation";
 
 export default function CHome({ quizData, toolData, publicFlashcards }: { quizData: IQuiz[]; toolData: ISO[]; publicFlashcards: IListFlashcard[] }) {
+    const router = useRouter();
     return (
         <div className="">
             <div className="px-2  dark:text-white">
@@ -35,7 +37,9 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
                 {/* Feature Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-8 mt-10">
                     {/* Flashcard */}
-                    <Card className="dark:border-white/10 group hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 border-0 dark:border  dark:from-blue-900/50 dark:to-purple-900/50 dark:hover:from-blue-900 dark:hover:to-purple-900 overflow-hidden relative hover:scale-105 ">
+                    <Card
+                        onClick={() => router.push("/flashcard")}
+                        className="cursor-pointer dark:border-white/10 group hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 border-0 dark:border  dark:from-blue-900/50 dark:to-purple-900/50 dark:hover:from-blue-900 dark:hover:to-purple-900 overflow-hidden relative hover:scale-105 ">
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
                         <CardContent className="p-5 md:p-8">
                             <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
@@ -46,9 +50,7 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
                                 Flashcard là một trong những cách tốt nhất để ghi nhớ những kiến thức quan trọng. Học thông minh với hệ thống lặp lại ngắt quãng.
                             </p>
                             <div className="flex items-center justify-between">
-                                <Link href="/flashcard" className="block">
-                                    <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">Tìm hiểu thêm</Button>
-                                </Link>
+                                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">Tìm hiểu thêm</Button>
                                 <Badge variant="secondary" className="bg-blue-100 text-blue-700 dark:bg-blue-800 dark:text-blue-200">
                                     <TrendingUp className="w-3 h-3 mr-1" />
                                     Phổ biến
@@ -58,21 +60,21 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
                     </Card>
 
                     {/* Quiz */}
-                    <Card className="dark:border-white/10 group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-cyan-50 to-blue-50 hover:from-cyan-100 hover:to-blue-100 dark:border  dark:from-cyan-900/50 dark:to-blue-900/50 dark:hover:from-cyan-900 dark:hover:to-blue-900 overflow-hidden relative hover:scale-105 ">
+                    <Card
+                        onClick={() => router.push("/quiz")}
+                        className="cursor-pointer dark:border-white/10 group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-cyan-50 to-blue-50 hover:from-cyan-100 hover:to-blue-100 dark:border  dark:from-cyan-900/50 dark:to-blue-900/50 dark:hover:from-cyan-900 dark:hover:to-blue-900 overflow-hidden relative hover:scale-105 ">
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
 
                         <CardContent className="p-5 md:p-8">
                             <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                                <Brain className="w-8 h-8 text-white" />
+                                <Brain className="w-8 h-8 text-white  rotate-0 group-hover:rotate-180 transition-all duration-500" />
                             </div>
                             <h3 className="text-2xl font-bold text-slate-900 mb-4 dark:text-slate-200">Quiz</h3>
                             <p className="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
                                 Tổng hợp những bài quiz để bạn kiểm tra thử kiến thức của bản thân. Thử thách bản thân và cải thiện kết quả học tập.
                             </p>
                             <div className="flex items-center justify-between">
-                                <Link href="/quiz" className="block">
-                                    <Button className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white">Tìm hiểu thêm</Button>
-                                </Link>
+                                <Button className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white">Tìm hiểu thêm</Button>
                                 <Badge variant="secondary" className="bg-cyan-100 text-cyan-700 dark:bg-cyan-800 dark:text-cyan-200">
                                     <Star className="w-3 h-3 mr-1" />
                                     Thú vị
@@ -82,21 +84,21 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
                     </Card>
 
                     {/* Đề cương */}
-                    <Card className="dark:border-white/10 group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 dark:border  dark:from-purple-900/50 dark:to-pink-900/50 dark:hover:from-purple-900 dark:hover:to-pink-900 overflow-hidden relative hover:scale-105 ">
+                    <Card
+                        onClick={() => router.push("/decuong")}
+                        className="cursor-pointer dark:border-white/10 group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 dark:border  dark:from-purple-900/50 dark:to-pink-900/50 dark:hover:from-purple-900 dark:hover:to-pink-900 overflow-hidden relative hover:scale-105 ">
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
 
                         <CardContent className="p-5 md:p-8">
                             <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                                <FileText className="w-8 h-8 text-white" />
+                                <FileText className="w-8 h-8 text-white  rotate-0 group-hover:rotate-180 transition-all duration-500" />
                             </div>
                             <h3 className="text-2xl font-bold text-slate-900 mb-4 dark:text-slate-200">Đề cương</h3>
                             <p className="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
                                 Tổng hợp những đề cương của nhiều môn luôn sẵn sàng để bạn ôn bài hiệu quả nhất. Chuẩn bị tốt cho mọi kỳ thi.
                             </p>
                             <div className="flex items-center justify-between">
-                                <Link href="/decuong" className="block">
-                                    <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white">Tìm hiểu thêm</Button>
-                                </Link>
+                                <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white">Tìm hiểu thêm</Button>
                                 <Badge variant="secondary" className="bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200">
                                     <Users className="w-3 h-3 mr-1" />
                                     Cộng đồng

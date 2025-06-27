@@ -1,31 +1,16 @@
 "use client";
-import handleCompareDate from "@/lib/CompareDate";
-import { GET_API_WITHOUT_COOKIE, POST_API } from "@/lib/fetchAPI";
-import { message, Modal, Rate, Spin } from "antd";
-import Image from "next/image";
-import Link from "next/link";
+import { GET_API_WITHOUT_COOKIE } from "@/lib/fetchAPI";
 import React, { useEffect, useState } from "react";
-import { CiTimer } from "react-icons/ci";
-import { FaFileCircleQuestion, FaRegEye, FaRegFlag } from "react-icons/fa6";
-import { IoIosArrowUp } from "react-icons/io";
-import { IoArrowForwardCircleOutline, IoShareSocial } from "react-icons/io5";
-import { MdKeyboardArrowLeft, MdOutlineVerified } from "react-icons/md";
+
 import Cookies from "js-cookie";
-import { RiTimeLine } from "react-icons/ri";
-import { useRouter } from "next/navigation";
 import { useUser } from "@/context/userContext";
-import { IComment, IQuestion, IQuiz, IUser } from "@/types/type";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { ChevronLeft, CircleChevronRight, Flag, Send } from "lucide-react";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { IComment, IQuestion, IQuiz } from "@/types/type";
 import DetailQuiz from "@/components/quiz/DetailQuiz";
+import Loading from "@/components/ui/loading";
 export default function QuizDetail({ params }: { params: any }) {
     const [data, setData] = useState<IQuiz>();
-    const [quiz, setQuiz] = useState<IQuestion[]>([]);
+    const [quiz, setQuiz] = useState<IQuestion[]>();
     const [comment, setComment] = useState<IComment[]>([]);
-    const [value, setValue] = useState(5);
-    const [review, setReview] = useState("");
     const token = Cookies.get("token") || "";
     const userContext = useUser();
     const user = userContext?.user;
@@ -46,7 +31,7 @@ export default function QuizDetail({ params }: { params: any }) {
     if (data === null) {
         return (
             <div className="flex items-center justify-center h-screen">
-                <Spin size="large" />
+                <Loading className="h-14 w-14" />
             </div>
         );
     }

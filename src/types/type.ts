@@ -27,7 +27,7 @@ interface INotify {
 }
 
 interface IQuestion {
-    _id: number;
+    _id: string;
     data_quiz: IDataQuiz[];
 }
 
@@ -135,19 +135,19 @@ interface Flashcard {
     _id: string;
     title: string;
     define: string;
+    language: string;
     type_of_word: string;
     transcription: string;
     example: Example[];
     note: string;
+    nextReviewDate: Date;
+    interval: number;
+    repetitions: number;
+    progress: { learnedTimes: number; percentage: number };
+    efactor: number;
     status: string;
-    progress: Progress;
     history: any[];
     created_at: Date;
-}
-
-interface Progress {
-    learnedTimes: number;
-    percentage: number;
 }
 
 interface Example {
@@ -233,4 +233,4 @@ export interface Voice {
     sample: string;
 }
 
-export type { IUser, INotify, IQuestion, IComment, IHistory, ISO, IQuiz, IDataQuiz, IListFlashcard, IProgress, Flashcard, Progress, Example, IMessage, IChat, IChatCommunity, IChatCommunityMessage };
+export type { IUser, INotify, IQuestion, IComment, IHistory, ISO, IQuiz, IDataQuiz, IListFlashcard, IProgress, Flashcard, Example, IMessage, IChat, IChatCommunity, IChatCommunityMessage };

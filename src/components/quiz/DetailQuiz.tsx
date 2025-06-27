@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowLeft, Share2, Flag, Star, Send, ThumbsUp, MessageCircle, Users, Clock, BookOpen } from "lucide-react";
+import { ArrowLeft, Share2, Flag, Star, Send, ThumbsUp, MessageCircle, Users, Clock, BookOpen, Eye, Play, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,13 +14,12 @@ import { Separator } from "@/components/ui/separator";
 import { IComment, IQuestion, IQuiz, IUser } from "@/types/type";
 import { useRouter } from "next/navigation";
 import handleCompareDate from "@/lib/CompareDate";
-import Image from "next/image";
 import { POST_API } from "@/lib/fetchAPI";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
-import Link from "next/link";
+import { Progress } from "../ui/progress";
 interface PropsDetailQuiz {
-    quiz: IQuestion[];
+    quiz?: IQuestion[];
     data?: IQuiz;
     comment: IComment[];
     setComment: React.Dispatch<React.SetStateAction<IComment[]>>;
@@ -33,7 +32,7 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
     const [isReportModalOpen, setIsReportModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [review, setReview] = useState("");
-
+    const [isBookmarked, setIsBookmarked] = useState(false);
     const router = useRouter();
     const token = Cookies.get("token") || "";
     const handleSubmitComment = async () => {
@@ -162,143 +161,200 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
             </header>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                     {/* Main Content */}
-                    <div className="lg:col-span-2 space-y-8">
-                        {/* Quiz Overview */}
-                        <Card className="dark:border-white/10">
-                            <CardContent className="p-6">
-                                <div className="flex flex-col md:flex-row gap-6">
-                                    <div className="flex-shrink-0">
-                                        <div className="w-48 h-32 relative rounded-lg overflow-hidden">
-                                            <Image src={data?.img || ""} alt="" className="absolute w-full h-full" fill></Image>
-                                        </div>
-                                    </div>
+                    <div className="lg:col-span-3 space-y-8">
+                        {/* Hero Section */}
+                        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 p-8 text-white dark:border-white/10 dark:from-blue-800/50 dark:via-purple-800/50 dark:to-indigo-800/50">
+                            <div className="absolute inset-0 bg-black/10"></div>
+                            <div className="relative z-10">
+                                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                                     <div className="flex-1">
                                         <div className="flex flex-wrap gap-2 mb-4">
-                                            <Badge variant="secondary">{data?.subject}</Badge>
+                                            <Badge className="bg-white/20 text-white border-white/30 hover:bg-white/30">{data?.subject}</Badge>
+                                            <Badge className="bg-white/20 text-white border-white/30 hover:bg-white/30">Python</Badge>
+                                            <Badge className="bg-white/20 text-white border-white/30 hover:bg-white/30">Phỏng vấn</Badge>
                                         </div>
-                                        <h1 className="text-2xl font-bold mb-4">{data?.title}</h1>
-                                        <p className=" mb-4">{data?.content}</p>
-                                        <div className="flex items-center space-x-6 text-sm  dark:text-gray-400 mb-4">
+                                        <h1 className="text-3xl md:text-4xl font-bold mb-4">{data?.title}</h1>
+                                        <p className="text-xl text-white/90 mb-6">{data?.content}</p>
+                                        <div className="flex flex-wrap items-center gap-6 text-white/80 mb-6">
                                             <div className="flex items-center">
-                                                <Users className="h-4 w-4 mr-1" />
+                                                <Users className="h-5 w-5 mr-2" />
                                                 <span>{data?.noa} người học</span>
                                             </div>
                                             <div className="flex items-center">
-                                                <Clock className="h-4 w-4 mr-1" />
-                                                {data?.date && <span>{handleCompareDate(data?.date)}</span>}
+                                                <Eye className="h-5 w-5 mr-2" />
+                                                <span>{data?.view} lượt xem</span>
                                             </div>
-                                        </div>
-                                        <div className="flex items-center space-x-4">
                                             <div className="flex items-center">
-                                                <div className="flex">
-                                                    {[1, 2, 3, 4, 5].map((star) => (
-                                                        <Star key={star} className="h-5 w-5 text-gray-300" />
-                                                    ))}
-                                                </div>
-                                                <span className="ml-2 text-sm  ">{data?.comment?.length} đánh giá</span>
+                                                <Clock className="h-5 w-5 mr-2" />
+                                                <span>~{data?.questions?.data_quiz?.length}phút</span>
                                             </div>
                                         </div>
-                                        <Link href={`/quiz/${data?.slug}`}>
-                                            <Button variant="default" className="mt-4 text-white">
-                                                <BookOpen className="h-4 w-4 mr-2" />
-                                                Làm bài quiz
-                                            </Button>
-                                        </Link>
+                                        <div className="flex items-center space-x-4 mb-6">
+                                            <div className="flex">
+                                                {[1, 2, 3, 4, 5].map((star) => (
+                                                    <Star key={star} className="h-5 w-5 text-yellow-400 fill-current" />
+                                                ))}
+                                            </div>
+                                            <span className="text-white/90">4.8 ({data?.comment?.length} đánh giá)</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col gap-3">
+                                        <Button variant="secondary" size="lg" className="text-white">
+                                            <BookOpen className="h-5 w-5 mr-2" />
+                                            Xem trước
+                                        </Button>
+                                        <Button size="lg" className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold px-8 dark:border-white/10">
+                                            <Play className="h-5 w-5 mr-2" />
+                                            Bắt đầu quiz
+                                        </Button>
                                     </div>
                                 </div>
-                            </CardContent>
-                        </Card>
+                            </div>
+                            <div className="absolute -top-4 -right-4 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
+                            <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-white/5 rounded-full blur-2xl"></div>
+                        </div>
 
                         {/* Quiz Preview */}
-                        <Card className="dark:border-white/10">
-                            <CardHeader>
-                                <CardTitle className="text-xl text-blue-600">Preview 10 câu hỏi trong bài quiz này</CardTitle>
+                        <Card className="shadow-lg border-0 bg-white/70 dark:bg-slate-800/50 dark:border-white/10 backdrop-blur-sm ">
+                            <CardHeader className="pb-4">
+                                <div className="flex items-center justify-between">
+                                    <CardTitle className="text-2xl font-bold dark:text-white/80 text-gray-800 flex items-center">
+                                        <BookOpen className="h-6 w-6 mr-3 text-blue-600" />
+                                        Xem trước câu hỏi
+                                    </CardTitle>
+                                    <Badge variant="secondary" className="bg-blue-100 dark:bg-blue-800/50 text-blue-700 dark:text-blue-200">
+                                        3/20 câu hỏi
+                                    </Badge>
+                                </div>
+                                <p className="text-gray-600 dark:text-gray-400">Khám phá một số câu hỏi mẫu trong bài quiz này</p>
                             </CardHeader>
-                            <CardContent className="space-y-6 h-[500px] overflow-y-auto">
-                                {quiz.map((question: any) => (
-                                    <div key={question.id} className="border-b pb-6 last:border-b-0 dark:border-b-white/10 dark:text-white/80">
-                                        <h3 className="font-medium mb-4 ">{question.question}</h3>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                            {question.answers.map((option: any, index: number) => (
-                                                <div key={index} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/20 cursor-pointer">
-                                                    <span className="font-medium text-blue-600 min-w-[20px] pl-2 pr-1">{String.fromCharCode(65 + Number(index))}</span>
-                                                    <span>{option}</span>
+                            <CardContent className="space-y-8">
+                                {quiz &&
+                                    quiz?.map((question: any, index: number) => (
+                                        <div key={question.id} className="relative">
+                                            <div className="flex items-start space-x-4">
+                                                <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-semibold text-sm">{index + 1}</div>
+                                                <div className="flex-1">
+                                                    <h3 className="font-semibold dark:text-white/80 text-gray-800 mb-4 text-lg leading-relaxed">{question.question}</h3>
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                                        {question.answers.map((option: any, index: number) => (
+                                                            <div
+                                                                key={index}
+                                                                className={`flex items-center space-x-3 p-4 border-2 rounded-xl transition-all duration-200 cursor-pointer hover:shadow-md ${
+                                                                    Number(question.correct) === index
+                                                                        ? "border-green-200 bg-green-50 hover:bg-green-100"
+                                                                        : "border-gray-200 bg-white hover:bg-gray-50 hover:border-blue-200"
+                                                                }`}>
+                                                                <span
+                                                                    className={`font-bold text-sm min-w-[24px] h-6 rounded-full flex items-center justify-center ${
+                                                                        question.correct ? "bg-green-600 text-white" : "bg-blue-600 text-white"
+                                                                    }`}>
+                                                                    {option.answers.length > 1 ? String.fromCharCode(65 + index) : ""}
+                                                                </span>
+                                                                <span className="font-medium">{option}</span>
+                                                                {question.correct && (
+                                                                    <div className="ml-auto">
+                                                                        <Badge className="bg-green-600 text-white text-xs">Đáp án đúng</Badge>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        ))}
+                                                    </div>
                                                 </div>
-                                            ))}
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                <div className="text-center pt-4">
+                                    <Button variant="outline" size="lg" disabled className="">
+                                        Xem tất cả 20 câu hỏi
+                                    </Button>
+                                </div>
                             </CardContent>
                         </Card>
 
                         {/* Comments Section */}
-                        <Card className="dark:border-white/10">
+                        <Card className="shadow-lg border-0 bg-white/70 backdrop-blur-sm dark:bg-slate-800/50 dark:border-white/10">
                             <CardHeader>
-                                <CardTitle className="flex items-center">
-                                    <MessageCircle className="h-5 w-5 mr-2" />
-                                    Bình luận và đánh giá
+                                <CardTitle className="flex items-center text-2xl font-bold dark:text-white/80 text-gray-800">
+                                    <MessageCircle className="h-6 w-6 mr-3 text-blue-600" />
+                                    Đánh giá & Bình luận
+                                    <Badge variant="secondary" className="ml-3 bg-blue-100 text-blue-700">
+                                        {comment.length} bình luận
+                                    </Badge>
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent className="space-y-6">
+                            <CardContent className="space-y-8">
                                 {/* Add Comment */}
-                                <div className="space-y-4">
-                                    <div className="flex items-center gap-5">
-                                        <Label className="text-sm font-medium block text-white/70">Đánh giá của bạn:</Label>
-                                        <div className="flex space-x-1">
-                                            {[1, 2, 3, 4, 5].map((star) => (
-                                                <button key={star} onClick={() => setUserRating(star)} className="focus:outline-none">
-                                                    <Star className={`h-6 w-6 ${star <= userRating ? "text-yellow-400 fill-current" : "text-gray-300"}`} />
-                                                </button>
-                                            ))}
+                                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-100 dark:from-blue-900/50 dark:to-indigo-900/50  dark:border-white/10">
+                                    <h3 className="font-semibold dark:text-white/80 text-gray-800 mb-4">Chia sẻ trải nghiệm của bạn</h3>
+                                    <div className="space-y-4">
+                                        <div>
+                                            <Label className="text-sm font-medium mb-3 block text-gray-700 dark:text-gray-300">Đánh giá của bạn</Label>
+                                            <div className="flex space-x-2">
+                                                {[1, 2, 3, 4, 5].map((star) => (
+                                                    <button key={star} onClick={() => setUserRating(star)} className="focus:outline-none transition-transform hover:scale-110">
+                                                        <Star className={`h-8 w-8 transition-colors ${star <= userRating ? "text-yellow-400 fill-current" : "text-gray-300 hover:text-yellow-300"}`} />
+                                                    </button>
+                                                ))}
+                                            </div>
                                         </div>
-                                        <p className="text-xs">{userRating} sao</p>
+                                        <div>
+                                            <Label htmlFor="comment" className="text-sm font-medium mb-3 block text-gray-700 dark:text-gray-300">
+                                                Bình luận của bạn
+                                            </Label>
+                                            <Textarea
+                                                id="comment"
+                                                placeholder="Hãy chia sẻ cảm nhận của bạn về bài quiz này..."
+                                                value={review}
+                                                onChange={(e) => setReview(e.target.value)}
+                                                className="min-h-[120px]"
+                                            />
+                                        </div>
+                                        <Button onClick={handleSubmitComment} disabled={!review.trim() || userRating === 0} size="lg" className="dark:text-white font-semibold">
+                                            <Send className="h-4 w-4 mr-2" />
+                                            Gửi đánh giá
+                                        </Button>
                                     </div>
-                                    <div>
-                                        <Label htmlFor="comment" className="text-sm font-medium mb-2 block text-white/70">
-                                            Bình luận của bạn
-                                        </Label>
-                                        <Textarea
-                                            id="comment"
-                                            placeholder="Hãy để lại bình luận cũng như số sao của bạn dưới đây..."
-                                            value={review}
-                                            onChange={(e) => setReview(e.target.value)}
-                                            className="min-h-[100px]"
-                                        />
-                                    </div>
-                                    <Button onClick={handleSubmitComment} disabled={!review.trim() || userRating === 0 || loading} className="text-white">
-                                        <Send className="h-4 w-4 mr-2" />
-                                        Gửi bình luận
-                                    </Button>
                                 </div>
 
-                                <Separator />
+                                <Separator className="my-8" />
 
                                 {/* Existing Comments */}
                                 <div className="space-y-6">
-                                    {comment.map((cmt) => (
-                                        <div key={cmt._id} className="flex space-x-4">
-                                            <Avatar>
-                                                <AvatarImage src={cmt?.user_id?.profilePicture} className="object-cover" />
-                                                <AvatarFallback>{cmt?.user_id?.displayName[0].toUpperCase() + cmt?.user_id?.displayName[1].toUpperCase()}</AvatarFallback>
-                                            </Avatar>
-                                            <div className="flex-1">
-                                                <div className="flex items-center space-x-2 mb-2">
-                                                    <span className="font-medium">{cmt?.user_id?.displayName}</span>
-                                                    <div className="flex">
-                                                        {[1, 2, 3, 4, 5].map((star) => (
-                                                            <Star key={star} className={`h-4 w-4 ${star <= cmt?.rating ? "text-yellow-400 fill-current" : "text-gray-300"}`} />
-                                                        ))}
+                                    {comment.map((comment) => (
+                                        <div
+                                            key={comment._id}
+                                            className="bg-white dark:bg-slate-700/50 dark:border-white/10 p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                                            <div className="flex space-x-4">
+                                                <Avatar className="h-12 w-12">
+                                                    <AvatarImage src={comment.user_id.profilePicture || "/placeholder.svg"} className="object-cover" />
+                                                    <AvatarFallback className="bg-blue-100 text-blue-600 font-semibold">{comment.user_id.displayName[0]}</AvatarFallback>
+                                                </Avatar>
+                                                <div className="flex-1">
+                                                    <div className="flex items-center justify-between mb-2">
+                                                        <div className="flex items-center space-x-3">
+                                                            <span className="font-semibold dark:text-white/80 text-gray-800">{comment.user_id.displayName}</span>
+                                                            <div className="flex">
+                                                                {[1, 2, 3, 4, 5].map((star) => (
+                                                                    <Star key={star} className={`h-4 w-4 ${star <= comment.rating ? "text-yellow-400 fill-current" : "text-gray-300"}`} />
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                        <span className="text-sm text-gray-500 dark:text-gray-400">{comment.created_at && handleCompareDate(comment.created_at)}</span>
                                                     </div>
-                                                    {cmt?.created_at && <span className="text-sm ">{handleCompareDate(cmt?.created_at)}</span>}
+                                                    <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">{comment.review}</p>
+                                                    <div className="flex items-center space-x-4">
+                                                        <Button variant="ghost" size="sm" className={`text-gray-500 hover:text-blue-600 ${comment.helpful ? "text-blue-600" : ""}`}>
+                                                            <ThumbsUp className={`h-4 w-4 mr-2 ${comment.helpful ? "fill-current" : ""}`} />
+                                                            {comment.helpful > 0 ? comment.helpful : "Hữu ích"}
+                                                        </Button>
+                                                        {/* <Button variant="ghost" size="sm" className="text-gray-500 hover:text-blue-600">
+                                                            Trả lời
+                                                        </Button> */}
+                                                    </div>
                                                 </div>
-                                                {cmt.review && <p className="text-gray-700 mb-2 dark:text-white/60">{cmt.review}</p>}
-
-                                                <Button variant="ghost" size="sm" className=" hover:text-blue-600">
-                                                    <ThumbsUp className="h-4 w-4 mr-1" />
-                                                    {cmt?.helpful || "0"}
-                                                </Button>
                                             </div>
                                         </div>
                                     ))}
@@ -310,64 +366,111 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                     {/* Sidebar */}
                     <div className="space-y-6">
                         {/* Author Info */}
-                        <Card className="dark:border-white/10">
+                        <Card className="shadow-lg border-0 bg-white/70 backdrop-blur-sm dark:bg-slate-800/50 dark:border-white/10">
                             <CardHeader>
-                                <CardTitle className="text-lg">Tác giả</CardTitle>
+                                <CardTitle className="text-lg font-bold dark:text-white/80 text-gray-800">Tác giả</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="flex items-center space-x-3">
-                                    <Avatar>
-                                        <AvatarImage src={data?.uid?.profilePicture} className="object-cover" />
-                                        <AvatarFallback>TA</AvatarFallback>
+                                <div className="flex items-center space-x-4 mb-4">
+                                    <Avatar className="h-12 w-12">
+                                        <AvatarImage src="/placeholder.svg?height=48&width=48" />
+                                        <AvatarFallback className="bg-blue-100 text-blue-600 dark:bg-blue-800/50 dark:text-blue-200 font-semibold">TA</AvatarFallback>
                                     </Avatar>
                                     <div>
-                                        <div className="font-medium">{data?.uid?.displayName}</div>
-                                        {data?.uid?.created_at && <div className="text-sm ">{handleCompareDate(data?.uid?.created_at)}</div>}
+                                        <div className="font-semibold dark:text-white/80 text-gray-800">Trọng An</div>
+                                        <div className="text-sm text-gray-500">Python Developer</div>
+                                        <div className="text-xs text-gray-400">Tham gia 3 tháng trước</div>
                                     </div>
                                 </div>
+                                <div className="grid grid-cols-2 gap-4 text-center">
+                                    <div className="bg-blue-50 dark:bg-blue-800/50 p-3 rounded-lg">
+                                        <div className="font-bold text-blue-600 dark:text-blue-200">25</div>
+                                        <div className="text-xs ">Quiz</div>
+                                    </div>
+                                    <div className="bg-green-50  dark:bg-green-800/50 p-3 rounded-lg">
+                                        <div className="font-bold text-green-600 dark:text-green-200">1.2k</div>
+                                        <div className="text-xs ">Người theo dõi</div>
+                                    </div>
+                                </div>
+                                <Button variant="outline" className="w-full mt-4 hover:bg-blue-50 hover:border-blue-200">
+                                    Theo dõi
+                                </Button>
                             </CardContent>
                         </Card>
 
                         {/* Quiz Stats */}
-                        <Card className="dark:border-white/10">
+                        <Card className="shadow-lg border-0 bg-white/70 backdrop-blur-sm dark:bg-slate-800/50 dark:border-white/10">
                             <CardHeader>
-                                <CardTitle className="text-lg">Thống kê</CardTitle>
+                                <CardTitle className="text-lg font-bold dark:text-white/80 text-gray-800 flex items-center">
+                                    <Trophy className="h-5 w-5 mr-2 text-yellow-500" />
+                                    Thống kê
+                                </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                <div className="flex justify-between">
-                                    <span className="">Số câu hỏi:</span>
-                                    <span className="font-medium">{quiz?.length}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="">Lượt xem:</span>
-                                    <span className="font-medium">{data?.view || "0"}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="">Lượt làm:</span>
-                                    <span className="font-medium">{data?.noa}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="">Độ khó:</span>
-                                    <Badge variant="secondary">Dễ</Badge>
+                                <div className="space-y-3">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-gray-600 dark:text-gray-400">Số câu hỏi:</span>
+                                        <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-800/50 dark:text-blue-200">20 câu</Badge>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-gray-600 dark:text-gray-400">Lượt xem:</span>
+                                        <span className="font-semibold dark:text-white/80 text-gray-800">5,678</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-gray-600 dark:text-gray-400">Lượt làm:</span>
+                                        <span className="font-semibold dark:text-white/80 text-gray-800">1,234</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-gray-600 dark:text-gray-400">Tỷ lệ hoàn thành:</span>
+                                        <span className="font-semibold text-green-600">87%</span>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-gray-600 dark:text-gray-400">Độ khó:</span>
+                                            <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-800/50 dark:text-green-200">
+                                                Dễ
+                                            </Badge>
+                                        </div>
+                                        <Progress value={25} className="h-2" />
+                                    </div>
                                 </div>
                             </CardContent>
                         </Card>
 
                         {/* Related Quizzes */}
-                        <Card className="dark:border-white/10">
+                        <Card className="shadow-lg border-0 bg-white/70 backdrop-blur-sm dark:bg-slate-800/50 dark:border-white/10">
                             <CardHeader>
-                                <CardTitle className="text-lg">Quiz liên quan</CardTitle>
+                                <CardTitle className="text-lg font-bold dark:text-white/80 text-gray-800">Quiz liên quan</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                {[1, 2, 3].map((item) => (
-                                    <div key={item} className="flex space-x-3 p-3 border rounded-lg hover:bg-gray-50 cursor-pointer dark:hover:bg-gray-800/20">
-                                        <div className="w-12 h-12 bg-gradient-to-br from-green-400 to-blue-500 rounded flex items-center justify-center text-white text-xs font-bold">JS</div>
+                                {[
+                                    { title: "JavaScript cơ bản", questions: 15, color: "from-yellow-400 to-orange-500", icon: "JS" },
+                                    { title: "React Hooks", questions: 12, color: "from-blue-400 to-cyan-500", icon: "R" },
+                                    { title: "Node.js Backend", questions: 18, color: "from-green-400 to-emerald-500", icon: "N" },
+                                ].map((item, index) => (
+                                    <div
+                                        key={index}
+                                        className="flex space-x-3 p-4 border border-gray-100 rounded-xl hover:bg-gray-50 cursor-pointer transition-all hover:shadow-md group dark:border-white/10">
+                                        <div className={`w-12 h-12 bg-gradient-to-br ${item.color} rounded-lg flex items-center justify-center text-white text-sm font-bold shadow-md`}>
+                                            {item.icon}
+                                        </div>
                                         <div className="flex-1">
-                                            <div className="font-medium text-sm">JavaScript cơ bản</div>
-                                            <div className="text-xs ">15 câu hỏi</div>
+                                            <div className="font-semibold dark:text-white/80 text-gray-800 group-hover:text-blue-600 transition-colors">{item.title}</div>
+                                            <div className="text-sm text-gray-500">{item.questions} câu hỏi</div>
+                                            <div className="flex items-center mt-1">
+                                                <div className="flex">
+                                                    {[1, 2, 3, 4, 5].map((star) => (
+                                                        <Star key={star} className="h-3 w-3 text-yellow-400 fill-current" />
+                                                    ))}
+                                                </div>
+                                                <span className="text-xs text-gray-500 ml-1">4.9</span>
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
+                                <Button variant="outline" className="w-full hover:bg-blue-50 hover:border-blue-200">
+                                    Xem thêm quiz
+                                </Button>
                             </CardContent>
                         </Card>
                     </div>

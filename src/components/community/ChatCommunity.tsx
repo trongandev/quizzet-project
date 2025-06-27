@@ -344,7 +344,7 @@ export default function ChatCommunity() {
                         <div className="flex items-center gap-2 text-md md:text-lg">
                             <Users className="text-gray-400" size={20} />{" "}
                             <span className="inline-flex items-end">
-                                Thành viên <Minus /> {onlineUsers.lenght || "0"}
+                                Thành viên <Minus /> {onlineUsers?.length || "0"}
                             </span>
                         </div>
                         <div className="space-y-3 mt-8 h-full">
