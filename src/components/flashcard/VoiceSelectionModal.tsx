@@ -48,7 +48,6 @@ export default function VoiceSelectionModal({ children, selectedVoice, setSelect
         } else {
             // Nếu click voice khác, chuyển sang voice mới
             setPlayingVoice(voiceId);
-            console.log(`Playing sample for voice: ${voiceId}`);
             speakWord(text, voiceId);
         }
     };
@@ -127,7 +126,6 @@ export default function VoiceSelectionModal({ children, selectedVoice, setSelect
         }
         try {
             const savedVoice = JSON.parse(localStorage.getItem("defaultVoices") || "");
-            console.log("Saved voice:", savedVoice);
             savedVoice[language] = voiceId; // Lưu voice đã chọn vào localStorage
             localStorage.setItem("defaultVoices", JSON.stringify(savedVoice));
         } catch (error) {

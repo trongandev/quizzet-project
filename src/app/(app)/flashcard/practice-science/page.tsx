@@ -77,7 +77,6 @@ export default function PractiveFlashcard({ params }: { params: { slug: string }
         const fetchAndInitialize = async () => {
             const req = await GET_API(`/flashcards/practice`, token);
             if (req.ok) {
-                console.log(req);
                 const savedVoiceString = JSON.parse(localStorage.getItem("defaultVoices") || "");
                 const savedVoices = savedVoiceString[req?.listFlashCards?.language];
                 setVoicePerson(savedVoices ? savedVoices : "en-US-GuyNeural");
@@ -201,9 +200,6 @@ export default function PractiveFlashcard({ params }: { params: { slug: string }
         // ✅ Update state
         setSessionRatings(updatedSessionRatings);
 
-        console.log("Current flashcards:", currentCard);
-        console.log("Updated sessionRatings:", updatedSessionRatings); // ✅ Đây là giá trị đúng
-
         toast.success(`Đã đánh giá thẻ với chất lượng ${quality}`, {
             duration: 3000,
             position: "top-center",
@@ -214,7 +210,6 @@ export default function PractiveFlashcard({ params }: { params: { slug: string }
         speakWord((flashcards && flashcards[currentIndex + 1]?.title) || "");
 
         if (flashcards && currentIndex < flashcards.length - 1) {
-            console.log("Chuyển sang thẻ tiếp theo");
             setCurrentIndex((prevIndex) => prevIndex + 1);
         } else {
             // ✅ Sử dụng updatedSessionRatings thay vì sessionRatings

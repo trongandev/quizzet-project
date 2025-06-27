@@ -88,7 +88,6 @@ const getLanguageName = (lang: string) => {
 };
 
 export default function CFlashcardDetail({ id_flashcard, initialData, statusCounts }: any) {
-    console.log(initialData);
     const [loading, setLoading] = useState(false);
     const [loadingConfirm, setLoadingConfirm] = useState(false);
     const [flashcard, setFlashcard] = useState<Flashcard>(); // các flashcard
@@ -126,7 +125,6 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
             setFlashcard(sortedFlashcards);
             setFilteredFlashcards(sortedFlashcards);
             setListFlashcard(fetchedData);
-            console.log("fetchedData", fetchedData);
             setEditListFlashcard({
                 _id: fetchedData._id,
                 title: fetchedData.title,
@@ -451,18 +449,21 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                         <Target /> ôn từ vựng
                     </Button>
                 </Link>
-                <AddVocaModal token={token} filteredFlashcards={filteredFlashcards} setFilteredFlashcards={setFilteredFlashcards} listFlashcard={listFlashcard}>
-                    <Button className="dark:text-white h-16 text-md md:text-xl uppercase bg-gradient-to-r from-indigo-500 to-purple-500 text-white md:px-10">
-                        <Plus size={24} /> Thêm từ vựng
-                    </Button>
-                </AddVocaModal>
+
                 {user?._id === String(listFlashcard?.userId?._id) && (
-                    <Link href={`/flashcard/practice-science`} className="flex-1">
-                        <Button variant="outline" className="w-full h-16 dark:text-white text-md md:text-xl uppercase">
-                            <Gift></Gift>
-                            Luyện tập
-                        </Button>
-                    </Link>
+                    <>
+                        <AddVocaModal token={token} filteredFlashcards={filteredFlashcards} setFilteredFlashcards={setFilteredFlashcards} listFlashcard={listFlashcard}>
+                            <Button className="dark:text-white h-16 text-md md:text-xl uppercase bg-gradient-to-r from-indigo-500 to-purple-500 text-white md:px-10">
+                                <Plus size={24} /> Thêm từ vựng
+                            </Button>
+                        </AddVocaModal>
+                        <Link href={`/flashcard/practice-science`} className="flex-1">
+                            <Button variant="outline" className="w-full h-16 dark:text-white text-md md:text-xl uppercase">
+                                <Gift></Gift>
+                                Luyện tập
+                            </Button>
+                        </Link>
+                    </>
                 )}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:p-5 w-full px-3">

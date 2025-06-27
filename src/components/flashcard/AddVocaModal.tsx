@@ -83,8 +83,7 @@ export default function AddVocaModal({ children, listFlashcard, token, filteredF
             setIsGenerating(true);
 
             const req = await POST_API("/flashcards/create-ai", { prompt: optimizedPrompt, list_flashcard_id: listFlashcard._id, language: listFlashcard?.language || "" }, "POST", token);
-            if (req) {
-                const res = await req.json();
+            const res = await req?.json();
                 if (res.ok) {
                     toast.success("Tạo flashcard thành công từ AI");
 
@@ -93,7 +92,6 @@ export default function AddVocaModal({ children, listFlashcard, token, filteredF
                     // Reset form data with AI generated content
                     setFormData(defaultData);
                 }
-            }
         } catch (error) {
             toast.error("Đã có lỗi xảy ra, vui lòng thử lại sau", { description: error instanceof Error ? error.message : "Lỗi không xác định" });
         } finally {

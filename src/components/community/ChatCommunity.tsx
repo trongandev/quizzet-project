@@ -86,7 +86,6 @@ export default function ChatCommunity() {
                 setMessages((prev) => prev.map((msg) => (msg._id === messageId ? { ...msg, unsend: true } : msg)));
             },
             handleReact: (messageId: string, reactions: any) => {
-                console.log(reactions);
                 setMessages((prev) => prev.map((msg) => (msg._id === messageId ? { ...msg, reactions: reactions } : msg)));
             },
         }),
@@ -109,7 +108,6 @@ export default function ChatCommunity() {
 
     const handleSendMessage = useCallback(async () => {
         if (!inputRef.current?.value.trim()) return;
-        console.log("Sending message with image");
         try {
             let imageUrl = "";
             if (image) {
@@ -117,7 +115,6 @@ export default function ChatCommunity() {
                 const formData = new FormData();
                 const uploadResponse = await POST_API_CLOUD("/upload", formData, token);
                 const data = await uploadResponse?.json();
-                console.log(data);
                 imageUrl = data.originalUrl;
             }
 
@@ -210,7 +207,6 @@ export default function ChatCommunity() {
         setImage(file);
         setImageReview(file ? URL.createObjectURL(file) : null);
     };
-    console.log("Online users:", replyingTo);
 
     return (
         <div className="flex items-center justify-center">

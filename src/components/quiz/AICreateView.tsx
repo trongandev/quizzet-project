@@ -81,7 +81,6 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                 .replace(/```/g, "");
 
             const jsonOutput = JSON.parse(responseText || "");
-            console.log(jsonOutput); // This will print the JSON object to your console
             setIsGenerating(false);
             setGeneratedQuiz(jsonOutput);
             toast.success("Quiz đã được tạo thành công!", {
