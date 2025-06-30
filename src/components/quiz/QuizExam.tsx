@@ -15,6 +15,7 @@ import handleCompareDate from "@/lib/CompareDate";
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Loading from "../ui/loading";
+import { renderContentWithLaTeX } from "@/lib/renderKaTEX";
 export default function QuizExam(QuizData: IQuiz) {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -112,17 +113,12 @@ export default function QuizExam(QuizData: IQuiz) {
                 if (req.ok) {
                     toast.success(data?.message);
                     setLinkHistory(data?.id_history);
-                    console.log("Quiz submitted successfully:", data);
-                } else {
-                    toast.error("Lỗi khi nộp bài quiz", {
-                        description: data?.message,
-                        position: "top-center",
-                    });
                 }
             }
         } catch (error) {
             toast.error("Đã có lỗi xảy ra khi nộp bài quiz", {
                 description: error instanceof Error ? error.message : "Lỗi không xác định",
+                duration: 10000,
             });
         } finally {
             setLoading(false);
@@ -296,7 +292,7 @@ export default function QuizExam(QuizData: IQuiz) {
                         <Card className="shadow-lg dark:bg-slate-800/50 dark:border-white/10">
                             <CardHeader>
                                 <CardTitle className="text-lg font-semibold text-blue-600 dark:text-blue-400">
-                                    Câu {currentQuestion + 1}: {currentQ?.question}
+                                    Câu {currentQuestion + 1}: {renderContentWithLaTeX(currentQ?.question)}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
@@ -319,7 +315,7 @@ export default function QuizExam(QuizData: IQuiz) {
                                                     }`}>
                                                     {index + 1}
                                                 </div>
-                                                <p className="text-gray-800 leading-relaxed dark:text-gray-300">{option}</p>
+                                                <p className="text-gray-800 leading-relaxed dark:text-gray-300">{renderContentWithLaTeX(option)}</p>
                                             </div>
                                         </div>
                                     ))}
@@ -343,6 +339,7 @@ export default function QuizExam(QuizData: IQuiz) {
                                         </Button>
                                     )}
                                 </div>
+                                {!token && <p className="mt-3 text-xs text-red-700 dark:text-red-200">*Lưu ý: bạn chưa đăng nhập nên không thể lưu bài làm trên server của chúng tôi</p>}
                             </CardContent>
                         </Card>
                     </div>

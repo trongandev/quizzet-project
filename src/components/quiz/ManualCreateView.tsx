@@ -193,7 +193,7 @@ export function ManualCreateView() {
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200">
+                    <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200 dark:from-blue-800/50 to:cyan-800/50">
                         <CardContent className="p-4">
                             <div className="text-center space-y-3">
                                 <Plus className="h-8 w-8 text-blue-500 mx-auto" />
@@ -222,7 +222,7 @@ export function ManualCreateView() {
                 </div>
             </div>
 
-            <div className="flex justify-center space-x-4">
+            <div className="flex justify-center gap-4 flex-col md:flex-row">
                 <Button variant="outline" size="lg">
                     <Eye className="mr-2 h-4 w-4" />
                     Xem trước

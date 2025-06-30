@@ -15,6 +15,8 @@ import Link from "next/link";
 import { toast } from "sonner";
 import DialogAddImage from "./DialogAddImage";
 import { Label } from "../ui/label";
+import Loading from "../ui/loading";
+import axios from "axios";
 
 const debounce = (func: any, wait: any) => {
     let timeout: NodeJS.Timeout;
@@ -38,17 +40,20 @@ export default function ChatCommunity() {
     const { socket, onlineUsers } = useSocket();
     const [isTyping, setIsTyping] = useState(false); // quản lí trạng thái đang gõ của người dùng
     const [loading, setLoading] = useState(false);
+    const [loadingSend, setLoadingSend] = useState(false);
     const inputRef = useRef<HTMLInputElement | null>(null); // tham chiếu đến input
     const [image, setImage] = useState("");
     const [imageReview, setImageReview] = useState<string | null>(null);
     const [replyingTo, setReplyingTo] = useState<IChatCommunityMessage | null>(null); // quản lí trạng thái đang trả lời tin nhắn nào
     const fetchInitialMessages = useCallback(async () => {
+        setLoading(true);
         const req = await GET_API_WITHOUT_COOKIE(`/chatcommu?skip=${skip}&limit=50`);
         if (req.ok) {
             const sortedMessages = req.messages.sort((a: any, b: any) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
             setMessages(sortedMessages);
             // setHasMore(req?.hasMore);
             // setSkip(50);
+            setLoading(false);
         }
     }, [skip]);
 
@@ -107,15 +112,25 @@ export default function ChatCommunity() {
     }, [socket, messageHandlers]);
 
     const handleSendMessage = useCallback(async () => {
-        if (!inputRef.current?.value.trim()) return;
+        if (!inputRef.current?.value.trim()) {
+            toast.error("Vui lòng nhập nội dung tin nhắn", { position: "top-center", duration: 3000 });
+            return;
+        }
+        setLoading(true);
         try {
             let imageUrl = "";
             if (image) {
-                toast.warning("Đang tải hình ảnh lên server", { duration: 2000, position: "top-center" });
+                toast.loading("Đang tải hình ảnh lên server", { duration: 2000, position: "top-center", id: "upload-image" });
                 const formData = new FormData();
-                const uploadResponse = await POST_API_CLOUD("/upload", formData, token);
-                const data = await uploadResponse?.json();
-                imageUrl = data.originalUrl;
+
+                formData.append("image", image);
+                const uploadResponse = await axios.post(`${process.env.API_ENDPOINT}/upload`, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                imageUrl = uploadResponse?.data?.url;
             }
 
             const messageData = {
@@ -132,6 +147,7 @@ export default function ChatCommunity() {
             setImage("");
             setImageReview(null);
             setReplyingTo(null);
+            toast.success("Thành công", { duration: 2000, position: "top-center", id: "upload-image" });
         } catch (error: any) {
             toast.error("Lỗi khi gửi tin nhắn", { description: error.message, position: "top-center", duration: 10000 });
             console.error("Error sending message:", error);
@@ -208,6 +224,8 @@ export default function ChatCommunity() {
         setImageReview(file ? URL.createObjectURL(file) : null);
     };
 
+    console.log(replyingTo);
+
     return (
         <div className="flex items-center justify-center">
             <div className="w-full md:w-[1000px] xl:w-[1200px] py-5 pt-16 mx-3 md:mx-0">
@@ -261,6 +279,11 @@ export default function ChatCommunity() {
                                             user={user}
                                         />
                                     ))}
+                                {loading && (
+                                    <div className="flex items-center justify-center col-span-4 h-[500px]">
+                                        <Loading className="h-12 w-12" />{" "}
+                                    </div>
+                                )}
                             </div>
                             <div
                                 className={`border-t border-t-gray-300/50 dark:border-t-white/10 bg-white dark:bg-slate-800/50 ${
@@ -322,7 +345,7 @@ export default function ChatCommunity() {
                                                     onClick={handleSendMessage}
                                                     disabled={loading}
                                                     className="bg-gradient-to-r from-blue-500 to-purple-500  text-white h-10 px-4 rounded-lg hover:scale-[1.02] transition-all duration-200">
-                                                    <Send></Send>
+                                                    {loading ? <Loading /> : <Send />}
                                                 </Button>
                                             </div>
                                         </div>
@@ -347,7 +370,7 @@ export default function ChatCommunity() {
                             {/* {onlineUsers && onlineUsers.map((user: any, index: number) => <OnlineUsers key={index} onlineUsers={user} />)} */}
                             {onlineUsers &&
                                 onlineUsers.map((user: any, index: number) => {
-                                    if (user._id === userContext?.user?._id) return null; // Skip the current user
+                                    // if (user._id === userContext?.user?._id) return null; // Skip the current user
                                     return (
                                         <Link
                                             href={`/profile/${user?._id}` || ""}

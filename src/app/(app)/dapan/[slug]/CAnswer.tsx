@@ -10,6 +10,7 @@ import { IDataQuiz, IHistory } from "@/types/type";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Loading from "@/components/ui/loading";
+import { renderContentWithLaTeX } from "@/lib/renderKaTEX";
 // Constants
 const AI_MODEL = "gemini-2.5-flash";
 
@@ -112,10 +113,12 @@ export default function CAnswer({ history, question }: CAnswerProps) {
                                 <CardHeader>
                                     <div className="flex items-start justify-between">
                                         <CardTitle className="text-lg">
-                                            Câu {question.id}: {question.question}
+                                            Câu {question.id}: {renderContentWithLaTeX(question.question)}
                                         </CardTitle>
-                                        <Badge variant={history.userAnswers[question.id] == question.correct ? "default" : "destructive"} className="ml-4">
-                                            {history.userAnswers[question.id] == question.correct ? "Đúng" : "Sai"}
+                                        <Badge
+                                            variant={history.userAnswers[question.id] != null ? (history.userAnswers[question.id] == question.correct ? "default" : "destructive") : "outline"}
+                                            className="ml-4">
+                                            {history.userAnswers[question.id] != null ? (history.userAnswers[question.id] == question.correct ? "Đúng" : "Sai") : "Chưa trả lời"}
                                         </Badge>
                                     </div>
                                 </CardHeader>
@@ -134,7 +137,7 @@ export default function CAnswer({ history, question }: CAnswerProps) {
                                                 }`}>
                                                 <div className="flex items-center space-x-2">
                                                     <span className="font-semibold ml-2 mr-3">{String.fromCharCode(65 + Number(index))}</span>
-                                                    <span>{option}</span>
+                                                    <span>{renderContentWithLaTeX(option)}</span>
                                                     {Number(history.userAnswers[question.id]) === index && index === Number(question.correct) && (
                                                         <CheckCircle className="h-4 w-4 text-green-600 ml-auto dark:text-green-200" />
                                                     )}

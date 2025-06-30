@@ -1,4 +1,4 @@
-import CQuiz from "@/components/CQuiz";
+import CQuizPage from "@/components/quiz/CQuizPage";
 import { getCachedQuizzet } from "@/lib/cacheData";
 import React from "react";
 
@@ -20,7 +20,7 @@ export default async function page() {
     const quizData = await getCachedQuizzet();
     return (
         <div className=" py-20">
-            <CQuiz quizData={quizData} />
+            <CQuizPage publicQuizData={quizData} />
         </div>
     );
 }

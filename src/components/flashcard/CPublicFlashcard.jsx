@@ -36,6 +36,7 @@ import { Badge } from "../ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useRouter } from "next/navigation";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import Loading from "../ui/loading";
 export default function CPublicFlashCard({ publicFlashcards, summary }) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -75,29 +76,6 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
         fetchListFlashCard();
     }, [token, publicFlashcards]);
 
-    // Function to fetch paginated public flashcards
-    // const fetchPaginatedFlashcards = async (page = 1, search = "", lang = "all") => {
-    //     try {
-    //         let endpoint = `/public-flashcards?page=${page}&limit=12`;
-    //         if (search) endpoint += `&search=${encodeURIComponent(search)}`;
-    //         if (lang !== "all") endpoint += `&language=${lang}`;
-
-    //         const res = await GET_API(endpoint);
-    //         if (res?.flashcards) {
-    //             setFilterLanguage(res.flashcards);
-    //             setCurrentPage(res.pagination.currentPage);
-    //             setTotalPages(res.pagination.totalPages);
-    //             setTotalCount(res.pagination.totalCount);
-    //             setHasNext(res.pagination.hasNext);
-    //             setHasPrev(res.pagination.hasPrev);
-    //         }
-    //     } catch (error) {
-    //         console.error("Error fetching paginated flashcards:", error);
-    //     } finally {
-    //         setPaginationLoading(false);
-    //     }
-    // };
-
     if (!publicFlashcards && !listFlashCard) {
         return (
             <div className="flex items-center justify-center h-screen">
@@ -106,15 +84,6 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
         );
     }
 
-    // const handleNavLanguage = (value) => {
-    //     setLanguage(value);
-    //     if (value === "all") {
-    //         setFilterLanguage(publicFlashcards);
-    //         return;
-    //     }
-    //     const filter = publicFlashcards.filter((item) => item.language === value);
-    //     setFilterLanguage(filter);
-    // };
     const handleSearchFC = (value) => {
         setSearchFC(value);
         if (tabFlashcard === "community") {
@@ -366,7 +335,11 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
                                     <div className="mt-10">
                                         <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 ">
                                             {filterFlashcard && filterFlashcard.map((item) => <UserFC item={item} key={item._id} />)}
-                                            {loading && <Spin indicator={<LoadingOutlined spin />} size="default" className="h-full flex items-center justify-center" />}
+                                            {loading && (
+                                                <div className="flex items-center justify-center col-span-4 h-[500px]">
+                                                    <Loading className="h-12 w-12" />{" "}
+                                                </div>
+                                            )}
                                             {!loading && filterFlashcard?.length <= 0 && (
                                                 <div className="h-[350px] col-span-12 flex items-center justify-center text-gray-700">Không có dữ liệu...</div>
                                             )}

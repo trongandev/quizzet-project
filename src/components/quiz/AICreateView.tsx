@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
-import { Bot, Sparkles, Wand2, Clock, Users, BookOpen, Eye, CheckCircle, Save, Gamepad2 } from "lucide-react";
+import { Bot, Sparkles, Wand2, Clock, Users, BookOpen, Eye, CheckCircle, Save, Gamepad2, File } from "lucide-react";
 import { AIResultPreview } from "./AIResuiltPreview";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { toast } from "sonner";
@@ -18,6 +18,13 @@ import { optimizedPromptQuiz } from "@/lib/optimizedPrompt";
 import DialogAddMoreInfoQuiz from "./DialogAddMoreInfoQuiz";
 import { Game2048Smooth } from "./Game2048Smooth";
 interface QuizQuestion {
+    title: string;
+    subject: string;
+    content: string;
+    questions: Quiz[];
+}
+
+interface Quiz {
     id: string;
     type: "multiple-choice" | "true-false" | "short-answer";
     question: string;
@@ -37,7 +44,7 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
     const [questionCount, setQuestionCount] = useState([10]);
     const [questionTypes, setQuestionTypes] = useState<string[]>(["multiple-choice"]);
     const [isGenerating, setIsGenerating] = useState(false);
-    const [generatedQuiz, setGeneratedQuiz] = useState<QuizQuestion[] | null>(null);
+    const [generatedQuiz, setGeneratedQuiz] = useState<QuizQuestion | null>(null);
     const [showPreview, setShowPreview] = useState(false);
     const [openGame, setOpenGame] = useState(false);
 
@@ -81,6 +88,7 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                 .replace(/```/g, "");
 
             const jsonOutput = JSON.parse(responseText || "");
+            console.log("Generated Quiz:", jsonOutput);
             setIsGenerating(false);
             setGeneratedQuiz(jsonOutput);
             toast.success("Quiz đã được tạo thành công!", {
@@ -107,17 +115,15 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
     const handleAddToDraft = () => {
         const draftStorage = localStorage.getItem("draftQuiz");
         const draft = {
-            id: Date.now().toString(),
-            title: topic,
-            description: description,
+            ...generatedQuiz,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            questions: generatedQuiz || [],
-            questionCount: questionCount[0],
+
             createdBy: "ai",
             status: "draft",
             difficulty: difficulty,
         };
+        console.log(draft);
 
         if (draftStorage) {
             const existingDrafts = JSON.parse(draftStorage);
@@ -200,7 +206,7 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                                             } hover:shadow-md transition-shadow ml-2`}
                                             onClick={() => setDifficulty(option.value)}>
                                             <div className="flex items-center space-x-2">
-                                                <Badge className={`${option.color} dark:border-white/10`}>{option.badge}</Badge>
+                                                <Badge className={`${option.color} dark:border-white/10 hidden md:block`}>{option.badge}</Badge>
                                                 <span className="text-sm">{option.label}</span>
                                                 <div
                                                     className={`absolute top-1 right-1 w-3 h-3  rounded-full dark:border-white/50 ${
@@ -302,7 +308,7 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
             </div>
 
             <div className="flex justify-center">
-                <div className={`flex items-center gap-5 `}>
+                <div className={`flex items-center gap-5 flex-col md:flex-row `}>
                     <Dialog open={openGame} onOpenChange={setOpenGame}>
                         <DialogTrigger>
                             <Button size="lg" variant="outline" className={`flex`}>
@@ -310,14 +316,14 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                                 Chơi game 2048
                             </Button>
                         </DialogTrigger>
-                        <DialogContent className="max-w-lg min-h-[80vh] overflow-y-scroll">
+                        <DialogContent className="max-w-xs sm:max-w-lg">
                             <DialogHeader>
                                 <DialogTitle className="flex items-center gap-5">
-                                    Giải trí trong lúc đợi AI tạo Quiz {!generatedQuiz ? <Clock className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4 text-green-500" />}
+                                    Giải trí trong lúc đợi AI {!generatedQuiz ? <Clock className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4 text-green-500" />}
                                 </DialogTitle>
                                 {!generatedQuiz ? (
                                     <DialogDescription>
-                                        <p className="mb-2">Hệ thống AI đang tổng hợp các câu hỏi cho bạn.</p>
+                                        <p className="mb-2 hidden md:block">Hệ thống AI đang tổng hợp các câu hỏi cho bạn.</p>
                                         <p className="mb-4">Quá trình này có thể mất chút thời gian tùy thuộc vào số lượng câu hỏi, thường là khoảng 30 giây.</p>
                                     </DialogDescription>
                                 ) : (
@@ -333,8 +339,8 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                             </div>
 
                             <DialogFooter>
-                                <p className="text-xs text-muted-foreground text-center w-full">Chơi game để thời gian chờ trở nên thú vị hơn!</p>
-                                <DialogClose asChild>
+                                <p className=" hidden md:block text-xs text-muted-foreground text-center w-full">Chơi game để thời gian chờ trở nên thú vị hơn!</p>
+                                <DialogClose asChild className="hidden md:block">
                                     <Button variant="outline">Đóng</Button>
                                 </DialogClose>
                             </DialogFooter>
@@ -362,17 +368,17 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                                     <span className="text-lg font-medium text-green-700 dark:text-gray-400">Quiz đã được tạo thành công!</span>
                                 </div>
                                 <p className="text-muted-foreground dark:text-gray-400">
-                                    AI đã tạo {generatedQuiz?.length} câu hỏi cho chủ đề &quot;{topic}&quot;
+                                    AI đã tạo {generatedQuiz?.questions?.length} câu hỏi cho chủ đề &quot;{topic}&quot;
                                 </p>
                             </div>
 
-                            <div className="flex justify-center space-x-3">
+                            <div className="flex justify-center gap-3 flex-col md:flex-row">
                                 <Button size="lg" variant="outline" onClick={() => setShowPreview(true)}>
                                     <Eye className="mr-2 h-4 w-4" />
                                     Xem trước kết quả
                                 </Button>
                                 <Button size="lg" variant="outline" onClick={() => handleAddToDraft()}>
-                                    <Eye className="mr-2 h-4 w-4" />
+                                    <File className="mr-2 h-4 w-4" />
                                     Lưu vào nháp
                                 </Button>
                                 <DialogAddMoreInfoQuiz generatedQuiz={generatedQuiz}>
@@ -386,7 +392,7 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                     )}
                 </div>
             </div>
-            {generatedQuiz && <AIResultPreview open={showPreview} onOpenChange={setShowPreview} quiz={generatedQuiz} title_quiz={topic} desc={description} onQuizUpdate={handleQuizUpdate} />}
+            {generatedQuiz && <AIResultPreview open={showPreview} onOpenChange={setShowPreview} quiz={generatedQuiz} onQuizUpdate={handleQuizUpdate} />}
         </div>
     );
 }

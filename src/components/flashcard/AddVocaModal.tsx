@@ -16,6 +16,7 @@ import { optimizedPromptFCSingle } from "@/lib/optimizedPrompt";
 import { POST_API } from "@/lib/fetchAPI";
 import { toast } from "sonner";
 import Loading from "../ui/loading";
+import { revalidateCache } from "@/lib/revalidate";
 
 interface AddVocabularyModalProps {
     children: React.ReactNode;
@@ -84,14 +85,19 @@ export default function AddVocaModal({ children, listFlashcard, token, filteredF
 
             const req = await POST_API("/flashcards/create-ai", { prompt: optimizedPrompt, list_flashcard_id: listFlashcard._id, language: listFlashcard?.language || "" }, "POST", token);
             const res = await req?.json();
-                if (res.ok) {
-                    toast.success("Tạo flashcard thành công từ AI");
+            if (res.ok) {
+                toast.success("Tạo flashcard thành công từ AI");
 
-                    setFilteredFlashcards([res?.flashcard, ...filteredFlashcards]);
-                    setOpen(false);
-                    // Reset form data with AI generated content
-                    setFormData(defaultData);
-                }
+                setFilteredFlashcards([res?.flashcard, ...filteredFlashcards]);
+                setOpen(false);
+                // Reset form data with AI generated content
+                setFormData(defaultData);
+                // 4. Revalidate cache
+                await revalidateCache({
+                    tag: [`flashcard_${listFlashcard._id}`],
+                    path: `/flashcard/${listFlashcard._id}`,
+                });
+            }
         } catch (error) {
             toast.error("Đã có lỗi xảy ra, vui lòng thử lại sau", { description: error instanceof Error ? error.message : "Lỗi không xác định" });
         } finally {
@@ -109,6 +115,11 @@ export default function AddVocaModal({ children, listFlashcard, token, filteredF
                 setOpen(false);
                 setFilteredFlashcards([res?.flashcard, ...filteredFlashcards]);
                 setFormData(defaultData);
+                // 4. Revalidate cache
+                await revalidateCache({
+                    tag: [`flashcard_${listFlashcard._id}`],
+                    path: `/flashcard/${listFlashcard._id}`,
+                });
             }
         } catch (error) {
             console.error("Error adding vocabulary:", error);

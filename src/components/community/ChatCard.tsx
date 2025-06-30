@@ -56,8 +56,8 @@ const ChatCard = forwardRef<HTMLDivElement, MessageCardProps>(({ message, isLast
                     {/* ✅ Hiển thị actions khi hover hoặc popover mở */}
                     <div className={`items-center gap-2 transition-all duration-200 ${shouldShowActions ? "flex" : "hidden"}`}>
                         <PopperEmoji open={emojiPopoverOpen} setOpen={setEmojiPopoverOpen} handleReactIcon={handleReactIcon} messageId={message?._id}>
-                            <div className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-800 dark:text-gray-400 dark:text-white/60 hover:text-white">
-                                <Heart size={14} />
+                            <div className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md  cursor-pointer text-gray-800 dark:text-gray-400 dark:text-white/60 hover:text-white transition-all duration-500 ">
+                                <Heart size={14} className="" />
                             </div>
                         </PopperEmoji>
                         <div
@@ -103,6 +103,18 @@ const ChatCard = forwardRef<HTMLDivElement, MessageCardProps>(({ message, isLast
                         <p className="break-words whitespace-normal">{message?.message}</p>
                     )}
                 </div>
+                <Dialog>
+                    <DialogTrigger>
+                        {" "}
+                        <div className="">{message?.image && <Image src={message?.image} alt="" width={200} height={200} className=" object-contain rounded-lg" />}</div>
+                    </DialogTrigger>
+                    <DialogContent className="w-[1000px] h-[600px]">
+                        <div className="relative w-full h-full">
+                            <Image src={message?.image} alt="" fill className="absolute object-contain rounded-lg" />
+                        </div>
+                    </DialogContent>
+                </Dialog>
+
                 <div className="flex items-center gap-2">
                     {message?.reactions?.map((react, index) => (
                         <div className="flex rounded-full items-center px-3 py-1 bg-slate-300/50 dark:bg-slate-900/50 cursor-pointer " key={index}>

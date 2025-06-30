@@ -53,7 +53,7 @@ export const getCachedFlashcardUser = (token: string) =>
             const response = await GET_API(`/list-flashcards`, token);
             return response;
         },
-        [`flashcard_${token}`], // Key cache
+        [`flashcard_${token}`, "flashcards"], // Key cache
         { revalidate: 30 } // TTL = 30s
     );
 
@@ -66,7 +66,7 @@ export const getCachedFlashcardDetail = (id: string) =>
         [`flashcard_${id}`],
         {
             revalidate: 30,
-            tags: [`flashcard_${id}`, "flashcards"], // ✅ Thêm tags
+            tags: [`flashcard_${id}`, "flashcards-detail"], // ✅ Thêm tags
         }
     );
 

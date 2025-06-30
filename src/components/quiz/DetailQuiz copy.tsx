@@ -149,7 +149,8 @@ export default function DetailQuizD({ quiz, data, comment, setComment, user }: P
                                             <Button variant="outline" onClick={() => setIsReportModalOpen(false)}>
                                                 Hủy
                                             </Button>
-                                            <Button onClick={handleReport} disabled={!reportReason} className="bg-red-600 hover:bg-red-700">
+                                            <Button onClick={handleReport} disabled={!reportReason} variant="destructive" className="text-white">
+                                                <Send />
                                                 Gửi báo cáo
                                             </Button>
                                         </div>
@@ -317,8 +318,13 @@ export default function DetailQuizD({ quiz, data, comment, setComment, user }: P
                             <CardContent>
                                 <div className="flex items-center space-x-3">
                                     <Avatar>
-                                        <AvatarImage src={data?.uid?.profilePicture} className="object-cover" />
-                                        <AvatarFallback>TA</AvatarFallback>
+                                        <AvatarImage src="" className="object-cover" />
+                                        <AvatarFallback>
+                                            {user?.displayName
+                                                .split(" ")
+                                                .map((n) => n[0])
+                                                .join("")}
+                                        </AvatarFallback>
                                     </Avatar>
                                     <div>
                                         <div className="font-medium">{data?.uid?.displayName}</div>

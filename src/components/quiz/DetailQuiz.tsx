@@ -18,6 +18,8 @@ import { POST_API } from "@/lib/fetchAPI";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
 import { Progress } from "../ui/progress";
+import Loading from "../ui/loading";
+import { renderContentWithLaTeX } from "@/lib/renderKaTEX";
 interface PropsDetailQuiz {
     quiz?: IQuestion[];
     data?: IQuiz;
@@ -31,8 +33,12 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
     const [reportReason, setReportReason] = useState("");
     const [isReportModalOpen, setIsReportModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [loadingReport, setLoadingReport] = useState(false);
     const [review, setReview] = useState("");
     const [isBookmarked, setIsBookmarked] = useState(false);
+    const defaultReport = { type_of_violation: "spam", content: "" };
+    const [report, setReport] = useState(defaultReport);
+    const quizSlice = quiz?.slice(0, 5) || [];
     const router = useRouter();
     const token = Cookies.get("token") || "";
     const handleSubmitComment = async () => {
@@ -66,16 +72,8 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
             toast.error("Đã có lỗi xảy ra khi gửi bình luận. Vui lòng thử lại sau.");
             return;
         } finally {
-            setUserRating(0);
+            setUserRating(5);
             setLoading(false);
-        }
-    };
-
-    const handleReport = () => {
-        if (reportReason) {
-            // Handle report submission
-            setReportReason("");
-            setIsReportModalOpen(false);
         }
     };
 
@@ -91,6 +89,33 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
     function Round(num: number) {
         return Math.round(num * 10) / 10;
     }
+
+    const handleReport = async () => {
+        try {
+            setLoadingReport(true);
+            const newReport = {
+                type_of_violation: report.type_of_violation,
+                content: report.content,
+                link: `/quiz/detail/${data?.slug}`,
+            };
+            console.log("Sending report:", newReport);
+            const req = await POST_API(`/report`, newReport, "POST", token);
+            const res = await req?.json();
+            if (res.ok) {
+                toast.success("Gửi báo cáo thành công");
+                setIsReportModalOpen(false);
+                setReport(defaultReport);
+            }
+        } catch (error: any) {
+            console.error("Error sending report:", error);
+            toast.error(error.message || "Đã có lỗi xảy ra khi gửi báo cáo. Vui lòng thử lại sau.", {
+                duration: 10000,
+                position: "top-right",
+            });
+        } finally {
+            setLoadingReport(false);
+        }
+    };
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400">
@@ -122,7 +147,7 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                     </DialogHeader>
                                     <div className="space-y-4">
                                         <p className="text-sm  dark:text-gray-400">Vui lòng chọn lý do báo cáo bài quiz này:</p>
-                                        <RadioGroup value={reportReason} onValueChange={setReportReason}>
+                                        <RadioGroup value={report.type_of_violation} onValueChange={(value) => setReport({ ...report, type_of_violation: value })} className="space-y-2">
                                             <div className="flex items-center space-x-2">
                                                 <RadioGroupItem value="spam" id="spam" />
                                                 <Label htmlFor="spam">Spam hoặc nội dung rác</Label>
@@ -144,11 +169,19 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                                 <Label htmlFor="other">Khác</Label>
                                             </div>
                                         </RadioGroup>
+                                        <div className="">
+                                            <Textarea
+                                                placeholder="Nhập nội dung báo cáo của bạn ở đây..."
+                                                className="h-32 dark:border-white/10"
+                                                value={report.content}
+                                                onChange={(e) => setReport({ ...report, content: e.target.value })}></Textarea>
+                                        </div>
                                         <div className="flex justify-end space-x-2">
                                             <Button variant="outline" onClick={() => setIsReportModalOpen(false)}>
                                                 Hủy
                                             </Button>
-                                            <Button onClick={handleReport} disabled={!reportReason} className="bg-red-600 hover:bg-red-700">
+                                            <Button onClick={handleReport} disabled={!report || loadingReport} className=" text-red-800 dark:text-red-200 bg-red-200 dark:bg-red-800">
+                                                {loadingReport ? <Loading /> : <Send />}
                                                 Gửi báo cáo
                                             </Button>
                                         </div>
@@ -188,7 +221,7 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                             </div>
                                             <div className="flex items-center">
                                                 <Clock className="h-5 w-5 mr-2" />
-                                                <span>~{data?.questions?.data_quiz?.length}phút</span>
+                                                <span>~{quiz && Math.floor(quiz?.length * 1.5)} phút</span>
                                             </div>
                                         </div>
                                         <div className="flex items-center space-x-4 mb-6">
@@ -200,16 +233,13 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                             <span className="text-white/90">4.8 ({data?.comment?.length} đánh giá)</span>
                                         </div>
                                     </div>
-                                    <div className="flex flex-col gap-3">
-                                        <Button variant="secondary" size="lg" className="text-white">
-                                            <BookOpen className="h-5 w-5 mr-2" />
-                                            Xem trước
-                                        </Button>
-                                        <Button size="lg" className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold px-8 dark:border-white/10">
-                                            <Play className="h-5 w-5 mr-2" />
-                                            Bắt đầu quiz
-                                        </Button>
-                                    </div>
+                                    <Button
+                                        onClick={() => router.push(`/quiz/${data?.slug}`)}
+                                        size="lg"
+                                        className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold px-8 dark:border-white/10">
+                                        <Play className="h-5 w-5 mr-2" />
+                                        Bắt đầu làm quiz
+                                    </Button>
                                 </div>
                             </div>
                             <div className="absolute -top-4 -right-4 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
@@ -225,40 +255,28 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                         Xem trước câu hỏi
                                     </CardTitle>
                                     <Badge variant="secondary" className="bg-blue-100 dark:bg-blue-800/50 text-blue-700 dark:text-blue-200">
-                                        3/20 câu hỏi
+                                        5/{quiz?.length} câu hỏi
                                     </Badge>
                                 </div>
                                 <p className="text-gray-600 dark:text-gray-400">Khám phá một số câu hỏi mẫu trong bài quiz này</p>
                             </CardHeader>
-                            <CardContent className="space-y-8">
-                                {quiz &&
-                                    quiz?.map((question: any, index: number) => (
+                            <CardContent className="space-y-8  max-h-[500px] overflow-y-scroll">
+                                {quizSlice &&
+                                    quizSlice?.map((question: any, index: number) => (
                                         <div key={question.id} className="relative">
                                             <div className="flex items-start space-x-4">
-                                                <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-semibold text-sm">{index + 1}</div>
+                                                <div className="flex-shrink-0 w-8 h-8 bg-blue-50  dark:bg-blue-800/50  text-blue-800 dark:text-blue-200 rounded-full flex items-center justify-center font-semibold text-sm">
+                                                    {index + 1}
+                                                </div>
                                                 <div className="flex-1">
-                                                    <h3 className="font-semibold dark:text-white/80 text-gray-800 mb-4 text-lg leading-relaxed">{question.question}</h3>
+                                                    <h3 className=" dark:text-white/80 text-gray-800 mb-4 text-lg leading-relaxed">{renderContentWithLaTeX(question.question)}</h3>
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                                         {question.answers.map((option: any, index: number) => (
                                                             <div
                                                                 key={index}
-                                                                className={`flex items-center space-x-3 p-4 border-2 rounded-xl transition-all duration-200 cursor-pointer hover:shadow-md ${
-                                                                    Number(question.correct) === index
-                                                                        ? "border-green-200 bg-green-50 hover:bg-green-100"
-                                                                        : "border-gray-200 bg-white hover:bg-gray-50 hover:border-blue-200"
-                                                                }`}>
-                                                                <span
-                                                                    className={`font-bold text-sm min-w-[24px] h-6 rounded-full flex items-center justify-center ${
-                                                                        question.correct ? "bg-green-600 text-white" : "bg-blue-600 text-white"
-                                                                    }`}>
-                                                                    {option.answers.length > 1 ? String.fromCharCode(65 + index) : ""}
-                                                                </span>
-                                                                <span className="font-medium">{option}</span>
-                                                                {question.correct && (
-                                                                    <div className="ml-auto">
-                                                                        <Badge className="bg-green-600 text-white text-xs">Đáp án đúng</Badge>
-                                                                    </div>
-                                                                )}
+                                                                className={`flex items-center space-x-3 p-4 border dark:border-white/10 rounded-md transition-all duration-200 cursor-pointer hover:shadow-md text-gray-600 dark:text-gray-300`}>
+                                                                <span className={`font-bold text-sm min-w-[24px] h-6 flex items-center justify-center`}>{String.fromCharCode(65 + index)}</span>
+                                                                <span className="">{renderContentWithLaTeX(option)}</span>
                                                             </div>
                                                         ))}
                                                     </div>
@@ -268,7 +286,7 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                     ))}
                                 <div className="text-center pt-4">
                                     <Button variant="outline" size="lg" disabled className="">
-                                        Xem tất cả 20 câu hỏi
+                                        Xem tất cả {quiz?.length} câu hỏi
                                     </Button>
                                 </div>
                             </CardContent>
@@ -280,14 +298,14 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                 <CardTitle className="flex items-center text-2xl font-bold dark:text-white/80 text-gray-800">
                                     <MessageCircle className="h-6 w-6 mr-3 text-blue-600" />
                                     Đánh giá & Bình luận
-                                    <Badge variant="secondary" className="ml-3 bg-blue-100 text-blue-700">
-                                        {comment.length} bình luận
+                                    <Badge variant="secondary" className="ml-3 bg-blue-100 text-blue-700 dark:bg-blue-800/50 dark:text-blue-200">
+                                        {comment?.length} bình luận
                                     </Badge>
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-8">
                                 {/* Add Comment */}
-                                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-100 dark:from-blue-900/50 dark:to-indigo-900/50  dark:border-white/10">
+                                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-100 dark:from-blue-900/50 dark:to-indigo-900/80  dark:border-white/10">
                                     <h3 className="font-semibold dark:text-white/80 text-gray-800 mb-4">Chia sẻ trải nghiệm của bạn</h3>
                                     <div className="space-y-4">
                                         <div>
@@ -312,8 +330,8 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                                 className="min-h-[120px]"
                                             />
                                         </div>
-                                        <Button onClick={handleSubmitComment} disabled={!review.trim() || userRating === 0} size="lg" className="dark:text-white font-semibold">
-                                            <Send className="h-4 w-4 mr-2" />
+                                        <Button onClick={handleSubmitComment} disabled={!review.trim() || userRating === 0 || loading} size="lg" className="dark:text-white font-semibold">
+                                            {loading ? <Loading /> : <Send className="h-4 w-4 mr-2" />}
                                             Gửi đánh giá
                                         </Button>
                                     </div>
@@ -323,41 +341,49 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
 
                                 {/* Existing Comments */}
                                 <div className="space-y-6">
-                                    {comment.map((comment) => (
-                                        <div
-                                            key={comment._id}
-                                            className="bg-white dark:bg-slate-700/50 dark:border-white/10 p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                                            <div className="flex space-x-4">
-                                                <Avatar className="h-12 w-12">
-                                                    <AvatarImage src={comment.user_id.profilePicture || "/placeholder.svg"} className="object-cover" />
-                                                    <AvatarFallback className="bg-blue-100 text-blue-600 font-semibold">{comment.user_id.displayName[0]}</AvatarFallback>
-                                                </Avatar>
-                                                <div className="flex-1">
-                                                    <div className="flex items-center justify-between mb-2">
-                                                        <div className="flex items-center space-x-3">
-                                                            <span className="font-semibold dark:text-white/80 text-gray-800">{comment.user_id.displayName}</span>
-                                                            <div className="flex">
-                                                                {[1, 2, 3, 4, 5].map((star) => (
-                                                                    <Star key={star} className={`h-4 w-4 ${star <= comment.rating ? "text-yellow-400 fill-current" : "text-gray-300"}`} />
-                                                                ))}
+                                    {comment &&
+                                        comment.map((comment) => (
+                                            <div
+                                                key={comment._id}
+                                                className="bg-white dark:bg-slate-700/50 dark:border-white/10 p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                                                <div className="flex space-x-4">
+                                                    <Avatar className="h-12 w-12">
+                                                        <AvatarImage src={comment.user_id.profilePicture || "/placeholder.svg"} className="object-cover" />
+                                                        <AvatarFallback className="bg-blue-100 text-blue-600 dark:bg-blue-800/50 dark:text-blue-200 font-semibold">
+                                                            {comment?.user_id?.displayName
+                                                                ? comment?.user_id?.displayName
+                                                                      ?.split("")
+                                                                      .map((n) => n[0])
+                                                                      .join("")
+                                                                : "N/A"}
+                                                        </AvatarFallback>
+                                                    </Avatar>
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center justify-between mb-2">
+                                                            <div className="flex items-center space-x-3">
+                                                                <span className="font-semibold dark:text-white/80 text-gray-800">{comment.user_id.displayName}</span>
+                                                                <div className="flex">
+                                                                    {[1, 2, 3, 4, 5].map((star) => (
+                                                                        <Star key={star} className={`h-4 w-4 ${star <= comment.rating ? "text-yellow-400 fill-current" : "text-gray-300"}`} />
+                                                                    ))}
+                                                                </div>
                                                             </div>
+                                                            <span className="text-sm text-gray-500 dark:text-gray-400">{comment.created_at && handleCompareDate(comment.created_at)}</span>
                                                         </div>
-                                                        <span className="text-sm text-gray-500 dark:text-gray-400">{comment.created_at && handleCompareDate(comment.created_at)}</span>
-                                                    </div>
-                                                    <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">{comment.review}</p>
-                                                    <div className="flex items-center space-x-4">
-                                                        <Button variant="ghost" size="sm" className={`text-gray-500 hover:text-blue-600 ${comment.helpful ? "text-blue-600" : ""}`}>
-                                                            <ThumbsUp className={`h-4 w-4 mr-2 ${comment.helpful ? "fill-current" : ""}`} />
-                                                            {comment.helpful > 0 ? comment.helpful : "Hữu ích"}
-                                                        </Button>
-                                                        {/* <Button variant="ghost" size="sm" className="text-gray-500 hover:text-blue-600">
+                                                        <p className="text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">{comment.review}</p>
+                                                        <div className="flex items-center space-x-4">
+                                                            <Button variant="ghost" size="sm" className={`text-gray-500 hover:text-blue-600 ${comment.helpful ? "text-blue-600" : ""}`}>
+                                                                <ThumbsUp className={`h-4 w-4 mr-2 ${comment.helpful ? "fill-current" : ""}`} />
+                                                                {comment.helpful > 0 ? comment.helpful : "Hữu ích"}
+                                                            </Button>
+                                                            {/* <Button variant="ghost" size="sm" className="text-gray-500 hover:text-blue-600">
                                                             Trả lời
                                                         </Button> */}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
                                 </div>
                             </CardContent>
                         </Card>
@@ -371,15 +397,21 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                 <CardTitle className="text-lg font-bold dark:text-white/80 text-gray-800">Tác giả</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <div className="flex items-center space-x-4 mb-4">
+                                <div className="flex items-center space-x-4 mb-4" onClick={() => router.push(`/profile/${data?.uid._id}`)}>
                                     <Avatar className="h-12 w-12">
-                                        <AvatarImage src="/placeholder.svg?height=48&width=48" />
-                                        <AvatarFallback className="bg-blue-100 text-blue-600 dark:bg-blue-800/50 dark:text-blue-200 font-semibold">TA</AvatarFallback>
+                                        <AvatarImage src={data?.uid?.profilePicture} className="object-cover" />
+                                        <AvatarFallback className="bg-blue-100 text-blue-600 dark:bg-blue-800/50 dark:text-blue-200 font-semibold">
+                                            {data?.uid.displayName
+                                                ? data?.uid.displayName
+                                                      .split(" ")
+                                                      .map((n) => n[0])
+                                                      .join("")
+                                                : "N/A"}
+                                        </AvatarFallback>
                                     </Avatar>
                                     <div>
-                                        <div className="font-semibold dark:text-white/80 text-gray-800">Trọng An</div>
-                                        <div className="text-sm text-gray-500">Python Developer</div>
-                                        <div className="text-xs text-gray-400">Tham gia 3 tháng trước</div>
+                                        <div className="font-semibold dark:text-white/80 text-gray-800">{data?.uid?.displayName}</div>
+                                        <div className="text-xs text-gray-400">Tham gia {data?.uid && handleCompareDate(data?.uid?.created_at)}</div>
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-2 gap-4 text-center">
@@ -392,7 +424,7 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                         <div className="text-xs ">Người theo dõi</div>
                                     </div>
                                 </div>
-                                <Button variant="outline" className="w-full mt-4 hover:bg-blue-50 hover:border-blue-200">
+                                <Button variant="outline" className="w-full mt-4 hover:bg-blue-50 hidden hover:border-blue-200">
                                     Theo dõi
                                 </Button>
                             </CardContent>
@@ -410,15 +442,15 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                 <div className="space-y-3">
                                     <div className="flex justify-between items-center">
                                         <span className="text-gray-600 dark:text-gray-400">Số câu hỏi:</span>
-                                        <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-800/50 dark:text-blue-200">20 câu</Badge>
+                                        <Badge className="bg-blue-100 text-blue-700 dark:bg-blue-800/50 dark:text-blue-200">{quiz?.length} câu</Badge>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="text-gray-600 dark:text-gray-400">Lượt xem:</span>
-                                        <span className="font-semibold dark:text-white/80 text-gray-800">5,678</span>
+                                        <span className="font-semibold dark:text-white/80 text-gray-800">{data?.view}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="text-gray-600 dark:text-gray-400">Lượt làm:</span>
-                                        <span className="font-semibold dark:text-white/80 text-gray-800">1,234</span>
+                                        <span className="font-semibold dark:text-white/80 text-gray-800">{data?.noa}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <span className="text-gray-600 dark:text-gray-400">Tỷ lệ hoàn thành:</span>
@@ -428,7 +460,7 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                         <div className="flex justify-between text-sm">
                                             <span className="text-gray-600 dark:text-gray-400">Độ khó:</span>
                                             <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-800/50 dark:text-green-200">
-                                                Dễ
+                                                {data?.difficulty || "Dễ"}
                                             </Badge>
                                         </div>
                                         <Progress value={25} className="h-2" />
@@ -450,7 +482,7 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                 ].map((item, index) => (
                                     <div
                                         key={index}
-                                        className="flex space-x-3 p-4 border border-gray-100 rounded-xl hover:bg-gray-50 cursor-pointer transition-all hover:shadow-md group dark:border-white/10">
+                                        className="flex space-x-3 p-4 border border-gray-100 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer transition-all hover:shadow-md group dark:border-white/10">
                                         <div className={`w-12 h-12 bg-gradient-to-br ${item.color} rounded-lg flex items-center justify-center text-white text-sm font-bold shadow-md`}>
                                             {item.icon}
                                         </div>

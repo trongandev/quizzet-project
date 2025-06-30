@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import "@/app/globals.css";
 import CTaiLieu from "@/components/CTaiLieu";
-import CQuiz from "./CQuiz";
+import CQuiz from "./quiz/CQuiz";
 import { IListFlashcard, IQuiz, ISO } from "@/types/type";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, BookOpen, Brain, Chrome, FileText, Github, Info, Save, Star, TrendingUp, Users, Zap } from "lucide-react";

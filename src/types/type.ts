@@ -98,6 +98,7 @@ interface IQuiz {
     img: string;
     noa: number;
     view: number;
+    difficulty: string;
     date: Date;
     status: boolean;
     questions: IQuestion;

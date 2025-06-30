@@ -21,9 +21,10 @@ export default function QuizDetail({ params }: { params: any }) {
         const fetchData = async () => {
             const res = await GET_API_WITHOUT_COOKIE(`/quiz/${params.slug}`);
             setComment(res?.quiz?.comment);
-            setQuiz(res?.quiz?.questions?.data_quiz.slice(0, 6));
+            setQuiz(res?.quiz?.questions?.data_quiz);
             delete res?.quiz?.questions;
             setData(res.quiz);
+            console.log(res?.quiz?.comment);
         };
         fetchData();
     }, []);

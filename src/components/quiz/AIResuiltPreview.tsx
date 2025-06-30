@@ -12,8 +12,15 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Edit, Trash2, Plus, CheckCircle, Bot } from "lucide-react";
+import { renderContentWithLaTeX } from "@/lib/renderKaTEX";
+interface QuizQuestion {
+    title: string;
+    subject: string;
+    content: string;
+    questions: Quiz[];
+}
 
-interface Question {
+interface Quiz {
     id: string;
     type: "multiple-choice" | "true-false" | "short-answer";
     question: string;
@@ -25,16 +32,14 @@ interface Question {
 interface AIResultPreviewProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    title_quiz: string;
-    desc: string;
-    quiz: Question[];
+    quiz: QuizQuestion;
     onQuizUpdate: any;
 }
 
-export function AIResultPreview({ open, onOpenChange, title_quiz, desc, quiz, onQuizUpdate }: AIResultPreviewProps) {
-    const [editingQuestion, setEditingQuestion] = useState<Question | null>(null);
+export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate }: AIResultPreviewProps) {
+    const [editingQuestion, setEditingQuestion] = useState<Quiz | null>(null);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-    const [newQuestion, setNewQuestion] = useState<Question>({
+    const [newQuestion, setNewQuestion] = useState<Quiz>({
         id: "",
         type: "multiple-choice",
         question: "",
@@ -43,7 +48,7 @@ export function AIResultPreview({ open, onOpenChange, title_quiz, desc, quiz, on
         points: 1,
     });
 
-    const handleEditQuestion = (question: Question) => {
+    const handleEditQuestion = (question: Quiz) => {
         setNewQuestion({ ...question });
         setEditingQuestion(question);
         setIsEditDialogOpen(true);
@@ -65,7 +70,7 @@ export function AIResultPreview({ open, onOpenChange, title_quiz, desc, quiz, on
     const handleSaveQuestion = () => {
         if (!newQuestion.question.trim()) return;
 
-        const updatedQuestions = editingQuestion ? quiz.map((q) => (q.id === editingQuestion.id ? newQuestion : q)) : [...quiz, newQuestion];
+        const updatedQuestions = editingQuestion ? quiz.questions.map((q) => (q.id === editingQuestion.id ? newQuestion : q)) : [...quiz.questions, newQuestion];
 
         onQuizUpdate({ ...quiz, updatedQuestions });
         setIsEditDialogOpen(false);
@@ -73,11 +78,11 @@ export function AIResultPreview({ open, onOpenChange, title_quiz, desc, quiz, on
     };
 
     const handleDeleteQuestion = (questionId: string) => {
-        const updatedQuestions = quiz.filter((q) => q.id !== questionId);
+        const updatedQuestions = quiz.questions.filter((q) => q.id !== questionId);
         onQuizUpdate({ ...quiz, updatedQuestions });
     };
 
-    const handleQuestionTypeChange = (type: Question["type"]) => {
+    const handleQuestionTypeChange = (type: Quiz["type"]) => {
         setNewQuestion((prev) => {
             const updated = { ...prev, type, correct: "" };
 
@@ -234,8 +239,8 @@ export function AIResultPreview({ open, onOpenChange, title_quiz, desc, quiz, on
                         <Alert className="border-green-200 bg-green-50 dark:bg-green-800/20 ">
                             <AlertDescription className="text-green-800 dark:text-green-200 flex items-center gap-3">
                                 <CheckCircle className="h-4 w-4 text-green-600" />
-                                <strong>Thành công!</strong> AI đã tạo {quiz.length} câu hỏi cho quiz &quot;{title_quiz}&quot;, mô tả &quot;{desc}&quot;. Bạn có thể xem trước, chỉnh sửa hoặc thêm câu
-                                hỏi mới.
+                                <strong>Thành công!</strong> AI đã tạo {quiz?.questions?.length} câu hỏi cho quiz &quot;{quiz?.title}&quot;, mô tả &quot;{quiz?.content}&quot;. Bạn có thể xem trước,
+                                chỉnh sửa hoặc thêm câu hỏi mới.
                             </AlertDescription>
                         </Alert>
 
@@ -243,7 +248,7 @@ export function AIResultPreview({ open, onOpenChange, title_quiz, desc, quiz, on
                         <div className="flex justify-between items-center">
                             <div className="flex items-center space-x-2">
                                 <h3 className="text-lg font-semibold">Danh sách câu hỏi</h3>
-                                <Badge variant="secondary">{quiz.length} câu</Badge>
+                                <Badge variant="secondary">{quiz.questions.length} câu</Badge>
                             </div>
                             <Button onClick={handleAddQuestion} className="dark:text-white flex items-center space-x-2">
                                 <Plus className="h-4 w-4" />
@@ -253,13 +258,13 @@ export function AIResultPreview({ open, onOpenChange, title_quiz, desc, quiz, on
 
                         {/* List */}
                         <div className="space-y-4">
-                            {quiz.map((question, index) => (
+                            {quiz.questions.map((question, index) => (
                                 <Card key={question.id} className=" border-l-4 border-l-purple-500 dark:border-l-purple-700  hover:shadow-lg transition-shadow duration-200">
                                     <CardHeader className="pb-3">
                                         <div className="flex items-start justify-between">
                                             <div className="flex-1">
                                                 <CardTitle className="text-base font-medium">
-                                                    Câu {index + 1}: {question.question}
+                                                    Câu {index + 1}: {renderContentWithLaTeX(question.question)}
                                                 </CardTitle>
                                                 <div className="flex items-center space-x-2 mt-2">
                                                     {/* <Badge variant="secondary">{getQuestionTypeLabel(question.type)}</Badge> */}
@@ -289,7 +294,7 @@ export function AIResultPreview({ open, onOpenChange, title_quiz, desc, quiz, on
                                                                 ? "bg-green-50 text-green-700 border border-green-200 dark:bg-green-900/50 dark:text-green-200 dark:border-green-700"
                                                                 : "bg-gray-50 dark:bg-gray-900/50 text-gray-800 dark:text-gray-200"
                                                         }`}>
-                                                        {String.fromCharCode(65 + optIndex)}. {option}
+                                                        {String.fromCharCode(65 + optIndex)}. {renderContentWithLaTeX(option)}
                                                         {option === question.correct && <span className="ml-2 text-xs font-medium">(Đáp án đúng)</span>}
                                                     </div>
                                                 ))}

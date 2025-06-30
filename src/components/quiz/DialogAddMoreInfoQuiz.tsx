@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "../ui/input";
-import { LinkIcon, Save, Upload } from "lucide-react";
+import { FileText, LinkIcon, Save, Upload, X } from "lucide-react";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import Image from "next/image";
@@ -11,7 +11,16 @@ import Cookies from "js-cookie";
 import { POST_API, POST_API_CLOUD } from "@/lib/fetchAPI";
 import { useRouter } from "next/navigation";
 import Loading from "../ui/loading";
+import axios from "axios";
+import { Textarea } from "../ui/textarea";
 interface QuizQuestion {
+    title: string;
+    subject: string;
+    content: string;
+    questions: Quiz[];
+}
+
+interface Quiz {
     id: string;
     type: "multiple-choice" | "true-false" | "short-answer";
     question: string;
@@ -19,28 +28,23 @@ interface QuizQuestion {
     correct: string;
     points: number;
 }
+
 interface Props {
     children: React.ReactNode;
-    generatedQuiz?: QuizQuestion[];
+    generatedQuiz?: QuizQuestion;
 }
 
 export default function DialogAddMoreInfoQuiz({ children, generatedQuiz }: Props) {
     const [open, setOpen] = React.useState(false);
-    const [tempQuiz, setTempQuiz] = useState({ title: "", subject: "", content: "", img: "" });
+    const [tempQuiz, setTempQuiz] = useState({ title: generatedQuiz?.title, subject: generatedQuiz?.subject, content: generatedQuiz?.content });
     const [loading, setLoading] = useState(false);
     const [avatarInputType, setAvatarInputType] = useState<"file" | "url">("file");
     const token = Cookies.get("token") || "";
     const router = useRouter();
-    const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                setTempQuiz((prev) => ({ ...prev, img: e.target?.result as string }));
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+    const [isDragOver, setIsDragOver] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
     const handleSetValueTempQuiz = (field: keyof typeof tempQuiz, value: string) => {
         setTempQuiz((prev) => ({
             ...prev,
@@ -52,33 +56,29 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz }: Props
             setLoading(true);
             e.preventDefault();
             // nếu nó không bắt đầu là http hoặc https thì upload hình lên cloudinary
-            let imageUrl = tempQuiz.img;
-            if (!tempQuiz.img) {
+            let imageUrl = "";
+            if (!selectedFile) {
                 toast.warning("Vui lòng tải lên hình ảnh trước khi xuất bản", { duration: 3000, position: "top-center" });
                 return;
             }
-            if (tempQuiz.img && tempQuiz.img.startsWith("data:image")) {
-                toast.warning("Đang tải hình ảnh lên server", { duration: 2000, position: "top-center" });
-                const formData = new FormData();
 
-                // Convert base64 to blob
-                const response = await fetch(tempQuiz.img);
-                const blob = await response.blob();
+            toast.loading("Đang tải hình ảnh lên server", { duration: 2000, position: "top-center", id: "upload-image" });
+            const formData = new FormData();
 
-                // Append blob thay vì base64 string
-                formData.append("image", blob, "image.jpg");
-
-                const uploadResponse = await POST_API_CLOUD("/upload", formData, token);
-                const data = await uploadResponse?.json();
-                imageUrl = data.originalUrl;
-                toast.warning("Đang tạo bài quiz", { duration: 3000, position: "top-center" });
-            }
+            formData.append("image", selectedFile);
+            const uploadResponse = await axios.post(`${process.env.API_ENDPOINT}/upload`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            imageUrl = uploadResponse?.data?.url;
             const newQuiz = {
                 title: tempQuiz.title,
                 subject: tempQuiz.subject,
                 content: tempQuiz.content,
                 img: imageUrl,
-                questions: generatedQuiz,
+                questions: generatedQuiz?.questions,
             };
 
             const req = await POST_API("/quiz", newQuiz, "POST", token);
@@ -87,6 +87,7 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz }: Props
                 toast.success("Đã lưu và xuất bản bài quiz", {
                     description: "Chúng tôi đang xem xét bài quiz của bạn, chờ cho đến khi được phê duyệt trước khi nó xuất hiện công khai.",
                     position: "top-center",
+                    id: "upload-image",
                     duration: 10000,
                     action: {
                         label: "Xem bài quiz",
@@ -103,25 +104,139 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz }: Props
                 description: error instanceof Error ? error.message : "Lỗi không xác định",
                 position: "top-center",
                 duration: 5000,
+                id: "upload-image",
             });
         } finally {
             setLoading(false);
         }
     };
+
+    const handleFileSelect = (file: File) => {
+        // Validate file type
+        const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/gif"];
+        if (!allowedTypes.includes(file.type)) {
+            alert("Please select a PNG, JPG, or GIF file.");
+            return;
+        }
+
+        // Validate file size (3MB)
+        const maxSize = 3 * 1024 * 1024; // 10MB in bytes
+        if (file.size > maxSize) {
+            alert("Kích thước tập tin phải nhỏ hơn 3MB.");
+            return;
+        }
+
+        setSelectedFile(file);
+    };
+
+    const handlePaste = (event: any) => {
+        const items = event.clipboardData.items;
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].type.includes("image")) {
+                const blob = items[i].getAsFile();
+                setSelectedFile(blob);
+                break;
+            }
+        }
+    };
+
+    const handleButtonClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            handleFileSelect(file);
+            const reader = new FileReader();
+            reader.onload = () => {
+                setIsDragOver(false); // Reset drag over state
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleDragOver = (event: React.DragEvent) => {
+        event.preventDefault();
+        setIsDragOver(true);
+    };
+
+    const handleDragLeave = (event: React.DragEvent) => {
+        event.preventDefault();
+        setIsDragOver(false);
+    };
+
+    const handleDrop = (event: React.DragEvent) => {
+        event.preventDefault();
+        setIsDragOver(false);
+
+        const file = event.dataTransfer.files?.[0];
+        if (file) {
+            handleFileSelect(file);
+        }
+    };
+
+    const removeFile = () => {
+        setSelectedFile(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    };
+
+    const formatFileSize = (bytes: number) => {
+        if (bytes === 0) return "0 Bytes";
+        const k = 1024;
+        const sizes = ["Bytes", "KB", "MB", "GB"];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+    };
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger>{children}</DialogTrigger>
             <DialogContent>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} onPaste={handlePaste} autoFocus>
                     <DialogHeader>
                         <DialogTitle>Nhập thêm thông tin bài quiz </DialogTitle>
-                        <DialogDescription>Nhập thông tin một cách rõ ràng giúp người khác biết bài quiz bạn thuộc chủ đề nào, có phù hợp với mọi người không</DialogDescription>
                     </DialogHeader>
                     <div className="grid gap-4 my-5">
-                        <div className={`${tempQuiz.img ? "h-52" : "h-0"}  w-full relative`}>
-                            <Image src={tempQuiz.img} fill alt="" className="absolute w-full h-full rounded-md object-cover"></Image>
+                        <div className="">
+                            <div
+                                className={`cursor-pointer hover:border-primary/50 hover:bg-primary/5 border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                                    isDragOver ? "border-primary bg-primary/5" : "border-muted-foreground/25"
+                                }`}
+                                onDragOver={handleDragOver}
+                                onDragLeave={handleDragLeave}
+                                onClick={handleButtonClick}
+                                onDrop={handleDrop}>
+                                <div className="flex flex-col items-center space-y-2">
+                                    <div className="p-3 bg-muted rounded-full">
+                                        <Upload className="h-6 w-6 text-muted-foreground" />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <p className="text-sm font-medium">Tải lên tệp hoặc kéo và thả hoặc ctrl + v</p>
+                                        <p className="text-xs text-muted-foreground">PNG, JPG, GIF tới 3MB</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {selectedFile && (
+                                <div className="mt-3 flex items-center justify-between p-3 bg-muted rounded-lg">
+                                    <div className="flex items-center space-x-3">
+                                        <FileText className="h-4 w-4 text-muted-foreground" />
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-sm font-medium truncate max-w-[365px]">{selectedFile.name}</p>
+                                            <p className="text-xs text-muted-foreground">{formatFileSize(selectedFile.size)}</p>
+                                        </div>
+                                    </div>
+                                    <Button variant="ghost" size="sm" onClick={removeFile} className="h-8 w-8 p-0">
+                                        <X className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                            )}
+
+                            <input ref={fileInputRef} type="file" accept=".png,.jpg,.jpeg,.gif" onChange={handleFileChange} className="hidden" />
                         </div>
-                        <Tabs value={avatarInputType} onValueChange={(value) => setAvatarInputType(value as "file" | "url")}>
+                        {/* <Tabs value={avatarInputType} onValueChange={(value) => setAvatarInputType(value as "file" | "url")}>
                             <TabsList className="grid w-full grid-cols-2">
                                 <TabsTrigger value="file">
                                     <Upload className="w-4 h-4 mr-2" />
@@ -134,20 +249,31 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz }: Props
                             </TabsList>
 
                             <TabsContent value="file" className="space-y-2">
-                                <Input type="file" accept="image/*" onChange={handleFileUpload} className="cursor-pointer" />
+                                
                             </TabsContent>
 
                             <TabsContent value="url" className="space-y-2">
                                 <Input placeholder="Nhập URL hình ảnh" value={tempQuiz.img.startsWith("http") ? tempQuiz.img : ""} onChange={(e) => handleSetValueTempQuiz("img", e.target.value)} />
+                                <div className={`${tempQuiz.img ? "h-52" : "h-0"}  w-full relative`}>
+                                    <Image src={tempQuiz.img} fill alt="" className="absolute w-full h-full rounded-md object-cover"></Image>
+                                </div>
                             </TabsContent>
-                        </Tabs>{" "}
+                        </Tabs>{" "} */}
                         <div className="grid gap-3">
                             <Label htmlFor="name-1">Tên bài quiz</Label>
                             <Input id="name-1" name="name" placeholder="Nhập tên bài quiz" value={tempQuiz.title} onChange={(e) => handleSetValueTempQuiz("title", e.target.value)} required />
                         </div>
                         <div className="grid gap-3">
                             <Label htmlFor="username-1">Nội dung</Label>
-                            <Input id="username-1" name="username" placeholder="Nhập nội dung" value={tempQuiz.content} onChange={(e) => handleSetValueTempQuiz("content", e.target.value)} required />
+                            <Textarea
+                                className="h-12"
+                                id="username-1"
+                                name="username"
+                                placeholder="Nhập nội dung"
+                                value={tempQuiz.content}
+                                onChange={(e) => handleSetValueTempQuiz("content", e.target.value)}
+                                required
+                            />
                         </div>
                         <div className="grid gap-3">
                             <Label htmlFor="subject">Môn học</Label>

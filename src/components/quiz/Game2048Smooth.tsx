@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { RotateCcw, Trophy, HelpCircle, X, Target, Scale } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog";
 
 interface Tile {
     id: string;
@@ -435,7 +436,7 @@ export function Game2048Smooth({ onClose }: Game2048Props) {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center bg-slate-800/50 rounded-3xl dark:border-white/10 border-2 border-transparent p-4">
+        <div className="flex flex-col items-center justify-center md:bg-slate-800/50 rounded-md md:rounded-3xl dark:border-white/10 border-2 border-transparent md:p-4">
             <style jsx>{`
                 .tile {
                     position: absolute;
@@ -507,45 +508,34 @@ export function Game2048Smooth({ onClose }: Game2048Props) {
                 }
             `}</style>
 
-            <Card className="w-full max-w-md mx-auto border-4 border-transparent dark:border-white/10">
-                <CardContent className="p-6">
-                    {/* Header */}
-                    <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-2">
-                            <Target className="w-6 h-6 text-purple-600" />
-                            <h1 className="text-2xl font-bold text-purple-600">2048</h1>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <Button variant="ghost" size="sm" onClick={() => setShowInstructions(!showInstructions)}>
-                                <HelpCircle className="w-4 h-4" />
-                            </Button>
-                            {onClose && (
-                                <Button variant="ghost" size="sm" onClick={onClose}>
-                                    <X className="w-4 h-4" />
-                                </Button>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Instructions */}
-                    {showInstructions && (
-                        <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-800 dark:text-blue-300  rounded-lg text-sm">
-                            <p className="font-semibold mb-2">Cách chơi:</p>
-                            <ul className="list-disc list-inside space-y-1 text-gray-700 dark:text-white/80">
-                                <li>Sử dụng phím mũi tên để di chuyển các ô</li>
-                                <li>Trên mobile: vuốt để di chuyển</li>
-                                <li>Hai ô có cùng số sẽ gộp lại khi chạm nhau</li>
-                                <li>Mục tiêu: tạo ô số 2048!</li>
-                            </ul>
-                        </div>
-                    )}
-
+            <Card className="max-w-xs sm:max-w-lg mx-auto border-0 md:border md:border-4 border-transparent dark:border-white/10">
+                <CardContent className="p-1 md:p-6">
                     {/* Score */}
                     <div className="flex justify-between mb-4">
                         <Badge variant="secondary" className="text-sm">
                             <Trophy className="w-4 h-4 mr-1" />
                             Điểm: {score}
                         </Badge>
+                        <Dialog>
+                            <DialogTrigger>
+                                {" "}
+                                <Button variant="ghost" size="sm" onClick={() => setShowInstructions(!showInstructions)}>
+                                    <HelpCircle className="w-4 h-4" />
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent className="max-w-xs sm:max-w-lg">
+                                <div className="mb-4 p-4 dark:text-blue-300  rounded-lg text-sm">
+                                    <p className="font-semibold mb-2">Cách chơi:</p>
+                                    <ul className="list-disc list-inside space-y-1 text-gray-700 dark:text-white/80">
+                                        <li>Sử dụng phím mũi tên để di chuyển các ô</li>
+                                        <li>Trên mobile: vuốt để di chuyển</li>
+                                        <li>Hai ô có cùng số sẽ gộp lại khi chạm nhau</li>
+                                        <li>Mục tiêu: tạo ô số 2048!</li>
+                                    </ul>
+                                </div>
+                            </DialogContent>
+                        </Dialog>
+
                         <Badge variant="outline" className="text-sm">
                             <Scale className="w-4 h-4 mr-1" />
                             Cao nhất: {bestScore}
@@ -591,7 +581,7 @@ export function Game2048Smooth({ onClose }: Game2048Props) {
                     {/* Controls */}
                     <div className="flex justify-center">
                         <Button onClick={resetGame} className="bg-purple-600 hover:bg-purple-700 text-white" disabled={animating}>
-                            <RotateCcw className="w-4 h-4 mr-2" />
+                            <RotateCcw className="w-4 h-4" />
                             Chơi lại
                         </Button>
                     </div>

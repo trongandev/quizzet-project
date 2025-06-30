@@ -37,9 +37,9 @@ export default function PopperEmoji({ children, open, setOpen, messageId, handle
                         <button
                             key={index}
                             onClick={() => handleEmojiClick(emoji)}
-                            className="hover:bg-white/10 rounded-full flex items-center justify-center py-2 transition-all duration-300"
+                            className="hover:bg-white/10 rounded-full flex items-center justify-center py-2 transition-all duration-300 group"
                             type="button">
-                            <Image src={emoji} alt="" width={25} height={20} />
+                            <Image src={emoji} alt="" width={25} height={20} className="group-hover:scale-125 transition-all duration-200" />
                         </button>
                     ))}
                 </div>

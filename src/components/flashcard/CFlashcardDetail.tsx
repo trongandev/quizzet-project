@@ -98,13 +98,15 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
     const router = useRouter();
     const { user } = useUser() || {};
     const sortFlashcards = (flashcards: any) => {
-        return flashcards?.sort(({ a, b }: any) => {
+        return flashcards?.sort((a: any, b: any) => {
             return new Date(b?.created_at).getTime() - new Date(a?.created_at).getTime();
         });
     };
 
-    const [filteredFlashcards, setFilteredFlashcards] = useState<Flashcard[]>(initialData?.flashcards ? sortFlashcards(initialData.flashcards) : undefined);
-    const [listFlashcard, setListFlashcard] = useState<IListFlashcard>(initialData); // danh sách flashcard
+    const [filteredFlashcards, setFilteredFlashcards] = useState<Flashcard[]>(() => {
+        return initialData?.flashcards ? sortFlashcards(initialData.flashcards) : [];
+    });
+    const [listFlashcard, setListFlashcard] = useState<IListFlashcard>(initialData);
     const [editListFlashcard, setEditListFlashcard] = useState<IEditFlashcard | undefined>(
         initialData
             ? {
@@ -115,16 +117,31 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                   public: initialData.public,
               }
             : undefined
-    ); // danh sách flashcard    // ✅ Use optimized hook instead of useEffect
-    const { data: fetchedData, loading: fetchLoading, error: fetchError } = useFlashcard(id_flashcard, initialData);
+    );
 
-    // Update local state when optimized data changes
+    const { data: fetchedData, loading: fetchLoading } = useFlashcard(id_flashcard, initialData);
+
     useEffect(() => {
-        if (fetchedData && !listFlashcard) {
+        if (fetchedData && fetchedData !== initialData) {
+            console.log("Updating data from fetch:", fetchedData);
+
             const sortedFlashcards = sortFlashcards(fetchedData.flashcards);
             setFlashcard(sortedFlashcards);
-            setFilteredFlashcards(sortedFlashcards);
             setListFlashcard(fetchedData);
+
+            setFilteredFlashcards((prevFiltered) => {
+                const initialLength = initialData?.flashcards?.length || 0;
+                const hasLocalChanges = prevFiltered.length > initialLength;
+
+                if (hasLocalChanges) {
+                    console.log("Preserving local changes");
+                    return prevFiltered; // Giữ nguyên local changes
+                } else {
+                    console.log("Updating with fetched data");
+                    return sortedFlashcards; // Update với data mới
+                }
+            });
+
             setEditListFlashcard({
                 _id: fetchedData._id,
                 title: fetchedData.title,
@@ -133,7 +150,18 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                 public: fetchedData.public,
             });
         }
-    }, [fetchedData, listFlashcard]);
+    }, [fetchedData, initialData]);
+
+    const handleAddNewFlashcard = useCallback((newFlashcard: Flashcard) => {
+        console.log("Adding new flashcard:", newFlashcard);
+
+        setFilteredFlashcards((prev) => [newFlashcard, ...prev]);
+
+        setListFlashcard((prev) => ({
+            ...prev,
+            flashcards: [newFlashcard, ...(prev?.flashcards || [])],
+        }));
+    }, []);
 
     const summaryUsers = [
         { label: "Tất cả thẻ", filter: "all", value: listFlashcard?.flashcards?.length || 0, icon: <GalleryVerticalEnd />, color: "indigo" },
@@ -274,26 +302,32 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
         [disableAudio, listFlashcard?.language, tts, selectedVoice]
     );
 
-    const handleDelete = async (id: string) => {
-        try {
-            setLoadingConfirm(true);
-            const req = await POST_API(`/flashcards/${id}`, { list_flashcard_id: listFlashcard?._id }, "DELETE", token);
-            const res = await req?.json();
-            if (res.ok) {
-                setFilteredFlashcards((prev) => prev.filter((item) => item._id !== id));
+    const handleDelete = useCallback(
+        async (id: string) => {
+            try {
+                setLoadingConfirm(true);
+                const req = await POST_API(`/flashcards/${id}`, { list_flashcard_id: listFlashcard?._id }, "DELETE", token);
+                const res = await req?.json();
+
+                if (res.ok) {
+                    setFilteredFlashcards((prev) => prev.filter((item) => item._id !== id));
+
+                    setListFlashcard((prev) => ({
+                        ...prev,
+                        flashcards: prev?.flashcards?.filter((item) => item._id !== id) || [],
+                    }));
+
+                    toast.success("Xóa flashcard thành công");
+                }
+            } catch (error) {
+                console.error("Error deleting flashcard:", error);
+                toast.error("Xóa flashcard không thành công");
+            } finally {
+                setLoadingConfirm(false);
             }
-            setLoadingConfirm(false);
-        } catch (error) {
-            console.error("Error deleting flashcard:", error);
-            toast.error("Xoá flashcard không thành công", {
-                description: error instanceof Error ? error.message : "Lỗi không xác định",
-                duration: 10000,
-                position: "top-center",
-            });
-        } finally {
-            setLoadingConfirm(false);
-        }
-    };
+        },
+        [listFlashcard?._id, token]
+    );
 
     const handleFilter = (filter: string) => {
         if (!listFlashcard?.flashcards) return;
@@ -316,6 +350,26 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
 
         setFilteredFlashcards(sortFlashcards(filtered));
     };
+
+    if (fetchLoading && !initialData) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <Loading />
+            </div>
+        );
+    }
+
+    if (!listFlashcard && !fetchLoading) {
+        return (
+            <div className="flex justify-center items-center h-screen flex-col gap-3">
+                <AlertCircle size={50} className="text-red-500" />
+                <p>Không thể tải dữ liệu flashcard</p>
+                <Button onClick={() => router.back()}>
+                    <ArrowLeft /> Quay lại
+                </Button>
+            </div>
+        );
+    }
 
     return (
         <div className="w-full space-y-5 relative z-[10] dark:bg-slate-700 bg-gray-200">
