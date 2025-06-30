@@ -10,7 +10,7 @@ import { IDataQuiz, IHistory } from "@/types/type";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Loading from "@/components/ui/loading";
-import { renderContentWithLaTeX } from "@/lib/renderKaTEX";
+import { renderContentWithLaTeX, renderHightlightedContent } from "@/components/renderCode";
 // Constants
 const AI_MODEL = "gemini-2.5-flash";
 
@@ -84,7 +84,8 @@ export default function CAnswer({ history, question }: CAnswerProps) {
             setExplain(null);
             return;
         }
-        handleExplainAnswer(question[questionId], questionId);
+        console.log("Fetching explanation for question ID:", question[questionId]);
+        handleExplainAnswer(question[questionId - 1], questionId);
     };
 
     // Loading state
@@ -113,11 +114,11 @@ export default function CAnswer({ history, question }: CAnswerProps) {
                                 <CardHeader>
                                     <div className="flex items-start justify-between">
                                         <CardTitle className="text-lg">
-                                            Câu {question.id}: {renderContentWithLaTeX(question.question)}
+                                            Câu {question.id}: {renderHightlightedContent(question.question)}
                                         </CardTitle>
                                         <Badge
                                             variant={history.userAnswers[question.id] != null ? (history.userAnswers[question.id] == question.correct ? "default" : "destructive") : "outline"}
-                                            className="ml-4">
+                                            className="text-white ml-4">
                                             {history.userAnswers[question.id] != null ? (history.userAnswers[question.id] == question.correct ? "Đúng" : "Sai") : "Chưa trả lời"}
                                         </Badge>
                                     </div>
