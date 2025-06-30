@@ -12,7 +12,8 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Edit, Trash2, Plus, CheckCircle, Bot } from "lucide-react";
-import { renderContentWithLaTeX } from "@/lib/renderKaTEX";
+import { renderContentWithLaTeX, renderHightlightedContent } from "../renderCode";
+
 interface QuizQuestion {
     title: string;
     subject: string;
@@ -127,7 +128,7 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate }: AIRe
                     placeholder="Nhập câu hỏi..."
                     value={newQuestion.question}
                     onChange={(e) => setNewQuestion((prev) => ({ ...prev, question: e.target.value }))}
-                    className="mt-1"
+                    className="mt-1 h-40"
                 />
             </div>
 
@@ -264,7 +265,7 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate }: AIRe
                                         <div className="flex items-start justify-between">
                                             <div className="flex-1">
                                                 <CardTitle className="text-base font-medium">
-                                                    Câu {index + 1}: {renderContentWithLaTeX(question.question)}
+                                                    Câu {index + 1}: {renderHightlightedContent(question.question)}
                                                 </CardTitle>
                                                 <div className="flex items-center space-x-2 mt-2">
                                                     {/* <Badge variant="secondary">{getQuestionTypeLabel(question.type)}</Badge> */}

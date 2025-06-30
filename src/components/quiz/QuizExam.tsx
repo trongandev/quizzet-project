@@ -15,7 +15,7 @@ import handleCompareDate from "@/lib/CompareDate";
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Loading from "../ui/loading";
-import { renderContentWithLaTeX } from "@/lib/renderKaTEX";
+import { renderContentWithLaTeX, renderHightlightedContent } from "../renderCode";
 export default function QuizExam(QuizData: IQuiz) {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -291,8 +291,8 @@ export default function QuizExam(QuizData: IQuiz) {
                     <div className="lg:col-span-3">
                         <Card className="shadow-lg dark:bg-slate-800/50 dark:border-white/10">
                             <CardHeader>
-                                <CardTitle className="text-lg font-semibold text-blue-600 dark:text-blue-400">
-                                    Câu {currentQuestion + 1}: {renderContentWithLaTeX(currentQ?.question)}
+                                <CardTitle className="text-lg font-semibold text-gray-800 dark:text-gray-300">
+                                    Câu {currentQuestion + 1}: {renderHightlightedContent(currentQ?.question)}
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>

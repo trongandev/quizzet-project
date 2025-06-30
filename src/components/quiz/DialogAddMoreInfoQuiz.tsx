@@ -1,14 +1,13 @@
 import React, { useRef, useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "../ui/input";
-import { FileText, LinkIcon, Save, Upload, X } from "lucide-react";
+import { Save, Upload, X } from "lucide-react";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import Image from "next/image";
 import { toast } from "sonner";
 import Cookies from "js-cookie";
-import { POST_API, POST_API_CLOUD } from "@/lib/fetchAPI";
+import { POST_API } from "@/lib/fetchAPI";
 import { useRouter } from "next/navigation";
 import Loading from "../ui/loading";
 import axios from "axios";
@@ -130,6 +129,7 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz }: Props
     };
 
     const handlePaste = (event: any) => {
+        event.preventDefault();
         const items = event.clipboardData.items;
         for (let i = 0; i < items.length; i++) {
             if (items[i].type.includes("image")) {
@@ -194,13 +194,14 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz }: Props
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger>{children}</DialogTrigger>
             <DialogContent>
-                <form onSubmit={handleSubmit} onPaste={handlePaste} autoFocus>
+                <form onSubmit={handleSubmit} onPaste={handlePaste}>
                     <DialogHeader>
                         <DialogTitle>Nhập thêm thông tin bài quiz </DialogTitle>
                     </DialogHeader>
                     <div className="grid gap-4 my-5">
                         <div className="">
                             <div
+                                autoFocus
                                 className={`cursor-pointer hover:border-primary/50 hover:bg-primary/5 border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
                                     isDragOver ? "border-primary bg-primary/5" : "border-muted-foreground/25"
                                 }`}
@@ -222,7 +223,9 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz }: Props
                             {selectedFile && (
                                 <div className="mt-3 flex items-center justify-between p-3 bg-muted rounded-lg">
                                     <div className="flex items-center space-x-3">
-                                        <FileText className="h-4 w-4 text-muted-foreground" />
+                                        <div className="flex-shrink-0 relative h-20 w-36">
+                                            <Image src={URL.createObjectURL(selectedFile)} alt="Selected file preview" fill className="rounded-md object-cover" />
+                                        </div>
                                         <div className="flex-1 min-w-0">
                                             <p className="text-sm font-medium truncate max-w-[365px]">{selectedFile.name}</p>
                                             <p className="text-xs text-muted-foreground">{formatFileSize(selectedFile.size)}</p>
@@ -261,7 +264,15 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz }: Props
                         </Tabs>{" "} */}
                         <div className="grid gap-3">
                             <Label htmlFor="name-1">Tên bài quiz</Label>
-                            <Input id="name-1" name="name" placeholder="Nhập tên bài quiz" value={tempQuiz.title} onChange={(e) => handleSetValueTempQuiz("title", e.target.value)} required />
+                            <Input
+                                id="name-1"
+                                name="name"
+                                placeholder="Nhập tên bài quiz"
+                                value={tempQuiz.title}
+                                onChange={(e) => handleSetValueTempQuiz("title", e.target.value)}
+                                required
+                                onPaste={handlePaste}
+                            />
                         </div>
                         <div className="grid gap-3">
                             <Label htmlFor="username-1">Nội dung</Label>

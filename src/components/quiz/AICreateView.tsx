@@ -75,6 +75,7 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
     const genAI = useMemo(() => new GoogleGenerativeAI(process.env.API_KEY_AI || ""), []);
     const handleGenerate = async () => {
         try {
+            setGeneratedQuiz(null);
             setIsGenerating(true);
             setOpenGame(true);
             const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
@@ -83,10 +84,10 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
 
             const responseText = result?.response
                 .text()
-                .replace(/```json/g, "")
-                .replace(/```html/g, "")
-                .replace(/```/g, "");
-
+                // ✅ Chỉ xóa wrapper markdown, giữ lại code blocks bên trong content
+                .replace(/^```json\s*/, "") // Xóa ```json ở đầu
+                .replace(/^```html\s*/, "") // Xóa ```html ở đầu
+                .replace(/```\s*$/, ""); // Xóa ``` ở cuối
             const jsonOutput = JSON.parse(responseText || "");
             console.log("Generated Quiz:", jsonOutput);
             setIsGenerating(false);
@@ -307,7 +308,7 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                 </div>
             </div>
 
-            <div className="flex justify-center">
+            <div className="flex justify-center flex-col gap-5">
                 <div className={`flex items-center gap-5 flex-col md:flex-row `}>
                     <Dialog open={openGame} onOpenChange={setOpenGame}>
                         <DialogTrigger>
@@ -346,51 +347,50 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                             </DialogFooter>
                         </DialogContent>
                     </Dialog>
-                    {!generatedQuiz ? (
-                        <Button size="lg" className="dark:text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90" onClick={handleGenerate} disabled={!topic.trim() || isGenerating}>
-                            {isGenerating ? (
-                                <>
-                                    <Bot className="mr-2 h-4 w-4 animate-spin" />
-                                    Đang tạo quiz ...
-                                </>
-                            ) : (
-                                <>
-                                    <Sparkles className="mr-2 h-4 w-4" />
-                                    Tạo quiz bằng AI
-                                </>
-                            )}
-                        </Button>
-                    ) : (
-                        <div className="space-y-4 mt-10">
-                            <div className="text-center">
-                                <div className="flex items-center justify-center space-x-2 mb-2">
-                                    <CheckCircle className="h-6 w-6 text-green-500" />
-                                    <span className="text-lg font-medium text-green-700 dark:text-gray-400">Quiz đã được tạo thành công!</span>
-                                </div>
-                                <p className="text-muted-foreground dark:text-gray-400">
-                                    AI đã tạo {generatedQuiz?.questions?.length} câu hỏi cho chủ đề &quot;{topic}&quot;
-                                </p>
-                            </div>
-
-                            <div className="flex justify-center gap-3 flex-col md:flex-row">
-                                <Button size="lg" variant="outline" onClick={() => setShowPreview(true)}>
-                                    <Eye className="mr-2 h-4 w-4" />
-                                    Xem trước kết quả
-                                </Button>
-                                <Button size="lg" variant="outline" onClick={() => handleAddToDraft()}>
-                                    <File className="mr-2 h-4 w-4" />
-                                    Lưu vào nháp
-                                </Button>
-                                <DialogAddMoreInfoQuiz generatedQuiz={generatedQuiz}>
-                                    <Button size="lg" className="text-white bg-gradient-to-r from-blue-500 to-cyan-500">
-                                        <Save className="mr-2 h-4 w-4" />
-                                        Lưu và xuất bản
-                                    </Button>
-                                </DialogAddMoreInfoQuiz>
-                            </div>
-                        </div>
-                    )}
+                    <Button size="lg" className="dark:text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90" onClick={handleGenerate} disabled={!topic.trim() || isGenerating}>
+                        {isGenerating ? (
+                            <>
+                                <Bot className="mr-2 h-4 w-4 animate-spin" />
+                                Đang tạo quiz ...
+                            </>
+                        ) : (
+                            <>
+                                <Sparkles className="mr-2 h-4 w-4" />
+                                {generatedQuiz ? "Tạo lại quiz" : "Tạo quiz bằng AI"}
+                            </>
+                        )}
+                    </Button>
                 </div>
+                {generatedQuiz && (
+                    <div className="space-y-4 mt-10">
+                        <div className="text-center">
+                            <div className="flex items-center justify-center space-x-2 mb-2">
+                                <CheckCircle className="h-6 w-6 text-green-500" />
+                                <span className="text-lg font-medium text-green-700 dark:text-gray-400">Quiz đã được tạo thành công!</span>
+                            </div>
+                            <p className="text-muted-foreground dark:text-gray-400">
+                                AI đã tạo {generatedQuiz?.questions?.length} câu hỏi cho chủ đề &quot;{topic}&quot;
+                            </p>
+                        </div>
+
+                        <div className="flex justify-center gap-3 flex-col md:flex-row">
+                            <Button size="lg" variant="outline" onClick={() => setShowPreview(true)}>
+                                <Eye className="mr-2 h-4 w-4" />
+                                Xem trước kết quả
+                            </Button>
+                            <Button size="lg" variant="outline" onClick={() => handleAddToDraft()}>
+                                <File className="mr-2 h-4 w-4" />
+                                Lưu vào nháp
+                            </Button>
+                            <DialogAddMoreInfoQuiz generatedQuiz={generatedQuiz}>
+                                <Button size="lg" className="text-white bg-gradient-to-r from-blue-500 to-cyan-500">
+                                    <Save className="mr-2 h-4 w-4" />
+                                    Lưu và xuất bản
+                                </Button>
+                            </DialogAddMoreInfoQuiz>
+                        </div>
+                    </div>
+                )}
             </div>
             {generatedQuiz && <AIResultPreview open={showPreview} onOpenChange={setShowPreview} quiz={generatedQuiz} onQuizUpdate={handleQuizUpdate} />}
         </div>

@@ -19,7 +19,7 @@ import Cookies from "js-cookie";
 import { toast } from "sonner";
 import { Progress } from "../ui/progress";
 import Loading from "../ui/loading";
-import { renderContentWithLaTeX } from "@/lib/renderKaTEX";
+import { renderContentWithLaTeX, renderHightlightedContent } from "../renderCode";
 interface PropsDetailQuiz {
     quiz?: IQuestion[];
     data?: IQuiz;
@@ -30,12 +30,10 @@ interface PropsDetailQuiz {
 
 export default function DetailQuiz({ quiz, data, comment, setComment, user }: PropsDetailQuiz) {
     const [userRating, setUserRating] = useState(5);
-    const [reportReason, setReportReason] = useState("");
     const [isReportModalOpen, setIsReportModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [loadingReport, setLoadingReport] = useState(false);
     const [review, setReview] = useState("");
-    const [isBookmarked, setIsBookmarked] = useState(false);
     const defaultReport = { type_of_violation: "spam", content: "" };
     const [report, setReport] = useState(defaultReport);
     const quizSlice = quiz?.slice(0, 5) || [];
@@ -77,18 +75,18 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
         }
     };
 
-    function calAvg(arr: IComment[]) {
-        let sum = 0;
-        if (arr.length == 0) return 0;
-        for (let i = 0; i < arr.length; i++) {
-            sum += arr[i]?.rating;
-        }
-        return sum / arr.length;
-    }
+    // function calAvg(arr: IComment[]) {
+    //     let sum = 0;
+    //     if (arr.length == 0) return 0;
+    //     for (let i = 0; i < arr.length; i++) {
+    //         sum += arr[i]?.rating;
+    //     }
+    //     return sum / arr.length;
+    // }
 
-    function Round(num: number) {
-        return Math.round(num * 10) / 10;
-    }
+    // function Round(num: number) {
+    //     return Math.round(num * 10) / 10;
+    // }
 
     const handleReport = async () => {
         try {
@@ -269,7 +267,7 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                                     {index + 1}
                                                 </div>
                                                 <div className="flex-1">
-                                                    <h3 className=" dark:text-white/80 text-gray-800 mb-4 text-lg leading-relaxed">{renderContentWithLaTeX(question.question)}</h3>
+                                                    <h3 className=" dark:text-white/80 text-gray-800 mb-4 text-lg leading-relaxed">{renderHightlightedContent(question.question)}</h3>
                                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                                         {question.answers.map((option: any, index: number) => (
                                                             <div
