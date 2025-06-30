@@ -43,7 +43,6 @@ export default function CQuizPage({ publicQuizData }: { publicQuizData: IQuiz[] 
         const fetchListFlashCard = async () => {
             const res = await GET_API("/quiz/getquizbyuser", token);
             setFilterQuiz(res);
-            console.log(res);
             setLoading(false);
         };
         fetchListFlashCard();

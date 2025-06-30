@@ -39,6 +39,7 @@ interface HomeViewProps {
 
 export function AICreateView({ onViewChange }: HomeViewProps) {
     const [topic, setTopic] = useState("");
+    const [openAddMoreInfo, setOpenAddMoreInfo] = useState(false);
     const [description, setDescription] = useState("");
     const [difficulty, setDifficulty] = useState("medium");
     const [questionCount, setQuestionCount] = useState([10]);
@@ -89,7 +90,6 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                 .replace(/^```html\s*/, "") // Xóa ```html ở đầu
                 .replace(/```\s*$/, ""); // Xóa ``` ở cuối
             const jsonOutput = JSON.parse(responseText || "");
-            console.log("Generated Quiz:", jsonOutput);
             setIsGenerating(false);
             setGeneratedQuiz(jsonOutput);
             toast.success("Quiz đã được tạo thành công!", {
@@ -124,7 +124,6 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
             status: "draft",
             difficulty: difficulty,
         };
-        console.log(draft);
 
         if (draftStorage) {
             const existingDrafts = JSON.parse(draftStorage);
@@ -382,7 +381,7 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                                 <File className="mr-2 h-4 w-4" />
                                 Lưu vào nháp
                             </Button>
-                            <DialogAddMoreInfoQuiz generatedQuiz={generatedQuiz}>
+                            <DialogAddMoreInfoQuiz generatedQuiz={generatedQuiz} openAddMoreInfo={openAddMoreInfo} setOpenAddMoreInfo={setOpenAddMoreInfo}>
                                 <Button size="lg" className="text-white bg-gradient-to-r from-blue-500 to-cyan-500">
                                     <Save className="mr-2 h-4 w-4" />
                                     Lưu và xuất bản
@@ -392,7 +391,7 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                     </div>
                 )}
             </div>
-            {generatedQuiz && <AIResultPreview open={showPreview} onOpenChange={setShowPreview} quiz={generatedQuiz} onQuizUpdate={handleQuizUpdate} />}
+            {generatedQuiz && <AIResultPreview open={showPreview} onOpenChange={setShowPreview} quiz={generatedQuiz} onQuizUpdate={handleQuizUpdate} setOpenAddMoreInfo={setOpenAddMoreInfo} />}
         </div>
     );
 }

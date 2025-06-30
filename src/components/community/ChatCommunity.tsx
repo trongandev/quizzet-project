@@ -224,8 +224,6 @@ export default function ChatCommunity() {
         setImageReview(file ? URL.createObjectURL(file) : null);
     };
 
-    console.log(replyingTo);
-
     return (
         <div className="flex items-center justify-center">
             <div className="w-full md:w-[1000px] xl:w-[1200px] py-5 pt-16 mx-3 md:mx-0">

@@ -7,10 +7,11 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { FileText, Search, Edit, Trash2, Eye, Calendar, Clock, Bot, Upload, Plus, AlertCircle } from "lucide-react";
+import { FileText, Search, Edit, Trash2, Eye, Calendar, Clock, Bot, Upload, Plus, AlertCircle, Aperture } from "lucide-react";
 import handleCompareDate from "@/lib/CompareDate";
 import { AIResultPreview } from "./AIResuiltPreview";
 import Link from "next/link";
+import DialogAddMoreInfoQuiz from "./DialogAddMoreInfoQuiz";
 
 interface DraftQuiz {
     id: string;
@@ -23,6 +24,13 @@ interface DraftQuiz {
     createdBy: "ai" | "manual" | "file";
     status: "draft" | "in-progress";
     difficulty: "easy" | "medium" | "hard";
+}
+
+interface QuizQuestion {
+    title: string;
+    subject: string;
+    content: string;
+    questions: Question[];
 }
 interface Question {
     id: string;
@@ -38,7 +46,9 @@ interface HomeViewProps {
 
 export function DraftsView({ onViewChange }: HomeViewProps) {
     const [searchTerm, setSearchTerm] = useState("");
+    const [openAddMoreInfo, setOpenAddMoreInfo] = useState(false);
     const [selectedDraft, setSelectedDraft] = useState<DraftQuiz | null>(null);
+    const [generatedQuiz, setGeneratedQuiz] = useState<QuizQuestion | undefined>(undefined);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [draftToDelete, setDraftToDelete] = useState<DraftQuiz | null>(null);
     const [showPreview, setShowPreview] = useState(false);
@@ -135,7 +145,26 @@ export function DraftsView({ onViewChange }: HomeViewProps) {
     };
 
     const handlePreviewDraft = (draft: DraftQuiz) => {
-        setSelectedDraft(draft);
+        setGeneratedQuiz({
+            title: draft.title,
+            subject: draft.description,
+            content: "Đây là nội dung quiz được tạo từ nháp",
+            questions: draft.questions,
+        });
+        setShowPreview(true);
+    };
+
+    const handleSetValueGeneratedQuiz = (draft: DraftQuiz) => {
+        setGeneratedQuiz({
+            title: draft.title,
+            subject: draft.description,
+            content: "Đây là nội dung quiz được tạo từ nháp",
+            questions: draft.questions,
+        });
+    };
+
+    const handleQuizUpdate = (updatedQuiz: typeof generatedQuiz) => {
+        setGeneratedQuiz(updatedQuiz);
     };
 
     return (
@@ -183,13 +212,13 @@ export function DraftsView({ onViewChange }: HomeViewProps) {
                 </Card>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredDrafts.map((draft) => (
-                        <Card key={draft.id} className="hover:shadow-md transition-shadow dark:border-white/10 dark:bg-slate-800/50">
+                    {filteredDrafts.map((draft, index) => (
+                        <Card key={index} className="hover:shadow-md transition-shadow dark:border-white/10 dark:bg-slate-800/50">
                             <CardHeader className="pb-3">
                                 <div className="flex items-start justify-between">
                                     <div className="flex-1">
-                                        <CardTitle className="text-lg line-clamp-2">{draft.title}</CardTitle>
-                                        <CardDescription className="mt-1 line-clamp-2">{draft.description}</CardDescription>
+                                        <CardTitle className="text-lg line-clamp-2">{draft.title || "Không có tiêu đề"}</CardTitle>
+                                        <CardDescription className="mt-1 line-clamp-2">{draft.description || "Không có mô tả"}</CardDescription>
                                     </div>
                                     <Badge variant={draft.status === "in-progress" ? "default" : "secondary"} className="ml-2 shrink-0 dark:text-white">
                                         {draft.status === "in-progress" ? "Đang làm" : "Nháp"}
@@ -209,11 +238,11 @@ export function DraftsView({ onViewChange }: HomeViewProps) {
                                 <div className="flex items-center justify-between text-sm text-muted-foreground">
                                     <div className="flex items-center space-x-1">
                                         <FileText className="h-4 w-4" />
-                                        <span>{draft.questionCount} câu hỏi</span>
+                                        <span>{draft.questions.length} câu hỏi</span>
                                     </div>
                                     <div className="flex items-center space-x-1">
                                         <Clock className="h-4 w-4" />
-                                        <span>{Math.ceil(draft.questionCount * 1.5)} phút</span>
+                                        <span>{Math.ceil(draft.questions.length * 1.5)} phút</span>
                                     </div>
                                 </div>
 
@@ -233,10 +262,12 @@ export function DraftsView({ onViewChange }: HomeViewProps) {
                                         <Eye className="mr-1 h-3 w-3" />
                                         Xem
                                     </Button>
-                                    <Button size="sm" onClick={() => handleEditDraft(draft)} className="flex-1 dark:text-white">
-                                        <Edit className="mr-1 h-3 w-3" />
-                                        Sửa
-                                    </Button>
+                                    <DialogAddMoreInfoQuiz generatedQuiz={generatedQuiz} openAddMoreInfo={openAddMoreInfo} setOpenAddMoreInfo={setOpenAddMoreInfo}>
+                                        <Button size="sm" className="flex-1 dark:text-white bg-gradient-to-r from-blue-500 to-cyan-500">
+                                            <Aperture className="mr-1 h-3 w-3" />
+                                            Xuất bản
+                                        </Button>
+                                    </DialogAddMoreInfoQuiz>
                                     <Button size="sm" variant="outline" onClick={() => handleDeleteDraft(draft)}>
                                         <Trash2 className="h-3 w-3" />
                                     </Button>
@@ -246,8 +277,7 @@ export function DraftsView({ onViewChange }: HomeViewProps) {
                     ))}
                 </div>
             )}
-            {/* {selectedDraft && <AIResultPreview open={showPreview} onOpenChange={setShowPreview} quiz={selectedDraft.questions} title_quiz={selectedDraft.title} desc={selectedDraft.description} onQuizUpdate={handleQuizUpdate} />} */}
-
+            {generatedQuiz && <AIResultPreview open={showPreview} onOpenChange={setShowPreview} quiz={generatedQuiz} onQuizUpdate={handleQuizUpdate} setOpenAddMoreInfo={setOpenAddMoreInfo} />}
             {/* Preview Dialog */}
             {/* <Dialog open={!!selectedDraft} onOpenChange={() => setSelectedDraft(null)}>
                 <DialogContent className="max-w-2xl">

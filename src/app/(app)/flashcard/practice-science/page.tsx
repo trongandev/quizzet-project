@@ -242,7 +242,6 @@ export default function PractiveFlashcard({ params }: { params: { slug: string }
             return;
         }
 
-        console.log("Sending ratings:", dataToSend); // ✅ Bây giờ sẽ có đủ 12 ratings
         setSessionRatings([]); // Clear state
         setCurrentIndex(1); // Reset current index
 

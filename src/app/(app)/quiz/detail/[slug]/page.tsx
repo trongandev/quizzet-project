@@ -24,7 +24,6 @@ export default function QuizDetail({ params }: { params: any }) {
             setQuiz(res?.quiz?.questions?.data_quiz);
             delete res?.quiz?.questions;
             setData(res.quiz);
-            console.log(res?.quiz?.comment);
         };
         fetchData();
     }, []);

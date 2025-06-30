@@ -36,10 +36,10 @@ export default function RootLayout({ children }: any) {
                 return <HomeView onViewChange={setActiveView} />;
             case "ai-create":
                 return <AICreateView onViewChange={setActiveView} />;
+            case "file-import":
+                return <FileImportView onViewChange={setActiveView} />;
             case "manual-create":
                 return <ManualCreateView />;
-            case "file-import":
-                return <FileImportView />;
             case "drafts":
                 return <DraftsView onViewChange={setActiveView} />;
             case "settings":

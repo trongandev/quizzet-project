@@ -2,93 +2,199 @@
 
 import type React from "react";
 
-import { useState, useCallback } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { Upload, FileText, CheckCircle, AlertCircle, Download, Eye } from "lucide-react";
+import { Upload, FileText, Download, X, Bot, Sparkles, CheckCircle, Eye, Save, File } from "lucide-react";
+import { BsFiletypeDocx, BsFiletypePdf, BsFiletypeTxt, BsFiletypeXlsx } from "react-icons/bs";
+import axios from "axios";
+import { toast } from "sonner";
+import { AIResultPreview } from "./AIResuiltPreview";
+import DialogAddMoreInfoQuiz from "./DialogAddMoreInfoQuiz";
+import { useRouter } from "next/navigation";
+interface QuizQuestion {
+    title: string;
+    subject: string;
+    content: string;
+    questions: Quiz[];
+}
 
-export function FileImportView() {
-    const [dragActive, setDragActive] = useState(false);
-    const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-    const [uploadProgress, setUploadProgress] = useState(0);
-    const [isProcessing, setIsProcessing] = useState(false);
-    const [processResult, setProcessResult] = useState<{
-        success: boolean;
-        questionsFound: number;
-        errors: string[];
-    } | null>(null);
+interface Quiz {
+    id: string;
+    type: "multiple-choice" | "true-false" | "short-answer";
+    question: string;
+    answers?: string[];
+    correct: string;
+    points: number;
+}
 
+interface HomeViewProps {
+    onViewChange: (view: string) => void;
+}
+export function FileImportView({ onViewChange }: HomeViewProps) {
+    const [isDragOver, setIsDragOver] = useState(false);
+    const [openAddMoreInfo, setOpenAddMoreInfo] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [generatedQuiz, setGeneratedQuiz] = useState<QuizQuestion | null>(null);
+    const [showPreview, setShowPreview] = useState(false);
+    const [isGenerating, setIsGenerating] = useState(false);
+    const router = useRouter();
     const supportedFormats = [
-        { ext: ".docx", desc: "Microsoft Word", icon: "📄" },
-        { ext: ".xlsx", desc: "Microsoft Excel", icon: "📊" },
-        { ext: ".pdf", desc: "PDF Document", icon: "📋" },
-        { ext: ".txt", desc: "Text File", icon: "📝" },
+        {
+            ext: ".docx",
+            disable: false,
+            link: "https://docs.google.com/document/d/1WMmvLP-vBCyMZroB-jhzq-BNkVooBt-KDRA_vGdEyZQ/edit?usp=sharing",
+            desc: "Microsoft Word",
+            icon: <BsFiletypeDocx size={20} />,
+        },
+        { ext: ".xlsx", disable: true, desc: "Microsoft Excel", icon: <BsFiletypeXlsx size={20} /> },
+        { ext: ".pdf", disable: true, desc: "PDF Document", icon: <BsFiletypePdf size={20} /> },
+        { ext: ".txt", disable: true, desc: "Text File", icon: <BsFiletypeTxt size={20} /> },
     ];
 
-    const handleDrag = useCallback((e: React.DragEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (e.type === "dragenter" || e.type === "dragover") {
-            setDragActive(true);
-        } else if (e.type === "dragleave") {
-            setDragActive(false);
+    const handleFileSelect = (file: File) => {
+        // Validate file type
+        const allowedTypes = [
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // .docx
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
+            "application/pdf", // .pdf
+            "text/plain", // .txt
+        ];
+        if (!allowedTypes.includes(file.type)) {
+            // alert("Please select a docx, xlsx, pdf, txt file.");
+            alert("Please select a docx file.");
+            return;
         }
-    }, []);
 
-    const handleDrop = useCallback((e: React.DragEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setDragActive(false);
-
-        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-            handleFile(e.dataTransfer.files[0]);
+        // Validate file size (3MB)
+        const maxSize = 3 * 1024 * 1024; // 10MB in bytes
+        if (file.size > maxSize) {
+            alert("Kích thước tập tin phải nhỏ hơn 3MB.");
+            return;
         }
-    }, []);
 
-    const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            handleFile(e.target.files[0]);
+        setSelectedFile(file);
+    };
+
+    const handleButtonClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            handleFileSelect(file);
+            const reader = new FileReader();
+            reader.onload = () => {
+                setIsDragOver(false); // Reset drag over state
+            };
+            reader.readAsDataURL(file);
         }
     };
 
-    const handleFile = async (file: File) => {
-        setUploadedFile(file);
-        setUploadProgress(0);
-        setIsProcessing(true);
-        setProcessResult(null);
-
-        // Simulate upload progress
-        const progressInterval = setInterval(() => {
-            setUploadProgress((prev) => {
-                if (prev >= 100) {
-                    clearInterval(progressInterval);
-                    return 100;
-                }
-                return prev + 10;
-            });
-        }, 200);
-
-        // Simulate processing
-        setTimeout(() => {
-            setIsProcessing(false);
-            // Simulate processing result
-            const isSuccess = Math.random() > 0.3;
-            setProcessResult({
-                success: isSuccess,
-                questionsFound: isSuccess ? Math.floor(Math.random() * 20) + 5 : 0,
-                errors: isSuccess ? [] : ["Không thể đọc được định dạng file", "File có thể bị hỏng hoặc mã hóa"],
-            });
-        }, 3000);
+    const handleDragOver = (event: React.DragEvent) => {
+        event.preventDefault();
+        setIsDragOver(true);
     };
 
-    const downloadTemplate = (format: string) => {
+    const handleDragLeave = (event: React.DragEvent) => {
+        event.preventDefault();
+        setIsDragOver(false);
+    };
+
+    const handleDrop = (event: React.DragEvent) => {
+        event.preventDefault();
+        setIsDragOver(false);
+
+        const file = event.dataTransfer.files?.[0];
+        if (file) {
+            handleFileSelect(file);
+        }
+    };
+
+    const removeFile = () => {
+        setSelectedFile(null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    };
+
+    const formatFileSize = (bytes: number) => {
+        if (bytes === 0) return "0 Bytes";
+        const k = 1024;
+        const sizes = ["Bytes", "KB", "MB", "GB"];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+    };
+
+    const downloadTemplate = (link: string) => {
         // In a real app, this would download actual template files
-        console.log(`Downloading ${format} template`);
+        console.log(`Downloading ${link} template`);
+        if (link) {
+            window.open(link, "_blank");
+        }
+    };
+
+    const handleGenerate = async () => {
+        try {
+            setGeneratedQuiz(null);
+            setIsGenerating(true);
+            const res = await axios.post(
+                `${process.env.NEXT_PUBLIC_API_PYTHON}/quiz`,
+                {
+                    file: selectedFile,
+                },
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
+            toast.success("Quiz đã được tạo thành công!", {
+                description: "Bạn có thể xem trước và chỉnh sửa quiz trước khi lưu.",
+                duration: 5000,
+                position: "top-center",
+            });
+            setGeneratedQuiz({
+                title: "",
+                subject: "",
+                content: "",
+                questions: res.data,
+            });
+        } catch (error: any) {
+            console.error("Error generating quiz:", error.message);
+            toast.error(error.message || "Đã xảy ra lỗi khi tạo quiz. Vui lòng thử lại sau.");
+        } finally {
+            setIsGenerating(false);
+        }
+    };
+
+    const handleQuizUpdate = (updatedQuiz: typeof generatedQuiz) => {
+        setGeneratedQuiz(updatedQuiz);
+    };
+
+    const handleAddToDraft = () => {
+        const draftStorage = localStorage.getItem("draftQuiz");
+        const draft = {
+            ...generatedQuiz,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+
+            createdBy: "file",
+            status: "draft",
+            difficulty: "easy",
+        };
+
+        if (draftStorage) {
+            const existingDrafts = JSON.parse(draftStorage);
+            localStorage.setItem("draftQuiz", JSON.stringify([...existingDrafts, draft]));
+        } else {
+            localStorage.setItem("draftQuiz", JSON.stringify([draft]));
+        }
+
+        toast.success("Quiz đã được lưu vào nháp", { description: "Bạn có thể xem lại trong phần Draft", duration: 5000, action: { label: "Xem nháp", onClick: () => onViewChange("drafts") } });
     };
 
     return (
@@ -110,81 +216,45 @@ export function FileImportView() {
                             <CardDescription>Kéo thả file hoặc click để chọn file từ máy tính</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <div
-                                className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-                                    dragActive ? "border-primary bg-primary/5" : "border-muted-foreground/25 hover:border-muted-foreground/50"
-                                }`}
-                                onDragEnter={handleDrag}
-                                onDragLeave={handleDrag}
-                                onDragOver={handleDrag}
-                                onDrop={handleDrop}>
-                                <Upload className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                                <div className="space-y-2">
-                                    <p className="text-lg font-medium">Kéo thả file vào đây</p>
-                                    <p className="text-sm text-muted-foreground">hoặc</p>
-                                    <Label htmlFor="file-upload">
-                                        <Button variant="outline" className="cursor-pointer">
-                                            Chọn file từ máy tính
-                                        </Button>
-                                    </Label>
-                                    <Input id="file-upload" type="file" className="hidden" accept=".docx,.xlsx,.pdf,.txt" onChange={handleFileInput} />
-                                </div>
-                            </div>
-
-                            {uploadedFile && (
-                                <div className="mt-4 space-y-4">
-                                    <div className="flex items-center space-x-3 p-3 bg-muted rounded-lg">
-                                        <FileText className="h-8 w-8 text-blue-500" />
-                                        <div className="flex-1">
-                                            <p className="font-medium">{uploadedFile.name}</p>
-                                            <p className="text-sm text-muted-foreground">{(uploadedFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                            <div className="">
+                                <div
+                                    autoFocus
+                                    className={`cursor-pointer hover:border-primary/50 hover:bg-primary/5 border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                                        isDragOver ? "border-primary bg-primary/5" : "border-muted-foreground/25"
+                                    }`}
+                                    onDragOver={handleDragOver}
+                                    onDragLeave={handleDragLeave}
+                                    onClick={handleButtonClick}
+                                    onDrop={handleDrop}>
+                                    <div className="flex flex-col items-center space-y-2">
+                                        <div className="p-3 bg-muted rounded-full">
+                                            <Upload className="h-6 w-6 text-muted-foreground" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-sm font-medium">Tải lên tệp hoặc kéo và thả</p>
+                                            <p className="text-xs text-muted-foreground">DOCX, XLSX, PDF, TXT tới 3MB</p>
                                         </div>
                                     </div>
-
-                                    {isProcessing && (
-                                        <div className="space-y-2">
-                                            <div className="flex justify-between text-sm">
-                                                <span>Đang xử lý file...</span>
-                                                <span>{uploadProgress}%</span>
-                                            </div>
-                                            <Progress value={uploadProgress} />
-                                        </div>
-                                    )}
-
-                                    {processResult && (
-                                        <Alert className={processResult.success ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}>
-                                            <div className="flex items-center space-x-2">
-                                                {processResult.success ? <CheckCircle className="h-4 w-4 text-green-600" /> : <AlertCircle className="h-4 w-4 text-red-600" />}
-                                                <AlertDescription>
-                                                    {processResult.success ? (
-                                                        <div>
-                                                            <p className="font-medium text-green-800">Xử lý thành công! Tìm thấy {processResult.questionsFound} câu hỏi.</p>
-                                                            <div className="mt-2 space-x-2">
-                                                                <Button size="sm" className="bg-green-600 hover:bg-green-700">
-                                                                    <Eye className="mr-1 h-3 w-3" />
-                                                                    Xem trước
-                                                                </Button>
-                                                                <Button size="sm" variant="outline">
-                                                                    Chỉnh sửa
-                                                                </Button>
-                                                            </div>
-                                                        </div>
-                                                    ) : (
-                                                        <div>
-                                                            <p className="font-medium text-red-800">Có lỗi xảy ra:</p>
-                                                            <ul className="mt-1 text-sm">
-                                                                {processResult.errors.map((error, index) => (
-                                                                    <li key={index}>• {error}</li>
-                                                                ))}
-                                                            </ul>
-                                                        </div>
-                                                    )}
-                                                </AlertDescription>
-                                            </div>
-                                        </Alert>
-                                    )}
                                 </div>
-                            )}
+
+                                {selectedFile && (
+                                    <div className="mt-3 flex items-center justify-between p-3 bg-muted rounded-lg">
+                                        <div className="flex items-center space-x-3">
+                                            <FileText className="h-8 w-8 text-blue-500" />
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-sm font-medium truncate max-w-[365px]">{selectedFile.name}</p>
+                                                <p className="text-xs text-muted-foreground">{formatFileSize(selectedFile.size)}</p>
+                                            </div>
+                                        </div>
+                                        <Button variant="ghost" size="sm" onClick={removeFile} className="h-8 w-8 p-0">
+                                            <X className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                )}
+
+                                {/* <input ref={fileInputRef} type="file" accept=".docx,.doc,.xlsx,.pdf,.txt" onChange={handleFileChange} className="hidden" /> */}
+                                <input ref={fileInputRef} type="file" accept=".docx" onChange={handleFileChange} className="hidden" />
+                            </div>
                         </CardContent>
                     </Card>
 
@@ -196,9 +266,9 @@ export function FileImportView() {
                         <CardContent>
                             <div className="grid grid-cols-2 gap-3">
                                 {supportedFormats.map((format) => (
-                                    <Button key={format.ext} variant="outline" className="justify-start h-auto p-3" onClick={() => downloadTemplate(format.ext)}>
+                                    <Button key={format.ext} variant="outline" disabled={format.disable} className="justify-start h-auto p-3" onClick={() => downloadTemplate(format.link || "")}>
                                         <div className="flex items-center space-x-3">
-                                            <span className="text-2xl">{format.icon}</span>
+                                            <div className="">{format.icon}</div>
                                             <div className="text-left">
                                                 <p className="font-medium">{format.desc}</p>
                                                 <p className="text-xs text-muted-foreground">{format.ext}</p>
@@ -209,6 +279,47 @@ export function FileImportView() {
                             </div>
                         </CardContent>
                     </Card>
+                    <Button size="lg" className="dark:text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90" onClick={handleGenerate} disabled={!selectedFile || isGenerating}>
+                        {isGenerating ? (
+                            <>
+                                <Bot className="mr-2 h-4 w-4 animate-spin" />
+                                Đang tạo quiz ...
+                            </>
+                        ) : (
+                            <>
+                                <Sparkles className="mr-2 h-4 w-4" />
+                                {generatedQuiz ? "Tạo lại quiz" : "Tạo quiz từ file"}
+                            </>
+                        )}
+                    </Button>
+                    {generatedQuiz && (
+                        <div className="space-y-4 mt-10">
+                            <div className="text-center">
+                                <div className="flex items-center justify-center space-x-2 mb-2">
+                                    <CheckCircle className="h-6 w-6 text-green-500" />
+                                    <span className="text-lg font-medium text-green-700 dark:text-gray-400">Quiz đã được tạo thành công!</span>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-center gap-3 flex-col md:flex-row">
+                                <Button size="lg" variant="outline" onClick={() => setShowPreview(true)}>
+                                    <Eye className="mr-2 h-4 w-4" />
+                                    Xem trước kết quả
+                                </Button>
+                                <Button size="lg" variant="outline" onClick={() => handleAddToDraft()}>
+                                    <File className="mr-2 h-4 w-4" />
+                                    Lưu vào nháp
+                                </Button>
+                                <DialogAddMoreInfoQuiz generatedQuiz={generatedQuiz} openAddMoreInfo={openAddMoreInfo} setOpenAddMoreInfo={setOpenAddMoreInfo}>
+                                    <Button size="lg" className="text-white bg-gradient-to-r from-blue-500 to-cyan-500">
+                                        <Save className="mr-2 h-4 w-4" />
+                                        Lưu và xuất bản
+                                    </Button>
+                                </DialogAddMoreInfoQuiz>
+                            </div>
+                        </div>
+                    )}
+                    {generatedQuiz && <AIResultPreview open={showPreview} onOpenChange={setShowPreview} quiz={generatedQuiz} onQuizUpdate={handleQuizUpdate} setOpenAddMoreInfo={setOpenAddMoreInfo} />}
                 </div>
 
                 {/* Info Panel */}
@@ -219,9 +330,9 @@ export function FileImportView() {
                         </CardHeader>
                         <CardContent className="space-y-3">
                             {supportedFormats.map((format) => (
-                                <div key={format.ext} className="flex items-center justify-between">
-                                    <div className="flex items-center space-x-2">
-                                        <span>{format.icon}</span>
+                                <div key={format.ext} className={`flex items-center justify-between ${format.disable ? "opacity-50 cursor-not-allowed" : ""}`}>
+                                    <div className="flex items-center gap-2">
+                                        <div>{format.icon}</div>
                                         <span className="text-sm">{format.desc}</span>
                                     </div>
                                     <Badge variant="outline">{format.ext}</Badge>
@@ -230,7 +341,7 @@ export function FileImportView() {
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
+                    <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200 dark:from-green-800/50 dark:to-emerald-800/50 dark:border-green-700">
                         <CardContent className="p-4">
                             <div className="text-center space-y-3">
                                 <Download className="h-8 w-8 text-green-500 mx-auto" />

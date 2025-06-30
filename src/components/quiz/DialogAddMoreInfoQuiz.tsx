@@ -30,14 +30,14 @@ interface Quiz {
 
 interface Props {
     children: React.ReactNode;
+    openAddMoreInfo: boolean;
+    setOpenAddMoreInfo: (open: boolean) => void;
     generatedQuiz?: QuizQuestion;
 }
 
-export default function DialogAddMoreInfoQuiz({ children, generatedQuiz }: Props) {
-    const [open, setOpen] = React.useState(false);
+export default function DialogAddMoreInfoQuiz({ children, generatedQuiz, openAddMoreInfo, setOpenAddMoreInfo }: Props) {
     const [tempQuiz, setTempQuiz] = useState({ title: generatedQuiz?.title, subject: generatedQuiz?.subject, content: generatedQuiz?.content });
     const [loading, setLoading] = useState(false);
-    const [avatarInputType, setAvatarInputType] = useState<"file" | "url">("file");
     const token = Cookies.get("token") || "";
     const router = useRouter();
     const [isDragOver, setIsDragOver] = useState(false);
@@ -61,7 +61,6 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz }: Props
                 return;
             }
 
-            toast.loading("Đang tải hình ảnh lên server", { duration: 2000, position: "top-center", id: "upload-image" });
             const formData = new FormData();
 
             formData.append("image", selectedFile);
@@ -87,20 +86,21 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz }: Props
                     description: "Chúng tôi đang xem xét bài quiz của bạn, chờ cho đến khi được phê duyệt trước khi nó xuất hiện công khai.",
                     position: "top-center",
                     id: "upload-image",
-                    duration: 10000,
-                    action: {
-                        label: "Xem bài quiz",
-                        onClick: () => {
-                            router.push(`/quiz/detail/${data?.quiz?.slug}`);
-                        },
-                    },
+                    duration: 3000,
                 });
-                setOpen(false);
+                setOpenAddMoreInfo(false);
+                router.push(`/quiz/detail/${data?.quiz?.slug}`);
+            } else {
+                toast.error("Đã có lỗi xảy ra", {
+                    description: data?.message || "Lỗi không xác định",
+                    position: "top-center",
+                    duration: 10000,
+                });
             }
-        } catch (error) {
+        } catch (error: any) {
             console.log("Error submitting quiz:", error);
             toast.error("Đã có lỗi xảy ra", {
-                description: error instanceof Error ? error.message : "Lỗi không xác định",
+                description: error.message || "Lỗi không xác định",
                 position: "top-center",
                 duration: 5000,
                 id: "upload-image",
@@ -191,7 +191,7 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz }: Props
         return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
     };
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={openAddMoreInfo} onOpenChange={setOpenAddMoreInfo}>
             <DialogTrigger>{children}</DialogTrigger>
             <DialogContent>
                 <form onSubmit={handleSubmit} onPaste={handlePaste}>

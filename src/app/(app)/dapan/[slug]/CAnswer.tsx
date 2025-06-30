@@ -84,7 +84,6 @@ export default function CAnswer({ history, question }: CAnswerProps) {
             setExplain(null);
             return;
         }
-        console.log("Fetching explanation for question ID:", question[questionId]);
         handleExplainAnswer(question[questionId - 1], questionId);
     };
 

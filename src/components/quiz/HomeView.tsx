@@ -19,20 +19,20 @@ export function HomeView({ onViewChange }: HomeViewProps) {
             features: ["Tạo nhanh chóng", "Đa dạng chủ đề", "Tự động tối ưu"],
         },
         {
-            id: "manual-create",
-            title: "Nhập tạo từ đầu",
-            description: "Nhập tay tất cả thông tin",
-            icon: FileText,
-            gradient: "from-blue-500 to-cyan-500",
-            features: ["Kiểm soát hoàn toàn", "Tùy chỉnh chi tiết", "Linh hoạt"],
-        },
-        {
             id: "file-import",
             title: "Nhập từ file docx, xlsx",
             description: "Từ đề cương, biểu mẫu google, bảng tính,...",
             icon: Upload,
             gradient: "from-green-500 to-emerald-500",
             features: ["Tiết kiệm thời gian", "Hỗ trợ nhiều định dạng", "Chuyển đổi tự động"],
+        },
+        {
+            id: "manual-create",
+            title: "Nhập tạo từ đầu",
+            description: "Nhập tay tất cả thông tin",
+            icon: FileText,
+            gradient: "from-blue-500 to-cyan-500",
+            features: ["Kiểm soát hoàn toàn", "Tùy chỉnh chi tiết", "Linh hoạt"],
         },
     ];
 

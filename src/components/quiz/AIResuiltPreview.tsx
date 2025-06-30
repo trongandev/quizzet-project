@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Edit, Trash2, Plus, CheckCircle, Bot } from "lucide-react";
+import { Edit, Trash2, Plus, CheckCircle, Bot, Save, Check, X } from "lucide-react";
 import { renderContentWithLaTeX, renderHightlightedContent } from "../renderCode";
 
 interface QuizQuestion {
@@ -35,9 +35,11 @@ interface AIResultPreviewProps {
     onOpenChange: (open: boolean) => void;
     quiz: QuizQuestion;
     onQuizUpdate: any;
+    setOpenAddMoreInfo: (open: boolean) => void;
 }
 
-export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate }: AIResultPreviewProps) {
+export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpenAddMoreInfo }: AIResultPreviewProps) {
+    const [quizData, setQuizData] = useState<QuizQuestion>(quiz);
     const [editingQuestion, setEditingQuestion] = useState<Quiz | null>(null);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [newQuestion, setNewQuestion] = useState<Quiz>({
@@ -72,7 +74,6 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate }: AIRe
         if (!newQuestion.question.trim()) return;
 
         const updatedQuestions = editingQuestion ? quiz.questions.map((q) => (q.id === editingQuestion.id ? newQuestion : q)) : [...quiz.questions, newQuestion];
-
         onQuizUpdate({ ...quiz, updatedQuestions });
         setIsEditDialogOpen(false);
         setEditingQuestion(null);
@@ -119,6 +120,17 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate }: AIRe
     //     }
     // };
 
+    const handleChangeAnswers = (value: string) => {
+        setNewQuestion((prev) => ({
+            ...prev,
+            correct: value,
+        }));
+        setQuizData((prev) => ({
+            ...prev,
+            questions: prev.questions.map((q) => (q.id === newQuestion.id ? { ...q, correct: value } : q)),
+        }));
+    };
+
     const renderQuestionForm = () => (
         <div className="space-y-4">
             <div>
@@ -149,19 +161,30 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate }: AIRe
             <div>
                 <Label>Các lựa chọn</Label>
                 <div className="space-y-2 mt-2">
-                    {newQuestion.answers?.map((option, index) => (
-                        <div key={index} className="flex items-center space-x-2">
-                            <Input placeholder={`Lựa chọn ${index + 1}`} value={option} onChange={(e) => handleOptionChange(index, e.target.value)} />
-                            <RadioGroup value={newQuestion.correct} onValueChange={(value) => setNewQuestion((prev) => ({ ...prev, correct: value }))}>
-                                <div className="flex items-center space-x-2">
-                                    <RadioGroupItem value={option} id={`option-${index}`} />
-                                    <Label htmlFor={`option-${index}`} className="text-sm">
-                                        Đúng
-                                    </Label>
+                    <RadioGroup defaultValue={newQuestion.correct} value={newQuestion.correct} onValueChange={(value) => handleChangeAnswers(value)}>
+                        {newQuestion &&
+                            newQuestion.answers?.map((option, index) => (
+                                <div key={index} className="flex items-center space-x-2">
+                                    <Input
+                                        placeholder={`Lựa chọn ${index + 1}`}
+                                        value={option}
+                                        onChange={(e) => handleOptionChange(index, e.target.value)}
+                                        className={String(index) === newQuestion.correct ? "border-green-500 bg-green-50 dark:bg-green-800/50 dark:text-green-200" : ""}
+                                    />
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem value={String(index)} id={`option-${index}`} />
+                                        <Label htmlFor={`option-${index}`} className="flex items-center space-x-1">
+                                            {String(index) === newQuestion.correct && (
+                                                <>
+                                                    <CheckCircle className="h-4 w-4 text-green-600" />
+                                                    <span className="text-green-600 font-medium text-xs">Đáp án đúng</span>
+                                                </>
+                                            )}
+                                        </Label>
+                                    </div>
                                 </div>
-                            </RadioGroup>
-                        </div>
-                    ))}
+                            ))}
+                    </RadioGroup>
                 </div>
             </div>
             {/* {newQuestion.type === "multiple-choice" && (
@@ -258,57 +281,53 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate }: AIRe
                         </div>
 
                         {/* List */}
-                        <div className="space-y-4">
-                            {quiz.questions.map((question, index) => (
-                                <Card key={question.id} className=" border-l-4 border-l-purple-500 dark:border-l-purple-700  hover:shadow-lg transition-shadow duration-200">
-                                    <CardHeader className="pb-3">
-                                        <div className="flex items-start justify-between">
-                                            <div className="flex-1">
-                                                <CardTitle className="text-base font-medium">
-                                                    Câu {index + 1}: {renderHightlightedContent(question.question)}
-                                                </CardTitle>
-                                                <div className="flex items-center space-x-2 mt-2">
-                                                    {/* <Badge variant="secondary">{getQuestionTypeLabel(question.type)}</Badge> */}
-                                                    <Badge variant="secondary">Trắc nghiệm</Badge>
-                                                    <Badge variant="outline">1 điểm</Badge>
-                                                </div>
-                                            </div>
-                                            <div className="flex space-x-2">
-                                                <Button variant="outline" size="sm" onClick={() => handleEditQuestion(question)}>
-                                                    <Edit className="h-4 w-4" />
-                                                </Button>
-                                                <Button variant="outline" size="sm" onClick={() => handleDeleteQuestion(question.id)}>
-                                                    <Trash2 className="h-4 w-4" />
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    </CardHeader>
-
-                                    {question.answers && (
-                                        <CardContent className="pt-0">
-                                            <div className="space-y-1">
-                                                {question.answers.map((option, optIndex) => (
-                                                    <div
-                                                        key={optIndex}
-                                                        className={`p-2 rounded text-sm ${
-                                                            String(optIndex) == question.correct
-                                                                ? "bg-green-50 text-green-700 border border-green-200 dark:bg-green-900/50 dark:text-green-200 dark:border-green-700"
-                                                                : "bg-gray-50 dark:bg-gray-900/50 text-gray-800 dark:text-gray-200"
-                                                        }`}>
-                                                        {String.fromCharCode(65 + optIndex)}. {renderContentWithLaTeX(option)}
-                                                        {option === question.correct && <span className="ml-2 text-xs font-medium">(Đáp án đúng)</span>}
+                        <div className="space-y-4 max-h-[700px] overflow-y-scroll">
+                            {quizData &&
+                                quizData.questions.map((question, index) => (
+                                    <Card key={question.id} className=" border-l-4 border-l-purple-500 dark:border-l-purple-700  hover:shadow-lg transition-shadow duration-200">
+                                        <CardHeader className="pb-3">
+                                            <div className="flex items-start justify-between">
+                                                <div className="flex-1">
+                                                    <CardTitle className="text-base font-medium">
+                                                        Câu {index + 1}: {renderHightlightedContent(question.question)}
+                                                    </CardTitle>
+                                                    <div className="flex items-center space-x-2 mt-2">
+                                                        {/* <Badge variant="secondary">{getQuestionTypeLabel(question.type)}</Badge> */}
+                                                        <Badge variant="secondary">Trắc nghiệm</Badge>
+                                                        <Badge variant="outline">1 điểm</Badge>
                                                     </div>
-                                                ))}
-                                            </div>
-                                            {/* {question.explanation && (
-                                                <div className="mt-3 p-2 bg-blue-50 rounded text-sm">
-                                                    <strong>Giải thích:</strong> {question.explanation}
                                                 </div>
-                                            )} */}
-                                        </CardContent>
-                                    )}
-                                </Card>
-                            ))}
+                                                <div className="flex space-x-2">
+                                                    <Button variant="outline" size="sm" onClick={() => handleEditQuestion(question)}>
+                                                        <Edit className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button variant="outline" size="sm" onClick={() => handleDeleteQuestion(question.id)}>
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        </CardHeader>
+
+                                        {question.answers && (
+                                            <CardContent className="pt-0">
+                                                <div className="space-y-1">
+                                                    {question.answers.map((option, optIndex) => (
+                                                        <div
+                                                            key={optIndex}
+                                                            className={`p-2 rounded text-sm ${
+                                                                String(optIndex) == question.correct
+                                                                    ? "bg-green-50 text-green-700 border border-green-200 dark:bg-green-900/50 dark:text-green-200 dark:border-green-700"
+                                                                    : "bg-gray-50 dark:bg-gray-900/50 text-gray-800 dark:text-gray-200"
+                                                            }`}>
+                                                            {String.fromCharCode(65 + optIndex)}. {renderContentWithLaTeX(option)}
+                                                            {option === question.correct && <span className="ml-2 text-xs font-medium">(Đáp án đúng)</span>}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </CardContent>
+                                        )}
+                                    </Card>
+                                ))}
                         </div>
 
                         {/* Footer Actions */}
@@ -316,10 +335,10 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate }: AIRe
                             <Button variant="outline" onClick={() => onOpenChange(false)}>
                                 Đóng
                             </Button>
-                            {/* <Button className="text-white bg-gradient-to-r from-purple-500 to-pink-500">
+                            <Button className="text-white bg-gradient-to-r from-purple-500 to-pink-500" onClick={() => setOpenAddMoreInfo(true)}>
                                 <Save className="mr-2 h-4 w-4" />
                                 Lưu và xuất bản Quiz
-                            </Button> */}
+                            </Button>
                         </div>
                     </div>
                 </DialogContent>
@@ -338,7 +357,9 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate }: AIRe
                         <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
                             Hủy
                         </Button>
-                        <Button onClick={handleSaveQuestion}>{editingQuestion ? "Cập nhật" : "Thêm câu hỏi"}</Button>
+                        <Button onClick={handleSaveQuestion} className="text-white">
+                            {editingQuestion ? "Cập nhật" : "Thêm câu hỏi"}
+                        </Button>
                     </div>
                 </DialogContent>
             </Dialog>

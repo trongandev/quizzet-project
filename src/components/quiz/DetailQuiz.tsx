@@ -96,7 +96,6 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                 content: report.content,
                 link: `/quiz/detail/${data?.slug}`,
             };
-            console.log("Sending report:", newReport);
             const req = await POST_API(`/report`, newReport, "POST", token);
             const res = await req?.json();
             if (res.ok) {

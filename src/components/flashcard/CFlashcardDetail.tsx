@@ -123,8 +123,6 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
 
     useEffect(() => {
         if (fetchedData && fetchedData !== initialData) {
-            console.log("Updating data from fetch:", fetchedData);
-
             const sortedFlashcards = sortFlashcards(fetchedData.flashcards);
             setFlashcard(sortedFlashcards);
             setListFlashcard(fetchedData);
@@ -134,10 +132,8 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                 const hasLocalChanges = prevFiltered.length > initialLength;
 
                 if (hasLocalChanges) {
-                    console.log("Preserving local changes");
                     return prevFiltered; // Giữ nguyên local changes
                 } else {
-                    console.log("Updating with fetched data");
                     return sortedFlashcards; // Update với data mới
                 }
             });
@@ -153,8 +149,6 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
     }, [fetchedData, initialData]);
 
     const handleAddNewFlashcard = useCallback((newFlashcard: Flashcard) => {
-        console.log("Adding new flashcard:", newFlashcard);
-
         setFilteredFlashcards((prev) => [newFlashcard, ...prev]);
 
         setListFlashcard((prev) => ({
