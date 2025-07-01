@@ -62,7 +62,15 @@ export default function LoginForm() {
                         description: "Đang chuyển hướng đến trang chính...",
                         position: "top-center",
                     });
-                    Cookies.set("token", data.token, { expires: 30 });
+                    try {
+                        Cookies.set("token", data.token, {
+                            expires: 30,
+                            secure: true,
+                            sameSite: "none",
+                        });
+                    } catch (e) {
+                        console.warn("Failed to save cookie:", e);
+                    }
                     // check router if router == /login then redirect to home
                     if (pathname === "/login") {
                         router.push("/");
@@ -95,7 +103,15 @@ export default function LoginForm() {
         const token = urlParams.get("token");
 
         if (token) {
-            Cookies.set("token", token, { expires: 30 });
+            try {
+                Cookies.set("token", token, {
+                    expires: 30,
+                    secure: true,
+                    sameSite: "none",
+                });
+            } catch (e) {
+                console.warn("Failed to save cookie:", e);
+            }
             const fetchAPI = async () => {
                 await GET_API("/profile", token);
             };

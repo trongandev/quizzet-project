@@ -1,21 +1,21 @@
-import { Toaster } from "sonner";
+import { SideBarAdmin } from "@/components/SideBarAdmin";
 import "../../globals.css";
-import AdminNav from "./AdminNav";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { ThemeProvider } from "@/components/theme-provider";
 export const metadata = {
     title: "Dashboard",
 };
 
 export default function RootLayout({ children }: any) {
     return (
-        <html lang="en">
-            <body className={``}>
-                <div className="flex bg-gray-200 h-[100vh]">
-                    <div className="w-[20%] bg-white border-[1px]">
-                        <AdminNav />
-                    </div>
-                    <div className="w-[80%] bg-white p-5">{children}</div>
-                    <Toaster />
-                </div>
+        <html lang="vi">
+            <body>
+                <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+                    <SidebarProvider>
+                        <SideBarAdmin />
+                        <main className="flex-1">{children}</main>
+                    </SidebarProvider>
+                </ThemeProvider>
             </body>
         </html>
     );

@@ -49,7 +49,7 @@ interface IComment {
 
 interface IHistory {
     _id: string;
-    user_id: string;
+    user_id: IUser;
     quiz_id: QuizId;
     score: number;
     total_questions: number;
@@ -70,7 +70,7 @@ interface ISO {
     slug: string;
     title: string;
     image: string;
-    date: string;
+    date: Date;
     lenght: number;
     view: number;
     subject: string;
@@ -113,9 +113,8 @@ interface IListFlashcard {
     desc: string;
     public: boolean;
     flashcards: Flashcard[];
-    created_at: string;
+    created_at: Date;
     progress: IProgress;
-    is_public: boolean;
 }
 
 export interface IEditFlashcard {
@@ -232,6 +231,24 @@ export interface Voice {
     popular: boolean;
     avatar: string;
     sample: string;
+}
+
+export interface IReport {
+    _id: string;
+    user_report: Userreport;
+    link: string;
+    type_of_violation: string;
+    content: string;
+    status: string;
+    is_violated: boolean;
+    created_at: Date;
+    __v: number;
+}
+
+interface Userreport {
+    _id: string;
+    displayName: string;
+    profilePicture: string;
 }
 
 export type { IUser, INotify, IQuestion, IComment, IHistory, ISO, IQuiz, IDataQuiz, IListFlashcard, IProgress, Flashcard, Example, IMessage, IChat, IChatCommunity, IChatCommunityMessage };

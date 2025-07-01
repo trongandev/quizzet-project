@@ -319,7 +319,7 @@ export default function DetailQuizD({ quiz, data, comment, setComment, user }: P
                                 <div className="flex items-center space-x-3">
                                     <Avatar>
                                         <AvatarImage src="" className="object-cover" />
-                                        <AvatarFallback>
+                                        <AvatarFallback className="bg-blue-100 text-blue-600 dark:bg-blue-800/50 dark:text-blue-200 font-semibold">
                                             {user?.displayName
                                                 .split(" ")
                                                 .map((n) => n[0])
