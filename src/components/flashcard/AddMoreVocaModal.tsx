@@ -108,7 +108,6 @@ export default function AddMoreVocaModal({ children, listFlashcard, token, filte
                                         autoFocus
                                         autoComplete="off"
                                         maxLength={200}
-                                        onKeyDown={handleEnterKey}
                                         placeholder="VD: extraordinary, beautiful, huge, etc."
                                         className="flex-1 h-52"
                                     />
