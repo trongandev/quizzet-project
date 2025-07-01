@@ -2,19 +2,11 @@
 import { POST_API } from "@/lib/fetchAPI";
 import { useFlashcard } from "@/hooks/useOptimizedFetch";
 import React, { useEffect, useState, useCallback } from "react";
-import { FaBrain, FaTrash } from "react-icons/fa6";
-import { LoadingOutlined } from "@ant-design/icons";
-import { IoIosArrowBack, IoMdAdd } from "react-icons/io";
-import { MdEdit, MdOutlineQuestionMark } from "react-icons/md";
+
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useUser } from "@/context/userContext";
-import Image from "next/image";
-import { AiOutlineAppstoreAdd } from "react-icons/ai";
 // import { languageOption } from "@/lib/languageOption";
-import { optimizedPromptFCMore, optimizedPromptFCSingle } from "@/lib/optimizedPrompt";
-import ItemFC from "./ItemFCDetail";
-import ItemFCSimple from "./ItemFCSimple";
 import { EdgeSpeechTTS } from "@lobehub/tts";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,28 +20,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import {
-    AlertCircle,
-    ArrowLeft,
-    BookOpen,
-    Brain,
-    CheckCircle,
-    Clock,
-    Flag,
-    Flame,
-    GalleryVerticalEnd,
-    Gift,
-    Grid3x3,
-    PencilLine,
-    Plus,
-    RotateCcw,
-    Target,
-    Timer,
-    Trash2,
-    TrendingUp,
-    User,
-    Volume2,
-} from "lucide-react";
+import { AlertCircle, ArrowLeft, BookOpen, Brain, Flag, GalleryVerticalEnd, Gift, Grid3x3, PencilLine, Plus, RotateCcw, Target, Trash2, User, Volume2 } from "lucide-react";
 import { EditListFlashcardModal } from "./EditListFlashcardModal";
 import AddVocaModal from "./AddVocaModal";
 import { Badge } from "../ui/badge";
@@ -60,6 +31,7 @@ import { toast } from "sonner";
 import Loading from "../ui/loading";
 import VoiceSelectionModal from "./VoiceSelectionModal";
 import { revalidateCache } from "@/lib/revalidate";
+import AddMoreVocaModal from "./AddMoreVocaModal";
 
 const getLanguageFlag = (lang: string) => {
     const flags: { [key: string]: string } = {
@@ -380,7 +352,7 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                     </div>
                     <div className="flex items-center gap-2 md:gap-3 flex-wrap dark:text-white/80">
                         <VoiceSelectionModal selectedVoice={selectedVoice} setSelectedVoice={setSelectedVoice} language={listFlashcard?.language}>
-                            <Button className="dark:text-white" variant="secondary">
+                            <Button className="dark:text-white" variant="outline">
                                 <Volume2 /> Chọn giọng nói
                             </Button>
                         </VoiceSelectionModal>
@@ -391,10 +363,11 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                                     <PencilLine /> Chỉnh Sửa
                                 </Button>
                             </EditListFlashcardModal>
-
-                            <Button className="dark:text-white" variant="outline" disabled>
-                                <Grid3x3 /> Thêm nhiều
-                            </Button>
+                            <AddMoreVocaModal listFlashcard={listFlashcard} filteredFlashcards={filteredFlashcards} setFilteredFlashcards={setFilteredFlashcards} token={token}>
+                                <Button className="dark:text-white" variant="outline">
+                                    <Grid3x3 /> Thêm nhiều
+                                </Button>
+                            </AddMoreVocaModal>
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                     <Button variant="destructive">

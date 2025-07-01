@@ -61,7 +61,7 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
 
                     {/* Quiz */}
                     <Card
-                        onClick={() => router.push("/quiz")}
+                        onClick={() => router.push("/quiz/themcauhoi")}
                         className="cursor-pointer dark:border-white/10 group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-cyan-50 to-blue-50 hover:from-cyan-100 hover:to-blue-100 dark:border  dark:from-cyan-900/50 dark:to-blue-900/50 dark:hover:from-cyan-900 dark:hover:to-blue-900 overflow-hidden relative hover:scale-105 ">
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
 
@@ -69,12 +69,10 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
                             <div className="w-16 h-16 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                                 <Brain className="w-8 h-8 text-white  rotate-0 group-hover:rotate-180 transition-all duration-500" />
                             </div>
-                            <h3 className="text-2xl font-bold text-slate-900 mb-4 dark:text-slate-200">Quiz</h3>
-                            <p className="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
-                                Tổng hợp những bài quiz để bạn kiểm tra thử kiến thức của bản thân. Thử thách bản thân và cải thiện kết quả học tập.
-                            </p>
+                            <h3 className="text-2xl font-bold text-slate-900 mb-4 dark:text-slate-200">Quiz AI</h3>
+                            <p className="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">Tạo quiz thông minh với AI. Hệ thống quiz tự động điều chỉnh độ khó dựa trên prompt của bạn</p>
                             <div className="flex items-center justify-between">
-                                <Button className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white">Tìm hiểu thêm</Button>
+                                <Button className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white">Tạo ngay</Button>
                                 <Badge variant="secondary" className="bg-cyan-100 text-cyan-700 dark:bg-cyan-800 dark:text-cyan-200">
                                     <Star className="w-3 h-3 mr-1" />
                                     Thú vị

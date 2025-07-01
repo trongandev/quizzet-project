@@ -42,7 +42,11 @@ export default function CQuizPage({ publicQuizData }: { publicQuizData: IQuiz[] 
         }
         const fetchListFlashCard = async () => {
             const res = await GET_API("/quiz/getquizbyuser", token);
-            setFilterQuiz(res);
+            if (res.ok) {
+                setFilterQuiz(res.quiz);
+            } else {
+                setFilterQuiz([]);
+            }
             setLoading(false);
         };
         fetchListFlashCard();
@@ -106,6 +110,7 @@ export default function CQuizPage({ publicQuizData }: { publicQuizData: IQuiz[] 
 
         return pages;
     };
+
     return (
         <div className="flex items-center justify-center">
             <div className="w-full md:w-[1000px] xl:w-[1200px] px-3 md:px-0">

@@ -195,7 +195,7 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
                                 <Dialog>
                                     <DialogTrigger className="flex-1 w-full">
                                         <div
-                                            className={`bg-gradient-to-br from-green-50 to-green-100 dark:from-green-800/50 dark:to-green-900/50 dark:border-white/10 rounded-xl p-6 border border-green-200 `}>
+                                            className={`bg-gradient-to-br from-green-50 to-green-100 dark:from-green-800/50 dark:to-green-900/50 dark:border-white/10 rounded-xl p-6 border border-green-200 w-full h-full`}>
                                             <div className="flex items-center justify-between mb-3">
                                                 <div className="p-2 bg-green-600 rounded-lg">
                                                     <CheckCircle className="w-5 h-5 text-white" />

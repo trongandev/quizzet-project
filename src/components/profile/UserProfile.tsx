@@ -34,8 +34,6 @@ import {
     Mail,
     Upload,
     LinkIcon,
-    CheckCircle,
-    BadgeCheck,
     ArrowRight,
 } from "lucide-react";
 import { Progress } from "../ui/progress";
@@ -106,6 +104,14 @@ export default function UserProfile({ profile, quiz, flashcard }: PropsProfile) 
             reader.readAsDataURL(file);
         }
     };
+    if (!profile) {
+        return (
+            <div className="flex items-center justify-center min-h-screen flex-col gap-3">
+                <div className="text-gray-500 dark:text-gray-300">Không tìm thấy hồ sơ người dùng.</div>
+                <Button className="text-white">Vui lòng đăng nhập lại</Button>
+            </div>
+        );
+    }
     return (
         <div className="flex items-center justify-center dark:text-white/80 text-gray-400">
             <div className="w-full md:w-[1000px] xl:w-[1200px] ">
@@ -359,7 +365,7 @@ export default function UserProfile({ profile, quiz, flashcard }: PropsProfile) 
                                 <TabsTrigger value="levels" className="dark:data-[state=active]:bg-slate-700">
                                     Cấp độ
                                 </TabsTrigger>
-                                {user?._id === profile._id && (
+                                {user?._id === profile?._id && (
                                     <TabsTrigger value="guide" className="dark:data-[state=active]:bg-slate-700">
                                         Hướng dẫn
                                     </TabsTrigger>
@@ -447,9 +453,9 @@ export default function UserProfile({ profile, quiz, flashcard }: PropsProfile) 
 
                         <TabsContent value="quiz" className="space-y-6">
                             <div className="flex justify-between items-center">
-                                <h2 className="text-2xl font-bold">Bộ Quiz của {user?._id === profile._id ? "bạn" : profile.displayName}</h2>
+                                <h2 className="text-2xl font-bold">Bộ Quiz của {user?._id === profile?._id ? "bạn" : profile?.displayName}</h2>
                                 <Badge variant="secondary" className="bg-slate-700">
-                                    {quiz.length} bộ quiz
+                                    {quiz?.length} bộ quiz
                                 </Badge>
                             </div>
 
@@ -499,16 +505,16 @@ export default function UserProfile({ profile, quiz, flashcard }: PropsProfile) 
                         </TabsContent>
                         <TabsContent value="flashcard" className="space-y-6">
                             <div className="flex justify-between items-center">
-                                <h2 className="text-2xl font-bold">Bộ Flashcard của {user?._id === profile._id ? "bạn" : profile.displayName}</h2>
+                                <h2 className="text-2xl font-bold">Bộ Flashcard của {user?._id === profile?._id ? "bạn" : profile?.displayName}</h2>
                                 <Badge variant="secondary" className="bg-slate-700">
-                                    {flashcard && flashcard.length} flashcard
+                                    {flashcard && flashcard?.length} flashcard
                                 </Badge>
                             </div>
 
                             <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 ">
                                 {flashcard && flashcard.map((item) => <UserFC item={item} key={item._id} />)}
 
-                                {flashcard && !flashcard.length && <div className="h-[350px] col-span-12 flex items-center justify-center text-gray-700">Không có dữ liệu...</div>}
+                                {flashcard && !flashcard?.length && <div className="h-[350px] col-span-12 flex items-center justify-center text-gray-700">Không có dữ liệu...</div>}
                             </div>
                         </TabsContent>
 
