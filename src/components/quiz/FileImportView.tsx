@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { AIResultPreview } from "./AIResuiltPreview";
 import DialogAddMoreInfoQuiz from "./DialogAddMoreInfoQuiz";
 import { useRouter } from "next/navigation";
+import { SidebarTrigger } from "../ui/sidebar";
 interface QuizQuestion {
     title: string;
     subject: string;
@@ -201,7 +202,7 @@ export function FileImportView({ onViewChange }: HomeViewProps) {
         <div className="p-6 max-w-4xl mx-auto space-y-6">
             <div className="text-center space-y-2">
                 <div className="flex items-center justify-center space-x-2">
-                    <Upload className="h-8 w-8 text-green-500" />
+                    <SidebarTrigger />
                     <h1 className="text-3xl font-bold">Nhập Quiz từ File</h1>
                 </div>
                 <p className="text-muted-foreground">Tải lên file docx, xlsx, pdf để tự động tạo quiz</p>

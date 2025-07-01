@@ -25,7 +25,7 @@ export default function QuizItem({ item }: { item: IQuiz }) {
                     />
                 </Link>
                 <div className="p-3 absolute z-1 text-white bottom-0 w-full bg-linear-item">
-                    <h1 className="text-lg font-bold">{item.title}</h1>
+                    <h1 className="text-lg font-bold line-clamp-2 ">{item.title}</h1>
                     <p className="line-clamp-2 text-sm text-[#D9D9D9]">{item.content}</p>
                     <div className="flex justify-end items-center gap-1 mb-[1px] text-[10px]">
                         <FaRegEye />

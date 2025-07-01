@@ -17,6 +17,7 @@ import { optimizedPromptQuiz } from "@/lib/optimizedPrompt";
 
 import DialogAddMoreInfoQuiz from "./DialogAddMoreInfoQuiz";
 import { Game2048Smooth } from "./Game2048Smooth";
+import { SidebarTrigger } from "../ui/sidebar";
 interface QuizQuestion {
     title: string;
     subject: string;
@@ -139,7 +140,7 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
         <div className="p-6 max-w-4xl mx-auto space-y-6">
             <div className="text-center space-y-2">
                 <div className="flex items-center justify-center space-x-2">
-                    <Bot className="h-8 w-8 text-purple-500" />
+                    <SidebarTrigger />
                     <h1 className="text-3xl font-bold">Tạo Quiz bằng AI</h1>
                 </div>
                 <p className="text-muted-foreground">Mô tả chủ đề và để AI tạo quiz hoàn chỉnh cho bạn</p>
@@ -197,7 +198,7 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                         <CardContent className="space-y-6">
                             <div>
                                 <Label>Lựa chọn độ khó</Label>
-                                <div className="flex gap-2">
+                                <div className="flex gap-2  flex-col md:flex-row ">
                                     {difficultyOptions.map((option) => (
                                         <Card
                                             key={option.value}
@@ -206,7 +207,7 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                                             } hover:shadow-md transition-shadow ml-2`}
                                             onClick={() => setDifficulty(option.value)}>
                                             <div className="flex items-center space-x-2">
-                                                <Badge className={`${option.color} dark:border-white/10 hidden md:block`}>{option.badge}</Badge>
+                                                <Badge className={`${option.color} dark:border-white/10 `}>{option.badge}</Badge>
                                                 <span className="text-sm">{option.label}</span>
                                                 <div
                                                     className={`absolute top-1 right-1 w-3 h-3  rounded-full dark:border-white/50 ${
@@ -382,7 +383,7 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                                 Lưu vào nháp
                             </Button>
                             <DialogAddMoreInfoQuiz generatedQuiz={generatedQuiz} openAddMoreInfo={openAddMoreInfo} setOpenAddMoreInfo={setOpenAddMoreInfo}>
-                                <Button size="lg" className="text-white bg-gradient-to-r from-blue-500 to-cyan-500">
+                                <Button size="lg" className="w-full md:w-auto text-white bg-gradient-to-r from-blue-500 to-cyan-500">
                                     <Save className="mr-2 h-4 w-4" />
                                     Lưu và xuất bản
                                 </Button>

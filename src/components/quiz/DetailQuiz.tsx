@@ -202,8 +202,6 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                     <div className="flex-1">
                                         <div className="flex flex-wrap gap-2 mb-4">
                                             <Badge className="bg-white/20 text-white border-white/30 hover:bg-white/30">{data?.subject}</Badge>
-                                            <Badge className="bg-white/20 text-white border-white/30 hover:bg-white/30">Python</Badge>
-                                            <Badge className="bg-white/20 text-white border-white/30 hover:bg-white/30">Phỏng vấn</Badge>
                                         </div>
                                         <h1 className="text-3xl md:text-4xl font-bold mb-4">{data?.title}</h1>
                                         <p className="text-xl text-white/90 mb-6">{data?.content}</p>
@@ -257,12 +255,12 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                 </div>
                                 <p className="text-gray-600 dark:text-gray-400">Khám phá một số câu hỏi mẫu trong bài quiz này</p>
                             </CardHeader>
-                            <CardContent className="space-y-8  max-h-[500px] overflow-y-scroll">
+                            <CardContent className="space-y-8 p-1 pr-3 md:p-6 max-h-[700px] overflow-y-scroll">
                                 {quizSlice &&
                                     quizSlice?.map((question: any, index: number) => (
                                         <div key={question.id} className="relative">
                                             <div className="flex items-start space-x-4">
-                                                <div className="flex-shrink-0 w-8 h-8 bg-blue-50  dark:bg-blue-800/50  text-blue-800 dark:text-blue-200 rounded-full flex items-center justify-center font-semibold text-sm">
+                                                <div className="hidden md:flex flex-shrink-0 w-8 h-8 bg-blue-50  dark:bg-blue-800/50  text-blue-800 dark:text-blue-200 rounded-full  items-center justify-center font-semibold text-sm">
                                                     {index + 1}
                                                 </div>
                                                 <div className="flex-1">
@@ -281,7 +279,7 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                             </div>
                                         </div>
                                     ))}
-                                <div className="text-center pt-4">
+                                <div className="text-center py-4">
                                     <Button variant="outline" size="lg" disabled className="">
                                         Xem tất cả {quiz?.length} câu hỏi
                                     </Button>
@@ -292,7 +290,7 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                         {/* Comments Section */}
                         <Card className="shadow-lg border-0 bg-white/70 backdrop-blur-sm dark:bg-slate-800/50 dark:border-white/10">
                             <CardHeader>
-                                <CardTitle className="flex items-center text-2xl font-bold dark:text-white/80 text-gray-800">
+                                <CardTitle className="flex  items-center text-2xl font-bold dark:text-white/80 text-gray-800">
                                     <MessageCircle className="h-6 w-6 mr-3 text-blue-600" />
                                     Đánh giá & Bình luận
                                     <Badge variant="secondary" className="ml-3 bg-blue-100 text-blue-700 dark:bg-blue-800/50 dark:text-blue-200">

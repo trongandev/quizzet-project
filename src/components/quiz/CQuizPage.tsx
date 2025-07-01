@@ -108,7 +108,7 @@ export default function CQuizPage({ publicQuizData }: { publicQuizData: IQuiz[] 
     };
     return (
         <div className="flex items-center justify-center">
-            <div className="w-full md:w-[1000px] xl:w-[1200px]">
+            <div className="w-full md:w-[1000px] xl:w-[1200px] px-3 md:px-0">
                 <div className="flex items-center gap-3 ">
                     <div className="w-1/6 h-14 md:w-14  flex items-center justify-center bg-gradient-to-r from-blue-500/80 to-purple-500/80 rounded-lg text-white">
                         <SiQuizlet size={21} />
@@ -135,7 +135,9 @@ export default function CQuizPage({ publicQuizData }: { publicQuizData: IQuiz[] 
                                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                                     <Input placeholder="Tìm kiếm flashcard..." className="pl-10 w-full md:w-64 " value={searchQuiz} onChange={(e) => handleSearchQuiz(e.target.value)} />
                                 </div>
-                                <Button onClick={() => router.push("/quiz/themcauhoi")} className="h-11 px-10 relative group overflow-hidden  bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+                                <Button
+                                    onClick={() => router.push("/quiz/themcauhoi")}
+                                    className="h-11 w-full md:w-auto px-10 relative group overflow-hidden  bg-gradient-to-r from-blue-500 to-purple-500 text-white">
                                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50  dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
                                     <Plus className="h-4 w-4" />
                                     Thêm câu hỏi
@@ -146,7 +148,7 @@ export default function CQuizPage({ publicQuizData }: { publicQuizData: IQuiz[] 
                             <div>
                                 {token ? (
                                     <div className="mt-10">
-                                        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 ">
+                                        <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-3 ">
                                             {filterQuiz && filterQuiz.map((item) => <QuizItem item={item} key={item._id} />)}
                                             {loading && (
                                                 <div className="flex items-center justify-center col-span-4 h-[500px]">
@@ -191,7 +193,7 @@ export default function CQuizPage({ publicQuizData }: { publicQuizData: IQuiz[] 
                             </div> */}
 
                             <div className="mt-5">
-                                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5 mb-5">
+                                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5 mb-5">
                                     {displayData && displayData.map((item) => <QuizItem item={item} key={item?._id} />)}
 
                                     {publicQuizData?.length <= 0 && (

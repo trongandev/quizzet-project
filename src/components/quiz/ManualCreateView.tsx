@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { FileText, Plus, Settings, Eye } from "lucide-react";
+import { SidebarTrigger } from "../ui/sidebar";
 
 export function ManualCreateView() {
     const [quizInfo, setQuizInfo] = useState({
@@ -37,7 +38,7 @@ export function ManualCreateView() {
         <div className="p-6 max-w-4xl mx-auto space-y-6">
             <div className="text-center space-y-2">
                 <div className="flex items-center justify-center space-x-2">
-                    <FileText className="h-8 w-8 text-blue-500" />
+                    <SidebarTrigger />
                     <h1 className="text-3xl font-bold">Tạo Quiz từ đầu</h1>
                 </div>
                 <p className="text-muted-foreground">Tạo quiz hoàn toàn tùy chỉnh theo ý muốn của bạn</p>

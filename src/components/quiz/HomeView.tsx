@@ -3,6 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Bot, FileText, Upload, Sparkles } from "lucide-react";
+import { SidebarTrigger } from "../ui/sidebar";
 
 interface HomeViewProps {
     onViewChange: (view: string) => void;
@@ -40,7 +41,8 @@ export function HomeView({ onViewChange }: HomeViewProps) {
         <div className="p-6 space-y-6">
             <div className="text-center space-y-4">
                 <div className="flex items-center justify-center space-x-2">
-                    <Sparkles className="h-8 w-8 text-yellow-500" />
+                    <SidebarTrigger />
+
                     <h1 className="text-3xl font-bold">Tạo một bài Quiz mới</h1>
                 </div>
                 <p className="text-muted-foreground text-lg">Chọn phương thức tạo quiz phù hợp với nhu cầu của bạn</p>

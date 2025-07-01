@@ -342,28 +342,30 @@ export default function UserProfile({ profile, quiz, flashcard }: PropsProfile) 
                     </Card> */}
                     {/* Main Content */}
                     <Tabs defaultValue="overview" className="space-y-6">
-                        <TabsList className="dark:bg-slate-800 dark:border-slate-700">
-                            <TabsTrigger value="overview" className="dark:data-[state=active]:bg-slate-700">
-                                Tổng quan
-                            </TabsTrigger>
-                            <TabsTrigger value="quiz" className="dark:data-[state=active]:bg-slate-700">
-                                Bộ Quiz
-                            </TabsTrigger>
-                            <TabsTrigger value="flashcard" className="dark:data-[state=active]:bg-slate-700">
-                                Bộ Flashcard
-                            </TabsTrigger>
-                            <TabsTrigger value="achievements" className="dark:data-[state=active]:bg-slate-700">
-                                Thành tựu
-                            </TabsTrigger>
-                            <TabsTrigger value="levels" className="dark:data-[state=active]:bg-slate-700">
-                                Cấp độ
-                            </TabsTrigger>
-                            {user?._id === profile._id && (
-                                <TabsTrigger value="guide" className="dark:data-[state=active]:bg-slate-700">
-                                    Hướng dẫn
+                        <div className="w-full overflow-x-scroll">
+                            <TabsList className="dark:bg-slate-800 dark:border-slate-700">
+                                <TabsTrigger value="overview" className="dark:data-[state=active]:bg-slate-700">
+                                    Tổng quan
                                 </TabsTrigger>
-                            )}
-                        </TabsList>
+                                <TabsTrigger value="quiz" className="dark:data-[state=active]:bg-slate-700">
+                                    Bộ Quiz
+                                </TabsTrigger>
+                                <TabsTrigger value="flashcard" className="dark:data-[state=active]:bg-slate-700">
+                                    Bộ Flashcard
+                                </TabsTrigger>
+                                <TabsTrigger value="achievements" className="dark:data-[state=active]:bg-slate-700">
+                                    Thành tựu
+                                </TabsTrigger>
+                                <TabsTrigger value="levels" className="dark:data-[state=active]:bg-slate-700">
+                                    Cấp độ
+                                </TabsTrigger>
+                                {user?._id === profile._id && (
+                                    <TabsTrigger value="guide" className="dark:data-[state=active]:bg-slate-700">
+                                        Hướng dẫn
+                                    </TabsTrigger>
+                                )}
+                            </TabsList>
+                        </div>
 
                         <TabsContent value="overview" className="space-y-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

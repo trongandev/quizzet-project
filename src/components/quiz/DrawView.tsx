@@ -12,6 +12,7 @@ import handleCompareDate from "@/lib/CompareDate";
 import { AIResultPreview } from "./AIResuiltPreview";
 import Link from "next/link";
 import DialogAddMoreInfoQuiz from "./DialogAddMoreInfoQuiz";
+import { SidebarTrigger } from "../ui/sidebar";
 
 interface DraftQuiz {
     id: string;
@@ -171,7 +172,10 @@ export function DraftsView({ onViewChange }: HomeViewProps) {
         <div className="p-6 max-w-6xl mx-auto space-y-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-3xl font-bold">Nháp Quiz</h1>
+                    <h1 className="text-3xl font-bold">
+                        <SidebarTrigger className="mr-3" />
+                        Nháp Quiz
+                    </h1>
                     <p className="text-muted-foreground mt-1">Quản lý các quiz đã lưu tạm thời</p>
                 </div>
                 <Button className="flex items-center space-x-2 dark:text-white" onClick={() => onViewChange("ai-create")}>

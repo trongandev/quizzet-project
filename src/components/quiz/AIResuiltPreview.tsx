@@ -269,7 +269,7 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpe
                         </Alert>
 
                         {/* Actions */}
-                        <div className="flex justify-between items-center">
+                        <div className="flex justify-between items-center  flex-col md:flex-row ">
                             <div className="flex items-center space-x-2">
                                 <h3 className="text-lg font-semibold">Danh sách câu hỏi</h3>
                                 <Badge variant="secondary">{quiz.questions.length} câu</Badge>
@@ -281,14 +281,14 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpe
                         </div>
 
                         {/* List */}
-                        <div className="space-y-4 max-h-[700px] overflow-y-scroll">
+                        <div className="space-y-4">
                             {quizData &&
                                 quizData.questions.map((question, index) => (
-                                    <Card key={question.id} className=" border-l-4 border-l-purple-500 dark:border-l-purple-700  hover:shadow-lg transition-shadow duration-200">
-                                        <CardHeader className="pb-3">
-                                            <div className="flex items-start justify-between">
+                                    <Card key={question.id} className="p-2 md:p-6 border-l-4 border-l-purple-500 dark:border-l-purple-700  hover:shadow-lg transition-shadow duration-200">
+                                        <CardHeader className="pb-3 p-2 md:p-6 ">
+                                            <div className="flex  flex-col-reverse gap-3 md:gap-0 md:flex-row items-start justify-between ">
                                                 <div className="flex-1">
-                                                    <CardTitle className="text-base font-medium">
+                                                    <CardTitle className="text-base font-medium ">
                                                         Câu {index + 1}: {renderHightlightedContent(question.question)}
                                                     </CardTitle>
                                                     <div className="flex items-center space-x-2 mt-2">
@@ -309,7 +309,7 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpe
                                         </CardHeader>
 
                                         {question.answers && (
-                                            <CardContent className="pt-0">
+                                            <CardContent className="pt-0 p-2 md:p-6 ">
                                                 <div className="space-y-1">
                                                     {question.answers.map((option, optIndex) => (
                                                         <div

@@ -97,7 +97,7 @@ export default function CAnswer({ history, question }: CAnswerProps) {
     // }
     return (
         <div className="flex items-center justify-center dark:text-white/80 text-gray-400">
-            <div className="w-full md:w-[1000px] xl:w-[1200px] py-16">
+            <div className="w-full md:w-[1000px] xl:w-[1200px] py-16 px-3 md:px-0">
                 <div className="mb-6">
                     <Button variant="ghost" onClick={() => router.back()} className="mb-4 text-gray-500 dark:text-white/80">
                         <ArrowLeft className="h-4 w-4 mr-2" />
@@ -109,8 +109,8 @@ export default function CAnswer({ history, question }: CAnswerProps) {
                 <div className="space-y-6">
                     {question &&
                         question.map((question: any) => (
-                            <Card key={question.id} className="border border-transparent dark:border-white/10 shadow-md">
-                                <CardHeader>
+                            <Card key={question.id} className="border border-transparent dark:border-white/10 shadow-md p-2 md:p-6">
+                                <CardHeader className="p-2 md:p-6">
                                     <div className="flex items-start justify-between">
                                         <CardTitle className="text-lg">
                                             Câu {question.id}: {renderHightlightedContent(question.question)}
@@ -123,7 +123,7 @@ export default function CAnswer({ history, question }: CAnswerProps) {
                                     </div>
                                 </CardHeader>
 
-                                <CardContent className="space-y-4">
+                                <CardContent className="space-y-4 p-2 md:p-6">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                         {question.answers.map((option: any, index: number) => (
                                             <div

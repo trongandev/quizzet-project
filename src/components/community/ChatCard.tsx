@@ -43,7 +43,7 @@ const ChatCard = forwardRef<HTMLDivElement, MessageCardProps>(({ message, isLast
                         <p className="text-gray-500 dark:text-gray-400 text-xs">{handleCompareDate(message?.timestamp)}</p>
                         {message?.isEdit && <span className="text-xs text-gray-400"> (Đã chỉnh sửa)</span>}
                         {message?.replyTo && (
-                            <span className="text-xs text-gray-400 max-w-[350px] truncate">
+                            <span className="text-xs text-gray-400 w-[70px]  md:max-w-[350px] truncate">
                                 {/* href={`#${message.replyTo._id}`} */}
                                 (Trả lời {message?.replyTo?.userId.displayName}:{" "}
                                 <Link className="hover:underline hover:text-white/80" href="#">
