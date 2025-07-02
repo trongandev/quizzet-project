@@ -1,19 +1,19 @@
 import React from "react";
 import { unstable_cache } from "next/cache";
-import { GET_API } from "@/lib/fetchAPI";
+import { GET_API, GET_API_WITHOUT_COOKIE } from "@/lib/fetchAPI";
 import CTaiLieuDetail from "@/components/CTaiLieuDetail";
 
-const getCachedDecuong = (slug) =>
+const getCachedDecuong = (slug: string) =>
     unstable_cache(
         async () => {
-            const response = await GET_API(`/admin/so/${slug}`);
+            const response = await GET_API_WITHOUT_COOKIE(`/admin/so/${slug}`);
             return response;
         },
         [`de_cuong_${slug}`], // Key cache
         { revalidate: 30 } // TTL = 1 giờ
     );
 
-export async function generateMetadata({ params }) {
+export async function generateMetadata({ params }: any) {
     const { slug } = params;
     const decuong = await getCachedDecuong(slug)();
     return {
@@ -29,7 +29,7 @@ export async function generateMetadata({ params }) {
     };
 }
 
-export default async function Decuong({ params }) {
+export default async function Decuong({ params }: any) {
     const { slug } = params;
 
     const decuong = await getCachedDecuong(slug)();

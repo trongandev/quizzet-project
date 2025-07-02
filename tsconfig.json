@@ -41,7 +41,8 @@
         "src/app/(app)/congdong/ChatArea.jsx",
         "src/app/(app)/congdong/page.jsx",
         "src/components/flashcard/CPublicFlashcard.jsx",
-        "src/app/(app)/flashcard/practice/[slug]/page.jsx"
+        "src/app/(app)/flashcard/practice/[slug]/page.jsx",
+        "src/app/(app)/decuong/flashcard/[id]/page.jsx"
     ],
     "exclude": ["node_modules"]
 }

@@ -146,7 +146,7 @@ export default function PractiveFlashcard({ params }: { params: { slug: string }
             if (e.key === "Enter") {
             } else if (e.key === "Shift") {
                 if (flashcards && flashcards.length > 0) {
-                    const currentCard = flashcards[currentIndex];
+                    const currentCard = flashcards?.[currentIndex];
                     if (currentCard) {
                         speakWord(currentCard.title);
                     }
@@ -176,7 +176,7 @@ export default function PractiveFlashcard({ params }: { params: { slug: string }
         );
     }
 
-    if ((!flashcards || !flashcards.length) && !loading) {
+    if (!flashcards || !flashcards.length) {
         return (
             <div className="flex items-center justify-center h-screen flex-col gap-3 text-gray-500 dark:text-gray-400">
                 <BiSlideshow size={50} className="" />
