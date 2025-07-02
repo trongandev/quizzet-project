@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Eye, Lightbulb, Send, Speaker, Volume2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import Loading from "@/components/ui/loading";
 const FEATURES = {
     FLASHCARD: 1,
     QUIZ: 2,
@@ -22,6 +23,7 @@ const FEATURES = {
 
 export default function PractiveFlashcard({ params }) {
     const [isFlipped, setIsFlipped] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [index, setIndex] = useState(0);
     const [loadingAudio, setLoadingAudio] = useState(null);
     const [speakLang, setSpeakLang] = useState(1);
@@ -53,6 +55,7 @@ export default function PractiveFlashcard({ params }) {
     // Fetch flashcards data
 
     useEffect(() => {
+        setLoading(true);
         const fetchFlashCards = async () => {
             const token = Cookies.get("token");
             const req = await GET_API(`/flashcards/${params?.slug}`, token);
@@ -71,6 +74,7 @@ export default function PractiveFlashcard({ params }) {
             }
         };
         fetchFlashCards();
+        setLoading(false);
     }, [params?.slug]);
 
     useEffect(() => {
@@ -277,7 +281,15 @@ export default function PractiveFlashcard({ params }) {
         [feature, handleChangeIndex, checkListeningAnswer, handleProgress]
     );
 
-    if (!flashcards.length) {
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <Loading className="h-14 w-14" />
+            </div>
+        );
+    }
+
+    if (!flashcards.length && !loading) {
         return (
             <div className="flex items-center justify-center h-screen flex-col gap-3">
                 <p className="text-gray-500">Vui lòng thêm từ mới vào danh sách flashcard.</p>

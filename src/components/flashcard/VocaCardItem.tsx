@@ -1,42 +1,31 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Volume2, BookOpen, MessageCircle, Lightbulb, MoreVertical, Edit3, ChevronUp, ChevronDown, Trash2, History, FileType2 } from "lucide-react";
+import { Volume2, BookOpen, MessageCircle, Lightbulb, MoreVertical, Edit3, ChevronUp, ChevronDown, Trash2, History } from "lucide-react";
 import { Flashcard } from "@/types/type";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import handleCompareDate from "@/lib/CompareDate";
-import { toast } from "sonner";
 import Loading from "../ui/loading";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import HistoryViewModal from "./HistoryViewModal";
-import { formatDistanceStrict, formatDistanceToNow, formatDistanceToNowStrict } from "date-fns";
+import { formatDistanceToNowStrict } from "date-fns";
 import { vi } from "date-fns/locale";
 interface Props {
     data: Flashcard;
     speakWord: (word: string, id?: string) => void;
     loadingAudio: any;
-    loadingConfirm?: boolean;
-    setLoadingConfirm?: (value: boolean) => void;
     handleDelete: (id: string) => void;
+    token: any;
+    setIsEditOpen: (value: boolean) => void;
+    setEditFlashcard: (data: Flashcard) => void;
 }
-export default function VocaCardItem({ data, speakWord, loadingAudio, handleDelete, loadingConfirm, setLoadingConfirm }: Props) {
+export default function VocaCardItem({ data, speakWord, loadingAudio, handleDelete, token, setIsEditOpen, setEditFlashcard }: Props) {
     const [showExamples, setShowExamples] = useState(false);
-    const [isEditOpen, setIsEditOpen] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
-
-    const [editData, setEditData] = useState({
-        title: data.title,
-        transcription: data.transcription,
-        define: data.define,
-        type_of_word: data.type_of_word,
-        note: data.note || "",
-        example: data.example || [],
-    });
     const getStatusColor = (status: string) => {
         switch (status) {
             case "learned":
@@ -76,6 +65,11 @@ export default function VocaCardItem({ data, speakWord, loadingAudio, handleDele
         }
     };
 
+    const handleEdit = () => {
+        setIsEditOpen(true);
+        setEditFlashcard(data);
+    };
+
     return (
         <Card className={`w-full max-w-2xl md:max-w-full mx-auto shadow-sm hover:shadow-md transition-shadow duration-200 border-l-4 overflow-hidden h-full ${getBorderColor(data.status)}`}>
             <CardContent className="p-0 dark:bg-slate-800/50 h-full">
@@ -102,14 +96,17 @@ export default function VocaCardItem({ data, speakWord, loadingAudio, handleDele
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => setIsEditOpen(true)}>
+                            <DropdownMenuItem onClick={handleEdit}>
                                 <Edit3 className="w-4 h-4 mr-2  cursor-pointer" />
                                 Chỉnh sửa
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setIsHistoryOpen(true)}>
-                                <History className="w-4 h-4 mr-2 cursor-pointer" />
-                                Lịch sử học
-                            </DropdownMenuItem>
+                            {token && (
+                                <DropdownMenuItem onClick={() => setIsHistoryOpen(true)}>
+                                    <History className="w-4 h-4 mr-2 cursor-pointer" />
+                                    Lịch sử học
+                                </DropdownMenuItem>
+                            )}
+
                             <DropdownMenuItem className="dark:text-red-400 text-red-600 w-full  cursor-pointer" onClick={() => setOpenDelete(true)}>
                                 <Trash2 className="w-4 h-4 mr-2" />
                                 Xóa

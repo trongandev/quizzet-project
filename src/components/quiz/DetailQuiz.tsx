@@ -29,6 +29,7 @@ interface PropsDetailQuiz {
 }
 
 export default function DetailQuiz({ quiz, data, comment, setComment, user }: PropsDetailQuiz) {
+    console.log(data);
     const [userRating, setUserRating] = useState(5);
     const [isReportModalOpen, setIsReportModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -113,6 +114,8 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
             setLoadingReport(false);
         }
     };
+    const totalStar = comment.reduce((acc, curr) => acc + curr.rating, 0);
+    const avgRating = comment.length > 0 ? (totalStar / comment.length).toFixed(1) : 0;
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400">
@@ -222,10 +225,12 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                         <div className="flex items-center space-x-4 mb-6">
                                             <div className="flex">
                                                 {[1, 2, 3, 4, 5].map((star) => (
-                                                    <Star key={star} className="h-5 w-5 text-yellow-400 fill-current" />
+                                                    <Star key={star} className={`h-5 w-5 ${star <= Number(avgRating) ? "text-yellow-400 fill-current" : "text-white/30"}`} />
                                                 ))}
                                             </div>
-                                            <span className="text-white/90">4.8 ({data?.comment?.length} đánh giá)</span>
+                                            <span className="text-white/90">
+                                                {avgRating} ({data?.comment?.length} đánh giá)
+                                            </span>
                                         </div>
                                     </div>
                                     <Button
@@ -409,7 +414,7 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                         <div className="text-xs text-gray-400">Tham gia {data?.uid && handleCompareDate(data?.uid?.created_at)}</div>
                                     </div>
                                 </div>
-                                <div className="grid grid-cols-2 gap-4 text-center">
+                                {/* <div className="grid grid-cols-2 gap-4 text-center">
                                     <div className="bg-blue-50 dark:bg-blue-800/50 p-3 rounded-lg">
                                         <div className="font-bold text-blue-600 dark:text-blue-200">25</div>
                                         <div className="text-xs ">Quiz</div>
@@ -421,7 +426,7 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                 </div>
                                 <Button variant="outline" className="w-full mt-4 hover:bg-blue-50 hidden hover:border-blue-200">
                                     Theo dõi
-                                </Button>
+                                </Button> */}
                             </CardContent>
                         </Card>
 
@@ -458,14 +463,14 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                                 {data?.difficulty || "Dễ"}
                                             </Badge>
                                         </div>
-                                        <Progress value={25} className="h-2" />
+                                        {/* <Progress value={25} className="h-2" /> */}
                                     </div>
                                 </div>
                             </CardContent>
                         </Card>
 
                         {/* Related Quizzes */}
-                        <Card className="shadow-lg border-0 bg-white/70 backdrop-blur-sm dark:bg-slate-800/50 dark:border-white/10">
+                        {/* <Card className="shadow-lg border-0 bg-white/70 backdrop-blur-sm dark:bg-slate-800/50 dark:border-white/10">
                             <CardHeader>
                                 <CardTitle className="text-lg font-bold dark:text-white/80 text-gray-800">Quiz liên quan</CardTitle>
                             </CardHeader>
@@ -499,7 +504,7 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                     Xem thêm quiz
                                 </Button>
                             </CardContent>
-                        </Card>
+                        </Card> */}
                     </div>
                 </div>
             </div>

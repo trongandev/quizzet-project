@@ -32,6 +32,7 @@ import Loading from "../ui/loading";
 import VoiceSelectionModal from "./VoiceSelectionModal";
 import { revalidateCache } from "@/lib/revalidate";
 import AddMoreVocaModal from "./AddMoreVocaModal";
+import EditVocaModal from "./EditVocaModal";
 
 const getLanguageFlag = (lang: string) => {
     const flags: { [key: string]: string } = {
@@ -66,6 +67,8 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
     const [loadingAudio, setLoadingAudio] = useState(null);
     const [disableAudio, setDisableAudio] = useState(false);
     const [selectedVoice, setSelectedVoice] = useState("");
+    const [editFlashcard, setEditFlashcard] = useState<Flashcard>();
+    const [isEditOpen, setIsEditOpen] = useState(false);
     const token = Cookies.get("token") || "";
     const router = useRouter();
     const { user } = useUser() || {};
@@ -130,7 +133,7 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
     }, []);
 
     const summaryUsers = [
-        { label: "Tất cả thẻ", filter: "all", value: listFlashcard?.flashcards?.length || 0, icon: <GalleryVerticalEnd />, color: "indigo" },
+        { label: "Tất cả thẻ", filter: "all", value: filteredFlashcards?.length || 0, icon: <GalleryVerticalEnd />, color: "indigo" },
         { label: "Đã nhớ", filter: "learned", value: statusCounts?.learned || 0, icon: <BookOpen />, color: "green" },
         { label: "Đang ghi nhớ", filter: "remembered", value: statusCounts?.remembered || 0, icon: <Brain />, color: "blue" },
         { label: "Cần ôn tập", filter: "reviewing", value: statusCounts?.reviewing || 0, icon: <RotateCcw />, color: "red" },
@@ -337,6 +340,8 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
         );
     }
 
+    console.log(editFlashcard, "editFlashcard");
+
     return (
         <div className="w-full space-y-5 relative z-[10] dark:bg-slate-700 bg-gray-200">
             <div className="bg-white dark:bg-slate-800 p-5 border-b border-gray-200 dark:border-white/10 space-y-3">
@@ -363,7 +368,13 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                                     <PencilLine /> Chỉnh Sửa
                                 </Button>
                             </EditListFlashcardModal>
-                            <AddMoreVocaModal listFlashcard={listFlashcard} filteredFlashcards={filteredFlashcards} setFilteredFlashcards={setFilteredFlashcards} token={token}>
+                            <AddMoreVocaModal
+                                listFlashcard={listFlashcard}
+                                setListFlashcard={setListFlashcard}
+                                filteredFlashcards={filteredFlashcards}
+                                setFilteredFlashcards={setFilteredFlashcards}
+                                token={token}
+                                speakWord={speakWord}>
                                 <Button className="dark:text-white" variant="outline">
                                     <Grid3x3 /> Thêm nhiều
                                 </Button>
@@ -429,18 +440,50 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                     </div> */}
                     {user?._id === String(listFlashcard?.userId?._id) && (
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
-                            {summaryUsers.map((item) => (
-                                <div
-                                    key={item.filter}
-                                    onClick={() => handleFilter(item.filter)}
-                                    className={`w-full h-24 px-5 bg-${item.color}-300/60 dark:bg-${item.color}-800/50 rounded-xl flex items-center justify-between border border-${item.color}-500/50 dark:border-white/10 shadow-sm shadow-${item.color}-500/50 hover:scale-105 transition-transform cursor-pointer duration-500  dark:hover:bg-${item.color}-700`}>
-                                    <div className="">
-                                        <p className="text-gray-600 dark:text-white/60">{item.label}</p>
-                                        <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">{item.value}</h3>
-                                    </div>
-                                    <div className={`w-10 h-10 flex items-center justify-center bg-${item.color}-500 text-white rounded-full`}>{item.icon}</div>
+                            <div
+                                onClick={() => handleFilter("all")}
+                                className={`w-full h-24 px-5 bg-indigo-300/60 dark:bg-indigo-800/50 rounded-xl flex items-center justify-between border border-indigo-500/50 dark:border-white/10 shadow-sm shadow-indigo-500/50 hover:scale-105 transition-transform cursor-pointer duration-500  dark:hover:bg-indigo-700`}>
+                                <div className="">
+                                    <p className="text-gray-600 dark:text-white/60">Tất cả thẻ</p>
+                                    <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">{filteredFlashcards?.length || 0}</h3>
                                 </div>
-                            ))}
+                                <div className={`w-10 h-10 flex items-center justify-center bg-indigo-500 text-white rounded-full`}>
+                                    <GalleryVerticalEnd />
+                                </div>
+                            </div>
+                            <div
+                                onClick={() => handleFilter("learned")}
+                                className={`w-full h-24 px-5 bg-green-300/60 dark:bg-green-800/50 rounded-xl flex items-center justify-between border border-green-500/50 dark:border-white/10 shadow-sm shadow-green-500/50 hover:scale-105 transition-transform cursor-pointer duration-500  dark:hover:bg-green-700`}>
+                                <div className="">
+                                    <p className="text-gray-600 dark:text-white/60">Đã nhớ</p>
+                                    <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">{filteredFlashcards?.length || 0}</h3>
+                                </div>
+                                <div className={`w-10 h-10 flex items-center justify-center bg-green-500 text-white rounded-full`}>
+                                    <BookOpen />
+                                </div>
+                            </div>
+                            <div
+                                onClick={() => handleFilter("remembered")}
+                                className={`w-full h-24 px-5 bg-blue-300/60 dark:bg-blue-800/50 rounded-xl flex items-center justify-between border border-blue-500/50 dark:border-white/10 shadow-sm shadow-blue-500/50 hover:scale-105 transition-transform cursor-pointer duration-500  dark:hover:bg-blue-700`}>
+                                <div className="">
+                                    <p className="text-gray-600 dark:text-white/60">Đang ghi nhớ</p>
+                                    <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">{filteredFlashcards?.length || 0}</h3>
+                                </div>
+                                <div className={`w-10 h-10 flex items-center justify-center bg-blue-500 text-white rounded-full`}>
+                                    <Brain />
+                                </div>
+                            </div>
+                            <div
+                                onClick={() => handleFilter("reviewing")}
+                                className={`w-full h-24 px-5 bg-red-300/60 dark:bg-red-800/50 rounded-xl flex items-center justify-between border border-red-500/50 dark:border-white/10 shadow-sm shadow-red-500/50 hover:scale-105 transition-transform cursor-pointer duration-500  dark:hover:bg-red-700`}>
+                                <div className="">
+                                    <p className="text-gray-600 dark:text-white/60">Cần ôn tập</p>
+                                    <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">{filteredFlashcards?.length || 0}</h3>
+                                </div>
+                                <div className={`w-10 h-10 flex items-center justify-center bg-red-500 text-white rounded-full`}>
+                                    <RotateCcw />
+                                </div>
+                            </div>
                         </div>
                     )}
 
@@ -496,8 +539,9 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                             speakWord={speakWord}
                             loadingAudio={loadingAudio}
                             handleDelete={handleDelete}
-                            loadingConfirm={loadingConfirm}
-                            setLoadingConfirm={setLoadingConfirm}
+                            token={token}
+                            setEditFlashcard={setEditFlashcard}
+                            setIsEditOpen={setIsEditOpen}
                         />
                     ))
                 ) : (
@@ -507,6 +551,16 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                     </div>
                 )}
             </div>
+            <EditVocaModal
+                isEditOpen={isEditOpen}
+                setIsEditOpen={setIsEditOpen}
+                editFlashcard={editFlashcard}
+                setEditFlashcard={setEditFlashcard}
+                listFlashcard={listFlashcard}
+                token={token}
+                filteredFlashcards={filteredFlashcards}
+                setFilteredFlashcards={setFilteredFlashcards}
+                setListFlashcard={setListFlashcard}></EditVocaModal>
         </div>
     );
 }

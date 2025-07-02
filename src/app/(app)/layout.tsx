@@ -81,9 +81,9 @@ export default function RootLayout({ children }: any) {
                                     </ul>
                                 </div>
                             </div>
+                            <CFooter />
                         </SocketProvider>
                     </UserProvider>
-                    <CFooter />
                     <Analytics />
                     <GoogleAnalytics gaId="G-L681038P5E" />
                     <SpeedInsights />

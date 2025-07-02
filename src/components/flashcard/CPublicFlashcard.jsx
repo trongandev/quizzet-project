@@ -1,29 +1,10 @@
 "use client";
 import { GET_API } from "@/lib/fetchAPI";
-import { message, Spin } from "antd";
 import React, { useEffect, useState } from "react";
-import { LoadingOutlined } from "@ant-design/icons";
 import { languages } from "@/lib/languageOption";
 import Cookies from "js-cookie";
 import PublicFC from "./PublicFC";
-import {
-    AlertCircle,
-    BookOpen,
-    Brain,
-    CheckCircle,
-    ChevronLeft,
-    ChevronRight,
-    CircleQuestionMark,
-    Clock,
-    Globe,
-    NotepadTextDashed,
-    Plus,
-    RotateCcw,
-    Search,
-    Target,
-    TrendingUp,
-    Users,
-} from "lucide-react";
+import { AlertCircle, BookOpen, Brain, CheckCircle, ChevronLeft, ChevronRight, Clock, Globe, NotepadTextDashed, Plus, RotateCcw, Search, Target, TrendingUp, Users } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "../ui/input";
 import { CreateFlashcardModal } from "@/components/flashcard/CreateFlashcardModal";
@@ -35,17 +16,14 @@ import { cn } from "@/lib/utils";
 import { Badge } from "../ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useRouter } from "next/navigation";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import Loading from "../ui/loading";
 export default function CPublicFlashCard({ publicFlashcards, summary }) {
-    const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [language, setLanguage] = useState("all");
     const [searchFC, setSearchFC] = useState("");
     const [filterFlashcard, setFilterFlashcard] = useState([]);
-    const defaultListFlashCard = { title: "", desc: "", language: "english", public: false };
     const [listFlashCard, setListFlashCard] = useState([]);
-    const [newListFlashCard, setNewListFlashCard] = useState(defaultListFlashCard);
     const [tabFlashcard, setTabFlashcard] = useState("my-sets"); // my-sets | community
     const [data, setData] = useState(publicFlashcards);
     // Pagination states
@@ -79,7 +57,7 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
     if (!publicFlashcards && !listFlashCard) {
         return (
             <div className="flex items-center justify-center h-screen">
-                <Spin size="large" />
+                <Loading />
             </div>
         );
     }

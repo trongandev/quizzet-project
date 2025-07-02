@@ -62,6 +62,7 @@ const rateOptions = [
 
 export default function PractiveFlashcard({ params }: { params: { slug: string } }) {
     const [flashcards, setFlashcards] = useState<Flashcard[]>(); // Danh sách flashcards
+    const [loading, setLoading] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0); // Vị trí hiện tại trong danh sách flashcards
     const [isFlipped, setIsFlipped] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
@@ -74,6 +75,7 @@ export default function PractiveFlashcard({ params }: { params: { slug: string }
     const router = useRouter();
 
     useEffect(() => {
+        setLoading(true);
         const fetchAndInitialize = async () => {
             const req = await GET_API(`/flashcards/practice`, token);
             if (req.ok) {
@@ -95,6 +97,7 @@ export default function PractiveFlashcard({ params }: { params: { slug: string }
             }
         };
         fetchAndInitialize();
+        setLoading(false);
     }, [params?.slug, token]);
 
     const [tts] = useState(() => new EdgeSpeechTTS({ locale: "en-US" }));
@@ -165,7 +168,15 @@ export default function PractiveFlashcard({ params }: { params: { slug: string }
         [currentIndex, flashcards]
     );
 
-    if (!flashcards || !flashcards.length) {
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center h-screen">
+                <Loading className="h-14 w-14" />
+            </div>
+        );
+    }
+
+    if ((!flashcards || !flashcards.length) && !loading) {
         return (
             <div className="flex items-center justify-center h-screen flex-col gap-3 text-gray-500 dark:text-gray-400">
                 <BiSlideshow size={50} className="" />

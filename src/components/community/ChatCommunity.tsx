@@ -3,9 +3,9 @@ import { useSocket } from "@/context/socketContext";
 import { useUser } from "@/context/userContext";
 import React, { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import Cookies from "js-cookie";
-import { GET_API_WITHOUT_COOKIE, POST_API, POST_API_CLOUD } from "@/lib/fetchAPI";
+import { GET_API_WITHOUT_COOKIE } from "@/lib/fetchAPI";
 
-import { Bell, EllipsisVertical, Hash, Heart, ImagePlus, MessageCircle, Minus, Paperclip, Search, Send, Share, Smile, Users, X } from "lucide-react";
+import { Bell, EllipsisVertical, Hash, ImagePlus, Minus, Search, Send, Smile, Users, X } from "lucide-react";
 import Image from "next/image";
 import ChatCard from "@/components/community/ChatCard";
 import { Input } from "@/components/ui/input";
@@ -13,7 +13,6 @@ import { Button } from "@/components/ui/button";
 import { IChatCommunityMessage } from "@/types/type";
 import Link from "next/link";
 import { toast } from "sonner";
-import DialogAddImage from "./DialogAddImage";
 import { Label } from "../ui/label";
 import Loading from "../ui/loading";
 import axios from "axios";
@@ -253,9 +252,9 @@ export default function ChatCommunity() {
                             </div>
                         </div>
                         {/* nội dung chính */}
-                        <div className="flex flex-col">
+                        <div className="flex flex-col ">
                             <div
-                                className={`py-5 px-3 flex-1 light:bg-white/80  ${
+                                className={`py-5 px-3 flex-1  bg-white/80 dark:bg-inherit ${
                                     replyingTo && imageReview
                                         ? "max-h-[calc(80vh-249px)] min-h-[calc(80vh-249px)]"
                                         : imageReview
