@@ -319,7 +319,16 @@ export function FileImportView({ onViewChange }: HomeViewProps) {
                             </div>
                         </div>
                     )}
-                    {generatedQuiz && <AIResultPreview open={showPreview} onOpenChange={setShowPreview} quiz={generatedQuiz} onQuizUpdate={handleQuizUpdate} setOpenAddMoreInfo={setOpenAddMoreInfo} />}
+                    {generatedQuiz && (
+                        <AIResultPreview
+                            open={showPreview}
+                            onOpenChange={setShowPreview}
+                            quiz={generatedQuiz}
+                            onQuizUpdate={handleQuizUpdate}
+                            setOpenAddMoreInfo={setOpenAddMoreInfo}
+                            setGeneratedQuiz={setGeneratedQuiz}
+                        />
+                    )}
                 </div>
 
                 {/* Info Panel */}

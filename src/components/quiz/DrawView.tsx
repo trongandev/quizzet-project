@@ -10,7 +10,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { FileText, Search, Edit, Trash2, Eye, Calendar, Clock, Bot, Upload, Plus, AlertCircle, Aperture } from "lucide-react";
 import handleCompareDate from "@/lib/CompareDate";
 import { AIResultPreview } from "./AIResuiltPreview";
-import Link from "next/link";
 import DialogAddMoreInfoQuiz from "./DialogAddMoreInfoQuiz";
 import { SidebarTrigger } from "../ui/sidebar";
 
@@ -65,7 +64,7 @@ export function DraftsView({ onViewChange }: HomeViewProps) {
         setDrafts(draftQuiz || []);
     }, []);
 
-    const filteredDrafts = drafts.filter((draft) => draft.title.toLowerCase().includes(searchTerm.toLowerCase()) || draft.description.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filteredDrafts = drafts.filter((draft) => draft.title.toLowerCase().includes(searchTerm.toLowerCase()) || draft.content.toLowerCase().includes(searchTerm.toLowerCase()));
 
     const updateLocalStorage = (newDrafts: DraftQuiz[]) => {
         try {

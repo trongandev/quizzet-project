@@ -9,18 +9,18 @@ const FEATURES = {
     QUIZ: 2,
 };
 
-export default function TaiLieuFlashcard({ params }) {
+export default function TaiLieuFlashcard({ params }: any) {
     const [isFlipped, setIsFlipped] = useState(false);
     const [index, setIndex] = useState(0);
     const [feature, setFeature] = useState(FEATURES.FLASHCARD);
-    const [flashcards, setFlashcards] = useState([]);
-    const [progress, setProgress] = useState({ known: [], unknown: [] });
-    const [quizOptions, setQuizOptions] = useState([]);
+    const [flashcards, setFlashcards] = useState<any[]>([]);
+    const [progress, setProgress] = useState<{ known: any[]; unknown: any[] }>({ known: [], unknown: [] });
+    const [quizOptions, setQuizOptions] = useState<string[]>([]);
     const [messageApi, contextHolder] = message.useMessage();
     // random moder
-    const [selectedAnswers, setSelectedAnswers] = useState({});
+    const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string | null>>({});
 
-    const shuffle = (array) => {
+    const shuffle = (array: any) => {
         let currentIndex = array.length,
             randomIndex;
         while (currentIndex != 0) {
@@ -51,7 +51,7 @@ export default function TaiLieuFlashcard({ params }) {
     }, [flashcards]);
 
     const generateQuizOptions = useCallback(
-        (currentCard) => {
+        (currentCard: any) => {
             if (!currentCard || flashcards.length < 4) return;
 
             // Đáp án đúng
@@ -75,9 +75,8 @@ export default function TaiLieuFlashcard({ params }) {
 
     // Navigation handlers
     const handleChangeIndex = useCallback(
-        async (type) => {
-            let newIndex;
-            newIndex = type === "next" ? (index < flashcards.length - 1 ? index + 1 : 0) : index > 0 ? index - 1 : flashcards.length - 1;
+        async (type: any) => {
+            const newIndex = type === "next" ? (index < flashcards.length - 1 ? index + 1 : 0) : index > 0 ? index - 1 : flashcards.length - 1;
 
             setIndex(newIndex);
             setIsFlipped(false);
@@ -89,19 +88,19 @@ export default function TaiLieuFlashcard({ params }) {
 
     // Progress tracking
     const handleProgress = useCallback(
-        (type) => {
+        (type: any) => {
             const currentId = flashcards[index].answer;
             if (type === "known") {
                 setProgress((prev) => ({
                     ...prev,
-                    known: [...new Set([...prev.known, currentId])],
+                    known: Array.from(new Set([...prev.known, currentId])),
                     unknown: prev.unknown.filter((id) => id !== currentId),
                 }));
                 handleChangeIndex("next");
             } else {
                 setProgress((prev) => ({
                     ...prev,
-                    unknown: [...new Set([...prev.unknown, currentId])],
+                    unknown: Array.from(new Set([...prev.unknown, currentId])),
                     known: prev.known.filter((id) => id !== currentId),
                 }));
                 handleChangeIndex("prev");
@@ -110,7 +109,7 @@ export default function TaiLieuFlashcard({ params }) {
         [index, flashcards]
     );
 
-    const handlePlayAudio = (method) => {
+    const handlePlayAudio = (method: any) => {
         if (method == "correct") {
             const audio = new Audio("/audio/correct.mp3");
             audio.play();
@@ -121,7 +120,7 @@ export default function TaiLieuFlashcard({ params }) {
     };
 
     // Quiz answer handler
-    const handleQuizAnswer = async (selectedAnswer, idx) => {
+    const handleQuizAnswer = async (selectedAnswer: any, idx: any) => {
         const isCorrect = selectedAnswer === flashcards[index].answer;
         messageApi[isCorrect ? "success" : "error"](isCorrect ? "Chính xác, giỏi quá" : "Sai rồi, thử lại nhé! ^^");
         setSelectedAnswers({
@@ -149,7 +148,7 @@ export default function TaiLieuFlashcard({ params }) {
 
     // Keyboard navigation
     const handleKeyDown = useCallback(
-        (e) => {
+        (e: any) => {
             switch (e.key.toLowerCase()) {
                 case "arrowleft":
                     handleChangeIndex("prev");
@@ -234,7 +233,7 @@ export default function TaiLieuFlashcard({ params }) {
                                                         key={idx}
                                                         variant="secondary"
                                                         onClick={() => handleQuizAnswer(option, idx)}
-                                                        disabled={selectedAnswers[idx]}
+                                                        disabled={!!selectedAnswers[idx]}
                                                         className={` h-full w-full relative text-white transition-colors
                                                                     ${selectedAnswers[idx] === "correct" ? "!border-green-500 border-2 tada" : ""}
                                                                     ${selectedAnswers[idx] === "incorrect" ? "!border-red-500 border-2 shake" : ""}
