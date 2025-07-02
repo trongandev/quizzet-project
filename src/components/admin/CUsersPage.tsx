@@ -16,8 +16,6 @@ import { IUser } from "@/types/type";
 import { DataTableUsers } from "./DataTableUsers";
 
 export default function UsersPage({ user }: { user: IUser[] }) {
-    const [searchTerm, setSearchTerm] = useState("");
-
     return (
         <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
             <div className="flex items-center justify-between">

@@ -206,13 +206,15 @@ export const columns: ColumnDef<IUser>[] = [
 ];
 
 export function DataTableUsers({ user }: { user: IUser[] }) {
+    const [users,setUser] = React.useState<IUser[]>(user || []);
+    const [editUser, setEditUser] = React.useState<IUser | null>(null);
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
     const [rowSelection, setRowSelection] = React.useState({});
 
     const table = useReactTable<IUser>({
-        data: user,
+        data: users,
         columns,
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,

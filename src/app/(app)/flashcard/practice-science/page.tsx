@@ -2,25 +2,19 @@
 import { GET_API, POST_API } from "@/lib/fetchAPI";
 import React, { useEffect, useState, useCallback } from "react";
 import Cookies from "js-cookie";
-import { LoadingOutlined } from "@ant-design/icons";
-import { Spin, Switch, message } from "antd";
 import { HiMiniSpeakerWave } from "react-icons/hi2";
-import { GrFormNext, GrFormPrevious } from "react-icons/gr";
 import { BiSlideshow } from "react-icons/bi";
-import { IoSend } from "react-icons/io5";
 import { TbConfetti } from "react-icons/tb";
-import { BsCheckCircleFill, BsEmojiAstonished, BsEmojiDizzy, BsEmojiExpressionless, BsEmojiFrown, BsEmojiLaughing, BsEmojiNeutral, BsEmojiSunglasses, BsXCircleFill } from "react-icons/bs";
+import { BsEmojiDizzy, BsEmojiExpressionless, BsEmojiFrown, BsEmojiLaughing, BsEmojiNeutral, BsEmojiSunglasses } from "react-icons/bs";
 import { Button } from "@/components/ui/button";
 import { EdgeSpeechTTS } from "@lobehub/tts";
-import { ArrowLeft, Eye, MoveDown, MoveRight, Send, Target } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { ArrowLeft } from "lucide-react";
 import { Flashcard } from "@/types/type";
 import { toast } from "sonner";
 import Loading from "@/components/ui/loading";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useUser } from "@/context/userContext";
 import { useRouter } from "next/navigation";
-import { set } from "date-fns";
 const rateOptions = [
     {
         label: "Quên hoàn toàn",
@@ -67,49 +61,52 @@ export default function PractiveFlashcard({ params }: { params: { slug: string }
     const [isFlipped, setIsFlipped] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [loadingAudio, setLoadingAudio] = useState(false);
-    const [voicePerson, setVoicePerson] = useState<any>(); // Giọng nói mặc định được lấy trong localStorage
+    const [voiceSetting, setVoiceSetting] = useState<any>(); // Giọng nói mặc định được lấy trong localStorage
     const [sessionRatings, setSessionRatings] = useState<Array<{ id: string; quality: number; userId: string }>>([]); // Mảng lưu trữ các đánh giá trong phiên
     const token = Cookies.get("token") || "";
     const { user } = useUser() || {};
     const userId = user?._id || "";
     const router = useRouter();
-
+    const [error, setError] = useState<string | null>(null);
     useEffect(() => {
-        setLoading(true);
         const fetchAndInitialize = async () => {
-            const req = await GET_API(`/flashcards/practice`, token);
-            if (req.ok) {
-                const savedVoiceString = JSON.parse(localStorage.getItem("defaultVoices") || "");
-                const savedVoices = savedVoiceString[req?.listFlashCards?.language];
-                setVoicePerson(savedVoices ? savedVoices : "en-US-GuyNeural");
+            try {
+                setLoading(true);
+                setError(null); // Reset error
 
-                setFlashcards(req?.listFlashCards);
-                // Auto-play audio for first card if it's flashcard
-                // if (req?.listFlashCards) {
-                //     await speakWord(req?.listFlashCards?.flashcards[0].title);
-                // }
-            } else {
-                toast.error("Lỗi khi tải flashcards: ", {
-                    description: req?.message,
-                    duration: 5000,
-                    position: "top-center",
-                });
+                const req = await GET_API(`/flashcards/practice`, token);
+
+                if (req.ok) {
+                    const savedVoiceString = JSON.parse(localStorage.getItem("defaultVoices") || "{}");
+                    setVoiceSetting(savedVoiceString);
+                    setFlashcards(req?.listFlashCards || []);
+                } else {
+                    setError(req?.message || "Lỗi khi tải flashcards");
+                    setFlashcards([]);
+                }
+            } catch (error) {
+                console.error("Error fetching flashcards:", error);
+                setError("Lỗi kết nối, vui lòng thử lại sau");
+                setFlashcards([]);
+            } finally {
+                setLoading(false);
             }
         };
+
         fetchAndInitialize();
-        setLoading(false);
     }, [params?.slug, token]);
 
+    // Lấy hoặc tạo mới defaultVoices trong localStorage
     const [tts] = useState(() => new EdgeSpeechTTS({ locale: "en-US" }));
-
     const speakWord = useCallback(
-        async (text: string) => {
+        async (text: string, language: string) => {
+            console.log(voiceSetting[language], "voiceSetting[language]");
             try {
                 setLoadingAudio(true);
                 const response = await tts.create({
                     input: text,
                     options: {
-                        voice: voicePerson,
+                        voice: voiceSetting[language],
                     },
                 });
 
@@ -136,7 +133,7 @@ export default function PractiveFlashcard({ params }: { params: { slug: string }
                 }, 500);
             }
         },
-        [tts, voicePerson]
+        [tts, voiceSetting]
     );
 
     // Keyboard handlers
@@ -148,7 +145,7 @@ export default function PractiveFlashcard({ params }: { params: { slug: string }
                 if (flashcards && flashcards.length > 0) {
                     const currentCard = flashcards?.[currentIndex];
                     if (currentCard) {
-                        speakWord(currentCard.title);
+                        speakWord(currentCard.title, currentCard.language || "english");
                     }
                 }
             } else if (e.key === "1") {
@@ -165,9 +162,10 @@ export default function PractiveFlashcard({ params }: { params: { slug: string }
                 handleRate(5); // Rate option 6 = index 5
             }
         },
-        [currentIndex, flashcards]
+        [currentIndex, flashcards, loadingAudio, speakWord]
     );
 
+    // Loading state
     if (loading) {
         return (
             <div className="flex items-center justify-center h-screen">
@@ -176,7 +174,18 @@ export default function PractiveFlashcard({ params }: { params: { slug: string }
         );
     }
 
-    if (!flashcards || !flashcards.length) {
+    // Error state
+    if (error) {
+        return (
+            <div className="flex items-center justify-center h-screen flex-col gap-3 text-red-500">
+                <p>❌ {error}</p>
+                <Button onClick={() => window.location.reload()}>Thử lại</Button>
+            </div>
+        );
+    }
+
+    // No data state
+    if (!flashcards || flashcards.length === 0) {
         return (
             <div className="flex items-center justify-center h-screen flex-col gap-3 text-gray-500 dark:text-gray-400">
                 <BiSlideshow size={50} className="" />
@@ -187,9 +196,6 @@ export default function PractiveFlashcard({ params }: { params: { slug: string }
                     <Button variant="secondary" onClick={() => router.back()}>
                         <ArrowLeft /> Quay lại
                     </Button>
-                    {/* <Button variant="secondary" onClick={() => router.push(`/flashcard/practice/${params.slug}`)}>
-                        <Target /> Ôn tập từ
-                    </Button> */}
                 </div>
             </div>
         );
@@ -218,7 +224,7 @@ export default function PractiveFlashcard({ params }: { params: { slug: string }
 
         // Chuyển sang thẻ tiếp theo
         setIsFlipped(false);
-        speakWord((flashcards && flashcards[currentIndex + 1]?.title) || "");
+        speakWord((flashcards && flashcards[currentIndex + 1]?.title) || "", (flashcards && flashcards[currentIndex + 1]?.language) || "english");
 
         if (flashcards && currentIndex < flashcards.length - 1) {
             setCurrentIndex((prevIndex) => prevIndex + 1);
@@ -331,7 +337,7 @@ export default function PractiveFlashcard({ params }: { params: { slug: string }
                                                 <Button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
-                                                        speakWord(currentCard?.title);
+                                                        speakWord(currentCard?.title, currentCard?.language || "english");
                                                     }}
                                                     className="h-10 w-10 dark:text-white rounded-full"
                                                     disabled={loadingAudio}

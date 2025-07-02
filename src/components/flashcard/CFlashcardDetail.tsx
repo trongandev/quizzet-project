@@ -340,8 +340,6 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
         );
     }
 
-    console.log(editFlashcard, "editFlashcard");
-
     return (
         <div className="w-full space-y-5 relative z-[10] dark:bg-slate-700 bg-gray-200">
             <div className="bg-white dark:bg-slate-800 p-5 border-b border-gray-200 dark:border-white/10 space-y-3">
@@ -456,7 +454,7 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                                 className={`w-full h-24 px-5 bg-green-300/60 dark:bg-green-800/50 rounded-xl flex items-center justify-between border border-green-500/50 dark:border-white/10 shadow-sm shadow-green-500/50 hover:scale-105 transition-transform cursor-pointer duration-500  dark:hover:bg-green-700`}>
                                 <div className="">
                                     <p className="text-gray-600 dark:text-white/60">Đã nhớ</p>
-                                    <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">{filteredFlashcards?.length || 0}</h3>
+                                    <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">{statusCounts?.learned || 0}</h3>
                                 </div>
                                 <div className={`w-10 h-10 flex items-center justify-center bg-green-500 text-white rounded-full`}>
                                     <BookOpen />
@@ -467,7 +465,7 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                                 className={`w-full h-24 px-5 bg-blue-300/60 dark:bg-blue-800/50 rounded-xl flex items-center justify-between border border-blue-500/50 dark:border-white/10 shadow-sm shadow-blue-500/50 hover:scale-105 transition-transform cursor-pointer duration-500  dark:hover:bg-blue-700`}>
                                 <div className="">
                                     <p className="text-gray-600 dark:text-white/60">Đang ghi nhớ</p>
-                                    <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">{filteredFlashcards?.length || 0}</h3>
+                                    <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">{statusCounts?.remembered || 0}</h3>
                                 </div>
                                 <div className={`w-10 h-10 flex items-center justify-center bg-blue-500 text-white rounded-full`}>
                                     <Brain />
@@ -478,7 +476,7 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                                 className={`w-full h-24 px-5 bg-red-300/60 dark:bg-red-800/50 rounded-xl flex items-center justify-between border border-red-500/50 dark:border-white/10 shadow-sm shadow-red-500/50 hover:scale-105 transition-transform cursor-pointer duration-500  dark:hover:bg-red-700`}>
                                 <div className="">
                                     <p className="text-gray-600 dark:text-white/60">Cần ôn tập</p>
-                                    <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">{filteredFlashcards?.length || 0}</h3>
+                                    <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">{statusCounts?.reviewing || 0}</h3>
                                 </div>
                                 <div className={`w-10 h-10 flex items-center justify-center bg-red-500 text-white rounded-full`}>
                                     <RotateCcw />

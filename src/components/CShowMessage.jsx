@@ -14,6 +14,9 @@ import { IoSend } from "react-icons/io5";
 import { MdOutlineInsertEmoticon, MdOutlineReply } from "react-icons/md";
 import axios from "axios";
 import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import Loading from "./ui/loading";
+import { Send } from "lucide-react";
 export default function CShowMessage({ chatMessId, handleDeleteChat, token, socket, checkOnline }) {
     const lastMessageRef = useRef(null);
     const [messages, setMessages] = useState([]);
@@ -187,12 +190,12 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
             {contextHolder}
             {messages?.participants?.length > 0 && messages && (
                 <div className="fixed right-5 bottom-0 ">
-                    <div className="bg-white w-[338px] h-[455px] rounded-t-lg shadow-sm overflow-hidden">
-                        <div className="h-12 flex items-center justify-between p-1 my-1  border-b border-gray-200 shadow-sm">
+                    <div className="bg-white dark:bg-slate-800 border dark:border-white/10 w-[338px] h-[455px] rounded-t-lg shadow-sm overflow-hidden">
+                        <div className="h-12 flex items-center justify-between p-1 my-1  border-b border-gray-200 dark:border-white/10 shadow-sm">
                             <Link
                                 href={`/profile/${user?._id === messages?.participants[1]?.userId?._id ? messages?.participants[0]?.userId?._id : messages?.participants[1]?.userId?._id}`}
                                 alt=""
-                                className="flex items-center gap-2 hover:bg-gray-200 cursor-pointer rounded-md  px-2 h-full">
+                                className="flex items-center gap-2 hover:bg-gray-200 dark:hover:bg-gray-700   cursor-pointer rounded-md  px-2 h-full">
                                 <div className="relative w-[36px] h-[36px]">
                                     <Image
                                         src={
@@ -204,7 +207,7 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
                                     />
                                 </div>
                                 <div className="text-gray-500">
-                                    <h3 className="font-bold leading-5 text-gray-700 line-clamp-1 max-w-[150px]">
+                                    <h3 className="font-bold leading-5 text-gray-700 dark:text-gray-200 line-clamp-1 max-w-[150px]">
                                         {user?._id === messages?.participants[1]?.userId?._id ? messages?.participants[0]?.userId?.displayName : messages?.participants[1]?.userId?.displayName}{" "}
                                     </h3>
                                     {checkOnline(user?._id === messages?.participants[1]?.userId?._id ? messages?.participants[0]?.userId?._id : messages?.participants[1]?.userId?._id) ? (
@@ -223,7 +226,7 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
                             </div>
                         </div>
 
-                        <div className="h-[320px]  overflow-y-scroll p-3">
+                        <div className={`${imageReview ? "min-h-[220px] max-h-[220px]" : "min-h-[320px] max-h-[320px]"}    overflow-y-scroll p-3 overscroll-contain`}>
                             {chats &&
                                 chats?.map((msg, index) => {
                                     const isSameUser = index > 0 && chats[index - 1]?.userId === msg?.userId;
@@ -318,75 +321,6 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
                                                             <Images src={msg?.image || "/meme.jpg"} alt="" width={200} height="auto" className="object-cover rounded-lg mt-2" />
                                                         )}
                                                     </div>
-                                                    {/* <div className={`hidden group-hover:block `}>
-                                                        <div className={`flex gap-2 `}>
-                                                            {!msg?.unsend && (
-                                                                <Tooltip placement="top" title="Trả lời">
-                                                                    <label
-                                                                        htmlFor="message"
-                                                                        className=" h-full text-white cursor-pointer bg-gray-400 p-2 rounded-full hover:bg-secondary"
-                                                                        onClick={() => setReplyingTo(msg)}>
-                                                                        <MdOutlineReply />
-                                                                    </label>
-                                                                </Tooltip>
-                                                            )}
-                                                            {isCurrentUser && !msg?.unsend && (
-                                                                <Tooltip placement="top" title="Thu hồi">
-                                                                    <div
-                                                                        className=" h-full text-white cursor-pointer bg-gray-400 p-2 rounded-full hover:bg-secondary"
-                                                                        onClick={() => handleUnsend(msg?._id)}>
-                                                                        {loading ? <Spin indicator={<LoadingOutlined spin />} size="default" /> : <TbSendOff />}
-                                                                    </div>
-                                                                </Tooltip>
-                                                            )}
-                                                            {!msg?.unsend && (
-                                                                <Dropdown
-                                                                    overlay={
-                                                                        <div className="flex items-center bg-linear-item-2 rounded-full h-[40px] ">
-                                                                            {reactIconList.map((icon, index) => (
-                                                                                <div
-                                                                                    className=" hover:bg-gray-400 rounded-full cursor-pointer w-[40px] h-[40px] flex items-center justify-center "
-                                                                                    key={index}>
-                                                                                    {loadingIcon ? (
-                                                                                        <Spin indicator={<LoadingOutlined spin />} size="default" />
-                                                                                    ) : (
-                                                                                        <Image src={icon} width={25} height={25} alt="" onClick={() => handleReactIcon(msg._id, icon)} />
-                                                                                    )}
-                                                                                </div>
-                                                                            ))}
-                                                                        </div>
-                                                                    }
-                                                                    trigger={["click"]}
-                                                                    placement="top">
-                                                                    <div className=" h-full text-white cursor-pointer bg-gray-400 p-2 rounded-full hover:bg-secondary">
-                                                                        <MdOutlineInsertEmoticon />
-                                                                    </div>
-                                                                </Dropdown>
-                                                            )}
-                                                            {isCurrentUser && !msg?.unsend && (
-                                                                <Tooltip placement="top" title="Chỉnh sửa">
-                                                                    <div
-                                                                        className=" h-full text-white cursor-pointer bg-gray-400 p-2 rounded-full hover:bg-secondary"
-                                                                        onClick={() => handleEditMess(msg)}>
-                                                                        <MdEdit />
-                                                                    </div>
-                                                                </Tooltip>
-                                                            )}
-                                                            <Modal
-                                                                title="Chỉnh sửa tin nhắn"
-                                                                open={isModalOpenEditMess === msg?._id}
-                                                                onOk={handleOkEditMess}
-                                                                onCancel={handleCancelEditMess}
-                                                                confirmLoading={loading}>
-                                                                <input
-                                                                    type="text"
-                                                                    placeholder="Nhập thông tin bạn muốn sửa"
-                                                                    value={editMess?.message}
-                                                                    onChange={(e) => setEditMess({ ...editMess, message: e.target.value })}
-                                                                />
-                                                            </Modal>
-                                                        </div>
-                                                    </div> */}
                                                     {isSameUser && <p className="text-gray-500 text-xs ">{msg?.timestamp && handleCompareDate(msg?.timestamp)}</p>}
                                                 </div>
                                             </div>
@@ -394,7 +328,7 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
                                     );
                                 })}
                         </div>
-                        <div className="h-16 flex items-center justify-between">
+                        <div className="minh-16 flex items-center justify-between px-3">
                             {replyingTo && (
                                 <label htmlFor="message" className="block replying-to relative bg-linear-item-blue px-3 py-1 rounded-lg mb-2 text-secondary ">
                                     <div className="absolute top-2 right-3 cursor-pointer hover:text-red-500" onClick={() => setReplyingTo(null)}>
@@ -405,13 +339,13 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
                                     {replyingTo?.image && <Image src={replyingTo?.image} alt="" width={120} height={100} className="object-cover rounded-lg mt-2" />}
                                 </label>
                             )}
-                            <div className="flex flex-1 gap-2  items-center px-2 py-2">
-                                <label htmlFor="image" className="h-full flex items-center justify-center text-gray-500 hover:text-primary cursor-pointer">
+                            <div className="flex flex-1 gap-2  items-center border border-gray-200 dark:border-white/10 rounded-md bg-white dark:bg-slate-800  px-3 py-1">
+                                {/* <label htmlFor="image" className="h-full flex items-center justify-center text-gray-500 hover:text-primary cursor-pointer">
                                     <IoIosImages size={20} />
                                 </label>
-                                <input id="image" type="file" accept="image/*" className="hidden" onChange={(e) => handleImageChange(e)} />
+                                <input id="image" type="file" accept="image/*" className="hidden" onChange={(e) => handleImageChange(e)} /> */}
 
-                                <div className="flex flex-col flex-1 bg-white rounded-md px-3 py-1 border border-gray-200">
+                                <div className="flex flex-col flex-1  ">
                                     {imageReview && (
                                         <div className="relative w-[45px] h-[45px]">
                                             <Image src={imageReview} unoptimized alt="" className="w-full h-full rounded-lg absolute object-cover" fill></Image>
@@ -425,18 +359,18 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
                                         </div>
                                     )}
                                     <div className="flex items-center min-h-8">
-                                        <input
+                                        <Input
                                             type="text"
                                             id="message"
                                             autoFocus
-                                            className="h-full  p-0 border-none bg-transparent hover:border-none focus-visible:border-none text-gray-500"
+                                            className="h-full  p-0 border-none bg-transparent hover:border-none focus-visible:ring-0 text-gray-500 dark:text-gray-200 text-xl"
                                             value={newMessage}
                                             onChange={(e) => setNewMessage(e.target.value)}
                                             placeholder="Nhập tin nhắn bạn muốn gửi..."
                                             onPaste={handlePaste}
                                             onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
                                         />
-                                        <div className="flex items-center justify-center w-5 h-full">
+                                        {/* <div className="flex items-center justify-center w-5 h-full">
                                             <Popover
                                                 content={
                                                     <div>
@@ -468,11 +402,11 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
                                                     <MdOutlineInsertEmoticon size={20} />
                                                 </Button>
                                             </Popover>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
-                                <Button type="submit" disabled={loading} onClick={handleSendMessage} className="text-gray-500 hover:text-primary cursor-pointer !bg-transparent">
-                                    {loading ? <Spin indicator={<LoadingOutlined spin />} size="default" /> : <IoSend />}
+                                <Button variant="outline" disabled={loading} onClick={handleSendMessage} className="bg-gradient-to-r from-blue-500 to-purple-500 text-white ">
+                                    {loading ? <Loading /> : <Send />}
                                 </Button>
                             </div>
                         </div>

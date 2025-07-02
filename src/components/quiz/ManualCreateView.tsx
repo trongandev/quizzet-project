@@ -31,7 +31,6 @@ export function ManualCreateView() {
 
     const handleCreateQuiz = () => {
         // Navigate to quiz editor
-        console.log("Creating quiz with info:", quizInfo);
     };
 
     return (

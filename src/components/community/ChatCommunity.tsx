@@ -16,7 +16,8 @@ import { toast } from "sonner";
 import { Label } from "../ui/label";
 import Loading from "../ui/loading";
 import axios from "axios";
-
+import { PhotoProvider, PhotoView } from "react-photo-view";
+import "react-photo-view/dist/react-photo-view.css";
 const debounce = (func: any, wait: any) => {
     let timeout: NodeJS.Timeout;
     return function executedFunction(...args: any) {
@@ -224,179 +225,182 @@ export default function ChatCommunity() {
     };
 
     return (
-        <div className="flex items-center justify-center">
-            <div className="w-full md:w-[1000px] xl:w-[1200px] py-5 pt-16 mx-3 md:mx-0">
-                <div className="text-third dark:text-white flex flex-col md:flex-row px-0 min-h-[85vh] border-t-gray-300/50 dark:border-white/10 border  shadow-xl w-full rounded-xl overflow-hidden ">
-                    <div className=" flex-1">
-                        {/* {khung chat ben trái} */}
-                        <div className="w-auto border-b border-t-gray-300/50 dark:border-b-white/10 flex items-center md:justify-between  h-16 md:px-5 px-3 bg-white dark:bg-slate-800/50 ">
-                            {/* header */}
-                            <div className="flex items-center gap-3">
-                                <div className="flex items-center gap-3 ">
-                                    <Hash className="text-4xl font-bold dark:text-gray-400" />
-                                    <h3>Quizzet Community</h3>
-                                </div>
-                                <div className="w-0.5 h-6 bg-gray-300 dark:bg-gray-600 "></div>
-                                <p className="dark:text-white/60 line-clamp-1 hidden md:block">Kênh thảo luận chung cho cộng đồng</p>
-                            </div>
-                            <div className="hidden md:flex items-center gap-3">
-                                <div className="h-10 w-10 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
-                                    <Bell size={18} />
-                                </div>
-                                <div className="h-10 w-10 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
-                                    <Search size={18} />
-                                </div>
-                                <div className="h-10 w-10 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
-                                    <EllipsisVertical size={18} />
-                                </div>
-                            </div>
-                        </div>
-                        {/* nội dung chính */}
-                        <div className="flex flex-col ">
-                            <div
-                                className={`py-5 px-3 flex-1  bg-white/80 dark:bg-inherit ${
-                                    replyingTo && imageReview
-                                        ? "max-h-[calc(80vh-249px)] min-h-[calc(80vh-249px)]"
-                                        : imageReview
-                                        ? "max-h-[calc(80vh-200px)] min-h-[calc(80vh-200px)]"
-                                        : replyingTo
-                                        ? "max-h-[calc(80vh-150px)] min-h-[calc(80vh-150px)]"
-                                        : "max-h-[calc(80vh-100px)] min-h-[calc(80vh-100px)]"
-                                } overflow-y-auto  flex flex-col gap-2 overscroll-contain`}>
-                                {messages &&
-                                    messages.map((message, index) => (
-                                        <ChatCard
-                                            key={message._id || index}
-                                            message={message}
-                                            ref={lastMessageRef}
-                                            isLastMessage={index === messages.length - 1}
-                                            handleReactIcon={handleReactIcon}
-                                            setReplyingTo={setReplyingTo}
-                                            handleUnsend={handleUnsend}
-                                            user={user}
-                                        />
-                                    ))}
-                                {loading && (
-                                    <div className="flex items-center justify-center col-span-4 h-[500px]">
-                                        <Loading className="h-12 w-12" />{" "}
+        <PhotoProvider>
+            <div className="flex items-center justify-center">
+                <div className="w-full md:w-[1000px] xl:w-[1200px] py-5 pt-16 mx-3 md:mx-0">
+                    <div className="text-third dark:text-white flex flex-col md:flex-row px-0 min-h-[85vh] border-t-gray-300/50 dark:border-white/10 border  shadow-xl w-full rounded-xl overflow-hidden ">
+                        <div className=" flex-1">
+                            {/* {khung chat ben trái} */}
+                            <div className="w-auto border-b border-t-gray-300/50 dark:border-b-white/10 flex items-center md:justify-between  h-16 md:px-5 px-3 bg-white dark:bg-slate-800/50 ">
+                                {/* header */}
+                                <div className="flex items-center gap-3">
+                                    <div className="flex items-center gap-3 ">
+                                        <Hash className="text-4xl font-bold dark:text-gray-400" />
+                                        <h3>Quizzet Community</h3>
                                     </div>
-                                )}
+                                    <div className="w-0.5 h-6 bg-gray-300 dark:bg-gray-600 "></div>
+                                    <p className="dark:text-white/60 line-clamp-1 hidden md:block">Kênh thảo luận chung cho cộng đồng</p>
+                                </div>
+                                <div className="hidden md:flex items-center gap-3">
+                                    <div className="h-10 w-10 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
+                                        <Bell size={18} />
+                                    </div>
+                                    <div className="h-10 w-10 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
+                                        <Search size={18} />
+                                    </div>
+                                    <div className="h-10 w-10 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
+                                        <EllipsisVertical size={18} />
+                                    </div>
+                                </div>
                             </div>
-                            <div
-                                className={`border-t border-t-gray-300/50 dark:border-t-white/10 bg-white dark:bg-slate-800/50 ${
-                                    replyingTo && imageReview ? "h-[249px]" : imageReview ? "h-[200px]" : replyingTo ? "h-[150px]" : "h-[100px]"
-                                }`}>
-                                {replyingTo && (
-                                    <div className="px-5  border-b border-t-gray-300/50 dark:border-b-white/10 ">
-                                        <div className="h-12 flex items-center justify-between ">
-                                            <p className="">
-                                                Bạn đang trả lời <span className="font-bold"> {user?._id === replyingTo.userId._id ? "chính bản thân" : replyingTo.userId.displayName}</span>{" "}
-                                            </p>
-                                            <div className="flex items-center justify-center h-8 w-8 rounded-full bg-red-500/50 hover:bg-white/10 transition-all duration-300">
-                                                <X size={16} onClick={() => setReplyingTo(null)} className="" />
+                            {/* nội dung chính */}
+                            <div className="flex flex-col ">
+                                <div
+                                    className={`py-5 px-3 flex-1  bg-white/80 dark:bg-inherit ${
+                                        replyingTo && imageReview
+                                            ? "max-h-[calc(80vh-249px)] min-h-[calc(80vh-249px)]"
+                                            : imageReview
+                                            ? "max-h-[calc(80vh-200px)] min-h-[calc(80vh-200px)]"
+                                            : replyingTo
+                                            ? "max-h-[calc(80vh-150px)] min-h-[calc(80vh-150px)]"
+                                            : "max-h-[calc(80vh-100px)] min-h-[calc(80vh-100px)]"
+                                    } overflow-y-auto  flex flex-col gap-2 overscroll-contain`}>
+                                    {messages &&
+                                        messages.map((message, index) => (
+                                            <ChatCard
+                                                key={message._id || index}
+                                                message={message}
+                                                ref={lastMessageRef}
+                                                isLastMessage={index === messages.length - 1}
+                                                handleReactIcon={handleReactIcon}
+                                                setReplyingTo={setReplyingTo}
+                                                handleUnsend={handleUnsend}
+                                                user={user}
+                                                PhotoView={PhotoView}
+                                            />
+                                        ))}
+                                    {loading && (
+                                        <div className="flex items-center justify-center col-span-4 h-[500px]">
+                                            <Loading className="h-12 w-12" />{" "}
+                                        </div>
+                                    )}
+                                </div>
+                                <div
+                                    className={`border-t border-t-gray-300/50 dark:border-t-white/10 bg-white dark:bg-slate-800/50 ${
+                                        replyingTo && imageReview ? "h-[249px]" : imageReview ? "h-[200px]" : replyingTo ? "h-[150px]" : "h-[100px]"
+                                    }`}>
+                                    {replyingTo && (
+                                        <div className="px-5  border-b border-t-gray-300/50 dark:border-b-white/10 ">
+                                            <div className="h-12 flex items-center justify-between ">
+                                                <p className="">
+                                                    Bạn đang trả lời <span className="font-bold"> {user?._id === replyingTo.userId._id ? "chính bản thân" : replyingTo.userId.displayName}</span>{" "}
+                                                </p>
+                                                <div className="flex items-center justify-center h-8 w-8 rounded-full bg-red-500/50 hover:bg-white/10 transition-all duration-300">
+                                                    <X size={16} onClick={() => setReplyingTo(null)} className="" />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
 
-                                {imageReview && (
-                                    <div className="px-5  border-b border-t-gray-300/50 dark:border-b-white/10 ">
-                                        <div className="relative h-12 w-12 md:h-24 md:w-36 overflow-hidden">
-                                            <Image src={imageReview} alt="Image preview" fill className="w-full h-full py-2  absolute object-cover rounded-md" />
-                                            <div
-                                                className="absolute top-2 right-2 h-8 w-8 flex items-center justify-center rounded-full bg-red-500/50 hover:bg-white/10 transition-all duration-300 cursor-pointer"
-                                                onClick={() => {
-                                                    setImageReview(null);
-                                                    setImage("");
-                                                }}>
-                                                <X size={16} />
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                                {user ? (
-                                    <div className="p-5 ">
-                                        <div className="px-3  border border-gray-300/50 shadow-sm dark:border-white/10 rounded-xl h-16 w-full flex items-center justify-between">
-                                            {/* <DialogAddImage image={image} setImage={setImage}>
-                                        </DialogAddImage> */}
-                                            <div className="">
-                                                <Label
-                                                    htmlFor="image"
-                                                    className="h-10 w-10 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
-                                                    <ImagePlus size={18} />
-                                                </Label>
-                                                <input id="image" type="file" className="hidden" onChange={(e) => handleImageChange(e)} />
-                                            </div>
-                                            <Input
-                                                onChange={handleMessageChange}
-                                                ref={inputRef}
-                                                onPaste={handlePaste}
-                                                onKeyPress={handleKeyPress}
-                                                placeholder="Nhắn tin tới # cộng đồng quizzet "
-                                                className="flex-1 text-sm md:text-md border-none shadow-none ring-0 outline-none focus-visible:ring-0"></Input>
-                                            <div className="flex items-center gap-3">
-                                                <div className="hidden md:flex h-10 w-10 items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
-                                                    <Smile size={18} />
+                                    {imageReview && (
+                                        <div className="px-5  border-b border-t-gray-300/50 dark:border-b-white/10 ">
+                                            <div className="relative h-12 w-12 md:h-24 md:w-36 overflow-hidden">
+                                                <Image src={imageReview} alt="Image preview" fill className="w-full h-full py-2  absolute object-cover rounded-md" />
+                                                <div
+                                                    className="absolute top-2 right-2 h-8 w-8 flex items-center justify-center rounded-full bg-red-500/50 hover:bg-white/10 transition-all duration-300 cursor-pointer"
+                                                    onClick={() => {
+                                                        setImageReview(null);
+                                                        setImage("");
+                                                    }}>
+                                                    <X size={16} />
                                                 </div>
-                                                <Button
-                                                    onClick={handleSendMessage}
-                                                    disabled={loading}
-                                                    className="bg-gradient-to-r from-blue-500 to-purple-500  text-white h-10 px-4 rounded-lg hover:scale-[1.02] transition-all duration-200">
-                                                    {loading ? <Loading /> : <Send />}
-                                                </Button>
                                             </div>
                                         </div>
-                                    </div>
-                                ) : (
-                                    <div className="h-16 flex items-center justify-center text-center">
-                                        <p>Bạn cần phải đăng nhập để gia nhập chat cộng đồng</p>
-                                    </div>
-                                )}
+                                    )}
+                                    {user ? (
+                                        <div className="p-5 ">
+                                            <div className="px-3  border border-gray-300/50 shadow-sm dark:border-white/10 rounded-xl h-16 w-full flex items-center justify-between">
+                                                {/* <DialogAddImage image={image} setImage={setImage}>
+                                        </DialogAddImage> */}
+                                                <div className="">
+                                                    <Label
+                                                        htmlFor="image"
+                                                        className="h-10 w-10 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
+                                                        <ImagePlus size={18} />
+                                                    </Label>
+                                                    <input id="image" type="file" className="hidden" onChange={(e) => handleImageChange(e)} />
+                                                </div>
+                                                <Input
+                                                    onChange={handleMessageChange}
+                                                    ref={inputRef}
+                                                    onPaste={handlePaste}
+                                                    onKeyPress={handleKeyPress}
+                                                    placeholder="Nhắn tin tới # cộng đồng quizzet "
+                                                    className="flex-1 text-sm md:text-md border-none shadow-none ring-0 outline-none focus-visible:ring-0"></Input>
+                                                <div className="flex items-center gap-3">
+                                                    <div className="hidden md:flex h-10 w-10 items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-400 dark:text-white/60 hover:text-white">
+                                                        <Smile size={18} />
+                                                    </div>
+                                                    <Button
+                                                        onClick={handleSendMessage}
+                                                        disabled={loading}
+                                                        className="bg-gradient-to-r from-blue-500 to-purple-500  text-white h-10 px-4 rounded-lg hover:scale-[1.02] transition-all duration-200">
+                                                        {loading ? <Loading /> : <Send />}
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="h-16 flex items-center justify-center text-center">
+                                            <p>Bạn cần phải đăng nhập để gia nhập chat cộng đồng</p>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className="w-full md:w-[300px] p-4 bg-white dark:bg-slate-800/50 md:border-s  md:border-s-gray-300/50 dark:md:border-s-white/10 border-t md:border-t-gray-300/50 dark:border-t-white/10">
-                        {/* Online Users List */}
-                        <div className="flex items-center gap-2 text-md md:text-lg">
-                            <Users className="text-gray-400" size={20} />{" "}
-                            <span className="inline-flex items-end">
-                                Thành viên <Minus /> {onlineUsers?.length || "0"}
-                            </span>
-                        </div>
-                        <div className="space-y-3 mt-8 h-full">
-                            {/* {onlineUsers && onlineUsers.map((user: any, index: number) => <OnlineUsers key={index} onlineUsers={user} />)} */}
-                            {onlineUsers &&
-                                onlineUsers.map((user: any, index: number) => {
-                                    // if (user._id === userContext?.user?._id) return null; // Skip the current user
-                                    return (
-                                        <Link
-                                            href={`/profile/${user?._id}` || ""}
-                                            className="flex items-center justify-between group hover:bg-white/20 p-3 rounded-lg transition-all duration-300 cursor-pointer"
-                                            key={index}>
-                                            <div className="flex items-center gap-3">
-                                                <div className="relative w-12 h-12">
-                                                    <Image src={user?.profilePicture || "/avatar.jpg"} alt="" fill className="absolute object-cover rounded-full"></Image>
-                                                    <div className="absolute w-3 h-3 bg-green-500 rounded-full bottom-0 right-0"></div>
+                        <div className="w-full md:w-[300px] p-4 bg-white dark:bg-slate-800/50 md:border-s  md:border-s-gray-300/50 dark:md:border-s-white/10 border-t md:border-t-gray-300/50 dark:border-t-white/10">
+                            {/* Online Users List */}
+                            <div className="flex items-center gap-2 text-md md:text-lg">
+                                <Users className="text-gray-400" size={20} />{" "}
+                                <span className="inline-flex items-end">
+                                    Thành viên <Minus /> {onlineUsers?.length || "0"}
+                                </span>
+                            </div>
+                            <div className="space-y-3 mt-8 h-full">
+                                {/* {onlineUsers && onlineUsers.map((user: any, index: number) => <OnlineUsers key={index} onlineUsers={user} />)} */}
+                                {onlineUsers &&
+                                    onlineUsers.map((user: any, index: number) => {
+                                        // if (user._id === userContext?.user?._id) return null; // Skip the current user
+                                        return (
+                                            <Link
+                                                href={`/profile/${user?._id}` || ""}
+                                                className="flex items-center justify-between group hover:bg-white/20 p-3 rounded-lg transition-all duration-300 cursor-pointer"
+                                                key={index}>
+                                                <div className="flex items-center gap-3">
+                                                    <div className="relative w-12 h-12">
+                                                        <Image src={user?.profilePicture || "/avatar.jpg"} alt="" fill className="absolute object-cover rounded-full"></Image>
+                                                        <div className="absolute w-3 h-3 bg-green-500 rounded-full bottom-0 right-0"></div>
+                                                    </div>
+                                                    <div className="">
+                                                        <h1 className="text-lg font-semibold line-clamp-1 group-hover:text-primary transition-all duration-300">
+                                                            {" "}
+                                                            {user?.displayName || "Khách vãng lai"}
+                                                        </h1>
+                                                        <p className="text-gray-500 dark:text-gray-400 ">Đang online...</p>
+                                                    </div>
                                                 </div>
-                                                <div className="">
-                                                    <h1 className="text-lg font-semibold line-clamp-1 group-hover:text-primary transition-all duration-300">
-                                                        {" "}
-                                                        {user?.displayName || "Khách vãng lai"}
-                                                    </h1>
-                                                    <p className="text-gray-500 dark:text-gray-400 ">Đang online...</p>
+                                                <div className="text-white/60 hidden group-hover:block transition-all duration-300">
+                                                    <EllipsisVertical size={18} />
                                                 </div>
-                                            </div>
-                                            <div className="text-white/60 hidden group-hover:block transition-all duration-300">
-                                                <EllipsisVertical size={18} />
-                                            </div>
-                                        </Link>
-                                    );
-                                })}
-                            <div className="">{onlineUsers && !onlineUsers.length && <div className="text-center text-gray-400">Không có thành viên nào đang online...</div>}</div>
+                                            </Link>
+                                        );
+                                    })}
+                                <div className="">{onlineUsers && !onlineUsers.length && <div className="text-center text-gray-400">Không có thành viên nào đang online...</div>}</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </PhotoProvider>
     );
 }

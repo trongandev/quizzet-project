@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "../ui/input";
 import { Save, Upload, X } from "lucide-react";
@@ -36,7 +36,14 @@ interface Props {
 }
 
 export default function DialogAddMoreInfoQuiz({ children, generatedQuiz, openAddMoreInfo, setOpenAddMoreInfo }: Props) {
-    const [tempQuiz, setTempQuiz] = useState({ title: generatedQuiz?.title, subject: generatedQuiz?.subject, content: generatedQuiz?.content });
+    const defaultGeneratedQuiz = {
+        title: "",
+        subject: "",
+        content: "",
+    };
+    const [tempQuiz, setTempQuiz] = useState(defaultGeneratedQuiz);
+
+    console.log("tempQuiz Quiz:", tempQuiz);
     const [loading, setLoading] = useState(false);
     const token = Cookies.get("token") || "";
     const router = useRouter();
@@ -44,6 +51,19 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz, openAdd
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
+    useEffect(() => {
+        // Nếu generatedQuiz có giá trị, cập nhật tempQuiz
+        if (generatedQuiz) {
+            setTempQuiz({
+                title: generatedQuiz.title || "",
+                subject: generatedQuiz.subject || "",
+                content: generatedQuiz.content || "",
+            });
+        } else {
+            // Nếu không có generatedQuiz, đặt tempQuiz về giá trị mặc định
+            setTempQuiz(defaultGeneratedQuiz);
+        }
+    }, [generatedQuiz]);
     const handleSetValueTempQuiz = (field: keyof typeof tempQuiz, value: string) => {
         setTempQuiz((prev) => ({
             ...prev,

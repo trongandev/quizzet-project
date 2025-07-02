@@ -17,7 +17,8 @@ import { SidebarTrigger } from "../ui/sidebar";
 interface DraftQuiz {
     id: string;
     title: string;
-    description: string;
+    content: string;
+    subject: string;
     createdAt: Date;
     updatedAt: Date;
     questionCount: number;
@@ -142,14 +143,13 @@ export function DraftsView({ onViewChange }: HomeViewProps) {
 
     const handleEditDraft = (draft: DraftQuiz) => {
         // Trong thực tế sẽ navigate đến trang chỉnh sửa
-        console.log("Editing draft:", draft.id);
     };
 
     const handlePreviewDraft = (draft: DraftQuiz) => {
         setGeneratedQuiz({
             title: draft.title,
-            subject: draft.description,
-            content: "Đây là nội dung quiz được tạo từ nháp",
+            subject: draft.subject,
+            content: draft.content,
             questions: draft.questions,
         });
         setShowPreview(true);
@@ -158,8 +158,8 @@ export function DraftsView({ onViewChange }: HomeViewProps) {
     const handleSetValueGeneratedQuiz = (draft: DraftQuiz) => {
         setGeneratedQuiz({
             title: draft.title,
-            subject: draft.description,
-            content: "Đây là nội dung quiz được tạo từ nháp",
+            subject: draft.subject,
+            content: draft.content,
             questions: draft.questions,
         });
     };
@@ -222,7 +222,7 @@ export function DraftsView({ onViewChange }: HomeViewProps) {
                                 <div className="flex items-start justify-between">
                                     <div className="flex-1">
                                         <CardTitle className="text-lg line-clamp-2">{draft.title || "Không có tiêu đề"}</CardTitle>
-                                        <CardDescription className="mt-1 line-clamp-2">{draft.description || "Không có mô tả"}</CardDescription>
+                                        <CardDescription className="mt-1 line-clamp-2">{draft.content || "Không có mô tả"}</CardDescription>
                                     </div>
                                     <Badge variant={draft.status === "in-progress" ? "default" : "secondary"} className="ml-2 shrink-0 dark:text-white">
                                         {draft.status === "in-progress" ? "Đang làm" : "Nháp"}
@@ -267,7 +267,7 @@ export function DraftsView({ onViewChange }: HomeViewProps) {
                                         Xem
                                     </Button>
                                     <DialogAddMoreInfoQuiz generatedQuiz={generatedQuiz} openAddMoreInfo={openAddMoreInfo} setOpenAddMoreInfo={setOpenAddMoreInfo}>
-                                        <Button size="sm" className="flex-1 dark:text-white bg-gradient-to-r from-blue-500 to-cyan-500">
+                                        <Button size="sm" className="flex-1 dark:text-white bg-gradient-to-r from-blue-500 to-cyan-500" onClick={() => handleSetValueGeneratedQuiz(draft)}>
                                             <Aperture className="mr-1 h-3 w-3" />
                                             Xuất bản
                                         </Button>
@@ -281,7 +281,16 @@ export function DraftsView({ onViewChange }: HomeViewProps) {
                     ))}
                 </div>
             )}
-            {generatedQuiz && <AIResultPreview open={showPreview} onOpenChange={setShowPreview} quiz={generatedQuiz} onQuizUpdate={handleQuizUpdate} setOpenAddMoreInfo={setOpenAddMoreInfo} />}
+            {generatedQuiz && (
+                <AIResultPreview
+                    open={showPreview}
+                    onOpenChange={setShowPreview}
+                    quiz={generatedQuiz}
+                    setGeneratedQuiz={setGeneratedQuiz}
+                    onQuizUpdate={handleQuizUpdate}
+                    setOpenAddMoreInfo={setOpenAddMoreInfo}
+                />
+            )}
             {/* Preview Dialog */}
             {/* <Dialog open={!!selectedDraft} onOpenChange={() => setSelectedDraft(null)}>
                 <DialogContent className="max-w-2xl">

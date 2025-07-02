@@ -10,26 +10,6 @@ import { useState } from "react";
 export default function RootLayout({ children }: any) {
     const [activeView, setActiveView] = useState("home");
 
-    const [aiCreateData, setAiCreateData] = useState({
-        topic: "",
-        difficulty: "medium",
-        questionCount: 10,
-        questionType: "multiple-choice",
-        language: "vietnamese",
-        additionalInstructions: "",
-    });
-
-    const [manualCreateData, setManualCreateData] = useState({
-        title: "",
-        description: "",
-        questions: [],
-    });
-
-    const [fileImportData, setFileImportData] = useState({
-        uploadedFile: null,
-        processedData: null,
-    });
-
     const renderContent = () => {
         switch (activeView) {
             case "home":
@@ -65,7 +45,7 @@ export default function RootLayout({ children }: any) {
             <div className="flex min-h-screen w-full">
                 <SideBarQuiz activeView={activeView} onViewChange={setActiveView} />
                 <SidebarInset className="flex-1">
-                    <main className="flex-1 overflow-auto py-20">{renderContent()}</main>
+                    <main className="flex-1 overflow-auto py-20 !bg-transparent">{renderContent()}</main>
                 </SidebarInset>
             </div>
         </SidebarProvider>

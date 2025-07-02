@@ -36,10 +36,12 @@ interface AIResultPreviewProps {
     quiz: QuizQuestion;
     onQuizUpdate: any;
     setOpenAddMoreInfo: (open: boolean) => void;
+    setGeneratedQuiz: any;
 }
 
-export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpenAddMoreInfo }: AIResultPreviewProps) {
+export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpenAddMoreInfo, setGeneratedQuiz }: AIResultPreviewProps) {
     const [quizData, setQuizData] = useState<QuizQuestion>(quiz);
+    console.log("AIResultPreview quizData", quizData);
     const [editingQuestion, setEditingQuestion] = useState<Quiz | null>(null);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [newQuestion, setNewQuestion] = useState<Quiz>({
@@ -52,7 +54,8 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpe
     });
 
     const handleEditQuestion = (question: Quiz) => {
-        setNewQuestion({ ...question });
+        console.log("Editing question:", question);
+        setNewQuestion(question);
         setEditingQuestion(question);
         setIsEditDialogOpen(true);
     };
@@ -74,7 +77,11 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpe
         if (!newQuestion.question.trim()) return;
 
         const updatedQuestions = editingQuestion ? quiz.questions.map((q) => (q.id === editingQuestion.id ? newQuestion : q)) : [...quiz.questions, newQuestion];
-        onQuizUpdate({ ...quiz, updatedQuestions });
+        // onQuizUpdate({ ...quiz, updatedQuestions });
+        setQuizData((prev) => ({
+            ...prev,
+            questions: updatedQuestions,
+        }));
         setIsEditDialogOpen(false);
         setEditingQuestion(null);
     };
@@ -169,16 +176,17 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpe
                                         placeholder={`Lựa chọn ${index + 1}`}
                                         value={option}
                                         onChange={(e) => handleOptionChange(index, e.target.value)}
-                                        className={String(index) === newQuestion.correct ? "border-green-500 bg-green-50 dark:bg-green-800/50 dark:text-green-200" : ""}
+                                        className={String(index) == newQuestion.correct ? "border-green-500 bg-green-50 dark:bg-green-800/50 dark:text-green-200" : ""}
                                     />
                                     <div className="flex items-center space-x-2">
-                                        <RadioGroupItem value={String(index)} id={`option-${index}`} />
                                         <Label htmlFor={`option-${index}`} className="flex items-center space-x-1">
-                                            {String(index) === newQuestion.correct && (
+                                            {String(index) == newQuestion.correct ? (
                                                 <>
                                                     <CheckCircle className="h-4 w-4 text-green-600" />
-                                                    <span className="text-green-600 font-medium text-xs">Đáp án đúng</span>
+                                                    <RadioGroupItem defaultValue={String(index)} value={String(index)} id={`option-${index}`} className="hidden" />
                                                 </>
+                                            ) : (
+                                                <RadioGroupItem value={String(index)} id={`option-${index}`} />
                                             )}
                                         </Label>
                                     </div>
@@ -281,7 +289,7 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpe
                         </div>
 
                         {/* List */}
-                        <div className="space-y-4">
+                        <div className="space-y-4 max-h-[700px] overflow-y-auto">
                             {quizData &&
                                 quizData.questions.map((question, index) => (
                                     <Card key={question.id} className="p-2 md:p-6 border-l-4 border-l-purple-500 dark:border-l-purple-700  hover:shadow-lg transition-shadow duration-200">
@@ -335,7 +343,12 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpe
                             <Button variant="outline" onClick={() => onOpenChange(false)}>
                                 Đóng
                             </Button>
-                            <Button className="text-white bg-gradient-to-r from-purple-500 to-pink-500" onClick={() => setOpenAddMoreInfo(true)}>
+                            <Button
+                                className="text-white bg-gradient-to-r from-purple-500 to-pink-500"
+                                onClick={() => {
+                                    setOpenAddMoreInfo(true);
+                                    setGeneratedQuiz(quizData);
+                                }}>
                                 <Save className="mr-2 h-4 w-4" />
                                 Lưu và xuất bản Quiz
                             </Button>

@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ChartConfig } from "@/components/ui/chart";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { GET_API } from "@/lib/fetchAPI";
-import { Users, FileText, Flag, CreditCard, TrendingUp, Activity } from "lucide-react";
+import { Users, FileText, Flag, CreditCard, TrendingUp, Activity, WholeWord } from "lucide-react";
 import { cookies } from "next/headers";
 import { ClientChartWrapper } from "@/components/ClientChartWrapper";
 
@@ -49,11 +49,18 @@ export default async function DashboardPage() {
             color: "text-red-600",
         },
         {
-            title: "Flashcards",
-            value: res.flashcard,
+            title: "Bộ Flashcards",
+            value: res.listFlashcard,
             change: "+15%",
             icon: CreditCard,
             color: "text-purple-600",
+        },
+        {
+            title: "Tổng số từ vựng",
+            value: res.flashcard,
+            change: "+35%",
+            icon: WholeWord,
+            color: "text-pink-600",
         },
     ];
 
@@ -69,7 +76,7 @@ export default async function DashboardPage() {
                 </div>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
                 {stats.map((stat, index) => (
                     <Card key={index}>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

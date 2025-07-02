@@ -15,9 +15,10 @@ interface MessageCardProps {
     setReplyingTo: (reactingTo: IChatCommunityMessage) => void;
     handleUnsend: (messageId: string) => void;
     user: IUser | null;
+    PhotoView: any;
 }
 
-const ChatCard = forwardRef<HTMLDivElement, MessageCardProps>(({ message, isLastMessage, handleReactIcon, setReplyingTo, handleUnsend, user }, ref) => {
+const ChatCard = forwardRef<HTMLDivElement, MessageCardProps>(({ message, isLastMessage, handleReactIcon, setReplyingTo, handleUnsend, user, PhotoView }, ref) => {
     const [emojiPopoverOpen, setEmojiPopoverOpen] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const [open, setOpen] = useState(false);
@@ -103,17 +104,15 @@ const ChatCard = forwardRef<HTMLDivElement, MessageCardProps>(({ message, isLast
                         <p className="break-words whitespace-normal">{message?.message}</p>
                     )}
                 </div>
-                <Dialog>
-                    <DialogTrigger>
-                        {" "}
-                        <div className="">{message?.image && <Image src={message?.image} alt="" width={200} height={200} className=" object-contain rounded-lg" />}</div>
-                    </DialogTrigger>
-                    <DialogContent className="w-[1000px] h-[600px]">
-                        <div className="relative w-full h-full">
-                            <Image src={message?.image} alt="" fill className="absolute object-contain rounded-lg" />
+                <PhotoView src={message?.image}>
+                    <div className="relative w-full h-full">
+                        <div className="">
+                            {message?.image && (
+                                <Image src={message?.image} alt="" width={200} height={200} className=" cursor-pointer hover:opacity-90 transition-all duration-200 object-contain rounded-lg" />
+                            )}
                         </div>
-                    </DialogContent>
-                </Dialog>
+                    </div>
+                </PhotoView>
 
                 <div className="flex items-center gap-2">
                     {message?.reactions?.map((react, index) => (

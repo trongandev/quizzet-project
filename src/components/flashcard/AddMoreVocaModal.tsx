@@ -59,7 +59,6 @@ export default function AddMoreVocaModal({ children, listFlashcard, setListFlash
 
             const data = JSON.parse(parse);
 
-            console.log(data);
             setFlashcards(data || []);
             toast.success("Tạo flashcard thành công từ AI", {
                 description: "Các từ vựng mới đã được thêm vào bộ flashcard của bạn.",
@@ -85,7 +84,6 @@ export default function AddMoreVocaModal({ children, listFlashcard, setListFlash
             const res = await req?.json();
             if (res?.ok) {
                 toast.success("Gửi dữ liệu thành công", { description: "Các từ vựng mới đã được thêm vào bộ flashcard của bạn.", id: "ai-generate", duration: 5000 });
-                console.log("AI generated flashcards:", res.flashcards);
                 setFilteredFlashcards([...res?.flashcards, ...filteredFlashcards]);
                 setListFlashcard([...listFlashcard, { ...listFlashcard, flashcards: res.flashcards }]);
                 setOpen(false);

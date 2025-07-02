@@ -29,7 +29,6 @@ interface PropsDetailQuiz {
 }
 
 export default function DetailQuiz({ quiz, data, comment, setComment, user }: PropsDetailQuiz) {
-    console.log(data);
     const [userRating, setUserRating] = useState(5);
     const [isReportModalOpen, setIsReportModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -285,8 +284,12 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                         </div>
                                     ))}
                                 <div className="text-center py-4">
-                                    <Button variant="outline" size="lg" disabled className="">
-                                        Xem tất cả {quiz?.length} câu hỏi
+                                    <Button
+                                        onClick={() => router.push(`/quiz/${data?.slug}`)}
+                                        size="lg"
+                                        className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold px-8 dark:border-white/10">
+                                        <Play className="h-5 w-5 mr-2" />
+                                        Bắt đầu làm quiz ngay
                                     </Button>
                                 </div>
                             </CardContent>

@@ -61,7 +61,8 @@ export default function CChat({ token, user, router }: { token: string; user: IU
         const fetchAPI = async () => {
             setLoading(true);
             const req = await GET_API(`/profile/findbyname/${input}`, token);
-            if (req.ok) {
+            if (req?.ok) {
+                console.log(req);
                 setSearch(req?.users);
             } else {
                 console.error(req?.message);
@@ -124,8 +125,8 @@ export default function CChat({ token, user, router }: { token: string; user: IU
                         <Mail size={18} />
                     </div>
                 </PopoverTrigger>
-                <PopoverContent className="w-full md:w-[400px] max-h-[600px] overflow-y-scroll " side="bottom" align="end">
-                    <div className="min-h-[600px]">
+                <PopoverContent className="w-full md:w-[400px] max-h-[600px] overflow-y-scroll ">
+                    <div className="max-h-[600px]">
                         <div className="flex gap-2 items-center h-9  mb-3 w-full">
                             {isSearch && (
                                 <div
@@ -144,7 +145,10 @@ export default function CChat({ token, user, router }: { token: string; user: IU
                                     placeholder="Tìm mọi người..."
                                     className="pl-10 w-full md:w-64 border-none outline-none focus-visible:ring-0 "
                                     value={input}
-                                    onChange={(e) => setInput(e.target.value)}
+                                    onChange={(e) => {
+                                        setInput(e.target.value);
+                                        setIsSearch(true);
+                                    }}
                                 />
                             </div>
                         </div>
@@ -195,7 +199,7 @@ export default function CChat({ token, user, router }: { token: string; user: IU
                                 <div
                                     onClick={() => handleCreateAndCheckRoomChat(item?._id, index)}
                                     key={index}
-                                    className="p-2 hover:bg-gray-200 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
+                                    className="p-2 hover:bg-gray-200 dark:hover:bg-gray-800 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
                                     <div className="w-[56px] h-[56px] relative">
                                         <Image
                                             src={item?.profilePicture || "/avatar.jpg"}
@@ -208,7 +212,7 @@ export default function CChat({ token, user, router }: { token: string; user: IU
                                     </div>
 
                                     <div className="flex-1">
-                                        <p className="text-gray-700 line-clamp-2">
+                                        <p className="text-gray-700 dark:text-gray-300 line-clamp-2">
                                             <label htmlFor="" className="font-bold">
                                                 {item?.displayName}
                                             </label>{" "}

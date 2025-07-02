@@ -93,8 +93,9 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
             const jsonOutput = JSON.parse(responseText || "");
             setIsGenerating(false);
             setGeneratedQuiz(jsonOutput);
+            console.log("Generated Quiz:", jsonOutput);
             toast.success("Quiz đã được tạo thành công!", {
-                description: `Đã tạo ${jsonOutput.length} câu hỏi cho chủ đề "${topic}" với độ khó "${difficulty}".`,
+                description: `Với chủ đề "${topic}" và độ khó "${difficulty}".`,
                 position: "top-center",
                 duration: 5000,
                 action: {
@@ -392,7 +393,16 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                     </div>
                 )}
             </div>
-            {generatedQuiz && <AIResultPreview open={showPreview} onOpenChange={setShowPreview} quiz={generatedQuiz} onQuizUpdate={handleQuizUpdate} setOpenAddMoreInfo={setOpenAddMoreInfo} />}
+            {generatedQuiz && (
+                <AIResultPreview
+                    open={showPreview}
+                    onOpenChange={setShowPreview}
+                    quiz={generatedQuiz}
+                    setGeneratedQuiz={setGeneratedQuiz}
+                    onQuizUpdate={handleQuizUpdate}
+                    setOpenAddMoreInfo={setOpenAddMoreInfo}
+                />
+            )}
         </div>
     );
 }

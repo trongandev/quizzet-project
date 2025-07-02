@@ -96,7 +96,7 @@ export default function PublicFCHome({ publicFlashcards }: any) {
     };
 
     return (
-        <div className="mt-10 mb-5 dark:text-white flex flex-col gap-5 bg-white/80 dark:bg-gray-800 border border-gray-400/50 dark:border-white/10 rounded-lg shadow-sm p-5">
+        <div className="mt-10 mb-5 dark:text-white flex flex-col gap-5 ">
             <div className="flex items-center gap-3">
                 <div className="w-1/6 h-14 md:w-14 flex items-center justify-center bg-gradient-to-r from-pink-500/80 to-yellow-500/80 rounded-lg text-white">
                     <FaRegCreditCard size={21} />

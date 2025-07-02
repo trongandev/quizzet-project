@@ -132,7 +132,6 @@ export function FileImportView({ onViewChange }: HomeViewProps) {
 
     const downloadTemplate = (link: string) => {
         // In a real app, this would download actual template files
-        console.log(`Downloading ${link} template`);
         if (link) {
             window.open(link, "_blank");
         }

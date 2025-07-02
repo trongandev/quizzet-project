@@ -143,7 +143,7 @@ export default function CTaiLieu({ toolData }: any) {
     return (
         <div className="flex items-center justify-center">
             <div className="w-full md:w-[1000px] xl:w-[1200px]">
-                <div className="p-2 md:p-5 flex flex-col gap-5  bg-white/80 dark:bg-gray-800 border border-gray-400/50 dark:border-white/10 rounded-lg mb-4 shadow-sm">
+                <div className="p-2 md:p-5 flex flex-col gap-5  ">
                     <div className="flex items-center gap-3 ">
                         <div className="w-1/6 h-14 md:w-14  flex items-center justify-center bg-gradient-to-r from-red-500/80 to-yellow-500/80 rounded-lg text-white">
                             <SiQuizlet size={21} />
@@ -156,7 +156,7 @@ export default function CTaiLieu({ toolData }: any) {
                     <div className="flex md:items-center gap-3 justify-between flex-col md:flex-row">
                         <div className="flex-1 relative">
                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                            <Input placeholder="Tìm tên câu hỏi mà bạn cần..." value={searchTerm} onChange={(e) => handleSearch(e.target.value)} className="pl-10 h-11" />
+                            <Input placeholder="Tìm tên câu hỏi mà bạn cần..." value={searchTerm} onChange={(e) => handleSearch(e.target.value)} className="pl-10 h-11 border-gray-400" />
                         </div>
                         <div className="w-[0.4px] h-10 bg-gray-500/50 hidden md:block"></div>
                         <div className="flex items-center gap-2 justify-between md:justify-start">

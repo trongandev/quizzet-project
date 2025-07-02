@@ -11,7 +11,10 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Loading from "@/components/ui/loading";
 import { renderContentWithLaTeX, renderHightlightedContent } from "@/components/renderCode";
-// Constants
+import ReactMarkdown from "react-markdown";
+import remarkMath from "remark-math"; // Plugin để parse cú pháp toán học
+import rehypeKatex from "rehype-katex"; // Plugin để render toán học bằng KaTeX
+import "katex/dist/katex.min.css"; // Import CSS của KaTeX
 const AI_MODEL = "gemini-2.5-flash";
 
 interface CAnswerProps {
@@ -32,7 +35,6 @@ export default function CAnswer({ history, question }: CAnswerProps) {
             Giải thích câu trả lời.
             Yêu cầu: ngắn gọn xúc tích dễ hiểu, đúng vào trọng tâm, không lòng vòng.
             Không cần nói tóm lại, không cần nói lại câu hỏi và sự kì vọng ở cuối câu.
-            Trả ra định dạng HTML có format rõ ràng.
         `;
 
         const questionContent = `
@@ -150,12 +152,8 @@ export default function CAnswer({ history, question }: CAnswerProps) {
                                     </div>
 
                                     <div className="flex items-start flex-col gap-2">
-                                        <div className="relative group overflow-hidden">
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => toggleExplanation(question.id)}
-                                                className="bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:text-white">
+                                        <div className="relative group overflow-hidden" onClick={() => toggleExplanation(question.id)}>
+                                            <Button variant="outline" size="sm" className="bg-gradient-to-r from-blue-500 to-purple-500 text-white hover:text-white">
                                                 {loadingQuestionIndex === question.id ? (
                                                     <Loading className="border-x-white" />
                                                 ) : (
@@ -168,8 +166,10 @@ export default function CAnswer({ history, question }: CAnswerProps) {
                                         </div>
 
                                         {showExplanation === question.id && explain && (
-                                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 dark:bg-blue-900/50 dark:border-blue-700">
-                                                <div className="text-blue-800 dark:text-blue-200" dangerouslySetInnerHTML={{ __html: explain || "" }} />
+                                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 dark:bg-blue-900/50 dark:border-blue-700 text-blue-800 dark:text-blue-200">
+                                                <ReactMarkdown rehypePlugins={[rehypeKatex]} remarkPlugins={[remarkMath]}>
+                                                    {explain}
+                                                </ReactMarkdown>
                                             </div>
                                         )}
                                     </div>

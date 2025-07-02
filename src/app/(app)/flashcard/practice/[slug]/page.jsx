@@ -14,6 +14,7 @@ import { ArrowLeft, Eye, Lightbulb, Send, Speaker, Volume2 } from "lucide-react"
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/ui/loading";
+import { toast } from "sonner";
 const FEATURES = {
     FLASHCARD: 1,
     QUIZ: 2,
@@ -55,26 +56,37 @@ export default function PractiveFlashcard({ params }) {
     // Fetch flashcards data
 
     useEffect(() => {
-        setLoading(true);
         const fetchFlashCards = async () => {
-            const token = Cookies.get("token");
-            const req = await GET_API(`/flashcards/${params?.slug}`, token);
-            if (req.ok) {
-                const result = req?.listFlashCards?.flashcards;
+            try {
+                setLoading(true);
+                const token = Cookies.get("token");
+                const req = await GET_API(`/flashcards/${params?.slug}`, token);
+                if (req.ok) {
+                    const result = req?.listFlashCards?.flashcards;
 
-                setLanguage(req?.listFlashCards?.language);
-                setFlashcards(shuffle(result));
-                generateQuizOptions(result[0]);
+                    setLanguage(req?.listFlashCards?.language);
+                    setFlashcards(shuffle(result));
+                    generateQuizOptions(result[0]);
 
-                const savedVoiceString = JSON.parse(localStorage.getItem("defaultVoices") || "");
-                const savedVoices = savedVoiceString[req?.listFlashCards?.language];
-                setVoicePerson(savedVoices ? savedVoices : "en-US-GuyNeural");
-            } else {
-                messageApi.error(req.message);
+                    const savedVoiceString = JSON.parse(localStorage.getItem("defaultVoices") || "");
+                    const savedVoices = savedVoiceString[req?.listFlashCards?.language];
+                    setVoicePerson(savedVoices ? savedVoices : "en-US-GuyNeural");
+                } else {
+                    toast.error("Không tìm thấy flashcards", {
+                        description: "Vui lòng kiểm tra lại slug hoặc tạo flashcards mới.",
+                        duration: 3000,
+                    });
+                }
+            } catch (error) {
+                toast.error("Lỗi khi tải flashcards", {
+                    description: error.message,
+                    duration: 3000,
+                });
+            } finally {
+                setLoading(false);
             }
         };
         fetchFlashCards();
-        setLoading(false);
     }, [params?.slug]);
 
     useEffect(() => {
