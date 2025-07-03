@@ -17,6 +17,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { FaRegCreditCard } from "react-icons/fa";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export default function RootLayout({ children }: any) {
     const pathname = usePathname();
@@ -49,7 +50,9 @@ export default function RootLayout({ children }: any) {
                         <SocketProvider>
                             <CHeader />
                             <div className=" relative dark:bg-gray-700 dark:text-white">
-                                <div className="">{children}</div>
+                                <TooltipProvider>
+                                    <div className="">{children}</div>
+                                </TooltipProvider>
                                 <Toaster />
                                 <div className="fixed bottom-0 bg-gray-100 dark:bg-slate-800/90 dark:text-white  text-black h-[48px] w-full block md:hidden z-10">
                                     <ul className="flex h-full">

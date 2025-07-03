@@ -313,7 +313,7 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
             case "reviewing":
                 filtered = listFlashcard.flashcards.filter((item) => item.status === "reviewing");
                 break;
-            default:
+            case "all":
                 filtered = listFlashcard.flashcards;
         }
 
@@ -443,7 +443,7 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                                 className={`w-full h-24 px-5 bg-indigo-300/60 dark:bg-indigo-800/50 rounded-xl flex items-center justify-between border border-indigo-500/50 dark:border-white/10 shadow-sm shadow-indigo-500/50 hover:scale-105 transition-transform cursor-pointer duration-500  dark:hover:bg-indigo-700`}>
                                 <div className="">
                                     <p className="text-gray-600 dark:text-white/60">Tất cả thẻ</p>
-                                    <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">{filteredFlashcards?.length || 0}</h3>
+                                    <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">{listFlashcard?.flashcards?.length || 0}</h3>
                                 </div>
                                 <div className={`w-10 h-10 flex items-center justify-center bg-indigo-500 text-white rounded-full`}>
                                     <GalleryVerticalEnd />

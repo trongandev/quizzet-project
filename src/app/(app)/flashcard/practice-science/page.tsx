@@ -12,7 +12,7 @@ import { ArrowLeft } from "lucide-react";
 import { Flashcard } from "@/types/type";
 import { toast } from "sonner";
 import Loading from "@/components/ui/loading";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useUser } from "@/context/userContext";
 import { useRouter } from "next/navigation";
 const rateOptions = [
@@ -313,147 +313,145 @@ export default function PractiveFlashcard({ params }: { params: { slug: string }
     }
 
     return (
-        <TooltipProvider>
-            <div className=" py-5 pt-20  w-full">
-                <div className="px-3 md:px-20 focus-visible:outline-none text-third dark:text-white min-h-screen" onKeyDown={handleKeyDown} tabIndex={0}>
-                    <div className="w-full flex items-center justify-center h-[90%] flex-col gap-5">
-                        <div className="w-full flex flex-col md:flex-row gap-5 items-start">
-                            <div className="w-full flex flex-col gap-5">
-                                {/* Main Flashcard Container */}
+        <div className=" py-5 pt-20  w-full">
+            <div className="px-3 md:px-20 focus-visible:outline-none text-third dark:text-white min-h-screen" onKeyDown={handleKeyDown} tabIndex={0}>
+                <div className="w-full flex items-center justify-center h-[90%] flex-col gap-5">
+                    <div className="w-full flex flex-col md:flex-row gap-5 items-start">
+                        <div className="w-full flex flex-col gap-5">
+                            {/* Main Flashcard Container */}
+                            <div
+                                className="relative w-full h-[500px] border border-white/10  shadow-md bg-white text-white dark:bg-slate-800/50 rounded-md"
+                                style={{ perspective: "1000px" }}
+                                onClick={() => setIsFlipped(!isFlipped)}>
+                                {/* Flashcard Feature */}
                                 <div
-                                    className="relative w-full h-[500px] border border-white/10  shadow-md bg-white text-white dark:bg-slate-800/50 rounded-md"
-                                    style={{ perspective: "1000px" }}
-                                    onClick={() => setIsFlipped(!isFlipped)}>
-                                    {/* Flashcard Feature */}
+                                    className={`cursor-pointer absolute inset-0 w-full h-full transition-transform duration-500 transform ${isFlipped ? "rotate-y-180" : ""}`}
+                                    style={{ transformStyle: "preserve-3d" }}>
+                                    {/* Front Side */}
                                     <div
-                                        className={`cursor-pointer absolute inset-0 w-full h-full transition-transform duration-500 transform ${isFlipped ? "rotate-y-180" : ""}`}
-                                        style={{ transformStyle: "preserve-3d" }}>
-                                        {/* Front Side */}
-                                        <div
-                                            className="absolute inset-0 bg-white dark:bg-slate-800/50 rounded-md flex flex-col items-center justify-center backface-hidden p-5"
-                                            style={{ backfaceVisibility: "hidden" }}>
-                                            <div className="flex items-center gap-2 mb-4">
-                                                <p className="text-2xl font-semibold text-slate-800 dark:text-white/80">{currentCard.title}</p>
-                                                <Button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        speakWord(currentCard?.title, currentCard?.language || "english");
-                                                    }}
-                                                    className="h-10 w-10 dark:text-white rounded-full"
-                                                    disabled={loadingAudio}
-                                                    variant="outline">
-                                                    {loadingAudio ? <Loading /> : <HiMiniSpeakerWave size={24} />}
-                                                </Button>
+                                        className="absolute inset-0 bg-white dark:bg-slate-800/50 rounded-md flex flex-col items-center justify-center backface-hidden p-5"
+                                        style={{ backfaceVisibility: "hidden" }}>
+                                        <div className="flex items-center gap-2 mb-4">
+                                            <p className="text-2xl font-semibold text-slate-800 dark:text-white/80">{currentCard.title}</p>
+                                            <Button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    speakWord(currentCard?.title, currentCard?.language || "english");
+                                                }}
+                                                className="h-10 w-10 dark:text-white rounded-full"
+                                                disabled={loadingAudio}
+                                                variant="outline">
+                                                {loadingAudio ? <Loading /> : <HiMiniSpeakerWave size={24} />}
+                                            </Button>
+                                        </div>
+                                        <p className="text-gray-500 dark:text-white text-lg font-bold">{currentCard?.transcription}</p>
+
+                                        <p className="text-gray-500 text-sm">(Click to flip)</p>
+                                    </div>
+
+                                    {/* Back Side */}
+                                    <div
+                                        className="absolute inset-0 bg-white rounded-md dark:bg-slate-800/50 flex flex-col items-center justify-center p-5 backface-hidden"
+                                        style={{
+                                            backfaceVisibility: "hidden",
+                                            transform: "rotateY(180deg)",
+                                        }}>
+                                        {isFlipped && <p className="text-lg text-gray-700 dark:text-white">{currentCard?.define}</p>}
+
+                                        {currentCard?.example && (
+                                            <div className="mt-4 p-4 bg-gray-50 dark:bg-slate-800 rounded-lg w-full text-third dark:text-white/70">
+                                                {isFlipped && (
+                                                    <>
+                                                        {" "}
+                                                        <p className="font-medium mb-2  ">Ví dụ:</p>
+                                                        <div className="mb-2">
+                                                            <p className="font-bold italic">{currentCard?.example[0]?.en}</p>
+                                                            <p className="italic">{currentCard?.example[0]?.vi}</p>
+                                                        </div>
+                                                        <div className="mb-2">
+                                                            <p className="font-bold italic">{currentCard?.example[1]?.en}</p>
+                                                            <p className="italic">{currentCard?.example[1]?.vi}</p>
+                                                        </div>
+                                                    </>
+                                                )}
                                             </div>
-                                            <p className="text-gray-500 dark:text-white text-lg font-bold">{currentCard?.transcription}</p>
-
-                                            <p className="text-gray-500 text-sm">(Click to flip)</p>
-                                        </div>
-
-                                        {/* Back Side */}
-                                        <div
-                                            className="absolute inset-0 bg-white rounded-md dark:bg-slate-800/50 flex flex-col items-center justify-center p-5 backface-hidden"
-                                            style={{
-                                                backfaceVisibility: "hidden",
-                                                transform: "rotateY(180deg)",
-                                            }}>
-                                            {isFlipped && <p className="text-lg text-gray-700 dark:text-white">{currentCard?.define}</p>}
-
-                                            {currentCard?.example && (
-                                                <div className="mt-4 p-4 bg-gray-50 dark:bg-slate-800 rounded-lg w-full text-third dark:text-white/70">
-                                                    {isFlipped && (
-                                                        <>
-                                                            {" "}
-                                                            <p className="font-medium mb-2  ">Ví dụ:</p>
-                                                            <div className="mb-2">
-                                                                <p className="font-bold italic">{currentCard?.example[0]?.en}</p>
-                                                                <p className="italic">{currentCard?.example[0]?.vi}</p>
-                                                            </div>
-                                                            <div className="mb-2">
-                                                                <p className="font-bold italic">{currentCard?.example[1]?.en}</p>
-                                                                <p className="italic">{currentCard?.example[1]?.vi}</p>
-                                                            </div>
-                                                        </>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </div>
+                                        )}
                                     </div>
                                 </div>
+                            </div>
 
-                                {/* Navigation Controls */}
-                                <div className="bg-white rounded-md overflow-hidden w-full flex shadow-md text-2xl border border-white/10 dark:bg-slate-800/50">
-                                    {rateOptions.map((option, index) => (
-                                        <Tooltip key={index}>
-                                            <TooltipTrigger className="w-full">
-                                                <div
-                                                    key={index}
-                                                    className={`flex-1 w-full p-3 hover:${option.color} text-white flex flex-col gap-1 justify-center items-center cursor-pointer `}
-                                                    onClick={() => handleRate(index)}>
-                                                    <option.icon />
-                                                    <p className="text-sm">
-                                                        {index + 1}: {option.label}
-                                                    </p>
-                                                </div>
-                                            </TooltipTrigger>
-                                            <TooltipContent>
-                                                <p className="text-xs dark:text-gray-200 text-gray-500">{option.mean}</p>
-                                            </TooltipContent>
-                                        </Tooltip>
+                            {/* Navigation Controls */}
+                            <div className="bg-white rounded-md overflow-hidden w-full flex shadow-md text-2xl border border-white/10 dark:bg-slate-800/50">
+                                {rateOptions.map((option, index) => (
+                                    <Tooltip key={index}>
+                                        <TooltipTrigger className="w-full">
+                                            <div
+                                                key={index}
+                                                className={`flex-1 w-full p-3 hover:${option.color} text-white flex flex-col gap-1 justify-center items-center cursor-pointer `}
+                                                onClick={() => handleRate(index)}>
+                                                <option.icon />
+                                                <p className="text-sm">
+                                                    {index + 1}: {option.label}
+                                                </p>
+                                            </div>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p className="text-xs dark:text-gray-200 text-gray-500">{option.mean}</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Feature Selection Panel */}
+                        <div className="w-full md:w-auto flex flex-col gap-4">
+                            <div className="space-y-2">
+                                <h2 className="font-medium">Chế độ học</h2>
+
+                                <Button className="dark:text-white" variant="secondary" disabled>
+                                    FLASHCARD
+                                </Button>
+                            </div>
+
+                            {/* Progress Display */}
+                            <div className="space-y-2">
+                                <h2 className="font-medium">Tiến trình</h2>
+                                <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg">
+                                    <div className="flex justify-between mb-2">
+                                        <span>Tổng số câu</span>
+                                        <span>{`${currentIndex + 1}/${flashcards.length}`}</span>
+                                    </div>
+                                    <div className="h-2 bg-gray-200 dark:bg-gray-500/50 rounded-full">
+                                        <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${((currentIndex + 1) / flashcards.length) * 100}%` }} />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Keyboard Shortcuts Guide */}
+                            <div className="space-y-2 md:w-[250px]">
+                                <h2 className="font-medium">Phím tắt</h2>
+                                <div className="bg-gray-100 dark:text-white/50 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg space-y-3">
+                                    <div className="flex items-center gap-2">
+                                        <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Space</kbd>
+                                        <span className="">Lật thẻ </span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Shift</kbd>
+                                        <span className="">Phát âm</span>
+                                    </div>
+                                    {["Quên hoàn toàn", "Rất khó nhớ", "Khó nhớ", "Bình thường", "Dễ nhớ", "Hoàn hảo"].map((label, index) => (
+                                        <div className="flex items-center gap-2" key={index}>
+                                            <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">{index + 1}</kbd>
+                                            <span className="text-sm">{label}</span>
+                                        </div>
                                     ))}
                                 </div>
                             </div>
-
-                            {/* Feature Selection Panel */}
-                            <div className="w-full md:w-auto flex flex-col gap-4">
-                                <div className="space-y-2">
-                                    <h2 className="font-medium">Chế độ học</h2>
-
-                                    <Button className="dark:text-white" variant="secondary" disabled>
-                                        FLASHCARD
-                                    </Button>
-                                </div>
-
-                                {/* Progress Display */}
-                                <div className="space-y-2">
-                                    <h2 className="font-medium">Tiến trình</h2>
-                                    <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg">
-                                        <div className="flex justify-between mb-2">
-                                            <span>Tổng số câu</span>
-                                            <span>{`${currentIndex + 1}/${flashcards.length}`}</span>
-                                        </div>
-                                        <div className="h-2 bg-gray-200 dark:bg-gray-500/50 rounded-full">
-                                            <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${((currentIndex + 1) / flashcards.length) * 100}%` }} />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Keyboard Shortcuts Guide */}
-                                <div className="space-y-2 md:w-[250px]">
-                                    <h2 className="font-medium">Phím tắt</h2>
-                                    <div className="bg-gray-100 dark:text-white/50 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg space-y-3">
-                                        <div className="flex items-center gap-2">
-                                            <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Space</kbd>
-                                            <span className="">Lật thẻ </span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Shift</kbd>
-                                            <span className="">Phát âm</span>
-                                        </div>
-                                        {["Quên hoàn toàn", "Rất khó nhớ", "Khó nhớ", "Bình thường", "Dễ nhớ", "Hoàn hảo"].map((label, index) => (
-                                            <div className="flex items-center gap-2" key={index}>
-                                                <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">{index + 1}</kbd>
-                                                <span className="text-sm">{label}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                                <div className=""></div>
-                            </div>
+                            <div className=""></div>
                         </div>
                     </div>
                 </div>
             </div>
-        </TooltipProvider>
+        </div>
     );
 }

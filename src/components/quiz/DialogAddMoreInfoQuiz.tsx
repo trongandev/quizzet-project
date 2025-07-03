@@ -43,7 +43,6 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz, openAdd
     };
     const [tempQuiz, setTempQuiz] = useState(defaultGeneratedQuiz);
 
-    console.log("tempQuiz Quiz:", tempQuiz);
     const [loading, setLoading] = useState(false);
     const token = Cookies.get("token") || "";
     const router = useRouter();
@@ -118,7 +117,6 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz, openAdd
                 });
             }
         } catch (error: any) {
-            console.log("Error submitting quiz:", error);
             toast.error("Đã có lỗi xảy ra", {
                 description: error.message || "Lỗi không xác định",
                 position: "top-center",

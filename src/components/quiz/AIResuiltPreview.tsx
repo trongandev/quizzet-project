@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Edit, Trash2, Plus, CheckCircle, Bot, Save, Check, X } from "lucide-react";
+import { Edit, Trash2, Plus, CheckCircle, Bot, Save, Check, X, AlertCircle } from "lucide-react";
 import { renderContentWithLaTeX, renderHightlightedContent } from "../renderCode";
 
 interface QuizQuestion {
@@ -41,9 +41,10 @@ interface AIResultPreviewProps {
 
 export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpenAddMoreInfo, setGeneratedQuiz }: AIResultPreviewProps) {
     const [quizData, setQuizData] = useState<QuizQuestion>(quiz);
-    console.log("AIResultPreview quizData", quizData);
+    const [filterQuizData, setFilterQuizData] = useState<QuizQuestion>(quiz);
     const [editingQuestion, setEditingQuestion] = useState<Quiz | null>(null);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [activeFilter, setActiveFilter] = useState<"all" | "valid" | "invalid">("all");
     const [newQuestion, setNewQuestion] = useState<Quiz>({
         id: "",
         type: "multiple-choice",
@@ -54,7 +55,6 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpe
     });
 
     const handleEditQuestion = (question: Quiz) => {
-        console.log("Editing question:", question);
         setNewQuestion(question);
         setEditingQuestion(question);
         setIsEditDialogOpen(true);
@@ -88,7 +88,10 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpe
 
     const handleDeleteQuestion = (questionId: string) => {
         const updatedQuestions = quiz.questions.filter((q) => q.id !== questionId);
-        onQuizUpdate({ ...quiz, updatedQuestions });
+        setQuizData((prev) => ({
+            ...prev,
+            questions: updatedQuestions,
+        }));
     };
 
     const handleQuestionTypeChange = (type: Quiz["type"]) => {
@@ -255,50 +258,111 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpe
         </div>
     );
 
+    const handleFilterChange = (filter: "all" | "valid" | "invalid") => {
+        setActiveFilter(filter);
+        if (filter === "all") {
+            setQuizData(quiz);
+        } else if (filter === "valid") {
+            setQuizData({
+                ...quiz,
+                questions: quiz.questions.filter((q) => q.question.trim() && q.correct),
+            });
+        } else if (filter === "invalid") {
+            setQuizData({
+                ...quiz,
+                questions: quiz.questions.filter((q) => q.answers?.length == 0 || Number(q.correct) == -1),
+            });
+        }
+    };
+
+    const totalErrors = quizData.questions.filter((q) => q.answers?.length == 0 || Number(q.correct) == -1).length;
+
     return (
         <>
             <Dialog open={open} onOpenChange={onOpenChange}>
                 <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
-                    <DialogHeader>
-                        <DialogTitle className="flex items-center space-x-2">
-                            <Bot className="h-5 w-5 text-purple-500" />
-                            <span>Kết quả Quiz được tạo bởi AI</span>
+                    <DialogHeader className="border-b pb-4">
+                        <DialogTitle className="flex items-center justify-between">
+                            <div className="flex items-center space-x-2">
+                                <Bot className="h-5 w-5 text-purple-500" />
+                                <span>Kết quả Quiz được tạo bởi AI</span>
+                            </div>
                         </DialogTitle>
                     </DialogHeader>
 
                     <div className="space-y-6">
-                        {/* Quiz Info */}
-                        <Alert className="border-green-200 bg-green-50 dark:bg-green-800/20 ">
-                            <AlertDescription className="text-green-800 dark:text-green-200 flex items-center gap-3">
-                                <CheckCircle className="h-4 w-4 text-green-600" />
-                                <strong>Thành công!</strong> AI đã tạo {quiz?.questions?.length} câu hỏi cho quiz &quot;{quiz?.title}&quot;, mô tả &quot;{quiz?.content}&quot;. Bạn có thể xem trước,
-                                chỉnh sửa hoặc thêm câu hỏi mới.
-                            </AlertDescription>
-                        </Alert>
-
-                        {/* Actions */}
-                        <div className="flex justify-between items-center  flex-col md:flex-row ">
+                        <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-2">
-                                <h3 className="text-lg font-semibold">Danh sách câu hỏi</h3>
-                                <Badge variant="secondary">{quiz.questions.length} câu</Badge>
+                                <Button variant={activeFilter === "all" ? "outline" : "secondary"} size="sm" onClick={() => handleFilterChange("all")} className="flex items-center space-x-2 h-11">
+                                    <span>Tất cả</span>
+                                    <Badge variant="secondary" className="ml-1">
+                                        {quizData.questions.length}
+                                    </Badge>
+                                </Button>
+                                <Button
+                                    variant={activeFilter === "valid" ? "outline" : "secondary"}
+                                    size="sm"
+                                    onClick={() => handleFilterChange("valid")}
+                                    className="flex items-center space-x-2 text-green-700 border-green-200 hover:bg-green-50 h-11 dark:text-green-200 dark:border-green-700 dark:hover:bg-green-700/50 dark:bg-green-800/50">
+                                    <CheckCircle className="h-3 w-3" />
+                                    <span>Hợp lệ</span>
+                                    <Badge variant="secondary" className="ml-1 bg-green-100 text-green-700">
+                                        {quizData.questions.filter((q) => q.question.trim() && q.correct).length}
+                                    </Badge>
+                                </Button>
+                                <Button
+                                    variant={activeFilter === "invalid" ? "outline" : "destructive"}
+                                    size="sm"
+                                    onClick={() => handleFilterChange("invalid")}
+                                    className="flex items-center space-x-2 text-red-700 border-red-200 hover:bg-red-50 h-11 dark:text-red-200 dark:border-red-700 dark:hover:bg-red-700/50 dark:bg-red-800/50">
+                                    <AlertCircle className="h-3 w-3" />
+                                    <span>Cần sửa</span>
+                                    <Badge variant="secondary" className="ml-1 bg-red-100 text-red-700">
+                                        {totalErrors}
+                                    </Badge>
+                                </Button>
                             </div>
-                            <Button onClick={handleAddQuestion} className="dark:text-white flex items-center space-x-2">
+                            <Button onClick={handleAddQuestion} className="flex items-center space-x-2 text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
                                 <Plus className="h-4 w-4" />
                                 <span>Thêm câu hỏi</span>
                             </Button>
                         </div>
 
                         {/* List */}
+                        {/* Alert for invalid questions */}
+                        {totalErrors > 0 && activeFilter !== "invalid" && (
+                            <p className="text-sm border border-amber-200 bg-amber-50 dark:bg-amber-900/50 dark:border-amber-700 flex items-center p-3 rounded-md gap-3">
+                                <AlertCircle className="h-4 w-4 text-amber-600 dark:text-amber-200" />
+                                <div className="ext-amber-800 dark:text-amber-200">
+                                    <strong>Chú ý!</strong> Có {totalErrors} câu hỏi cần được kiểm tra và sửa lại trước khi xuất bản.
+                                </div>
+                            </p>
+                        )}
                         <div className="space-y-4 max-h-[700px] overflow-y-auto">
-                            {quizData &&
-                                quizData.questions.map((question, index) => (
-                                    <Card key={question.id} className="p-2 md:p-6 border-l-4 border-l-purple-500 dark:border-l-purple-700  hover:shadow-lg transition-shadow duration-200">
+                            {filterQuizData &&
+                                filterQuizData.questions.map((question, index) => (
+                                    <Card
+                                        key={question.id}
+                                        className={`p-2 md:p-6 border-l-4 ${
+                                            Number(question.correct) == -1 ? "border-l-red-700 dark:border-l-red-400 bg-red-500/10" : "border-l-green-700 dark:border-l-green-400 bg-green-500/10"
+                                        }  hover:shadow-lg transition-shadow duration-200`}>
                                         <CardHeader className="pb-3 p-2 md:p-6 ">
                                             <div className="flex  flex-col-reverse gap-3 md:gap-0 md:flex-row items-start justify-between ">
                                                 <div className="flex-1">
-                                                    <CardTitle className="text-base font-medium ">
-                                                        Câu {index + 1}: {renderHightlightedContent(question.question)}
-                                                    </CardTitle>
+                                                    {activeFilter === "invalid" ? (
+                                                        <div className="flex items-center gap-2 ">
+                                                            <CardTitle className="text-base font-medium ">{renderHightlightedContent(question.question)}</CardTitle>
+                                                            <Badge className="text-white gap-1 bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 animate-bounce">
+                                                                <AlertCircle size={14} />
+                                                                Cần sửa
+                                                            </Badge>
+                                                        </div>
+                                                    ) : (
+                                                        <CardTitle className="text-base font-medium ">
+                                                            Câu {index + 1}: {renderHightlightedContent(question.question)}
+                                                        </CardTitle>
+                                                    )}
+
                                                     <div className="flex items-center space-x-2 mt-2">
                                                         {/* <Badge variant="secondary">{getQuestionTypeLabel(question.type)}</Badge> */}
                                                         <Badge variant="secondary">Trắc nghiệm</Badge>
@@ -327,15 +391,39 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpe
                                                                     ? "bg-green-50 text-green-700 border border-green-200 dark:bg-green-900/50 dark:text-green-200 dark:border-green-700"
                                                                     : "bg-gray-50 dark:bg-gray-900/50 text-gray-800 dark:text-gray-200"
                                                             }`}>
-                                                            {String.fromCharCode(65 + optIndex)}. {renderContentWithLaTeX(option)}
+                                                            {activeFilter === "valid" ? (
+                                                                <span className="font-medium">
+                                                                    {String.fromCharCode(65 + optIndex)}. {renderHightlightedContent(option)}
+                                                                </span>
+                                                            ) : (
+                                                                <span className="font-medium">{renderHightlightedContent(option)}</span>
+                                                            )}
+                                                            {/* {String.fromCharCode(65 + optIndex)}. {renderContentWithLaTeX(option)} */}
                                                             {option === question.correct && <span className="ml-2 text-xs font-medium">(Đáp án đúng)</span>}
                                                         </div>
                                                     ))}
+                                                    {Number(question.correct) == -1 && (
+                                                        <p className="border border-red-200 bg-red-50 dark:bg-red-900/30 dark:border-red-700 p-3  text-sm">
+                                                            <div className="flex gap-2 items-center text-red-600  dark:text-red-400">
+                                                                <AlertCircle className="h-4 w-4 " />
+                                                                <p className="font-medium">Vấn đề cần khắc phục</p>
+                                                            </div>
+                                                            <div className="text-red-800 dark:text-red-200">
+                                                                {question.answers.length === 0 && <p>• Chưa có đáp án</p>}
+                                                                <p>• Chưa chọn đáp án đúng</p>
+                                                            </div>
+                                                        </p>
+                                                    )}
                                                 </div>
                                             </CardContent>
                                         )}
                                     </Card>
                                 ))}
+                            {quizData.questions.length === 0 && (
+                                <div className=" h-52 flex items-center justify-center">
+                                    <p className="text-center text-sm">Không có từ nào...</p>
+                                </div>
+                            )}
                         </div>
 
                         {/* Footer Actions */}
@@ -347,7 +435,7 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpe
                                 className="text-white bg-gradient-to-r from-purple-500 to-pink-500"
                                 onClick={() => {
                                     setOpenAddMoreInfo(true);
-                                    setGeneratedQuiz(quizData);
+                                    setGeneratedQuiz(filterQuizData);
                                 }}>
                                 <Save className="mr-2 h-4 w-4" />
                                 Lưu và xuất bản Quiz

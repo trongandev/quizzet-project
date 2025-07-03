@@ -85,9 +85,12 @@ export default function AddMoreVocaModal({ children, listFlashcard, setListFlash
             if (res?.ok) {
                 toast.success("Gửi dữ liệu thành công", { description: "Các từ vựng mới đã được thêm vào bộ flashcard của bạn.", id: "ai-generate", duration: 5000 });
                 setFilteredFlashcards([...res?.flashcards, ...filteredFlashcards]);
-                setListFlashcard([...listFlashcard, { ...listFlashcard, flashcards: res.flashcards }]);
+                setListFlashcard((prev: any) => ({
+                    ...prev, // Giữ nguyên các properties khác
+                    flashcards: [...(res?.flashcards || []), ...(prev?.flashcards || [])], // Update array flashcards
+                }));
                 setOpen(false);
-
+                setOpenDetail(false);
                 // Reset form data with AI generated content
                 setVocabulary("");
                 setFlashcards([]);
@@ -102,7 +105,6 @@ export default function AddMoreVocaModal({ children, listFlashcard, setListFlash
             toast.error("Đã có lỗi xảy ra khi gửi dữ liệu, vui lòng thử lại sau", { description: error.message, id: "ai-generate" });
         } finally {
             setLoading(false);
-            toast.dismiss("ai-generate");
         }
     };
 
