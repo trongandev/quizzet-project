@@ -30,10 +30,7 @@ interface Quiz {
     points: number;
 }
 
-interface HomeViewProps {
-    onViewChange: (view: string) => void;
-}
-export function FileImportView({ onViewChange }: HomeViewProps) {
+export function FileImportView() {
     const [isDragOver, setIsDragOver] = useState(false);
     const [openAddMoreInfo, setOpenAddMoreInfo] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -171,10 +168,6 @@ export function FileImportView({ onViewChange }: HomeViewProps) {
         }
     };
 
-    const handleQuizUpdate = (updatedQuiz: typeof generatedQuiz) => {
-        setGeneratedQuiz(updatedQuiz);
-    };
-
     const handleAddToDraft = () => {
         const draftStorage = localStorage.getItem("draftQuiz");
         const draft = {
@@ -194,7 +187,11 @@ export function FileImportView({ onViewChange }: HomeViewProps) {
             localStorage.setItem("draftQuiz", JSON.stringify([draft]));
         }
 
-        toast.success("Quiz đã được lưu vào nháp", { description: "Bạn có thể xem lại trong phần Draft", duration: 5000, action: { label: "Xem nháp", onClick: () => onViewChange("drafts") } });
+        toast.success("Quiz đã được lưu vào nháp", {
+            description: "Bạn có thể xem lại trong phần Draft",
+            duration: 5000,
+            action: { label: "Xem nháp", onClick: () => router.push("/themcauhoi/drafts") },
+        });
     };
 
     return (
@@ -320,14 +317,7 @@ export function FileImportView({ onViewChange }: HomeViewProps) {
                         </div>
                     )}
                     {generatedQuiz && (
-                        <AIResultPreview
-                            open={showPreview}
-                            onOpenChange={setShowPreview}
-                            quiz={generatedQuiz}
-                            onQuizUpdate={handleQuizUpdate}
-                            setOpenAddMoreInfo={setOpenAddMoreInfo}
-                            setGeneratedQuiz={setGeneratedQuiz}
-                        />
+                        <AIResultPreview open={showPreview} onOpenChange={setShowPreview} quiz={generatedQuiz} setOpenAddMoreInfo={setOpenAddMoreInfo} setGeneratedQuiz={setGeneratedQuiz} />
                     )}
                 </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,10 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Edit, Trash2, Plus, CheckCircle, Bot, Save, Check, X, AlertCircle } from "lucide-react";
-import { renderContentWithLaTeX, renderHightlightedContent } from "../renderCode";
+import { Edit, Trash2, Plus, CheckCircle, Bot, Save, AlertCircle } from "lucide-react";
+import { renderHightlightedContent } from "../renderCode";
 
 interface QuizQuestion {
     title: string;
@@ -34,12 +33,11 @@ interface AIResultPreviewProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     quiz: QuizQuestion;
-    onQuizUpdate: any;
     setOpenAddMoreInfo: (open: boolean) => void;
     setGeneratedQuiz: any;
 }
 
-export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpenAddMoreInfo, setGeneratedQuiz }: AIResultPreviewProps) {
+export function AIResultPreview({ open, onOpenChange, quiz, setOpenAddMoreInfo, setGeneratedQuiz }: AIResultPreviewProps) {
     const [quizData, setQuizData] = useState<QuizQuestion>(quiz);
     const [filterQuizData, setFilterQuizData] = useState<QuizQuestion>(quiz);
     const [editingQuestion, setEditingQuestion] = useState<Quiz | null>(null);
@@ -54,47 +52,78 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpe
         points: 1,
     });
 
-    const handleEditQuestion = (question: Quiz) => {
+    // ✅ Helper function để apply filter
+    const applyFilter = useCallback((data: QuizQuestion, filter: "all" | "valid" | "invalid"): QuizQuestion => {
+        if (filter === "all") {
+            return data;
+        } else if (filter === "valid") {
+            return {
+                ...data,
+                questions: data.questions.filter((q) => q.correct != "-1"),
+            };
+        } else if (filter === "invalid") {
+            return {
+                ...data,
+                questions: data.questions.filter((q) => q.correct == "-1"),
+            };
+        }
+        return data;
+    }, []);
+
+    const handleEditQuestion = useCallback((question: Quiz) => {
         setNewQuestion(question);
         setEditingQuestion(question);
         setIsEditDialogOpen(true);
-    };
+    }, []);
 
-    const handleAddQuestion = () => {
+    const handleAddQuestion = useCallback(() => {
         setNewQuestion({
             id: Date.now().toString(),
             type: "multiple-choice",
             question: "",
             answers: ["", "", "", ""],
-            correct: "",
+            correct: "-1",
             points: 1,
         });
         setEditingQuestion(null);
         setIsEditDialogOpen(true);
-    };
+    }, []);
+    console.log("rerender");
 
-    const handleSaveQuestion = () => {
+    // ✅ Sửa lại handleSaveQuestion
+    const handleSaveQuestion = useCallback(() => {
         if (!newQuestion.question.trim()) return;
 
-        const updatedQuestions = editingQuestion ? quiz.questions.map((q) => (q.id === editingQuestion.id ? newQuestion : q)) : [...quiz.questions, newQuestion];
-        // onQuizUpdate({ ...quiz, updatedQuestions });
-        setQuizData((prev) => ({
-            ...prev,
+        // Update quizData
+        const updatedQuestions = editingQuestion ? quizData.questions.map((q) => (q.id === editingQuestion.id ? newQuestion : q)) : [...quizData.questions, newQuestion];
+
+        const newQuizData = {
+            ...quizData,
             questions: updatedQuestions,
-        }));
+        };
+
+        setQuizData(newQuizData);
+        setFilterQuizData(applyFilter(newQuizData, activeFilter));
+
         setIsEditDialogOpen(false);
         setEditingQuestion(null);
-    };
+    }, [newQuestion, editingQuestion, quizData, applyFilter, activeFilter]);
 
-    const handleDeleteQuestion = (questionId: string) => {
-        const updatedQuestions = quiz.questions.filter((q) => q.id !== questionId);
-        setQuizData((prev) => ({
-            ...prev,
-            questions: updatedQuestions,
-        }));
-    };
+    const handleDeleteQuestion = useCallback(
+        (questionId: string) => {
+            const updatedQuestions = quizData.questions.filter((q) => q.id !== questionId);
+            const newQuizData = {
+                ...quizData,
+                questions: updatedQuestions,
+            };
 
-    const handleQuestionTypeChange = (type: Quiz["type"]) => {
+            setQuizData(newQuizData);
+            setFilterQuizData(applyFilter(newQuizData, activeFilter));
+        },
+        [quizData, applyFilter, activeFilter]
+    );
+
+    const handleQuestionTypeChange = useCallback((type: Quiz["type"]) => {
         setNewQuestion((prev) => {
             const updated = { ...prev, type, correct: "" };
 
@@ -108,14 +137,44 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpe
 
             return updated;
         });
-    };
+    }, []);
 
-    const handleOptionChange = (index: number, value: string) => {
+    const handleOptionChange = useCallback((index: number, value: string) => {
         setNewQuestion((prev) => ({
             ...prev,
             answers: prev.answers?.map((opt, i) => (i === index ? value : opt)),
         }));
-    };
+    }, []);
+
+    const handleChangeAnswers = useCallback((value: string) => {
+        setNewQuestion((prev) => ({
+            ...prev,
+            correct: value,
+        }));
+    }, []);
+
+    // ✅ Sửa lại handleFilterChange
+    const handleFilterChange = useCallback((filter: "all" | "valid" | "invalid") => {
+        setActiveFilter(filter);
+    }, []);
+
+    const handleQuestionTextChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setNewQuestion((prev) => ({ ...prev, question: e.target.value }));
+    }, []);
+
+    // ✅ Sử dụng useMemo để tính toán errors dựa trên quizData
+    const totalErrors = useMemo(() => {
+        return quizData.questions.filter((q) => q.correct == "-1").length;
+    }, [quizData.questions]);
+
+    const validQuestionsCount = useMemo(() => {
+        return quizData.questions.filter((q) => q.correct != "-1").length;
+    }, [quizData.questions]);
+
+    // ✅ Update filterQuizData khi quizData thay đổi
+    useEffect(() => {
+        setFilterQuizData(applyFilter(quizData, activeFilter));
+    }, [quizData, activeFilter, applyFilter]);
 
     // const getQuestionTypeLabel = (type: string) => {
     //     switch (type) {
@@ -129,153 +188,6 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpe
     //             return type;
     //     }
     // };
-
-    const handleChangeAnswers = (value: string) => {
-        setNewQuestion((prev) => ({
-            ...prev,
-            correct: value,
-        }));
-        setQuizData((prev) => ({
-            ...prev,
-            questions: prev.questions.map((q) => (q.id === newQuestion.id ? { ...q, correct: value } : q)),
-        }));
-    };
-
-    const renderQuestionForm = () => (
-        <div className="space-y-4">
-            <div>
-                <Label htmlFor="question-text">Câu hỏi</Label>
-                <Textarea
-                    id="question-text"
-                    placeholder="Nhập câu hỏi..."
-                    value={newQuestion.question}
-                    onChange={(e) => setNewQuestion((prev) => ({ ...prev, question: e.target.value }))}
-                    className="mt-1 h-40"
-                />
-            </div>
-
-            <div className="hidden">
-                <Label htmlFor="question-type">Loại câu hỏi</Label>
-                <Select value={newQuestion.type} defaultValue="multiple-choice" disabled onValueChange={handleQuestionTypeChange}>
-                    <SelectTrigger className="mt-1">
-                        <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="multiple-choice">Trắc nghiệm</SelectItem>
-                        <SelectItem value="true-false">Đúng/Sai</SelectItem>
-                        <SelectItem value="short-answer">Tự luận ngắn</SelectItem>
-                    </SelectContent>
-                </Select>
-            </div>
-
-            <div>
-                <Label>Các lựa chọn</Label>
-                <div className="space-y-2 mt-2">
-                    <RadioGroup defaultValue={newQuestion.correct} value={newQuestion.correct} onValueChange={(value) => handleChangeAnswers(value)}>
-                        {newQuestion &&
-                            newQuestion.answers?.map((option, index) => (
-                                <div key={index} className="flex items-center space-x-2">
-                                    <Input
-                                        placeholder={`Lựa chọn ${index + 1}`}
-                                        value={option}
-                                        onChange={(e) => handleOptionChange(index, e.target.value)}
-                                        className={String(index) == newQuestion.correct ? "border-green-500 bg-green-50 dark:bg-green-800/50 dark:text-green-200" : ""}
-                                    />
-                                    <div className="flex items-center space-x-2">
-                                        <Label htmlFor={`option-${index}`} className="flex items-center space-x-1">
-                                            {String(index) == newQuestion.correct ? (
-                                                <>
-                                                    <CheckCircle className="h-4 w-4 text-green-600" />
-                                                    <RadioGroupItem defaultValue={String(index)} value={String(index)} id={`option-${index}`} className="hidden" />
-                                                </>
-                                            ) : (
-                                                <RadioGroupItem value={String(index)} id={`option-${index}`} />
-                                            )}
-                                        </Label>
-                                    </div>
-                                </div>
-                            ))}
-                    </RadioGroup>
-                </div>
-            </div>
-            {/* {newQuestion.type === "multiple-choice" && (
-            )} */}
-
-            {newQuestion.type === "true-false" && (
-                <div>
-                    <Label>Đáp án đúng</Label>
-                    <RadioGroup value={newQuestion.correct} onValueChange={(value) => setNewQuestion((prev) => ({ ...prev, correct: value }))} className="mt-2">
-                        <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="Đúng" id="true" />
-                            <Label htmlFor="true">Đúng</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="Sai" id="false" />
-                            <Label htmlFor="false">Sai</Label>
-                        </div>
-                    </RadioGroup>
-                </div>
-            )}
-
-            {newQuestion.type === "short-answer" && (
-                <div>
-                    <Label htmlFor="text-answer">Đáp án mẫu</Label>
-                    <Textarea
-                        id="text-answer"
-                        placeholder="Nhập đáp án mẫu..."
-                        value={newQuestion.correct}
-                        onChange={(e) => setNewQuestion((prev) => ({ ...prev, correct: e.target.value }))}
-                        className="mt-1"
-                    />
-                </div>
-            )}
-
-            {/* <div>
-                <Label htmlFor="explanation">Giải thích (tùy chọn)</Label>
-                <Textarea
-                    id="explanation"
-                    placeholder="Giải thích đáp án..."
-                    value={newQuestion.explanation || ""}
-                    onChange={(e) => setNewQuestion((prev) => ({ ...prev, explanation: e.target.value }))}
-                    className="mt-1"
-                    rows={2}
-                />
-            </div> */}
-
-            <div className="hidden">
-                <Label htmlFor="points">Điểm số</Label>
-                <Input
-                    id="points"
-                    type="number"
-                    disabled
-                    min="1"
-                    defaultValue={1}
-                    value={newQuestion.points}
-                    onChange={(e) => setNewQuestion((prev) => ({ ...prev, points: Number.parseInt(e.target.value) || 1 }))}
-                    className="mt-1"
-                />
-            </div>
-        </div>
-    );
-
-    const handleFilterChange = (filter: "all" | "valid" | "invalid") => {
-        setActiveFilter(filter);
-        if (filter === "all") {
-            setQuizData(quiz);
-        } else if (filter === "valid") {
-            setQuizData({
-                ...quiz,
-                questions: quiz.questions.filter((q) => q.question.trim() && q.correct),
-            });
-        } else if (filter === "invalid") {
-            setQuizData({
-                ...quiz,
-                questions: quiz.questions.filter((q) => q.answers?.length == 0 || Number(q.correct) == -1),
-            });
-        }
-    };
-
-    const totalErrors = quizData.questions.filter((q) => q.answers?.length == 0 || Number(q.correct) == -1).length;
 
     return (
         <>
@@ -307,7 +219,7 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpe
                                     <CheckCircle className="h-3 w-3" />
                                     <span>Hợp lệ</span>
                                     <Badge variant="secondary" className="ml-1 bg-green-100 text-green-700">
-                                        {quizData.questions.filter((q) => q.question.trim() && q.correct).length}
+                                        {validQuestionsCount}
                                     </Badge>
                                 </Button>
                                 <Button
@@ -409,7 +321,7 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpe
                                                                 <p className="font-medium">Vấn đề cần khắc phục</p>
                                                             </div>
                                                             <div className="text-red-800 dark:text-red-200">
-                                                                {question.answers.length === 0 && <p>• Chưa có đáp án</p>}
+                                                                {question.answers?.some((answer) => answer === "") && <p>• Chưa nhập câu trả lời</p>}
                                                                 <p>• Chưa chọn đáp án đúng</p>
                                                             </div>
                                                         </p>
@@ -424,6 +336,11 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpe
                                     <p className="text-center text-sm">Không có từ nào...</p>
                                 </div>
                             )}
+                            {quizData.questions.length > 0 && totalErrors === 0 && (
+                                <div className=" h-52 flex items-center justify-center">
+                                    <p className="text-center text-sm">Đã sửa hết lỗi...</p>
+                                </div>
+                            )}
                         </div>
 
                         {/* Footer Actions */}
@@ -431,14 +348,16 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpe
                             <Button variant="outline" onClick={() => onOpenChange(false)}>
                                 Đóng
                             </Button>
+
                             <Button
                                 className="text-white bg-gradient-to-r from-purple-500 to-pink-500"
+                                disabled={totalErrors > 0}
                                 onClick={() => {
                                     setOpenAddMoreInfo(true);
                                     setGeneratedQuiz(filterQuizData);
                                 }}>
                                 <Save className="mr-2 h-4 w-4" />
-                                Lưu và xuất bản Quiz
+                                {totalErrors > 0 ? `Sửa hết ${totalErrors} lỗi trước khi lưu` : "Lưu và xuất bản Quiz"}
                             </Button>
                         </div>
                     </div>
@@ -452,7 +371,120 @@ export function AIResultPreview({ open, onOpenChange, quiz, onQuizUpdate, setOpe
                         <DialogTitle>{editingQuestion ? "Chỉnh sửa câu hỏi" : "Thêm câu hỏi mới"}</DialogTitle>
                     </DialogHeader>
 
-                    {renderQuestionForm()}
+                    <div className="space-y-4">
+                        <div>
+                            <Label htmlFor="question-text">Câu hỏi</Label>
+                            <Textarea
+                                id="question-text"
+                                placeholder="Nhập câu hỏi..."
+                                value={newQuestion.question}
+                                onChange={(e) => setNewQuestion((prev) => ({ ...prev, question: e.target.value }))}
+                                className="mt-1 h-40"
+                            />
+                        </div>
+
+                        <div className="hidden">
+                            <Label htmlFor="question-type">Loại câu hỏi</Label>
+                            <Select value={newQuestion.type} defaultValue="multiple-choice" disabled onValueChange={handleQuestionTypeChange}>
+                                <SelectTrigger className="mt-1">
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="multiple-choice">Trắc nghiệm</SelectItem>
+                                    <SelectItem value="true-false">Đúng/Sai</SelectItem>
+                                    <SelectItem value="short-answer">Tự luận ngắn</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div>
+                            <Label>Các lựa chọn</Label>
+                            <div className="space-y-2 mt-2">
+                                <RadioGroup defaultValue={newQuestion.correct} value={newQuestion.correct} onValueChange={(value) => handleChangeAnswers(value)}>
+                                    {newQuestion &&
+                                        newQuestion.answers?.map((option, index) => (
+                                            <div key={index} className="flex items-center space-x-2">
+                                                <Input
+                                                    placeholder={`Lựa chọn ${index + 1}`}
+                                                    value={option}
+                                                    onChange={(e) => handleOptionChange(index, e.target.value)}
+                                                    className={String(index) == newQuestion.correct ? "border-green-500 bg-green-50 dark:bg-green-800/50 dark:text-green-200" : ""}
+                                                />
+                                                <div className="flex items-center space-x-2">
+                                                    <Label htmlFor={`option-${index}`} className="flex items-center space-x-1">
+                                                        {String(index) == newQuestion.correct ? (
+                                                            <>
+                                                                <CheckCircle className="h-4 w-4 text-green-600" />
+                                                                <RadioGroupItem defaultValue={String(index)} value={String(index)} id={`option-${index}`} className="hidden" />
+                                                            </>
+                                                        ) : (
+                                                            <RadioGroupItem value={String(index)} id={`option-${index}`} />
+                                                        )}
+                                                    </Label>
+                                                </div>
+                                            </div>
+                                        ))}
+                                </RadioGroup>
+                            </div>
+                        </div>
+                        {/* {newQuestion.type === "multiple-choice" && (
+            )} */}
+
+                        {newQuestion.type === "true-false" && (
+                            <div>
+                                <Label>Đáp án đúng</Label>
+                                <RadioGroup value={newQuestion.correct} onValueChange={(value) => setNewQuestion((prev) => ({ ...prev, correct: value }))} className="mt-2">
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem value="Đúng" id="true" />
+                                        <Label htmlFor="true">Đúng</Label>
+                                    </div>
+                                    <div className="flex items-center space-x-2">
+                                        <RadioGroupItem value="Sai" id="false" />
+                                        <Label htmlFor="false">Sai</Label>
+                                    </div>
+                                </RadioGroup>
+                            </div>
+                        )}
+
+                        {newQuestion.type === "short-answer" && (
+                            <div>
+                                <Label htmlFor="text-answer">Đáp án mẫu</Label>
+                                <Textarea
+                                    id="text-answer"
+                                    placeholder="Nhập đáp án mẫu..."
+                                    value={newQuestion.correct}
+                                    onChange={(e) => setNewQuestion((prev) => ({ ...prev, correct: e.target.value }))}
+                                    className="mt-1"
+                                />
+                            </div>
+                        )}
+
+                        {/* <div>
+                <Label htmlFor="explanation">Giải thích (tùy chọn)</Label>
+                <Textarea
+                    id="explanation"
+                    placeholder="Giải thích đáp án..."
+                    value={newQuestion.explanation || ""}
+                    onChange={(e) => setNewQuestion((prev) => ({ ...prev, explanation: e.target.value }))}
+                    className="mt-1"
+                    rows={2}
+                />
+            </div> */}
+
+                        <div className="hidden">
+                            <Label htmlFor="points">Điểm số</Label>
+                            <Input
+                                id="points"
+                                type="number"
+                                disabled
+                                min="1"
+                                defaultValue={1}
+                                value={newQuestion.points}
+                                onChange={(e) => setNewQuestion((prev) => ({ ...prev, points: Number.parseInt(e.target.value) || 1 }))}
+                                className="mt-1"
+                            />
+                        </div>
+                    </div>
 
                     <div className="flex justify-end space-x-2 pt-4">
                         <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>

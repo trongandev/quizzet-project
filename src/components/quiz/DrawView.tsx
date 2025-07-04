@@ -12,6 +12,7 @@ import handleCompareDate from "@/lib/CompareDate";
 import { AIResultPreview } from "./AIResuiltPreview";
 import DialogAddMoreInfoQuiz from "./DialogAddMoreInfoQuiz";
 import { SidebarTrigger } from "../ui/sidebar";
+import { useRouter } from "next/navigation";
 
 interface DraftQuiz {
     id: string;
@@ -41,19 +42,15 @@ interface Question {
     correct: string;
     points: number;
 }
-interface HomeViewProps {
-    onViewChange: (view: string) => void;
-}
 
-export function DraftsView({ onViewChange }: HomeViewProps) {
+export function DraftsView() {
     const [searchTerm, setSearchTerm] = useState("");
     const [openAddMoreInfo, setOpenAddMoreInfo] = useState(false);
-    const [selectedDraft, setSelectedDraft] = useState<DraftQuiz | null>(null);
     const [generatedQuiz, setGeneratedQuiz] = useState<QuizQuestion | undefined>(undefined);
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [draftToDelete, setDraftToDelete] = useState<DraftQuiz | null>(null);
     const [showPreview, setShowPreview] = useState(false);
-
+    const router = useRouter();
     const [drafts, setDrafts] = useState<DraftQuiz[]>([]);
     useEffect(() => {
         const getDrawQuiz = localStorage.getItem("draftQuiz") || "";
@@ -140,10 +137,6 @@ export function DraftsView({ onViewChange }: HomeViewProps) {
         }
     };
 
-    const handleEditDraft = (draft: DraftQuiz) => {
-        // Trong thực tế sẽ navigate đến trang chỉnh sửa
-    };
-
     const handlePreviewDraft = (draft: DraftQuiz) => {
         setGeneratedQuiz({
             title: draft.title,
@@ -177,7 +170,7 @@ export function DraftsView({ onViewChange }: HomeViewProps) {
                     </h1>
                     <p className="text-muted-foreground mt-1">Quản lý các quiz đã lưu tạm thời</p>
                 </div>
-                <Button className="flex items-center space-x-2 dark:text-white" onClick={() => onViewChange("ai-create")}>
+                <Button className="flex items-center space-x-2 dark:text-white" onClick={() => router.push("/quiz/themcauhoi/ai-create")}>
                     <Plus className="h-4 w-4" />
                     <span>Tạo quiz mới</span>
                 </Button>
@@ -206,7 +199,7 @@ export function DraftsView({ onViewChange }: HomeViewProps) {
                         <h3 className="text-lg font-medium mb-2">{searchTerm ? "Không tìm thấy quiz nào" : "Chưa có quiz nháp nào"}</h3>
                         <p className="text-muted-foreground mb-4">{searchTerm ? "Thử tìm kiếm với từ khóa khác" : "Các quiz bạn tạo sẽ được lưu tự động ở đây nếu gặp lỗi"}</p>
                         {!searchTerm && (
-                            <Button className="dark:text-white" onClick={() => onViewChange("ai-create")} variant="outline">
+                            <Button className="dark:text-white" onClick={() => router.push("/themcauhoi/ai-create")} variant="outline">
                                 <Plus className="mr-2 h-4 w-4" />
                                 Tạo quiz đầu tiên
                             </Button>
@@ -280,16 +273,7 @@ export function DraftsView({ onViewChange }: HomeViewProps) {
                     ))}
                 </div>
             )}
-            {generatedQuiz && (
-                <AIResultPreview
-                    open={showPreview}
-                    onOpenChange={setShowPreview}
-                    quiz={generatedQuiz}
-                    setGeneratedQuiz={setGeneratedQuiz}
-                    onQuizUpdate={handleQuizUpdate}
-                    setOpenAddMoreInfo={setOpenAddMoreInfo}
-                />
-            )}
+            {generatedQuiz && <AIResultPreview open={showPreview} onOpenChange={setShowPreview} quiz={generatedQuiz} setGeneratedQuiz={setGeneratedQuiz} setOpenAddMoreInfo={setOpenAddMoreInfo} />}
             {/* Preview Dialog */}
             {/* <Dialog open={!!selectedDraft} onOpenChange={() => setSelectedDraft(null)}>
                 <DialogContent className="max-w-2xl">

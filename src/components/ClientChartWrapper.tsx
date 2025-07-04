@@ -16,7 +16,7 @@ export function ClientChartWrapper({ data, config }: ClientChartWrapperProps) {
                 <CartesianGrid vertical={false} />
                 <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} tickFormatter={(value) => value.slice(0, 3)} />
                 <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
-                <Area dataKey="desktop" type="natural" fill="var(--color-desktop)" fillOpacity={0.4} stroke="var(--color-desktop)" />
+                <Area dataKey="count" type="natural" fill="var(--color-desktop)" fillOpacity={0.4} stroke="var(--color-desktop)" />
             </AreaChart>
         </ChartContainer>
     );

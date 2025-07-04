@@ -38,6 +38,8 @@ import {
 } from "lucide-react";
 import { Progress } from "../ui/progress";
 import UserFC from "../flashcard/UserFC";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 // Level configuration with unique designs
 const levelConfig: Record<number, { name: string; icon: any; color: string; bgColor: string }> = {
@@ -90,6 +92,7 @@ export default function UserProfile({ profile, quiz, flashcard }: PropsProfile) 
     const handleSaveSettings = () => {
         setIsSettingsOpen(false);
     };
+    const router = useRouter();
 
     const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -353,12 +356,7 @@ export default function UserProfile({ profile, quiz, flashcard }: PropsProfile) 
                                 <TabsTrigger value="overview" className="dark:data-[state=active]:bg-slate-700">
                                     Tổng quan
                                 </TabsTrigger>
-                                <TabsTrigger value="quiz" className="dark:data-[state=active]:bg-slate-700">
-                                    Bộ Quiz
-                                </TabsTrigger>
-                                <TabsTrigger value="flashcard" className="dark:data-[state=active]:bg-slate-700">
-                                    Bộ Flashcard
-                                </TabsTrigger>
+
                                 <TabsTrigger value="achievements" className="dark:data-[state=active]:bg-slate-700">
                                     Thành tựu
                                 </TabsTrigger>
@@ -448,73 +446,6 @@ export default function UserProfile({ profile, quiz, flashcard }: PropsProfile) 
                                         </div>
                                     </CardContent>
                                 </Card>
-                            </div>
-                        </TabsContent>
-
-                        <TabsContent value="quiz" className="space-y-6">
-                            <div className="flex justify-between items-center">
-                                <h2 className="text-2xl font-bold">Bộ Quiz của {user?._id === profile?._id ? "bạn" : profile?.displayName}</h2>
-                                <Badge variant="secondary" className="bg-slate-700">
-                                    {quiz?.length} bộ quiz
-                                </Badge>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                {quiz &&
-                                    quiz.map((post) => (
-                                        <Card key={post._id} className={`border shadow-md hover:shadow-lg transition-shadow cursor-pointer group`}>
-                                            <CardHeader className="pb-3">
-                                                <div className="flex justify-between items-start mb-2">
-                                                    <Badge variant="secondary" className="text-xs">
-                                                        {post.subject}
-                                                    </Badge>
-                                                    <Link href={`/quiz/detail/${post.slug}`} className="block">
-                                                        <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity">
-                                                            <Eye className="w-4 h-4" />
-                                                        </Button>
-                                                    </Link>
-                                                </div>
-                                                <CardTitle className="text-lg line-clamp-2">{post.title}</CardTitle>
-                                                <CardDescription className="line-clamp-2">{post.content}</CardDescription>
-                                            </CardHeader>
-                                            <CardContent className="pt-0">
-                                                <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
-                                                    <div className="flex items-center gap-4">
-                                                        <span className="flex items-center gap-1">
-                                                            <Eye className="w-3 h-3" />
-                                                            {post.view}
-                                                        </span>
-                                                        <span className="flex items-center gap-1">
-                                                            <Heart className="w-3 h-3" />
-                                                            {post.noa}
-                                                        </span>
-                                                        <span className="flex items-center gap-1">
-                                                            <MessageCircle className="w-3 h-3" />
-                                                            {post.comment.length}
-                                                        </span>
-                                                    </div>
-                                                    <Button variant="ghost" size="sm" className="p-1 h-auto">
-                                                        <Share2 className="w-3 h-3" />
-                                                    </Button>
-                                                </div>
-                                                {post.date && <div className="mt-2 text-xs text-gray-500 dark:text-gray-300">{handleCompareDate(post.date)}</div>}
-                                            </CardContent>
-                                        </Card>
-                                    ))}
-                            </div>
-                        </TabsContent>
-                        <TabsContent value="flashcard" className="space-y-6">
-                            <div className="flex justify-between items-center">
-                                <h2 className="text-2xl font-bold">Bộ Flashcard của {user?._id === profile?._id ? "bạn" : profile?.displayName}</h2>
-                                <Badge variant="secondary" className="bg-slate-700">
-                                    {flashcard && flashcard?.length} flashcard
-                                </Badge>
-                            </div>
-
-                            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 ">
-                                {flashcard && flashcard.map((item) => <UserFC item={item} key={item._id} />)}
-
-                                {flashcard && !flashcard?.length && <div className="h-[350px] col-span-12 flex items-center justify-center text-gray-700">Không có dữ liệu...</div>}
                             </div>
                         </TabsContent>
 
@@ -706,6 +637,76 @@ export default function UserProfile({ profile, quiz, flashcard }: PropsProfile) 
                             </div>
                         </TabsContent>
                     </Tabs>
+                    <div className="">
+                        <div className="flex justify-between items-center mb-3">
+                            <h2 className="text-2xl font-bold">Bộ Quiz của {user?._id === profile?._id ? "bạn" : profile?.displayName}</h2>
+                            <Badge variant="secondary" className="bg-slate-700">
+                                {quiz?.length || 0} bộ quiz
+                            </Badge>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-h-[500px] overflow-y-auto">
+                            {quiz &&
+                                quiz.map((post) => (
+                                    <Card key={post._id} className={`border shadow-md hover:shadow-lg transition-shadow cursor-pointer group`}>
+                                        <div className="relative w-full h-32">
+                                            <Image src={post.img} alt="" className="absolute object-cover" fill></Image>
+                                            <Badge variant="secondary" className="text-xs absolute z-1 top-1 left-1">
+                                                {post.subject}
+                                            </Badge>
+                                            <Button
+                                                onClick={() => router.push(`/quiz/detail/${post.slug}`)}
+                                                variant="secondary"
+                                                size="sm"
+                                                className="absolute opacity-0 group-hover:opacity-100 transition-opacity z-1 top-1 right-1">
+                                                <Eye className="w-4 h-4" />
+                                            </Button>
+                                        </div>
+                                        <CardHeader className="pb-3 pt-0">
+                                            <div className="flex justify-between items-start mb-2"></div>
+                                            <CardTitle className="text-lg line-clamp-2">{post.title}</CardTitle>
+                                            <CardDescription className="line-clamp-2">{post.content}</CardDescription>
+                                        </CardHeader>
+                                        <CardContent className="pt-0">
+                                            <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+                                                <div className="flex items-center gap-4">
+                                                    <span className="flex items-center gap-1">
+                                                        <Eye className="w-3 h-3" />
+                                                        {post.view}
+                                                    </span>
+                                                    <span className="flex items-center gap-1">
+                                                        <Heart className="w-3 h-3" />
+                                                        {post.noa}
+                                                    </span>
+                                                    <span className="flex items-center gap-1">
+                                                        <MessageCircle className="w-3 h-3" />
+                                                        {post.comment.length}
+                                                    </span>
+                                                </div>
+                                                <Button variant="ghost" size="sm" className="p-1 h-auto">
+                                                    <Share2 className="w-3 h-3" />
+                                                </Button>
+                                            </div>
+                                            {post.date && <div className="mt-2 text-xs text-gray-500 dark:text-gray-300">{handleCompareDate(post.date)}</div>}
+                                        </CardContent>
+                                    </Card>
+                                ))}
+                        </div>
+                    </div>
+                    <div className="mt-5">
+                        <div className="flex justify-between items-center mb-3">
+                            <h2 className="text-2xl font-bold">Bộ Flashcard của {user?._id === profile?._id ? "bạn" : profile?.displayName}</h2>
+                            <Badge variant="secondary" className="bg-slate-700">
+                                {(flashcard && flashcard?.length) || 0} flashcard
+                            </Badge>
+                        </div>
+
+                        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 max-h-[500px] overflow-y-auto">
+                            {flashcard && flashcard.map((item) => <UserFC item={item} key={item._id} />)}
+
+                            {flashcard && !flashcard?.length && <div className="h-[350px] col-span-12 flex items-center justify-center text-gray-700">Không có dữ liệu...</div>}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

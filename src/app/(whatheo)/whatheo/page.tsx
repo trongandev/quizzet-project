@@ -15,8 +15,8 @@ const chartData = [
     { month: "June", desktop: 214 },
 ];
 const chartConfig = {
-    desktop: {
-        label: "Desktop",
+    count: {
+        label: "Số lượng người dùng",
         color: "var(--chart-1)",
     },
 } satisfies ChartConfig;
@@ -102,7 +102,7 @@ export default async function DashboardPage() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="pl-2">
-                        <ClientChartWrapper data={chartData} config={chartConfig} />
+                        <ClientChartWrapper data={res.chartData} config={chartConfig} />
                     </CardContent>
                 </Card>
                 <Card className="col-span-3">

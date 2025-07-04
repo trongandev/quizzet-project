@@ -54,14 +54,6 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
         fetchListFlashCard();
     }, [token, publicFlashcards]);
 
-    if (!publicFlashcards && !listFlashCard) {
-        return (
-            <div className="flex items-center justify-center h-screen">
-                <Loading />
-            </div>
-        );
-    }
-
     const handleSearchFC = (value) => {
         setSearchFC(value);
         if (tabFlashcard === "community") {

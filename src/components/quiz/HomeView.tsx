@@ -2,14 +2,12 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Bot, FileText, Upload, Sparkles } from "lucide-react";
+import { Bot, FileText, Upload } from "lucide-react";
 import { SidebarTrigger } from "../ui/sidebar";
+import { useRouter } from "next/navigation";
 
-interface HomeViewProps {
-    onViewChange: (view: string) => void;
-}
-
-export function HomeView({ onViewChange }: HomeViewProps) {
+export function HomeView() {
+    const router = useRouter();
     const options = [
         {
             id: "ai-create",
@@ -50,7 +48,10 @@ export function HomeView({ onViewChange }: HomeViewProps) {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
                 {options.map((option) => (
-                    <Card key={option.id} className="relative overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group" onClick={() => onViewChange(option.id)}>
+                    <Card
+                        key={option.id}
+                        className="relative overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group"
+                        onClick={() => router.push(`/quiz/themcauhoi/${option.id}`)}>
                         <div className={`absolute inset-0 bg-gradient-to-br ${option.gradient} opacity-5 group-hover:opacity-10 transition-opacity`} />
 
                         <CardHeader className="text-center space-y-4">
@@ -77,7 +78,7 @@ export function HomeView({ onViewChange }: HomeViewProps) {
                                 className={`w-full bg-gradient-to-r dark:text-white ${option.gradient} hover:opacity-90 transition-opacity`}
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    onViewChange(option.id);
+                                    router.push(`/quiz/themcauhoi/${option.id}`);
                                 }}>
                                 Bắt đầu tạo
                             </Button>
@@ -89,7 +90,7 @@ export function HomeView({ onViewChange }: HomeViewProps) {
             <div className="text-center">
                 <p className="text-sm text-muted-foreground">
                     Không chắc chắn phương thức nào phù hợp? Hãy thử{" "}
-                    <Button variant="link" className="p-0 h-auto" onClick={() => onViewChange("ai-create")}>
+                    <Button variant="link" className="p-0 h-auto" onClick={() => router.push("/quiz/themcauhoi/ai-create")}>
                         tạo bằng AI
                     </Button>{" "}
                     để bắt đầu nhanh chóng!

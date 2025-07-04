@@ -18,6 +18,7 @@ import { optimizedPromptQuiz } from "@/lib/optimizedPrompt";
 import DialogAddMoreInfoQuiz from "./DialogAddMoreInfoQuiz";
 import { Game2048Smooth } from "./Game2048Smooth";
 import { SidebarTrigger } from "../ui/sidebar";
+import { useRouter } from "next/navigation";
 interface QuizQuestion {
     title: string;
     subject: string;
@@ -34,11 +35,7 @@ interface Quiz {
     points: number;
 }
 
-interface HomeViewProps {
-    onViewChange: (view: string) => void;
-}
-
-export function AICreateView({ onViewChange }: HomeViewProps) {
+export function AICreateView() {
     const [topic, setTopic] = useState("");
     const [openAddMoreInfo, setOpenAddMoreInfo] = useState(false);
     const [description, setDescription] = useState("");
@@ -49,7 +46,7 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
     const [generatedQuiz, setGeneratedQuiz] = useState<QuizQuestion | null>(null);
     const [showPreview, setShowPreview] = useState(false);
     const [openGame, setOpenGame] = useState(false);
-
+    const router = useRouter();
     const difficultyOptions = [
         { value: "easy", label: "Cơ bản", badge: "Cơ bản", desc: "Phù hợp cho người mới bắt đầu", color: "bg-green-100 text-green-800 dark:bg-green-800/40 dark:text-green-200" },
         {
@@ -134,7 +131,7 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
             localStorage.setItem("draftQuiz", JSON.stringify([draft]));
         }
 
-        toast.success("Quiz đã được lưu vào nháp", { description: "Bạn có thể xem lại trong phần Draft", duration: 5000, action: { label: "Xem nháp", onClick: () => onViewChange("drafts") } });
+        toast.success("Quiz đã được lưu vào nháp", { description: "Bạn có thể xem lại trong phần Draft", duration: 5000, action: { label: "Xem nháp", onClick: () => router.push("drafts") } });
     };
 
     return (
@@ -198,6 +195,14 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                         </CardHeader>
                         <CardContent className="space-y-6">
                             <div>
+                                <Label>Số lượng câu hỏi: {questionCount[0]}</Label>
+                                <Slider value={questionCount} onValueChange={setQuestionCount} max={50} min={5} step={5} className="mt-2" />
+                                <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                                    <span>5 câu</span>
+                                    <span>50 câu</span>
+                                </div>
+                            </div>
+                            <div>
                                 <Label>Lựa chọn độ khó</Label>
                                 <div className="flex gap-2  flex-col md:flex-row ">
                                     {difficultyOptions.map((option) => (
@@ -221,16 +226,7 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                                 </div>
                             </div>
 
-                            <div>
-                                <Label>Số lượng câu hỏi: {questionCount[0]}</Label>
-                                <Slider value={questionCount} onValueChange={setQuestionCount} max={50} min={5} step={5} className="mt-2" />
-                                <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                                    <span>5 câu</span>
-                                    <span>50 câu</span>
-                                </div>
-                            </div>
-
-                            <div>
+                            {/* <div >
                                 <Label>
                                     Loại câu hỏi <span className="text-xs ml-3 text-gray-400">(*Mặc định trắc nghiệm)</span>
                                 </Label>
@@ -246,13 +242,27 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                                         </Button>
                                     ))}
                                 </div>
-                            </div>
+                            </div> */}
                         </CardContent>
                     </Card>
                 </div>
 
                 {/* Preview/Stats */}
                 <div className="space-y-6">
+                    <Card className="dark:border-white/10 dark:shadow-md bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200 dark:from-purple-900/20 dark:to-pink-900/20">
+                        <CardContent className="p-4">
+                            <div className="text-center space-y-2">
+                                <Bot className="h-8 w-8 text-purple-500 mx-auto" />
+                                <p className="text-sm font-medium">AI sẽ tạo quiz dựa trên:</p>
+                                <ul className="text-xs text-muted-foreground space-y-1">
+                                    <li>• Chủ đề và mô tả của bạn</li>
+                                    <li>• Độ khó phù hợp</li>
+                                    <li>• Đa dạng loại câu hỏi</li>
+                                    <li>• Đáp án chính xác</li>
+                                </ul>
+                            </div>
+                        </CardContent>
+                    </Card>
                     <Card className="dark:border-white/10 dark:shadow-md">
                         <CardHeader>
                             <CardTitle className="flex items-center space-x-2">
@@ -291,21 +301,6 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                             </div>
                         </CardContent>
                     </Card>
-
-                    <Card className="dark:border-white/10 dark:shadow-md bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200 dark:from-purple-900/20 dark:to-pink-900/20">
-                        <CardContent className="p-4">
-                            <div className="text-center space-y-2">
-                                <Bot className="h-8 w-8 text-purple-500 mx-auto" />
-                                <p className="text-sm font-medium">AI sẽ tạo quiz dựa trên:</p>
-                                <ul className="text-xs text-muted-foreground space-y-1">
-                                    <li>• Chủ đề và mô tả của bạn</li>
-                                    <li>• Độ khó phù hợp</li>
-                                    <li>• Đa dạng loại câu hỏi</li>
-                                    <li>• Đáp án chính xác</li>
-                                </ul>
-                            </div>
-                        </CardContent>
-                    </Card>
                 </div>
             </div>
 
@@ -326,7 +321,7 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                                 {!generatedQuiz ? (
                                     <DialogDescription>
                                         <p className="mb-2 hidden md:block">Hệ thống AI đang tổng hợp các câu hỏi cho bạn.</p>
-                                        <p className="mb-4">Quá trình này có thể mất chút thời gian tùy thuộc vào số lượng câu hỏi, thường là khoảng 30 giây.</p>
+                                        <p className="mb-4">Quá trình này có thể mất chút thời gian tùy thuộc vào số lượng câu hỏi</p>
                                     </DialogDescription>
                                 ) : (
                                     <DialogDescription>
@@ -393,16 +388,7 @@ export function AICreateView({ onViewChange }: HomeViewProps) {
                     </div>
                 )}
             </div>
-            {generatedQuiz && (
-                <AIResultPreview
-                    open={showPreview}
-                    onOpenChange={setShowPreview}
-                    quiz={generatedQuiz}
-                    setGeneratedQuiz={setGeneratedQuiz}
-                    onQuizUpdate={handleQuizUpdate}
-                    setOpenAddMoreInfo={setOpenAddMoreInfo}
-                />
-            )}
+            {generatedQuiz && <AIResultPreview open={showPreview} onOpenChange={setShowPreview} quiz={generatedQuiz} setGeneratedQuiz={setGeneratedQuiz} setOpenAddMoreInfo={setOpenAddMoreInfo} />}
         </div>
     );
 }

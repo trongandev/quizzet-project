@@ -2,36 +2,33 @@
 
 import { Bot, FileText, Upload, Save, Home, Settings, HelpCircle } from "lucide-react";
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter } from "@/components/ui/sidebar";
+import { useRouter } from "next/navigation";
 
-interface AppSidebarProps {
-    activeView: string;
-    onViewChange: (view: string) => void;
-}
-
-export function SideBarQuiz({ activeView, onViewChange }: AppSidebarProps) {
+export function SideBarQuiz() {
     const menuItems = [
         {
             title: "Trang chủ",
             icon: Home,
-            id: "home",
+            id: "",
         },
         {
             title: "Tạo bằng AI",
             icon: Bot,
             id: "ai-create",
             description: "Ra lệnh cho AI thực hiện",
-        },
-        {
-            title: "Nhập tạo từ đầu",
-            icon: FileText,
-            id: "manual-create",
-            description: "Nhập tay tất cả thông tin",
+            isHot: true,
         },
         {
             title: "Nhập từ file",
             icon: Upload,
             id: "file-import",
             description: "Từ docx, xlsx, PDF...",
+        },
+        {
+            title: "Nhập tạo từ đầu",
+            icon: FileText,
+            id: "manual-create",
+            description: "Nhập tay tất cả thông tin",
         },
     ];
 
@@ -47,6 +44,7 @@ export function SideBarQuiz({ activeView, onViewChange }: AppSidebarProps) {
             id: "help",
         },
     ];
+    const router = useRouter();
 
     return (
         <div className="">
@@ -66,10 +64,13 @@ export function SideBarQuiz({ activeView, onViewChange }: AppSidebarProps) {
                             <SidebarMenu>
                                 {menuItems.map((item) => (
                                     <SidebarMenuItem key={item.id}>
-                                        <SidebarMenuButton onClick={() => onViewChange(item.id)} isActive={activeView === item.id} className="w-full justify-start h-14 px-3">
+                                        <SidebarMenuButton onClick={() => router.push(`/quiz/themcauhoi/${item.id}`)} className="w-full justify-start h-14 px-3">
                                             <item.icon className="mr-2 h-4 w-4" />
                                             <div className="flex flex-col items-start">
-                                                <span>{item.title}</span>
+                                                <div className="">
+                                                    <span>{item.title}</span>
+                                                    {item.isHot && <span className="ml-2 text-xs text-red-500 bg-red-100 dark:text-red-200 dark:bg-red-800/50 px-2 animate-bounce rounded">Hot</span>}
+                                                </div>
                                                 {item.description && <span className="text-xs text-muted-foreground">{item.description}</span>}
                                             </div>
                                         </SidebarMenuButton>
@@ -83,7 +84,7 @@ export function SideBarQuiz({ activeView, onViewChange }: AppSidebarProps) {
                         <SidebarGroupContent>
                             <SidebarMenu>
                                 <SidebarMenuItem>
-                                    <SidebarMenuButton onClick={() => onViewChange("drafts")} isActive={activeView === "drafts"} className="w-full justify-start h-14 px-3">
+                                    <SidebarMenuButton onClick={() => router.push(`/quiz/themcauhoi/drafts`)} className="w-full justify-start h-14 px-3">
                                         <Save className="mr-2 h-4 w-4" />
                                         <div className="flex flex-col items-start">
                                             <span>Nháp</span>
@@ -99,7 +100,7 @@ export function SideBarQuiz({ activeView, onViewChange }: AppSidebarProps) {
                     <SidebarMenu>
                         {bottomItems.map((item) => (
                             <SidebarMenuItem key={item.id}>
-                                <SidebarMenuButton onClick={() => onViewChange(item.id)} isActive={activeView === item.id}>
+                                <SidebarMenuButton onClick={() => router.push(`/quiz/themcauhoi/${bottomItems[1].id}`)}>
                                     <item.icon className="mr-2 h-4 w-4" />
                                     <span>{item.title}</span>
                                 </SidebarMenuButton>

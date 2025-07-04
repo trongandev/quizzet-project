@@ -19,37 +19,31 @@ const rateOptions = [
     {
         label: "Quên hoàn toàn",
         mean: "Bạn không nhớ gì cả, hoàn toàn quên từ này.",
-        color: "bg-red-600 hover:bg-red-700 text-red-400",
         icon: BsEmojiDizzy,
     },
     {
         label: "Rất khó nhớ",
         mean: "Bạn trả lời sai, nhưng có chút nhận biết khi thấy đáp án.",
-        color: "bg-red-500 hover:bg-red-600 text-red-200",
         icon: BsEmojiFrown,
     },
     {
         label: "Khó nhớ",
         mean: "Bạn trả lời sai, nhưng thấy dễ nhớ khi nhìn đáp án.",
-        color: "bg-orange-500 hover:bg-orange-600 text-orange-200",
         icon: BsEmojiExpressionless,
     },
     {
         label: "Bình thường",
         mean: "Bạn trả lời đúng, nhưng có chút do dự.",
-        color: "bg-yellow-500 hover:bg-yellow-600 text-yellow-200",
         icon: BsEmojiNeutral,
     },
     {
         label: "Dễ nhớ",
         mean: "Bạn trả lời đúng, chỉ có chút do dự nhỏ.",
-        color: "bg-green-500 hover:bg-green-600 text-green-200",
         icon: BsEmojiLaughing,
     },
     {
         label: "Hoàn hảo",
         mean: "Bạn trả lời đúng hoàn hảo, không chút do dự.",
-        color: "bg-emerald-600 hover:bg-emerald-700 text-emerald-200",
         icon: BsEmojiSunglasses,
     },
 ];
@@ -100,7 +94,6 @@ export default function PractiveFlashcard({ params }: { params: { slug: string }
     const [tts] = useState(() => new EdgeSpeechTTS({ locale: "en-US" }));
     const speakWord = useCallback(
         async (text: string, language: string) => {
-            console.log(voiceSetting[language], "voiceSetting[language]");
             try {
                 setLoadingAudio(true);
                 const response = await tts.create({
@@ -165,15 +158,6 @@ export default function PractiveFlashcard({ params }: { params: { slug: string }
         [currentIndex, flashcards, loadingAudio, speakWord]
     );
 
-    // Loading state
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center h-screen">
-                <Loading className="h-14 w-14" />
-            </div>
-        );
-    }
-
     // Error state
     if (error) {
         return (
@@ -217,7 +201,7 @@ export default function PractiveFlashcard({ params }: { params: { slug: string }
         // ✅ Update state
         setSessionRatings(updatedSessionRatings);
 
-        toast.success(`Đã đánh giá thẻ với chất lượng ${quality}`, {
+        toast.success(`Đã đánh giá thẻ với chất lượng ${quality + 1}`, {
             duration: 3000,
             position: "top-center",
         });
@@ -296,6 +280,25 @@ export default function PractiveFlashcard({ params }: { params: { slug: string }
                 position: "top-center",
                 id: "send-session",
             });
+        }
+    };
+
+    const getColorMemorize = (name: string) => {
+        switch (name) {
+            case "Quên hoàn toàn":
+                return "hover:bg-red-700 text-red-400";
+            case "Rất khó nhớ":
+                return "hover:bg-red-600 text-red-200";
+            case "Khó nhớ":
+                return "hover:bg-orange-600 text-orange-200";
+            case "Bình thường":
+                return "hover:bg-yellow-600 text-yellow-200";
+            case "Dễ nhớ":
+                return "hover:bg-green-600 text-green-200";
+            case "Hoàn hảo":
+                return "hover:bg-emerald-700 text-emerald-200";
+            default:
+                return "bg-gray-500 hover:bg-gray-600 text-gray-200"; // Mặc định nếu không khớp
         }
     };
 
@@ -381,17 +384,20 @@ export default function PractiveFlashcard({ params }: { params: { slug: string }
                             </div>
 
                             {/* Navigation Controls */}
-                            <div className="bg-white rounded-md overflow-hidden w-full flex shadow-md text-2xl border border-white/10 dark:bg-slate-800/50">
+                            <div className="bg-white rounded-md overflow-hidden w-full flex shadow-md text-2xl border border-white/10 dark:bg-slate-800/50 h-[120px] md:h-auto">
                                 {rateOptions.map((option, index) => (
                                     <Tooltip key={index}>
                                         <TooltipTrigger className="w-full">
                                             <div
                                                 key={index}
-                                                className={`flex-1 w-full p-3 hover:${option.color} text-white flex flex-col gap-1 justify-center items-center cursor-pointer `}
+                                                className={`flex-1 w-full h-full px-1 py-3 flex flex-col gap-1 justify-start md:justify-center  items-center cursor-pointer ${getColorMemorize(
+                                                    option.label
+                                                )}`}
                                                 onClick={() => handleRate(index)}>
                                                 <option.icon />
-                                                <p className="text-sm">
-                                                    {index + 1}: {option.label}
+
+                                                <p className="text-sm h-full flex items-center justify-center">
+                                                    <span className="hidden md:block"> {index + 1}:</span> {option.label}
                                                 </p>
                                             </div>
                                         </TooltipTrigger>
