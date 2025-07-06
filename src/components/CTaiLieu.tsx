@@ -5,14 +5,12 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useCallback, useEffect, useState } from "react";
 import { FaRegEye, FaRegQuestionCircle } from "react-icons/fa";
-import { ArrowDownNarrowWide, ArrowUpNarrowWide, ChevronLeft, ChevronRight, Filter, Grid2X2, Grid3x3, Mail, Play, Plus, Search } from "lucide-react";
+import { ArrowDownNarrowWide, ArrowUpNarrowWide, ChevronLeft, ChevronRight, Grid2X2, Grid3x3, Mail, Plus, Search } from "lucide-react";
 import { SiQuizlet } from "react-icons/si";
 import { Tooltip } from "antd";
-import { subjectOption } from "@/lib/subjectOption";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem } from "@/components/ui/pagination";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 export default function CTaiLieu({ toolData }: any) {
     const [toggleBtnSortNumber, setToggleBtnSortNumber] = useState(true);
@@ -26,11 +24,11 @@ export default function CTaiLieu({ toolData }: any) {
     const [itemsPerPage, setItemsPerPage] = useState(8);
     const [isMobile, setIsMobile] = useState(false);
     // Calculate pagination
-    const totalItems = data.length;
+    const totalItems = data?.length;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const currentItems = data.slice(startIndex, endIndex);
+    const currentItems = data?.slice(startIndex, endIndex);
 
     const displaySO = currentItems;
     useEffect(() => {

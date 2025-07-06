@@ -132,13 +132,6 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
         }));
     }, []);
 
-    const summaryUsers = [
-        { label: "Tất cả thẻ", filter: "all", value: filteredFlashcards?.length || 0, icon: <GalleryVerticalEnd />, color: "indigo" },
-        { label: "Đã nhớ", filter: "learned", value: statusCounts?.learned || 0, icon: <BookOpen />, color: "green" },
-        { label: "Đang ghi nhớ", filter: "remembered", value: statusCounts?.remembered || 0, icon: <Brain />, color: "blue" },
-        { label: "Cần ôn tập", filter: "reviewing", value: statusCounts?.reviewing || 0, icon: <RotateCcw />, color: "red" },
-    ];
-
     useEffect(() => {
         if (!listFlashcard?.language) return; // Đợi listFlashcard load xong
 

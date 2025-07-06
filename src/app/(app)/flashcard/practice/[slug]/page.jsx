@@ -34,6 +34,8 @@ export default function PractiveFlashcard({ params }) {
     const [selectedAnswers, setSelectedAnswers] = useState({});
     const [isCorrectAns, setIsCorrectAns] = useState(null);
     const [voiceSetting, setVoiceSetting] = useState();
+    const [languageFC, setLanguageFC] = useState("en-US");
+    const [isShiftDisabled, setIsShiftDisabled] = useState(false);
     const router = useRouter();
     const shuffle = (array) => {
         let currentIndex = array.length,
@@ -55,7 +57,7 @@ export default function PractiveFlashcard({ params }) {
                 const req = await GET_API(`/flashcards/${params?.slug}`, token);
                 if (req.ok) {
                     const result = req?.listFlashCards?.flashcards;
-
+                    setLanguageFC(req?.listFlashCards?.language);
                     setFlashcards(shuffle(result));
                     generateQuizOptions(result[0]);
 
@@ -112,11 +114,12 @@ export default function PractiveFlashcard({ params }) {
 
     const speakWord = useCallback(
         async (text, language) => {
+            console.log("Speaking word:", text, "Language:", language, "languageFC", languageFC, "voiceSetting:", voiceSetting);
             try {
                 const response = await tts.create({
                     input: text,
                     options: {
-                        voice: language ? voiceSetting[language] : voiceSetting["en-US"],
+                        voice: language !== undefined ? voiceSetting[language] : voiceSetting[languageFC],
                     },
                 });
 
@@ -137,7 +140,6 @@ export default function PractiveFlashcard({ params }) {
                     duration: 3000,
                     position: "top-center",
                 });
-                // messageApi.error("Lỗi khi phát âm thanh: " + error.message);
             } finally {
             }
         },
@@ -261,8 +263,17 @@ export default function PractiveFlashcard({ params }) {
 
     // Keyboard navigation
     const handleKeyDown = useCallback(
-        (e) => {
+        async (e) => {
             switch (e.key.toLowerCase()) {
+                case "alt":
+                    e.preventDefault();
+                    if (feature === FEATURES.LISTENING || feature === FEATURES.FILL_BLANK) {
+                        setShowAns((prev) => !prev);
+                        if (!showAns) {
+                            setInputAnswer(flashcards[index].title); // Hiển thị đáp án khi bấm space
+                        }
+                    }
+                    break;
                 case "arrowleft":
                     handleChangeIndex("prev");
                     break;
@@ -270,14 +281,8 @@ export default function PractiveFlashcard({ params }) {
                     handleChangeIndex("next");
                     break;
                 case " ":
-                    e.preventDefault();
                     if (feature === FEATURES.FLASHCARD) {
                         setIsFlipped((prev) => !prev);
-                    } else if (feature === FEATURES.LISTENING || feature === FEATURES.FILL_BLANK) {
-                        setShowAns((prev) => !prev);
-                        if (!showAns) {
-                            setInputAnswer(flashcards[index].title); // Hiển thị đáp án khi bấm space
-                        }
                     }
                     break;
                 case "enter":
@@ -287,7 +292,13 @@ export default function PractiveFlashcard({ params }) {
                     break;
                 case "shift":
                     // Phát âm thanh với accent đang được chọn
-                    speakWord(flashcards[index]?.title, flashcards[index]?.language);
+                    if (!isShiftDisabled) {
+                        setIsShiftDisabled(true);
+                        speakWord(flashcards[index]?.title, flashcards[index]?.language);
+                        setTimeout(() => {
+                            setIsShiftDisabled(false);
+                        }, 2000);
+                    }
                     break;
             }
         },
@@ -306,6 +317,7 @@ export default function PractiveFlashcard({ params }) {
             </div>
         );
     }
+    console.log(showAns, "showAns");
 
     return (
         <Suspense fallback={LoadingScreen()}>
@@ -606,13 +618,16 @@ export default function PractiveFlashcard({ params }) {
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Space</kbd>
-                                            <span className="">Lật thẻ/Show đáp án</span>
+                                            <span className="">Lật thẻ</span>
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Enter</kbd>
                                             <span className="">Kiểm tra đáp án</span>
                                         </div>
-
+                                        <div className="flex items-center gap-2">
+                                            <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Alt</kbd>
+                                            <span className="">Hiển thị đáp án</span>
+                                        </div>
                                         <div className="flex items-center gap-2">
                                             <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Shift</kbd>
                                             <span className="">Phát âm thanh</span>

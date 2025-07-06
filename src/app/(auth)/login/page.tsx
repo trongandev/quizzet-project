@@ -75,7 +75,7 @@ export default function LoginForm() {
                     if (pathname === "/login") {
                         router.push("/");
                     }
-                    router.back();
+                    // router.back();
                 } else {
                     toast.warning(data.message);
                 }
