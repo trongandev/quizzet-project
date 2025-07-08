@@ -25,7 +25,6 @@ export default async function DashboardPage() {
     const cookieStore = cookies();
     const token = cookieStore.get("token")?.value || "";
     const res = await GET_API("/admin/analystic", token);
-    console.log(res);
     const stats = [
         {
             title: "Tổng người dùng",

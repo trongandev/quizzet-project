@@ -241,7 +241,7 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
                             <Tooltip>
                                 <TooltipTrigger className="w-full">
                                     <div
-                                        className={`w-full col-span-2 md:col-span-1 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-6 border border-indigo-200 dark:from-indigo-800/50 dark:to-indigo-900/50 dark:border-white/10`}>
+                                        className={`h-full w-full col-span-2 md:col-span-1 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-6 border border-indigo-200 dark:from-indigo-800/50 dark:to-indigo-900/50 dark:border-white/10`}>
                                         <div className="flex items-center justify-between mb-3">
                                             <div className="p-2 bg-indigo-600 rounded-lg">
                                                 <Target className="w-5 h-5 text-white" />
@@ -309,7 +309,7 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
                                                 <Loading className="h-12 w-12" />{" "}
                                             </div>
                                         )}
-                                        {!loading && filterFlashcard?.length <= 0 && <div className="h-[350px] col-span-12 flex items-center justify-center text-gray-700">Không có dữ liệu...</div>}
+                                        {filterFlashcard?.length === 0 && <div className="h-[350px] col-span-12 flex items-center justify-center text-gray-700">Không có dữ liệu...</div>}
                                     </div>
                                 </div>
                             ) : (
@@ -323,13 +323,13 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
                         </div>
                     </TabsContent>
                     <TabsContent value="community">
-                        <div className="flex items-center gap-4 p-4 bg-white dark:bg-slate-700/80 rounded-lg shadow-sm border">
-                            <div className="flex items-center gap-2">
+                        <div className="flex items-center flex-col md:flex-row gap-4 p-4 bg-white dark:bg-slate-700/80 rounded-lg shadow-sm border">
+                            <div className="flex items-center gap-2 ">
                                 <Globe className="w-5 h-5 text-gray-500" />
                                 <span className="font-medium text-gray-700 dark:text-white/80">Lọc theo ngôn ngữ:</span>
                             </div>{" "}
                             <div className="flex flex-wrap gap-2">
-                                <Button variant={language === "all" ? "default" : "outline"} size="sm" className="h-8" onClick={() => handleLanguageFilter("all")}>
+                                <Button variant={language === "all" ? "default" : "outline"} size="sm" className="h-8 text-white" onClick={() => handleLanguageFilter("all")}>
                                     <Globe className="w-4 h-4 mr-1" /> Tất cả
                                 </Button>
                                 {languages.map((lang) => (

@@ -30,19 +30,19 @@ export default function CHeader() {
         clearUser();
     };
 
-    useEffect(() => {
-        const fetchAPI = async () => {
-            const req = await GET_API("/notify", token);
-            if (req.ok) {
-                setNotify(req?.data?.notifications);
-                setUnreadCountNotify(req?.data?.unreadCount || 0);
-            }
-        };
+    // useEffect(() => {
+    //     const fetchAPI = async () => {
+    //         const req = await GET_API("/notify", token);
+    //         if (req.ok) {
+    //             setNotify(req?.data?.notifications);
+    //             setUnreadCountNotify(req?.data?.unreadCount || 0);
+    //         }
+    //     };
 
-        if (user) {
-            fetchAPI();
-        }
-    }, [user, token]);
+    //     if (user) {
+    //         fetchAPI();
+    //     }
+    // }, [user, token]);
 
     const handleRouterNotify = async (item: any) => {
         const req = await GET_API(`/notify/${item?._id}`, token);
@@ -90,12 +90,16 @@ export default function CHeader() {
                 <div className="flex items-center gap-3">
                     <div className="flex items-center gap-2">
                         {theme === "dark" ? (
-                            <div className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-primary dark:text-white/60 hover:text-white">
-                                <Sun size={18} className="" onClick={() => setTheme("light")} />
+                            <div
+                                className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-primary dark:text-white/60 hover:text-white"
+                                onClick={() => setTheme("light")}>
+                                <Sun size={18} className="" />
                             </div>
                         ) : (
-                            <div className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-primary dark:text-white/60 hover:text-white">
-                                <Moon size={18} className="" onClick={() => setTheme("dark")} />
+                            <div
+                                className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-primary dark:text-white/60 hover:text-white"
+                                onClick={() => setTheme("dark")}>
+                                <Moon size={18} className="" />
                             </div>
                         )}
                     </div>

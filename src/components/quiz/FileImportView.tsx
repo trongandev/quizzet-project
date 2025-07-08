@@ -151,8 +151,12 @@ export function FileImportView() {
             );
             toast.success("Quiz đã được tạo thành công!", {
                 description: "Bạn có thể xem trước và chỉnh sửa quiz trước khi lưu.",
-                duration: 5000,
+                duration: 10000,
                 position: "top-center",
+                action: {
+                    label: "Xem trước",
+                    onClick: () => setShowPreview(true),
+                },
             });
             setGeneratedQuiz({
                 title: "",
@@ -190,7 +194,7 @@ export function FileImportView() {
         toast.success("Quiz đã được lưu vào nháp", {
             description: "Bạn có thể xem lại trong phần Draft",
             duration: 5000,
-            action: { label: "Xem nháp", onClick: () => router.push("/themcauhoi/drafts") },
+            action: { label: "Xem nháp", onClick: () => router.push("/quiz/themcauhoi/drafts") },
         });
     };
 

@@ -133,6 +133,7 @@ interface IProgress {
 
 interface Flashcard {
     _id: string;
+    userId: string;
     title: string;
     define: string;
     language: string;

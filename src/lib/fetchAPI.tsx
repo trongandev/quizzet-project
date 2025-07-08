@@ -10,7 +10,7 @@ export const GET_API = async (url: string, token: string) => {
         });
         return await res.json();
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 };
 
@@ -19,7 +19,7 @@ export const GET_API_WITHOUT_COOKIE = async (url: string) => {
         const res = await fetch(API_ENDPOINT + url);
         return await res.json();
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 };
 
@@ -35,7 +35,7 @@ export const POST_API = async (url: string, data: any, method: string, token: st
         });
         return await res;
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 };
 
@@ -50,6 +50,6 @@ export const POST_API_CLOUD = async (url: string, data: any, token: string) => {
         });
         return await res;
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 };

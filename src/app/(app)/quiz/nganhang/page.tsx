@@ -63,7 +63,6 @@ export default function NganHang() {
     const handleStartQuiz = (subject: QuizSubject) => {
         const questions = questionCount[subject.id] || 10;
         const time = timeLimit[subject.id] || 15;
-        console.log(`Bắt đầu làm bài: ${subject.title}, ${questions} câu, ${time} phút`);
     };
     return (
         <div className="flex items-center justify-center dark:text-white/80 text-gray-400">

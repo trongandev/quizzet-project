@@ -149,7 +149,7 @@ export default function UserProfile({ profile, quiz, flashcard }: PropsProfile) 
 
                                     <div className="flex items-center justify-center md:justify-start gap-2 light:text-gray-500 mb-4 dark:text-white/60">
                                         <Calendar className="w-4 h-4" />
-                                        {profile?.created_at && <span>Tham gia vào ngày {handleCompareDate(profile?.created_at)}</span>}
+                                        {profile?.created_at && <span>Tham gia {handleCompareDate(profile?.created_at)}</span>}
                                     </div>
                                     <div className="space-y-2">
                                         <div className="flex justify-between text-sm">
@@ -704,7 +704,7 @@ export default function UserProfile({ profile, quiz, flashcard }: PropsProfile) 
                         <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 max-h-[500px] overflow-y-auto">
                             {flashcard && flashcard.map((item) => <UserFC item={item} key={item._id} />)}
 
-                            {flashcard && !flashcard?.length && <div className="h-[350px] col-span-12 flex items-center justify-center text-gray-700">Không có dữ liệu...</div>}
+                            {flashcard && flashcard?.length === 0 && <div className="h-[350px] col-span-12 flex items-center justify-center text-gray-700">Không có dữ liệu...</div>}
                         </div>
                     </div>
                 </div>

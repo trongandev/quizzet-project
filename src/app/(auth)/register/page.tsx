@@ -85,7 +85,7 @@ export default function RegisterForm() {
                 Cookies.remove("token");
             }
         } catch (error) {
-            console.log("Error fetching profile:", error);
+            console.error("Error fetching profile:", error);
             Cookies.remove("token");
         }
     };

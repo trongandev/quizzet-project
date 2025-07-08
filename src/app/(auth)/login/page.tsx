@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { GET_API, POST_API } from "@/lib/fetchAPI";
+import { POST_API } from "@/lib/fetchAPI";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,29 +14,15 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import Loading from "@/components/ui/loading";
 import { toast } from "sonner";
+import { useUser } from "@/context/userContext";
+import ChangePassword from "@/components/ChangePassword";
 
 export default function LoginForm() {
     const router = useRouter();
-    const token = Cookies.get("token") || "";
     const pathname = usePathname();
     const [loading, setLoading] = React.useState(false);
-    const fetchProfile = async () => {
-        try {
-            const res = await GET_API("/profile", token);
-            if (!res.user) {
-                Cookies.remove("token");
-            }
-        } catch (error) {
-            console.log("Error fetching profile:", error);
-            Cookies.remove("token");
-        }
-    };
-    useEffect(() => {
-        if (token) {
-            fetchProfile();
-        }
-    });
-
+    const { refetchUser } = useUser() || {};
+    const [isOpen, setIsOpen] = React.useState(false);
     const formik = useFormik({
         initialValues: {
             email: "",
@@ -51,34 +37,34 @@ export default function LoginForm() {
         },
     });
 
+    const fetchProfileAndSaveCookie = async (data: any) => {
+        Cookies.set("token", data.token, {
+            expires: 30,
+            secure: true,
+            sameSite: "none",
+        });
+        // Fetch user profile sau khi đăng nhập thành công
+        refetchUser?.();
+    };
+
     const fetchLogin = async (values: any) => {
         try {
             setLoading(true);
-            const res = await POST_API("/auth/login", values, "POST", token);
-            if (res) {
-                const data = await res.json();
-                if (res.ok) {
-                    toast.success("Đăng nhập thành công!", {
-                        description: "Đang chuyển hướng đến trang chính...",
-                        position: "top-center",
-                    });
-                    try {
-                        Cookies.set("token", data.token, {
-                            expires: 30,
-                            secure: true,
-                            sameSite: "none",
-                        });
-                    } catch (e) {
-                        console.warn("Failed to save cookie:", e);
-                    }
-                    // check router if router == /login then redirect to home
-                    if (pathname === "/login") {
-                        router.push("/");
-                    }
-                    // router.back();
-                } else {
-                    toast.warning(data.message);
-                }
+            const res = await POST_API("/auth/login", values, "POST", "");
+            const data = await res?.json();
+            if (data.isChangePassword) {
+                fetchProfileAndSaveCookie(data);
+                setIsOpen(true);
+                return;
+            } else if (res?.ok && !data.isChangePassword) {
+                toast.success("Đăng nhập thành công!", {
+                    description: "Đang chuyển hướng đến trang chính...",
+                    position: "top-center",
+                });
+                fetchProfileAndSaveCookie(data);
+                router.push("/");
+            } else {
+                toast.warning(data.message, { position: "top-center" });
             }
         } catch (error) {
             toast.error((error as Error).message);
@@ -112,22 +98,21 @@ export default function LoginForm() {
             } catch (e) {
                 console.warn("Failed to save cookie:", e);
             }
-            const fetchAPI = async () => {
-                await GET_API("/profile", token);
-            };
-            fetchAPI();
+            // Sử dụng refetchUser thay vì gọi API trực tiếp
+            refetchUser?.();
             toast.success("Đăng nhập thành công!", {
                 description: "Đang chuyển hướng đến trang chính...",
                 position: "top-center",
             });
             router.push("/");
         }
-    }, [token, router]);
+    }, [router, refetchUser]);
 
     return (
         <div className="min-h-screen flex items-center justify-center p-4">
             <div className="dark:bg-slate-800/80 bg-white border dark:border-white/10 rounded-2xl shadow-xl p-6 md:p-8 space-y-6">
                 {/* Header */}
+                <ChangePassword isOpen={isOpen} setIsOpen={setIsOpen} />
                 <div className="flex items-center space-x-4">
                     <Button type="button" variant="ghost" size="icon" className="h-8 w-8" onClick={handleBackRouter}>
                         <ArrowLeft className="h-4 w-4" />

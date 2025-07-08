@@ -132,7 +132,7 @@ export default function CFlashcardPracticeScience({ flashcards }: { flashcards: 
     );
 
     // No data state
-    if (flashcards === undefined) {
+    if (flashcards.length === 0) {
         return (
             <div className="flex items-center justify-center h-screen flex-col gap-3 text-gray-500 dark:text-gray-400">
                 <BiSlideshow size={50} className="" />
@@ -190,7 +190,6 @@ export default function CFlashcardPracticeScience({ flashcards }: { flashcards: 
         // // // Tùy chọn: Tự động gửi dữ liệu sau mỗi N thẻ
         // if (updatedSessionRatings.length + 1 >= 5) {
         //     // Ví dụ: gửi sau mỗi 5 thẻ
-        //     console.log("gửi the");
 
         //     handleCompleteSession(); // Gửi các đánh giá hiện có
         // }
@@ -298,7 +297,7 @@ export default function CFlashcardPracticeScience({ flashcards }: { flashcards: 
                                         className="absolute inset-0 bg-white dark:bg-slate-800/50 rounded-md flex flex-col items-center justify-center backface-hidden p-5"
                                         style={{ backfaceVisibility: "hidden" }}>
                                         <div className="flex items-center gap-2 mb-4">
-                                            <p className="text-2xl font-semibold text-slate-800 dark:text-white/80">{currentCard.title}</p>
+                                            <p className="text-2xl font-semibold text-slate-800 dark:text-white/80">{currentCard?.title}</p>
                                             <Button
                                                 onClick={(e) => {
                                                     e.stopPropagation();

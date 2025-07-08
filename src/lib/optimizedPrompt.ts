@@ -120,3 +120,32 @@ export function optimizedPromptQuiz(topic: string, description: string, question
             **Đầu ra:**
             Chỉ trả về JSON thuần túy, không có markdown wrapper, không có giải thích gì thêm.`;
 }
+
+export const optimizedPromptGenerateTitle = (data: any) => {
+    return `Bạn là một chuyên gia trong việc tạo tiêu đề hấp dẫn cho các bài quiz. Hãy đọc và dự đoán tiêu đề, nội dung, và môn học của bài quiz. Trả về một object định dạng JSON như cú pháp ở dưới, không có giải thích gì thêm.
+    {
+        "title": "", // Tiêu đề bài quiz
+        "content": "", // Mô tả nội dung chi tiết
+        "subject": "" // Môn học ngắn gọn
+    }
+    Dưới đây là thông tin chi tiết, bạn hãy dự đoán tiêu đề, nội dung và môn học của bài quiz:
+${data.map((q: any) => `- Câu hỏi: ${q.question}\n  - Đáp án: ${q.answers.join(", ")}\n`).join("\n")}`;
+};
+
+export const optimizedPromptEditQuestions = (questions: any[]) => {
+    return `Bạn là một chuyên gia trong việc chỉnh sửa và tạo đáp án từ câu hỏi quiz. Dưới đây là danh sách các câu hỏi và đáp án của chúng. Hãy chỉnh sửa các câu hỏi này để chúng trở nên rõ ràng, chính xác và hấp dẫn hơn. Trả về định dạng JSON như cú pháp ở dưới, không có giải thích gì thêm.
+   
+    Dưới đây là thông tin chi tiết về các câu hỏi:
+    [
+    ${questions
+        .map(
+            (q: any) => `{
+        "id": "${q.id}",
+        "question": "${q.question}",
+        "answers": ${JSON.stringify(q.answers)}, // tạo đáp án và đáp án không cần có a, b, c, d ở đầu 
+        "correct": "${q.correct}"
+    }`
+        )
+        .join(",\n    ")}
+    ]`;
+};

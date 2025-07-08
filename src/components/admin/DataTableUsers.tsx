@@ -35,8 +35,6 @@ import { toast } from "sonner";
 import { POST_API } from "@/lib/fetchAPI";
 import Loading from "../ui/loading";
 export function DataTableUsers({ user }: { user: IUser[] }) {
-    console.log("DataTableUsers mounted with user data:", user);
-
     const [users, setUsers] = useState<IUser[]>(user || []);
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -50,7 +48,6 @@ export function DataTableUsers({ user }: { user: IUser[] }) {
     useEffect(() => {
         if (user && user.length > 0) {
             setUsers(user);
-            console.log("DataTableUsers mounted with user data:", user);
         }
     }, [user]);
 
@@ -274,7 +271,6 @@ export function DataTableUsers({ user }: { user: IUser[] }) {
             setLoadingUpdated(false);
         }
     }, [selectedUser, token]);
-    console.log("rerender");
     if (!user || user.length === 0) {
         return (
             <div className="flex w-full items-center justify-center h-[80vh]">

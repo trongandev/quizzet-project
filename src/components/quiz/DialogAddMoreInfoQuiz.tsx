@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "../ui/input";
-import { Save, Upload, X } from "lucide-react";
+import { Save, Sparkle, Upload, X } from "lucide-react";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import Image from "next/image";
@@ -12,6 +12,8 @@ import { useRouter } from "next/navigation";
 import Loading from "../ui/loading";
 import axios from "axios";
 import { Textarea } from "../ui/textarea";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { optimizedPromptGenerateTitle, optimizedPromptQuiz } from "@/lib/optimizedPrompt";
 interface QuizQuestion {
     title: string;
     subject: string;
@@ -44,6 +46,7 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz, openAdd
     const [tempQuiz, setTempQuiz] = useState(defaultGeneratedQuiz);
 
     const [loading, setLoading] = useState(false);
+    const [loadingTitle, setLoadingTitle] = useState(false);
     const token = Cookies.get("token") || "";
     const router = useRouter();
     const [isDragOver, setIsDragOver] = useState(false);
@@ -69,7 +72,7 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz, openAdd
             [field]: value,
         }));
     };
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: any) => {
         try {
             setLoading(true);
             e.preventDefault();
@@ -117,8 +120,9 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz, openAdd
                 });
             }
         } catch (error: any) {
+            console.error("Error uploading image:", error);
             toast.error("Đã có lỗi xảy ra", {
-                description: error.message || "Lỗi không xác định",
+                description: error.response.data.message || "Lỗi không xác định",
                 position: "top-center",
                 duration: 5000,
                 id: "upload-image",
@@ -144,18 +148,6 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz, openAdd
         }
 
         setSelectedFile(file);
-    };
-
-    const handlePaste = (event: any) => {
-        event.preventDefault();
-        const items = event.clipboardData.items;
-        for (let i = 0; i < items.length; i++) {
-            if (items[i].type.includes("image")) {
-                const blob = items[i].getAsFile();
-                setSelectedFile(blob);
-                break;
-            }
-        }
     };
 
     const handleButtonClick = () => {
@@ -208,11 +200,40 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz, openAdd
         const i = Math.floor(Math.log(bytes) / Math.log(k));
         return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
     };
+    const genAI = useMemo(() => new GoogleGenerativeAI(process.env.API_KEY_AI || ""), []);
+    const handleGenerateTitle = async () => {
+        if (loadingTitle) return; // Prevent multiple clicks
+        setLoadingTitle(true);
+        try {
+            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+            const shuffledQuestions = generatedQuiz?.questions ? [...generatedQuiz.questions].sort(() => Math.random() - 0.5) : [];
+            const sliceQuiz = shuffledQuestions.slice(0, 10);
+            const prompt = optimizedPromptGenerateTitle(sliceQuiz);
+            const result = await model.generateContent(prompt);
+
+            const responseText = result?.response
+                .text()
+                // ✅ Chỉ xóa wrapper markdown, giữ lại code blocks bên trong content
+                .replace(/^```json\s*/, "") // Xóa ```json ở đầu
+                .replace(/^```html\s*/, "") // Xóa ```html ở đầu
+                .replace(/```\s*$/, ""); // Xóa ``` ở cuối
+            const jsonOutput = JSON.parse(responseText || "");
+            setTempQuiz({
+                title: jsonOutput.title,
+                subject: jsonOutput.subject,
+                content: jsonOutput.content,
+            });
+        } catch (error: any) {
+            toast.error("Đã có lỗi xảy ra khi tạo tiêu đề", { description: error, duration: 5000, position: "top-center" });
+        } finally {
+            setLoadingTitle(false);
+        }
+    };
     return (
         <Dialog open={openAddMoreInfo} onOpenChange={setOpenAddMoreInfo}>
             <DialogTrigger>{children}</DialogTrigger>
             <DialogContent>
-                <form onSubmit={handleSubmit} onPaste={handlePaste}>
+                <div>
                     <DialogHeader>
                         <DialogTitle>Nhập thêm thông tin bài quiz </DialogTitle>
                     </DialogHeader>
@@ -232,7 +253,7 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz, openAdd
                                         <Upload className="h-6 w-6 text-muted-foreground" />
                                     </div>
                                     <div className="space-y-1">
-                                        <p className="text-sm font-medium">Tải lên tệp hoặc kéo và thả hoặc ctrl + v</p>
+                                        <p className="text-sm font-medium">Tải lên tệp hoặc kéo</p>
                                         <p className="text-xs text-muted-foreground">PNG, JPG, GIF tới 3MB</p>
                                     </div>
                                 </div>
@@ -245,7 +266,7 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz, openAdd
                                             <Image src={URL.createObjectURL(selectedFile)} alt="Selected file preview" fill className="rounded-md object-cover" />
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-medium truncate max-w-[365px]">{selectedFile.name}</p>
+                                            <p className="text-sm font-medium truncate max-w-[255px]">{selectedFile.name}</p>
                                             <p className="text-xs text-muted-foreground">{formatFileSize(selectedFile.size)}</p>
                                         </div>
                                     </div>
@@ -257,40 +278,20 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz, openAdd
 
                             <input ref={fileInputRef} type="file" accept=".png,.jpg,.jpeg,.gif" onChange={handleFileChange} className="hidden" />
                         </div>
-                        {/* <Tabs value={avatarInputType} onValueChange={(value) => setAvatarInputType(value as "file" | "url")}>
-                            <TabsList className="grid w-full grid-cols-2">
-                                <TabsTrigger value="file">
-                                    <Upload className="w-4 h-4 mr-2" />
-                                    Tải lên
-                                </TabsTrigger>
-                                <TabsTrigger value="url">
-                                    <LinkIcon className="w-4 h-4 mr-2" />
-                                    URL
-                                </TabsTrigger>
-                            </TabsList>
 
-                            <TabsContent value="file" className="space-y-2">
-                                
-                            </TabsContent>
-
-                            <TabsContent value="url" className="space-y-2">
-                                <Input placeholder="Nhập URL hình ảnh" value={tempQuiz.img.startsWith("http") ? tempQuiz.img : ""} onChange={(e) => handleSetValueTempQuiz("img", e.target.value)} />
-                                <div className={`${tempQuiz.img ? "h-52" : "h-0"}  w-full relative`}>
-                                    <Image src={tempQuiz.img} fill alt="" className="absolute w-full h-full rounded-md object-cover"></Image>
-                                </div>
-                            </TabsContent>
-                        </Tabs>{" "} */}
-                        <div className="grid gap-3">
+                        <div className="">
                             <Label htmlFor="name-1">Tên bài quiz</Label>
-                            <Input
-                                id="name-1"
-                                name="name"
-                                placeholder="Nhập tên bài quiz"
-                                value={tempQuiz.title}
-                                onChange={(e) => handleSetValueTempQuiz("title", e.target.value)}
-                                required
-                                onPaste={handlePaste}
-                            />
+                            <div className="flex items-center justify-between gap-5">
+                                <Input id="name-1" name="name" placeholder="Nhập tên bài quiz" value={tempQuiz.title} onChange={(e) => handleSetValueTempQuiz("title", e.target.value)} required />
+                                <Button
+                                    className="bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-purple-600 hover:to-pink-600"
+                                    disabled={loadingTitle}
+                                    onClick={handleGenerateTitle}>
+                                    {loadingTitle ? <Loading /> : <Sparkle className="mr-2 h-4 w-4" />}
+
+                                    <span className="hidden md:inline">Tạo tiêu đề</span>
+                                </Button>
+                            </div>
                         </div>
                         <div className="grid gap-3">
                             <Label htmlFor="username-1">Nội dung</Label>
@@ -315,12 +316,12 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz, openAdd
                                 Đóng
                             </Button>
                         </DialogClose>
-                        <Button size="lg" className="text-white bg-gradient-to-r from-blue-500 to-cyan-500" type="submit" disabled={loading}>
+                        <Button size="lg" className="text-white bg-gradient-to-r from-blue-500 to-cyan-500" onClick={handleSubmit} disabled={loading}>
                             {loading ? <Loading /> : <Save className="mr-2 h-4 w-4" />}
                             Lưu và xuất bản
                         </Button>
                     </DialogFooter>
-                </form>
+                </div>
             </DialogContent>
         </Dialog>
     );

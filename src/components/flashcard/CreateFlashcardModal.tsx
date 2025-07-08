@@ -30,7 +30,7 @@ export function CreateFlashcardModal({ children, listFlashCard, setListFlashCard
     const token = Cookies.get("token") || "";
     const [formData, setFormData] = useState({
         title: "",
-        language: "",
+        language: "english",
         desc: "",
         public: false, // Already boolean
     });
@@ -105,7 +105,7 @@ export function CreateFlashcardModal({ children, listFlashCard, setListFlashCard
                         <Label htmlFor="language" className="text-sm font-medium text-gray-700 dark:text-white/80">
                             Ngôn ngữ <span className="text-red-500">*</span>
                         </Label>
-                        <Select value={formData.language} onValueChange={(value) => handleInputChange("language", value)} required>
+                        <Select value={formData.language} defaultValue="english" onValueChange={(value) => handleInputChange("language", value)} required>
                             <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Chọn ngôn ngữ chính của bộ flashcard" />
                             </SelectTrigger>

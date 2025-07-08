@@ -47,7 +47,6 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
 // ✅ 3. Main Page Component với caching
 export default async function FlashcardPage({ params }: { params: { id: string } }) {
     const res = await getCachedFlashcardDetail(params.id)();
-
     return (
         <CFlashcardDetail
             id_flashcard={params.id}

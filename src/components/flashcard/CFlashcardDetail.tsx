@@ -71,7 +71,7 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
     const [isEditOpen, setIsEditOpen] = useState(false);
     const token = Cookies.get("token") || "";
     const router = useRouter();
-    const { user } = useUser() || {};
+    const { user } = useUser() || { user: null };
     const sortFlashcards = (flashcards: any) => {
         return flashcards?.sort((a: any, b: any) => {
             return new Date(b?.created_at).getTime() - new Date(a?.created_at).getTime();
@@ -82,47 +82,34 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
         return initialData?.flashcards ? sortFlashcards(initialData.flashcards) : [];
     });
     const [listFlashcard, setListFlashcard] = useState<IListFlashcard>(initialData);
-    const [editListFlashcard, setEditListFlashcard] = useState<IEditFlashcard | undefined>(
-        initialData
-            ? {
-                  _id: initialData._id,
-                  title: initialData.title,
-                  language: initialData.language,
-                  desc: initialData.desc,
-                  public: initialData.public,
-              }
-            : undefined
-    );
-
-    const { data: fetchedData, loading: fetchLoading } = useFlashcard(id_flashcard, initialData);
+    const [editListFlashcard, setEditListFlashcard] = useState<IEditFlashcard>(initialData);
 
     useEffect(() => {
-        if (fetchedData && fetchedData !== initialData) {
-            const sortedFlashcards = sortFlashcards(fetchedData.flashcards);
-            setFlashcard(sortedFlashcards);
-            setListFlashcard(fetchedData);
+        const sortedFlashcards = sortFlashcards(initialData.flashcards);
+        setFlashcard(sortedFlashcards);
+        setListFlashcard(initialData);
+        // if (fetchedData && fetchedData !== initialData) {
 
-            setFilteredFlashcards((prevFiltered) => {
-                const initialLength = initialData?.flashcards?.length || 0;
-                const hasLocalChanges = prevFiltered.length > initialLength;
+        //     // setFilteredFlashcards((prevFiltered) => {
+        //     //     const initialLength = initialData?.flashcards?.length || 0;
+        //     //     const hasLocalChanges = prevFiltered.length > initialLength;
 
-                if (hasLocalChanges) {
-                    return prevFiltered; // Giữ nguyên local changes
-                } else {
-                    return sortedFlashcards; // Update với data mới
-                }
-            });
+        //     //     if (hasLocalChanges) {
+        //     //         return prevFiltered; // Giữ nguyên local changes
+        //     //     } else {
+        //     //         return sortedFlashcards; // Update với data mới
+        //     //     }
+        //     // });
 
-            setEditListFlashcard({
-                _id: fetchedData._id,
-                title: fetchedData.title,
-                language: fetchedData.language,
-                desc: fetchedData.desc,
-                public: fetchedData.public,
-            });
-        }
-    }, [fetchedData, initialData]);
-
+        //     setEditListFlashcard({
+        //         _id: fetchedData._id,
+        //         title: fetchedData.title,
+        //         language: fetchedData.language,
+        //         desc: fetchedData.desc,
+        //         public: fetchedData.public,
+        //     });
+        // }
+    }, [initialData]);
     const handleAddNewFlashcard = useCallback((newFlashcard: Flashcard) => {
         setFilteredFlashcards((prev) => [newFlashcard, ...prev]);
 
@@ -313,26 +300,6 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
         setFilteredFlashcards(sortFlashcards(filtered));
     };
 
-    if (fetchLoading && !initialData) {
-        return (
-            <div className="flex justify-center items-center h-screen">
-                <Loading />
-            </div>
-        );
-    }
-
-    if (!listFlashcard && !fetchLoading) {
-        return (
-            <div className="flex justify-center items-center h-screen flex-col gap-3">
-                <AlertCircle size={50} className="text-red-500" />
-                <p>Không thể tải dữ liệu flashcard</p>
-                <Button onClick={() => router.back()}>
-                    <ArrowLeft /> Quay lại
-                </Button>
-            </div>
-        );
-    }
-
     return (
         <div className="w-full space-y-5 relative z-[10] dark:bg-slate-700 bg-gray-200">
             <div className="bg-white dark:bg-slate-800 p-5 border-b border-gray-200 dark:border-white/10 space-y-3">
@@ -404,7 +371,9 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                     <div className="flex items-center gap-2">
                         <User className="w-4 h-4" />
                         <span>Người chia sẻ:</span>
-                        <span className="font-medium">{listFlashcard?.userId?.displayName || "N/A"}</span>
+                        <span className="font-medium cursor-pointer hover:underline" onClick={() => router.push(`/profile/${listFlashcard.userId._id}`)}>
+                            {listFlashcard?.userId?.displayName || "N/A"}
+                        </span>
                     </div>
                 </div>
             </div>
@@ -507,7 +476,12 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
 
                 {user?._id === String(listFlashcard?.userId?._id) && (
                     <>
-                        <AddVocaModal token={token} filteredFlashcards={filteredFlashcards} setFilteredFlashcards={setFilteredFlashcards} listFlashcard={listFlashcard}>
+                        <AddVocaModal
+                            token={token}
+                            filteredFlashcards={filteredFlashcards}
+                            setFilteredFlashcards={setFilteredFlashcards}
+                            listFlashcard={listFlashcard}
+                            setListFlashcard={setListFlashcard}>
                             <Button className="dark:text-white h-16 text-md md:text-xl uppercase bg-gradient-to-r from-indigo-500 to-purple-500 text-white md:px-10">
                                 <Plus size={24} /> Thêm từ vựng
                             </Button>
@@ -530,9 +504,9 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                             speakWord={speakWord}
                             loadingAudio={loadingAudio}
                             handleDelete={handleDelete}
-                            token={token}
                             setEditFlashcard={setEditFlashcard}
                             setIsEditOpen={setIsEditOpen}
+                            user={user}
                         />
                     ))
                 ) : (

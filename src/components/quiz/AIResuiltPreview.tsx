@@ -10,8 +10,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Edit, Trash2, Plus, CheckCircle, Bot, Save, AlertCircle } from "lucide-react";
+import { Edit, Trash2, Plus, CheckCircle, Bot, Save, AlertCircle, Sparkle } from "lucide-react";
 import { renderHightlightedContent } from "../renderCode";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { optimizedPromptEditQuestions } from "@/lib/optimizedPrompt";
+import { toast } from "sonner";
 
 interface QuizQuestion {
     title: string;
@@ -42,6 +45,7 @@ export function AIResultPreview({ open, onOpenChange, quiz, setOpenAddMoreInfo, 
     const [filterQuizData, setFilterQuizData] = useState<QuizQuestion>(quiz);
     const [editingQuestion, setEditingQuestion] = useState<Quiz | null>(null);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [activeFilter, setActiveFilter] = useState<"all" | "valid" | "invalid">("all");
     const [newQuestion, setNewQuestion] = useState<Quiz>({
         id: "",
@@ -59,12 +63,12 @@ export function AIResultPreview({ open, onOpenChange, quiz, setOpenAddMoreInfo, 
         } else if (filter === "valid") {
             return {
                 ...data,
-                questions: data.questions.filter((q) => q.correct != "-1"),
+                questions: data.questions.filter((q) => q.question && q.correct != "-1"),
             };
         } else if (filter === "invalid") {
             return {
                 ...data,
-                questions: data.questions.filter((q) => q.correct == "-1"),
+                questions: data.questions.filter((q) => !q.question || q.correct == "-1"),
             };
         }
         return data;
@@ -88,7 +92,6 @@ export function AIResultPreview({ open, onOpenChange, quiz, setOpenAddMoreInfo, 
         setEditingQuestion(null);
         setIsEditDialogOpen(true);
     }, []);
-    console.log("rerender");
 
     // ✅ Sửa lại handleSaveQuestion
     const handleSaveQuestion = useCallback(() => {
@@ -164,11 +167,11 @@ export function AIResultPreview({ open, onOpenChange, quiz, setOpenAddMoreInfo, 
 
     // ✅ Sử dụng useMemo để tính toán errors dựa trên quizData
     const totalErrors = useMemo(() => {
-        return quizData.questions.filter((q) => q.correct == "-1").length;
+        return quizData.questions.filter((q) => !q.question || q.answers?.length === 0 || q.correct == "-1").length;
     }, [quizData.questions]);
 
     const validQuestionsCount = useMemo(() => {
-        return quizData.questions.filter((q) => q.correct != "-1").length;
+        return quizData.questions.filter((q) => q.question && q.correct != "-1").length;
     }, [quizData.questions]);
 
     // ✅ Update filterQuizData khi quizData thay đổi
@@ -189,6 +192,104 @@ export function AIResultPreview({ open, onOpenChange, quiz, setOpenAddMoreInfo, 
     //     }
     // };
 
+    const handleRemoveAllErrors = useCallback(() => {
+        const updatedQuestions = quizData.questions.filter((q) => q.correct != "-1");
+        const newQuizData = {
+            ...quizData,
+            questions: updatedQuestions,
+        };
+
+        setQuizData(newQuizData);
+        setFilterQuizData(applyFilter(newQuizData, activeFilter));
+    }, [quizData, applyFilter, activeFilter]);
+
+    const clearPatterns = useMemo(() => {
+        return (questions: Quiz[]) => {
+            const patternsToRemove = [
+                /^Câu\s*\d+[:\.]?\s*/, // Câu 1:, Câu 2., Câu 3
+                /^câu\s*\d+[:\.]?\s*/, // câu 1:, câu 2., câu 3
+                /^\d+[:\.]?\s*/, // 1:, 2., 3
+            ];
+
+            const cleanedQuestions = questions.map((quest: Quiz) => {
+                let cleanedQuestion = quest.question;
+
+                // Áp dụng từng pattern để loại bỏ
+                patternsToRemove.forEach((pattern) => {
+                    cleanedQuestion = cleanedQuestion.replace(pattern, "");
+                });
+
+                return {
+                    ...quest,
+                    question: cleanedQuestion.trim(),
+                };
+            });
+
+            return cleanedQuestions;
+        };
+    }, []);
+    const genAI = useMemo(() => new GoogleGenerativeAI(process.env.API_KEY_AI || ""), []);
+    const handleEditByAI = useCallback(async () => {
+        try {
+            setLoading(true);
+            const questions = filterQuizData.questions;
+            if (questions.length === 0) {
+                toast.info("Không có câu hỏi nào để chỉnh sửa.", { position: "top-center" });
+                return;
+            }
+            if (questions.length > 20) {
+                toast.info("Chỉ có thể chỉnh sửa tối đa 20 câu hỏi một lần.", { position: "top-center" });
+                return;
+            }
+
+            // Loại bỏ các pattern thường gặp ở đầu câu hỏi
+            const cleanedQuestions = clearPatterns(questions);
+
+            console.log("Cleaned Quiz Data:", cleanedQuestions);
+            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+            const prompt = optimizedPromptEditQuestions(cleanedQuestions);
+            const result = await model.generateContent(prompt);
+
+            const responseText = result?.response
+                .text()
+                .replace(/^```json\s*/, "")
+                .replace(/^```html\s*/, "")
+                .replace(/```\s*$/, "");
+
+            const aiEditedQuestions = JSON.parse(responseText || "");
+            console.log("AI Response:", aiEditedQuestions);
+
+            // ✅ Thay thế thay vì thêm mới
+            // Tạo Map để tra cứu nhanh các câu hỏi đã được AI chỉnh sửa
+            const editedQuestionsMap = new Map();
+            aiEditedQuestions.forEach((q: any) => {
+                editedQuestionsMap.set(q.id, {
+                    ...q,
+                    correct: String(q.correct), // Đảm bảo correct là string
+                });
+            });
+
+            // Cập nhật quizData bằng cách thay thế những câu đã được AI chỉnh sửa
+            const updatedQuestions = quizData.questions.map((originalQuestion) => {
+                const editedQuestion = editedQuestionsMap.get(originalQuestion.id);
+                return editedQuestion || originalQuestion; // Sử dụng câu đã chỉnh sửa nếu có, nếu không giữ nguyên
+            });
+
+            const newQuizData = {
+                ...quizData,
+                questions: updatedQuestions,
+            };
+
+            setQuizData(newQuizData);
+            setFilterQuizData(applyFilter(newQuizData, activeFilter));
+            toast.success("Đã chỉnh sửa câu hỏi thành công!", { position: "top-center" });
+        } catch (error: any) {
+            console.error("Error during AI editing:", error);
+            toast.error("Đã xảy ra lỗi khi chỉnh sửa câu hỏi bằng AI.", { description: error.message, position: "top-center" });
+        } finally {
+            setLoading(false);
+        }
+    }, [filterQuizData, clearPatterns, quizData, applyFilter, activeFilter, genAI]);
     return (
         <>
             <Dialog open={open} onOpenChange={onOpenChange}>
@@ -233,8 +334,23 @@ export function AIResultPreview({ open, onOpenChange, quiz, setOpenAddMoreInfo, 
                                         {totalErrors}
                                     </Badge>
                                 </Button>
+                                {activeFilter === "invalid" && totalErrors > 0 && (
+                                    <>
+                                        <Button
+                                            className="text-red-700 border-red-200 hover:bg-red-50 h-11 dark:text-red-200 dark:border-red-700 dark:hover:bg-red-700/50 dark:bg-red-800/50"
+                                            onClick={handleRemoveAllErrors}>
+                                            <Trash2 /> Xóa hết những câu lỗi
+                                        </Button>
+                                        {/* <Button
+                                            className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white h-10"
+                                            onClick={handleEditByAI}
+                                            disabled={loading || filterQuizData.questions.length >= 20}>
+                                            <Sparkle className={`${loading ? "animate-spin" : ""}`} /> {filterQuizData.questions.length >= 20 ? "Số câu chỉnh sửa đã vượt 20 câu" : "Chỉnh sửa bằng AI"}
+                                        </Button> */}
+                                    </>
+                                )}
                             </div>
-                            <Button onClick={handleAddQuestion} className="flex items-center space-x-2 text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
+                            <Button onClick={handleAddQuestion} className="flex items-center space-x-2 text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600">
                                 <Plus className="h-4 w-4" />
                                 <span>Thêm câu hỏi</span>
                             </Button>

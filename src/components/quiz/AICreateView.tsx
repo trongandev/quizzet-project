@@ -41,7 +41,7 @@ export function AICreateView() {
     const [description, setDescription] = useState("");
     const [difficulty, setDifficulty] = useState("medium");
     const [questionCount, setQuestionCount] = useState([10]);
-    const [questionTypes, setQuestionTypes] = useState<string[]>(["multiple-choice"]);
+    // const [questionTypes, setQuestionTypes] = useState<string[]>(["multiple-choice"]);
     const [isGenerating, setIsGenerating] = useState(false);
     const [generatedQuiz, setGeneratedQuiz] = useState<QuizQuestion | null>(null);
     const [showPreview, setShowPreview] = useState(false);
@@ -59,18 +59,18 @@ export function AICreateView() {
         { value: "hard", label: "Nâng cao", badge: "Khó", desc: "Đòi hỏi kiến thức chuyên sâu", color: "bg-red-100 text-red-800 dark:bg-red-800/40 dark:text-red-200" },
     ];
 
-    const questionTypeOptions = [
-        { value: "multiple-choice", label: "Trắc nghiệm" },
-        { value: "true-false", label: "Đúng/Sai" },
-        { value: "short-answer", label: "Câu trả lời ngắn" },
-        { value: "essay", label: "Tự luận" },
-    ];
+    // const questionTypeOptions = [
+    //     { value: "multiple-choice", label: "Trắc nghiệm" },
+    //     { value: "true-false", label: "Đúng/Sai" },
+    //     { value: "short-answer", label: "Câu trả lời ngắn" },
+    //     { value: "essay", label: "Tự luận" },
+    // ];
 
     const topicSuggestions = ["Toán học cơ bản", "Lịch sử Việt Nam", "Tiếng Anh giao tiếp", "Khoa học tự nhiên", "Công nghệ thông tin", "Kinh tế học", "Văn học Việt Nam", "Địa lý thế giới"];
 
-    const handleQuestionTypeToggle = (type: string) => {
-        setQuestionTypes((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]));
-    };
+    // const handleQuestionTypeToggle = (type: string) => {
+    //     setQuestionTypes((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]));
+    // };
     const genAI = useMemo(() => new GoogleGenerativeAI(process.env.API_KEY_AI || ""), []);
     const handleGenerate = async () => {
         try {
@@ -90,7 +90,6 @@ export function AICreateView() {
             const jsonOutput = JSON.parse(responseText || "");
             setIsGenerating(false);
             setGeneratedQuiz(jsonOutput);
-            console.log("Generated Quiz:", jsonOutput);
             toast.success("Quiz đã được tạo thành công!", {
                 description: `Với chủ đề "${topic}" và độ khó "${difficulty}".`,
                 position: "top-center",
@@ -108,9 +107,9 @@ export function AICreateView() {
             setIsGenerating(false);
         }
     };
-    const handleQuizUpdate = (updatedQuiz: typeof generatedQuiz) => {
-        setGeneratedQuiz(updatedQuiz);
-    };
+    // const handleQuizUpdate = (updatedQuiz: typeof generatedQuiz) => {
+    //     setGeneratedQuiz(updatedQuiz);
+    // };
 
     const handleAddToDraft = () => {
         const draftStorage = localStorage.getItem("draftQuiz");

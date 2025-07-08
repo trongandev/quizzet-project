@@ -207,7 +207,7 @@ export function DraftsView() {
                     </CardContent>
                 </Card>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     {filteredDrafts.map((draft, index) => (
                         <Card key={index} className="hover:shadow-md transition-shadow dark:border-white/10 dark:bg-slate-800/50">
                             <CardHeader className="pb-3">

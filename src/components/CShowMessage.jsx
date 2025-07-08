@@ -156,7 +156,7 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
 
     const handleSendNoti = (displayName, message, profilePicture) => {
         if (!window.Notification) {
-            console.log("Browser does not support notifications.");
+            console.error("Browser does not support notifications.");
         } else {
             // check if permission is already granted
             if (Notification.permission === "granted") {
@@ -176,7 +176,7 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
                                 icon: profilePicture,
                             });
                         } else {
-                            console.log("User blocked notifications.");
+                            console.error("User blocked notifications.");
                         }
                     })
                     .catch(function (err) {

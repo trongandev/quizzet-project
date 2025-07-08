@@ -6,13 +6,10 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
         const { tag, path } = body;
 
-        console.log("Revalidate request:", { tag, path });
-
         // ✅ Handle tags (can be string or array)
         if (tag) {
             const tags = Array.isArray(tag) ? tag : [tag];
             tags.forEach((t) => {
-                console.log(`Revalidating tag: ${t}`);
                 revalidateTag(t);
             });
         }
@@ -21,7 +18,6 @@ export async function POST(request: NextRequest) {
         if (path) {
             const paths = Array.isArray(path) ? path : [path];
             paths.forEach((p) => {
-                console.log(`Revalidating path: ${p}`);
                 revalidatePath(p);
             });
         }

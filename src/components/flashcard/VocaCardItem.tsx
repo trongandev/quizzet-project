@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Volume2, BookOpen, MessageCircle, Lightbulb, MoreVertical, Edit3, ChevronUp, ChevronDown, Trash2, History } from "lucide-react";
-import { Flashcard } from "@/types/type";
+import { Flashcard, IUser } from "@/types/type";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import Loading from "../ui/loading";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -18,11 +18,11 @@ interface Props {
     speakWord: (word: string, id?: string) => void;
     loadingAudio: any;
     handleDelete: (id: string) => void;
-    token: any;
     setIsEditOpen: (value: boolean) => void;
     setEditFlashcard: (data: Flashcard) => void;
+    user?: IUser | null;
 }
-export default function VocaCardItem({ data, speakWord, loadingAudio, handleDelete, token, setIsEditOpen, setEditFlashcard }: Props) {
+export default function VocaCardItem({ data, speakWord, loadingAudio, handleDelete, setIsEditOpen, setEditFlashcard, user }: Props) {
     const [showExamples, setShowExamples] = useState(false);
     const [openDelete, setOpenDelete] = useState(false);
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
@@ -89,30 +89,29 @@ export default function VocaCardItem({ data, speakWord, loadingAudio, handleDele
                         )}
                     </div>
                     {/* Action Menu */}
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                <MoreVertical className="w-4 h-4" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={handleEdit}>
-                                <Edit3 className="w-4 h-4 mr-2  cursor-pointer" />
-                                Chỉnh sửa
-                            </DropdownMenuItem>
-                            {token && (
+                    {user?._id === data?.userId && (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                    <MoreVertical className="w-4 h-4" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={handleEdit}>
+                                    <Edit3 className="w-4 h-4 mr-2  cursor-pointer" />
+                                    Chỉnh sửa
+                                </DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => setIsHistoryOpen(true)}>
                                     <History className="w-4 h-4 mr-2 cursor-pointer" />
                                     Lịch sử học
                                 </DropdownMenuItem>
-                            )}
-
-                            <DropdownMenuItem className="dark:text-red-400 text-red-600 w-full  cursor-pointer" onClick={() => setOpenDelete(true)}>
-                                <Trash2 className="w-4 h-4 mr-2" />
-                                Xóa
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                                <DropdownMenuItem className="dark:text-red-400 text-red-600 w-full  cursor-pointer" onClick={() => setOpenDelete(true)}>
+                                    <Trash2 className="w-4 h-4 mr-2" />
+                                    Xóa
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    )}
                 </div>
                 <Dialog open={openDelete} onOpenChange={setOpenDelete}>
                     <DialogContent>

@@ -114,7 +114,6 @@ export default function PractiveFlashcard({ params }) {
 
     const speakWord = useCallback(
         async (text, language) => {
-            console.log("Speaking word:", text, "Language:", language, "languageFC", languageFC, "voiceSetting:", voiceSetting);
             try {
                 const response = await tts.create({
                     input: text,
@@ -317,7 +316,6 @@ export default function PractiveFlashcard({ params }) {
             </div>
         );
     }
-    console.log(showAns, "showAns");
 
     return (
         <Suspense fallback={LoadingScreen()}>

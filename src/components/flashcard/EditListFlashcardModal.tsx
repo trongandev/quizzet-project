@@ -93,7 +93,7 @@ export function EditListFlashcardModal({ children, editListFlashcard, setEditLis
                         <Label htmlFor="language" className="text-sm font-medium text-gray-700 dark:text-white/80">
                             Ngôn ngữ <span className="text-red-500">*</span>
                         </Label>
-                        <Select value={formData.language} onValueChange={(value) => handleInputChange("language", value)} required>
+                        <Select disabled value={formData.language} onValueChange={(value) => handleInputChange("language", value)} required>
                             <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Chọn ngôn ngữ chính của bộ flashcard" />
                             </SelectTrigger>

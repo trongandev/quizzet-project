@@ -62,7 +62,6 @@ export default function CChat({ token, user, router }: { token: string; user: IU
             setLoading(true);
             const req = await GET_API(`/profile/findbyname/${input}`, token);
             if (req?.ok) {
-                console.log(req);
                 setSearch(req?.users);
             } else {
                 console.error(req?.message);

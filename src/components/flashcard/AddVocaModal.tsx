@@ -24,6 +24,7 @@ interface AddVocabularyModalProps {
     token: any;
     filteredFlashcards: any;
     setFilteredFlashcards: any;
+    setListFlashcard: any;
 }
 
 interface VocabularyData {
@@ -40,7 +41,7 @@ interface VocabularyData {
     note: string;
 }
 
-export default function AddVocaModal({ children, listFlashcard, token, filteredFlashcards, setFilteredFlashcards }: AddVocabularyModalProps) {
+export default function AddVocaModal({ children, listFlashcard, setListFlashcard, token, filteredFlashcards, setFilteredFlashcards }: AddVocabularyModalProps) {
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const defaultData: VocabularyData = {
@@ -89,6 +90,7 @@ export default function AddVocaModal({ children, listFlashcard, token, filteredF
                 toast.success("Tạo flashcard thành công từ AI");
 
                 setFilteredFlashcards([res?.flashcard, ...filteredFlashcards]);
+                setListFlashcard((prev: any) => ({ ...prev, flashcards: [res?.flashcard, ...prev.flashcards] }));
                 setOpen(false);
                 // Reset form data with AI generated content
                 setFormData(defaultData);
