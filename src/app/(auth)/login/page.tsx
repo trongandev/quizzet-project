@@ -140,7 +140,7 @@ export default function LoginForm() {
                     </Button>
 
                     <div className="text-center">
-                        <span className="text-xs text-gray-500 bg-white px-3 dark:bg-slate-800/80 dark:text-gray-400">Nhanh chóng & Bảo mật</span>
+                        <span className="text-xs text-gray-500 bg-white px-3 dark:bg-[#1e2737] dark:text-gray-400">Nhanh chóng & Bảo mật</span>
                     </div>
                 </div>
 
@@ -148,7 +148,7 @@ export default function LoginForm() {
                 <div className="relative">
                     <Separator />
                     <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="bg-white px-4 text-sm text-gray-500 dark:bg-slate-800/80 dark:text-gray-400">Hoặc</span>
+                        <span className="bg-white px-4 text-sm text-gray-500 dark:bg-[#1e2737] dark:text-gray-400">Hoặc</span>
                     </div>
                 </div>
                 <form className="" onSubmit={formik.handleSubmit}>

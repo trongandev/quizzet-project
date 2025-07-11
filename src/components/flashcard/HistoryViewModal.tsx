@@ -6,7 +6,7 @@ import { ArrowUpWideNarrow, History, ShipWheel, Waves } from "lucide-react";
 import handleCompareDate from "@/lib/CompareDate";
 export default function HistoryViewModal({ history, isHistoryOpen, setIsHistoryOpen }: any) {
     // Calculate average quality
-    const avg = history.reduce((acc: number, item: any) => acc + item.quality, 0) / history.length || 0;
+    const avg = Math.floor(history.reduce((acc: number, item: any) => acc + item.quality, 0) / history.length || 0);
 
     const handleCheck = () => {
         if (avg >= 4) {

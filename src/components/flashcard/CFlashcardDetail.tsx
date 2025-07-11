@@ -1,5 +1,5 @@
 "use client";
-import { POST_API } from "@/lib/fetchAPI";
+import { GET_API, POST_API } from "@/lib/fetchAPI";
 import { useFlashcard } from "@/hooks/useOptimizedFetch";
 import React, { useEffect, useState, useCallback } from "react";
 
@@ -20,7 +20,7 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { AlertCircle, ArrowLeft, BookOpen, Brain, Flag, GalleryVerticalEnd, Gift, Grid3x3, PencilLine, Plus, RotateCcw, Target, Trash2, User, Volume2 } from "lucide-react";
+import { AlertCircle, ArrowLeft, BookOpen, Brain, Flag, GalleryVerticalEnd, Gift, Grid3x3, PencilLine, Plus, RefreshCcw, RotateCcw, Target, Trash2, User, Volume2 } from "lucide-react";
 import { EditListFlashcardModal } from "./EditListFlashcardModal";
 import AddVocaModal from "./AddVocaModal";
 import { Badge } from "../ui/badge";
@@ -33,6 +33,7 @@ import VoiceSelectionModal from "./VoiceSelectionModal";
 import { revalidateCache } from "@/lib/revalidate";
 import AddMoreVocaModal from "./AddMoreVocaModal";
 import EditVocaModal from "./EditVocaModal";
+import { getCachedFlashcardDetail } from "@/lib/cacheData";
 
 const getLanguageFlag = (lang: string) => {
     const flags: { [key: string]: string } = {
@@ -300,6 +301,38 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
         setFilteredFlashcards(sortFlashcards(filtered));
     };
 
+    const handleRefresh = async () => {
+        try {
+            setLoading(true);
+
+            await revalidateCache({
+                tag: [`flashcard_${id_flashcard}`, "flashcards-detail"],
+                path: `/flashcard/${id_flashcard}`,
+            });
+
+            const newData = await GET_API(`/flashcards/${id_flashcard}`, token);
+
+            if (newData?.listFlashCards) {
+                const sortedFlashcards = sortFlashcards(newData.listFlashCards.flashcards);
+                setFlashcard(sortedFlashcards);
+                setListFlashcard(newData.listFlashCards);
+                setFilteredFlashcards(sortedFlashcards);
+                setEditListFlashcard(newData.listFlashCards);
+
+                toast.success("Đã làm mới dữ liệu!", { position: "top-center" });
+            }
+        } catch (error: any) {
+            console.error("Error refreshing flashcard:", error);
+            toast.error("Làm mới không thành công", {
+                description: error.message,
+                position: "top-center",
+                id: "refresh-flashcard",
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="w-full space-y-5 relative z-[10] dark:bg-slate-700 bg-gray-200">
             <div className="bg-white dark:bg-slate-800 p-5 border-b border-gray-200 dark:border-white/10 space-y-3">
@@ -314,6 +347,10 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                         </div>
                     </div>
                     <div className="flex items-center gap-2 md:gap-3 flex-wrap dark:text-white/80">
+                        <Button className="dark:text-white" variant="outline" onClick={handleRefresh} disabled={loading}>
+                            <RefreshCcw className={`${loading && "animate-spin"}`} />
+                            Làm mới
+                        </Button>
                         <VoiceSelectionModal selectedVoice={selectedVoice} setSelectedVoice={setSelectedVoice} language={listFlashcard?.language}>
                             <Button className="dark:text-white" variant="outline">
                                 <Volume2 /> Chọn giọng nói

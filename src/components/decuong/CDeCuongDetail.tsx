@@ -3,28 +3,28 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { GET_API_WITHOUT_COOKIE } from "@/lib/fetchAPI";
 import { BookOpen, Clock, Search, Star, Target, Zap } from "lucide-react";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import Loading from "./ui/loading";
 import { ISO } from "@/types/type";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import Loading from "../ui/loading";
 
-export default function CTaiLieuDetail({ DeCuongData }: { DeCuongData: ISO | null }) {
+export default function CDeCuongDetail({ DeCuongData }: { DeCuongData: ISO | null }) {
     const [searchQuery, setSearchQuery] = useState("");
-    const [selectedRating, setSelectedRating] = useState(0);
-    const [reviewText, setReviewText] = useState("");
-    const [showReviewForm, setShowReviewForm] = useState(false);
+    // const [selectedRating, setSelectedRating] = useState(0);
+    // const [reviewText, setReviewText] = useState("");
+    // const [showReviewForm, setShowReviewForm] = useState(false);
 
     useEffect(() => {
         const handleChangeRouterDeCuong = async () => {
-            await GET_API_WITHOUT_COOKIE(`/admin/suboutline/view/${DeCuongData?._id}`);
+            await GET_API_WITHOUT_COOKIE(`/so/view/${DeCuongData?._id}`);
         };
         handleChangeRouterDeCuong();
     }, []);
     const filteredQuestions = DeCuongData?.quest?.data_so.filter((q) => q.question.toLowerCase().includes(searchQuery.toLowerCase()) || q.answer.toLowerCase().includes(searchQuery.toLowerCase()));
     return (
         <div className="flex items-center justify-center">
-            <div className="w-full md:w-[1000px] xl:w-[1200px] py-5 pt-20">
+            <div className="w-full md:w-[1000px] xl:w-[1200px] py-5 pt-20 min-h-screen">
                 <div className="text-third px-2 md:px-0 dark:text-white">
                     {/* Hero Section */}
                     <div className="mb-8">
@@ -102,7 +102,7 @@ export default function CTaiLieuDetail({ DeCuongData }: { DeCuongData: ISO | nul
                                 </Card>
                             ))}
                         {!DeCuongData && (
-                            <div className="h-[400px] flex items-center justify-center w-full bg-white p-5 mt-2">
+                            <div className="h-[400px] flex items-center justify-center w-full p-5 mt-2">
                                 <Loading />
                             </div>
                         )}

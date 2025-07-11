@@ -26,14 +26,24 @@ export const getCachedQuiz = (slug: string) =>
         }
     );
 
-export const getCachedTool = unstable_cache(
+export const getCachedDeCuong = unstable_cache(
     async () => {
-        const response = await GET_API_WITHOUT_COOKIE("/admin/suboutline");
+        const response = await GET_API_WITHOUT_COOKIE("/so");
         return response;
     },
-    ["tool"], // Key cache
+    ["de_cuong"], // Key cache
     { revalidate: 60 * 60 * 24 } // TTL = 24 tiếng
 );
+
+export const getCachedDecuongDetail = (slug: string) =>
+    unstable_cache(
+        async () => {
+            const response = await GET_API_WITHOUT_COOKIE(`/so/${slug}`);
+            return response;
+        },
+        [`de_cuong_${slug}`], // Key cache
+        { revalidate: 30 } // TTL = 1 giờ
+    );
 
 export const getCachedFlashcardPublic = unstable_cache(
     async () => {

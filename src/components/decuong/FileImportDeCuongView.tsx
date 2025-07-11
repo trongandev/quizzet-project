@@ -7,13 +7,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Upload, FileText, Download, X, Bot, Sparkles, CheckCircle, Eye, Save, File } from "lucide-react";
-import { BsFiletypeDocx, BsFiletypePdf, BsFiletypeTxt, BsFiletypeXlsx } from "react-icons/bs";
+import { BsFiletypeDocx } from "react-icons/bs";
 import axios from "axios";
 import { toast } from "sonner";
-import { AIResultPreview } from "./AIResuiltPreview";
-import DialogAddMoreInfoQuiz from "./DialogAddMoreInfoQuiz";
 import { useRouter } from "next/navigation";
 import { SidebarTrigger } from "../ui/sidebar";
+import { AIResuiltPreviewDeCuong } from "./AIResuiltPreviewDeCuong";
+import DialogAddMoreInfoDeCuong from "./DialogAddMoreInfoDeCuong";
 interface QuizQuestion {
     title: string;
     subject: string;
@@ -30,7 +30,7 @@ interface Quiz {
     points: number;
 }
 
-export function FileImportView() {
+export function FileImportDeCuongView() {
     const [isDragOver, setIsDragOver] = useState(false);
     const [openAddMoreInfo, setOpenAddMoreInfo] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -233,8 +233,7 @@ export function FileImportView() {
                                         </div>
                                         <div className="space-y-1">
                                             <p className="text-sm font-medium">Tải lên tệp hoặc kéo và thả</p>
-                                            {/* <p className="text-xs text-muted-foreground">DOCX, XLSX, PDF, TXT tới 3MB</p> */}
-                                            <p className="text-xs text-muted-foreground">DOCX tới 3MB</p>
+                                            <p className="text-xs text-muted-foreground">DOCX, XLSX, PDF, TXT tới 3MB</p>
                                         </div>
                                     </div>
                                 </div>
@@ -260,7 +259,7 @@ export function FileImportView() {
                         </CardContent>
                     </Card>
 
-                    <Card>
+                    {/* <Card>
                         <CardHeader>
                             <CardTitle>Mẫu file hỗ trợ</CardTitle>
                             <CardDescription>Tải xuống mẫu file để tạo quiz theo đúng định dạng</CardDescription>
@@ -280,12 +279,12 @@ export function FileImportView() {
                                 ))}
                             </div>
                         </CardContent>
-                    </Card>
+                    </Card> */}
                     <Button size="lg" className="dark:text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90" onClick={handleGenerate} disabled={!selectedFile || isGenerating}>
                         {isGenerating ? (
                             <>
                                 <Bot className="mr-2 h-4 w-4 animate-spin" />
-                                Đang tạo quiz ...
+                                Đang tạo...
                             </>
                         ) : (
                             <>
@@ -312,17 +311,17 @@ export function FileImportView() {
                                     <File className="mr-2 h-4 w-4" />
                                     Lưu vào nháp
                                 </Button>
-                                <DialogAddMoreInfoQuiz generatedQuiz={generatedQuiz} openAddMoreInfo={openAddMoreInfo} setOpenAddMoreInfo={setOpenAddMoreInfo}>
+                                <DialogAddMoreInfoDeCuong generatedQuiz={generatedQuiz} openAddMoreInfo={openAddMoreInfo} setOpenAddMoreInfo={setOpenAddMoreInfo}>
                                     <Button size="lg" className="text-white bg-gradient-to-r from-blue-500 to-cyan-500">
                                         <Save className="mr-2 h-4 w-4" />
                                         Lưu và xuất bản
                                     </Button>
-                                </DialogAddMoreInfoQuiz>
+                                </DialogAddMoreInfoDeCuong>
                             </div>
                         </div>
                     )}
                     {generatedQuiz && (
-                        <AIResultPreview open={showPreview} onOpenChange={setShowPreview} quiz={generatedQuiz} setOpenAddMoreInfo={setOpenAddMoreInfo} setGeneratedQuiz={setGeneratedQuiz} />
+                        <AIResuiltPreviewDeCuong open={showPreview} onOpenChange={setShowPreview} quiz={generatedQuiz} setOpenAddMoreInfo={setOpenAddMoreInfo} setGeneratedQuiz={setGeneratedQuiz} />
                     )}
                 </div>
 

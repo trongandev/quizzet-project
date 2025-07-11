@@ -12,7 +12,7 @@ import { FaRegEye } from "react-icons/fa";
 
 export default function QuizItem({ item }: { item: IQuiz }) {
     return (
-        <div key={item._id} className="group hover:shadow-md hover:scale-105 transition-all duration-300  rounded-xl border border-white/10 shadow-md h-[400px]">
+        <div key={item._id} className="group hover:shadow-md transition-all duration-300  rounded-xl border border-white/10 shadow-md h-[400px]">
             <div className="overflow-hidden relative h-full rounded-[8px]">
                 <Link className="block" href={`/quiz/detail/${item.slug}`}>
                     <Image
@@ -44,9 +44,9 @@ export default function QuizItem({ item }: { item: IQuiz }) {
                                     priority
                                 />
                             </div>
-                            <div className="group">
+                            <div className="">
                                 <div className="flex items-center gap-1">
-                                    <h2 className="text-sm line-clamp-1 overflow-hidden">{item.uid.displayName}</h2>
+                                    <h2 className="text-sm line-clamp-1 w-[100px] overflow-hidden">{item.uid.displayName}</h2>
                                     {item.uid.verify ? <MdOutlineVerified color="#3b82f6" /> : ""}
                                 </div>
                                 <p className="text-[#D9D9D9] text-[10px] flex gap-1 items-center">

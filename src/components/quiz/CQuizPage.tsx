@@ -174,29 +174,6 @@ export default function CQuizPage({ publicQuizData }: { publicQuizData: IQuiz[] 
                             </div>
                         </TabsContent>
                         <TabsContent value="community">
-                            {/* <div className="flex items-center gap-4 p-4 bg-white dark:bg-slate-700/80 rounded-lg shadow-sm border">
-                                <div className="flex items-center gap-2">
-                                    <Globe className="w-5 h-5 text-gray-500" />
-                                    <span className="font-medium text-gray-700 dark:text-white/80">Lọc theo ngôn ngữ:</span>
-                                </div>{" "}
-                                <div className="flex flex-wrap gap-2">
-                                    <Button variant={language === "all" ? "default" : "outline"} size="sm" className="h-8" onClick={() => handleLanguageFilter("all")}>
-                                        <Globe className="w-4 h-4 mr-1" /> Tất cả
-                                    </Button>
-                                    {languages.map((lang) => (
-                                        <Button
-                                            key={lang.value}
-                                            variant={language === lang.value ? "default" : "outline"}
-                                            size="sm"
-                                            className="h-8 dark:text-white"
-                                            onClick={() => handleLanguageFilter(lang.value)}>
-                                            <Image src={`/flag/${lang.value}.svg`} alt="" width={16} height={16} className="mr-1" />
-                                            {lang.label}
-                                        </Button>
-                                    ))}
-                                </div>
-                            </div> */}
-
                             <div className="mt-5">
                                 <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5 mb-5">
                                     {displayData && displayData.map((item) => <QuizItem item={item} key={item?._id} />)}

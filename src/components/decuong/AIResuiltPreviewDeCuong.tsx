@@ -40,7 +40,7 @@ interface AIResultPreviewProps {
     setGeneratedQuiz: any;
 }
 
-export function AIResultPreview({ open, onOpenChange, quiz, setOpenAddMoreInfo, setGeneratedQuiz }: AIResultPreviewProps) {
+export function AIResuiltPreviewDeCuong({ open, onOpenChange, quiz, setOpenAddMoreInfo, setGeneratedQuiz }: AIResultPreviewProps) {
     const [quizData, setQuizData] = useState<QuizQuestion>(quiz);
     const [filterQuizData, setFilterQuizData] = useState<QuizQuestion>(quiz);
     const [editingQuestion, setEditingQuestion] = useState<Quiz | null>(null);

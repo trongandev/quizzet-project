@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, Share2, Flag, Star, Send, ThumbsUp, MessageCircle, Users, Clock, BookOpen, Eye, Play, Trophy, ArrowBigLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import { Progress } from "../ui/progress";
 import Loading from "../ui/loading";
 import { renderContentWithLaTeX, renderHightlightedContent } from "../renderCode";
+import Image from "next/image";
 interface PropsDetailQuiz {
     quiz?: IQuestion[];
     data?: IQuiz;
@@ -36,9 +37,16 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
     const [review, setReview] = useState("");
     const defaultReport = { type_of_violation: "spam", content: "" };
     const [report, setReport] = useState(defaultReport);
-    const quizSlice = quiz?.slice(0, 5) || [];
+    const [quizSlice, setQuizSlice] = useState<IQuestion[]>();
     const router = useRouter();
     const token = Cookies.get("token") || "";
+    useEffect(() => {
+        if (quiz && quiz.length > 5) {
+            setQuizSlice(quiz.slice(0, 5));
+        } else {
+            setQuizSlice(quiz);
+        }
+    }, [quiz]);
     const handleSubmitComment = async () => {
         const newComment: IComment = {
             _id: Math.random().toString(36).substr(2, 9), // Generate a temporary ID
@@ -113,6 +121,11 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
             setLoadingReport(false);
         }
     };
+
+    const handleSeeAllQuestion = () => {
+        setQuizSlice(quiz || []);
+    };
+
     const totalStar = comment.reduce((acc, curr) => acc + curr.rating, 0);
     const avgRating = comment.length > 0 ? (totalStar / comment.length).toFixed(1) : 0;
 
@@ -240,13 +253,18 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                                 </span>
                                             </div>
                                         </div>
-                                        <Button
-                                            onClick={() => router.push(`/quiz/${data?.slug}`)}
-                                            size="lg"
-                                            className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold px-8 dark:border-white/10">
-                                            <Play className="h-5 w-5 mr-2" />
-                                            Bắt đầu làm quiz
-                                        </Button>
+                                        <div className="flex flex-col gap-3">
+                                            <Button
+                                                onClick={() => router.push(`/quiz/${data?.slug}`)}
+                                                size="lg"
+                                                className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold px-8 dark:border-white/10">
+                                                <Play className="h-5 w-5 mr-2" />
+                                                Bắt đầu làm quiz
+                                            </Button>
+                                            {/* <Button className="" variant="secondary" onClick={}>
+                                                Lưu thành file docx
+                                            </Button> */}
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="absolute -top-4 -right-4 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
@@ -293,11 +311,13 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                         ))}
                                     <div className="text-center py-4">
                                         <Button
-                                            onClick={() => router.push(`/quiz/${data?.slug}`)}
+                                            disabled={quizSlice?.length === quiz.length}
+                                            onClick={handleSeeAllQuestion}
                                             size="lg"
-                                            className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold px-8 dark:border-white/10">
+                                            variant="secondary"
+                                            className=" text-white font-semibold px-8 dark:border-white/10">
                                             <Play className="h-5 w-5 mr-2" />
-                                            Bắt đầu làm quiz ngay
+                                            Xem hết {quiz?.length} câu hỏi
                                         </Button>
                                     </div>
                                 </CardContent>
@@ -405,6 +425,9 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                         {/* Sidebar */}
                         <div className="space-y-6">
                             {/* Author Info */}
+                            <div className="relative h-[335px] w-full mb-4 rounded-lg overflow-hidden">
+                                <Image className="absolute " src={data?.img} alt="" fill></Image>
+                            </div>
                             <Card className="shadow-lg border-0 bg-white/70 backdrop-blur-sm dark:bg-slate-800/50 dark:border-white/10">
                                 <CardHeader>
                                     <CardTitle className="text-lg font-bold dark:text-white/80 text-gray-800">Tác giả</CardTitle>

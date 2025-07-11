@@ -69,10 +69,13 @@ interface ISO {
     user_id: IUser;
     slug: string;
     title: string;
+    content: string;
+    link: string;
     image: string;
     date: Date;
     lenght: number;
     view: number;
+    type: string;
     subject: string;
     quest: IQuestionSO;
 }

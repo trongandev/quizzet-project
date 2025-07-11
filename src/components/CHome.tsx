@@ -3,7 +3,6 @@ import React from "react";
 
 import Link from "next/link";
 import "@/app/globals.css";
-import CTaiLieu from "@/components/CTaiLieu";
 import CQuiz from "./quiz/CQuiz";
 import { IListFlashcard, IQuiz, ISO } from "@/types/type";
 import { Button } from "@/components/ui/button";
@@ -12,8 +11,10 @@ import { Badge } from "./ui/badge";
 import { Card, CardContent } from "./ui/card";
 import PublicFCHome from "./flashcard/PublicFCHome";
 import { useRouter } from "next/navigation";
+import CDeCuongTypeText from "./decuong/CDeCuongTypeText";
+import DeCuongTypeFile from "./decuong/DeCuongTypeFile";
 
-export default function CHome({ quizData, toolData, publicFlashcards }: { quizData: IQuiz[]; toolData: ISO[]; publicFlashcards: IListFlashcard[] }) {
+export default function CHome({ quizData, findText, findFile, publicFlashcards }: { quizData: IQuiz[]; findFile: ISO[]; findText: ISO[]; publicFlashcards: IListFlashcard[] }) {
     const router = useRouter();
     return (
         <div className="">
@@ -26,14 +27,7 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
                         Nền tảng học tập thông minh giúp bạn nâng cao kiến thức thông qua flashcard, quiz và đề cương chất lượng cao. Học tập hiệu quả, tiến bộ mỗi ngày.
                     </p>
                 </div>
-                {/* <div className="my-2 flex gap-5 items-center justify-center">
-                    {notice &&
-                        notice.map((item) => (
-                            <Link href={item?.link || "#"} className="bg-third px-3 py-1 rounded-md text-white" key={item?._id}>
-                                <p>{item?.title}</p>
-                            </Link>
-                        ))}
-                </div> */}
+
                 {/* Feature Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-8 mt-10">
                     {/* Flashcard */}
@@ -110,9 +104,10 @@ export default function CHome({ quizData, toolData, publicFlashcards }: { quizDa
                 <div className="my-5 mt-10">
                     <CQuiz quizData={quizData} />
                 </div>
-                <div className="">
-                    <CTaiLieu toolData={toolData} />
+                <div className="mb-10">
+                    <CDeCuongTypeText findText={findText} />
                 </div>
+                <DeCuongTypeFile findFile={findFile} />
                 <div className="mt-10 bg-gradient-to-r from-emerald-200/80 to-lime-200/80 dark:from-emerald-800/50 dark:to-lime-800/50 pt-5 rounded-xl shadow-md border border-gray-300 dark:border-white/10 overflow-hidden">
                     <div className="flex items-center justify-center flex-col gap-3  px-3">
                         <Badge className="flex gap-2 items-center bg-emerald-100 text-emerald-700 dark:bg-emerald-800 dark:text-emerald-200">

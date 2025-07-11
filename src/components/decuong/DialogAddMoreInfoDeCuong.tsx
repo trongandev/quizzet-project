@@ -13,7 +13,7 @@ import Loading from "../ui/loading";
 import axios from "axios";
 import { Textarea } from "../ui/textarea";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { optimizedPromptGenerateTitle, optimizedPromptQuiz } from "@/lib/optimizedPrompt";
+import { optimizedPromptGenerateTitle } from "@/lib/optimizedPrompt";
 interface QuizQuestion {
     title: string;
     subject: string;
@@ -37,7 +37,7 @@ interface Props {
     generatedQuiz?: QuizQuestion;
 }
 
-export default function DialogAddMoreInfoQuiz({ children, generatedQuiz, openAddMoreInfo, setOpenAddMoreInfo }: Props) {
+export default function DialogAddMoreInfoDeCuong({ children, generatedQuiz, openAddMoreInfo, setOpenAddMoreInfo }: Props) {
     const defaultGeneratedQuiz = {
         title: "",
         subject: "",

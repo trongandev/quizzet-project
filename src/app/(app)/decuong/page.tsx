@@ -1,5 +1,5 @@
-import CTaiLieu from "@/components/CTaiLieu";
-import { getCachedTool } from "@/lib/cacheData";
+import CTaiLieu from "@/components/decuong/CDeCuong";
+import { getCachedDeCuong } from "@/lib/cacheData";
 
 export async function generateMetadata() {
     return {
@@ -16,11 +16,12 @@ export async function generateMetadata() {
 }
 
 export default async function SubjectOutline() {
-    const toolData = await getCachedTool();
-
+    const res = await getCachedDeCuong();
+    const findText = res?.findText;
+    const findFile = res?.findFile;
     return (
         <div className="py-20">
-            <CTaiLieu toolData={toolData} />
+            <CTaiLieu findText={findText} findFile={findFile} />
         </div>
     );
 }

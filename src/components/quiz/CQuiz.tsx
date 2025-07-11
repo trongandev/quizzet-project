@@ -19,6 +19,7 @@ import { buttonVariants } from "@/components/ui/button";
 
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem } from "@/components/ui/pagination";
+import QuizItem from "./QuizItem";
 export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
     const [sortOrder, setSortOrder] = useState("asc"); // "asc" or "desc"
     const [searchTerm, setSearchTerm] = useState("");
@@ -162,13 +163,18 @@ export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
                     <div className="flex md:items-center gap-3 justify-between flex-col md:flex-row">
                         <div className="flex-1 relative">
                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                            <Input placeholder="Tìm tên câu hỏi mà bạn cần..." value={searchTerm} onChange={(e) => handleSearch(e.target.value)} className="pl-10 h-11 border-gray-400" />
+                            <Input
+                                placeholder="Tìm tên câu hỏi mà bạn cần..."
+                                value={searchTerm}
+                                onChange={(e) => handleSearch(e.target.value)}
+                                className="pl-10 h-11 border-gray-400/50 dark:border-white/10"
+                            />
                         </div>
-                        <div className="w-[0.4px] h-10 bg-gray-500/50 hidden md:block"></div>
+                        <div className="w-[0.4px] h-10 bg-gray-400/50 hidden md:block"></div>
                         <div className="flex items-center gap-2 justify-between md:justify-start">
                             <div className="relative flex-1">
                                 <Select value={subject} defaultValue="all" onValueChange={handleSearchSubject}>
-                                    <SelectTrigger className="w-[140px] h-11 border-gray-400">
+                                    <SelectTrigger className="w-[140px] h-11 border-gray-400/50 dark:border-white/10">
                                         <Filter className="w-4 h-4 mr-2" />
                                         <SelectValue placeholder="Danh mục" />
                                     </SelectTrigger>
@@ -233,12 +239,12 @@ export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
                         </div>
                         <div className="w-[0.4px] h-10 bg-gray-500/50  hidden md:block"></div>
                         <div className="flex items-center gap-2">
-                            <Link href="/quiz/nganhang" className="">
+                            {/* <Link href="/quiz/nganhang" className="">
                                 <Button className="h-11" variant="secondary" disabled>
                                     <Play className="h-4 w-4" />
                                     Thi thử
                                 </Button>
-                            </Link>
+                            </Link> */}
                             <Link href="/quiz/themcauhoi" className="">
                                 <Button className="h-11 relative group overflow-hidden  bg-gradient-to-r from-blue-500 to-purple-500 text-white">
                                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50  dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
@@ -250,58 +256,7 @@ export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
                     </div>
                     <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 ${viewMode === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"} h-[816px] overflow-y-scroll`}>
                         {displayQuizs?.map((item) => (
-                            <div key={item._id} className="group hover:shadow-md hover:scale-105 transition-all duration-300  rounded-xl border border-white/10 shadow-md h-[400px]">
-                                <div className="overflow-hidden relative h-full rounded-[8px]">
-                                    <Link className="block" href={`/quiz/detail/${item.slug}`}>
-                                        <Image
-                                            src={item.img}
-                                            alt={item.title}
-                                            className="absolute h-full w-full object-cover group-hover:scale-105 duration-300  brightness-90"
-                                            fill
-                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                            priority
-                                        />
-                                    </Link>
-                                    <div className="p-3 absolute z-1 text-white bottom-0 w-full bg-linear-item">
-                                        <h1 className="text-lg font-bold">{item.title}</h1>
-                                        <p className="line-clamp-2 text-sm text-[#D9D9D9]">{item.content}</p>
-                                        <div className="flex justify-end items-center gap-1 mb-[1px] text-[10px]">
-                                            <FaRegEye />
-                                            <p className="">Lượt làm: {item.noa}</p>
-                                        </div>
-                                        <div className="flex justify-between items-center gap-1">
-                                            <Link href={`/profile/${item.uid._id}`} className="flex items-center gap-2">
-                                                <div className="relative w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden">
-                                                    <Image
-                                                        unoptimized
-                                                        src={item.uid.profilePicture}
-                                                        alt={item.uid.displayName}
-                                                        className="absolute object-cover h-full"
-                                                        fill
-                                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                        priority
-                                                    />
-                                                </div>
-                                                <div className="group">
-                                                    <div className="flex items-center gap-1">
-                                                        <h2 className="text-sm line-clamp-1 overflow-hidden">{item.uid.displayName}</h2>
-                                                        {item.uid.verify ? <MdOutlineVerified color="#3b82f6" /> : ""}
-                                                    </div>
-                                                    <p className="text-[#D9D9D9] text-[10px] flex gap-1 items-center">
-                                                        <CiTimer color="#D9D9D9" /> {handleCompareDate(item.date)}
-                                                    </p>
-                                                </div>
-                                            </Link>
-
-                                            <Link href={`/quiz/${item.slug}`} className="">
-                                                <Button className="text-white">
-                                                    Làm bài <IoArrowForwardCircleOutline />
-                                                </Button>
-                                            </Link>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <QuizItem key={item._id} item={item} />
                         ))}
                         {/* Empty state */}
                         {data && data.length === 0 ? <p className="text-primary col-span-full text-center py-8">Không có quiz nào...</p> : ""}
