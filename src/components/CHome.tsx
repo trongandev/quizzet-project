@@ -104,7 +104,7 @@ export default function CHome({ quizData, findText, findFile, publicFlashcards }
                 <div className="my-5 mt-10">
                     <CQuiz quizData={quizData} />
                 </div>
-                <div className="mb-10">
+                {/* <div className="mb-10">
                     <CDeCuongTypeText findText={findText} />
                 </div>
                 <DeCuongTypeFile findFile={findFile} />
@@ -121,7 +121,6 @@ export default function CHome({ quizData, findText, findFile, publicFlashcards }
                             Biến việc lướt web thành cơ hội học tập! Dịch từ vựng ngay lập tức và tự động lưu vào flashcard cá nhân.
                         </p>
                     </div>
-                    {/* feature grid */}
                     <div className="grid md:grid-cols-3 gap-3 md:gap-8 px-5 mt-3">
                         <Card className="border border-transparent dark:border-white/10 shadow-lg hover:shadow-xl transition-shadow duration-300 bg-white/80 dark:bg-slate-800/50 backdrop-blur-sm">
                             <CardContent className="p-6 text-center">
@@ -195,7 +194,7 @@ export default function CHome({ quizData, findText, findFile, publicFlashcards }
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
     );

@@ -13,7 +13,7 @@ import {
     useReactTable,
     VisibilityState,
 } from "@tanstack/react-table";
-import { ArrowUpDown, BookUser, CalendarMinus2, CheckCircle, ChevronDown, Clock, Edit, LocateFixed, Mail, MegaphoneOff, MoreHorizontal, Pencil, Search, User, X } from "lucide-react";
+import { ArrowUpDown, BookUser, CalendarMinus2, CheckCircle, ChevronDown, Clock, Edit, FileText, LocateFixed, Mail, MegaphoneOff, MoreHorizontal, Pencil, Search, User, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -27,6 +27,27 @@ import { Badge } from "../ui/badge";
 import { GoogleOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import Image from "next/image";
+
+const getFileTypeColor = (type: string) => {
+    switch (type) {
+        case "pdf":
+            return "bg-red-500";
+        case "docx":
+            return "bg-blue-500";
+        case "xlsx":
+            return "bg-green-500";
+        default:
+            return "bg-gray-500";
+    }
+};
+
+const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+};
 
 export const columns: ColumnDef<ISO>[] = [
     {
@@ -91,18 +112,19 @@ export const columns: ColumnDef<ISO>[] = [
         cell: ({ row }) => <p className="text-white/80">{row.original.title}</p>,
     },
     {
-        accessorKey: "subject",
+        accessorKey: "type",
         header: ({ column }) => {
             return (
                 <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-                    Môn học
+                    Loại
                     <ArrowUpDown />
                 </Button>
             );
         },
         cell: ({ row }) => (
-            <Badge variant="outline" className="text-xs text-white/60">
-                {row.original.subject}
+            <Badge className={`${getFileTypeColor(row.original.type)} text-white text-xs px-2 py-1`}>
+                <FileText className="w-4 h-4 text-white mr-1" />
+                {row.original.type.toUpperCase()}
             </Badge>
         ),
     },
@@ -112,14 +134,14 @@ export const columns: ColumnDef<ISO>[] = [
         header: ({ column }) => {
             return (
                 <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-                    Tổng số câu
+                    Tổng
                     <ArrowUpDown />
                 </Button>
             );
         },
         cell: ({ row }) => (
-            <Badge variant="secondary" className="uppercase text-xs font-thin">
-                {row.original.lenght}
+            <Badge variant="secondary" className=" text-xs font-thin">
+                {row.original.type === "txt" ? row.original.lenght + " câu" : formatFileSize(row.original.lenght)}
             </Badge>
         ),
     },
@@ -135,80 +157,6 @@ export const columns: ColumnDef<ISO>[] = [
         },
         cell: ({ row }) => <div className="text-xs">{handleCompareDate(row.original.date)}</div>,
     },
-    // {
-    //     accessorKey: "amount",
-    //     header: () => <div className="text-right">Amount</div>,
-    //     cell: ({ row }) => {
-    //         const amount = parseFloat(row.getValue("amount"));
-
-    //         // Format the amount as a dollar amount
-    //         const formatted = new Intl.NumberFormat("en-US", {
-    //             style: "currency",
-    //             currency: "USD",
-    //         }).format(amount);
-
-    //         return <div className="text-right font-medium">{formatted}</div>;
-    //     },
-    // },
-
-    // {
-    //     accessorKey: "status",
-    //     header: ({ column }) => {
-    //         return (
-    //             <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-    //                 Trạng thái
-    //                 <ArrowUpDown />
-    //             </Button>
-    //         );
-    //     },
-    //     cell: ({ row }) => <div className="capitalize">{getStatusBadge(row.original.status)}</div>,
-    // },
-    // {
-    //     accessorKey: "provider",
-    //     header: ({ column }) => {
-    //         return (
-    //             <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-    //                 Nguồn
-    //                 <ArrowUpDown />
-    //             </Button>
-    //         );
-    //     },
-    //     cell: ({ row }) => (
-    //         <div className="capitalize">
-    //             <Badge
-    //                 variant="secondary"
-    //                 className={` ${
-    //                     row.original.provider === "local" ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300" : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
-    //                 }`}>
-    //                 {row.original.provider === "local" ? <LocateFixed size={15} /> : <GoogleOutlined size={15} />}
-    //             </Badge>
-    //         </div>
-    //     ),
-    // },
-    // {
-    //     accessorKey: "role",
-    //     header: ({ column }) => {
-    //         return (
-    //             <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-    //                 Quyền
-    //                 <ArrowUpDown />
-    //             </Button>
-    //         );
-    //     },
-    //     cell: ({ row }) => (
-    //         <div className="capitalize">
-    //             <Badge
-    //                 variant="secondary"
-    //                 className={`${
-    //                     row.getValue("role") === "user"
-    //                         ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
-    //                         : "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300"
-    //                 }`}>
-    //                 {row.getValue("role")}
-    //             </Badge>
-    //         </div>
-    //     ),
-    // },
     {
         id: "actions",
         enableHiding: false,

@@ -25,7 +25,7 @@ export default async function page() {
     const summary = await GET_API("/flashcard/summary", token);
     return (
         <Suspense fallback={LoadingScreen()}>
-            <CPublicFlashcard publicFlashcards={publicFlashcards} summary={summary} />;
+            <CPublicFlashcard publicFlashcards={publicFlashcards} summary={summary} />
         </Suspense>
     );
 }

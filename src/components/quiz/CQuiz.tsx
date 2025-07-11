@@ -150,7 +150,7 @@ export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
     return (
         <div className="flex items-center justify-center">
             <div className="w-full md:w-[1000px] xl:w-[1200px]">
-                <div className="p-5 flex flex-col gap-5  ">
+                <div className="md:p-5 flex flex-col gap-5  ">
                     <div className="flex items-center gap-3 ">
                         <div className="w-1/6 h-14 md:w-14  flex items-center justify-center bg-gradient-to-r from-blue-500/80 to-purple-500/80 rounded-lg text-white">
                             <SiQuizlet size={21} />

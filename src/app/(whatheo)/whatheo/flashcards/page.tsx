@@ -13,5 +13,5 @@ export default async function FlashcardPage() {
             </div>
         );
     }
-    return <CFlashcardPage flashcard={res} />;
+    return <CFlashcardPage flashcard={res?.publicFlashcards} />;
 }

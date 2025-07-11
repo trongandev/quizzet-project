@@ -23,7 +23,7 @@ const menuItems = [
         icon: CreditCard,
     },
     {
-        title: "Topic",
+        title: "Quiz",
         url: "/whatheo/quizs",
         icon: FileText,
     },

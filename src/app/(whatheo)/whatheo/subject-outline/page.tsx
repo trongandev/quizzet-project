@@ -6,7 +6,7 @@ import React from "react";
 export default async function SubjectOutlnePage() {
     const cookiesStore = cookies();
     const token = cookiesStore.get("token")?.value || "";
-    const res = await GET_API("/admin/suboutline", token);
+    const res = await GET_API("/so/admin", token);
     if (!res.ok) {
         return (
             <div className="h-screen flex items-center justify-center">
@@ -14,5 +14,5 @@ export default async function SubjectOutlnePage() {
             </div>
         );
     }
-    return <CSubjectOutline subject_outline={res} />;
+    return <CSubjectOutline subject_outline={res.findText} />;
 }

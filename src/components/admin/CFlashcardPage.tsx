@@ -3,84 +3,10 @@
 import { useState } from "react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Filter, MoreHorizontal, CreditCard, Plus, Lock, Unlock } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CreditCard, Plus, Lock, Unlock } from "lucide-react";
 import { DataTableFlashcard } from "./DataTableFlashcard";
 import { IListFlashcard } from "@/types/type";
-
-const flashcards = [
-    {
-        id: 1,
-        creator: {
-            name: "Gragon Yellow",
-            avatar: "/placeholder.svg?height=32&width=32",
-        },
-        title: "Phát triển",
-        language: "en",
-        description: "",
-        difficulty: "private",
-        cardCount: 5,
-        createdAt: "2 ngày trước",
-    },
-    {
-        id: 2,
-        creator: {
-            name: "Lieu Nguyen",
-            avatar: "/placeholder.svg?height=32&width=32",
-        },
-        title: "a",
-        language: "en",
-        description: "",
-        difficulty: "public",
-        cardCount: 1,
-        createdAt: "2 ngày trước",
-    },
-    {
-        id: 3,
-        creator: {
-            name: "KHOA",
-            avatar: "/placeholder.svg?height=32&width=32",
-        },
-        title: "HSK 3 LESSON 19",
-        language: "zh",
-        description: "",
-        difficulty: "public",
-        cardCount: 16,
-        createdAt: "6 ngày trước",
-    },
-    {
-        id: 4,
-        creator: {
-            name: "KHOA",
-            avatar: "/placeholder.svg?height=32&width=32",
-        },
-        title: "HSK 3 LESSON 18",
-        language: "zh",
-        description: "",
-        difficulty: "public",
-        cardCount: 18,
-        createdAt: "7 ngày trước",
-    },
-    {
-        id: 5,
-        creator: {
-            name: "KHOA",
-            avatar: "/placeholder.svg?height=32&width=32",
-        },
-        title: "TOEIC 2024 Test 1",
-        language: "en",
-        description: "",
-        difficulty: "private",
-        cardCount: 104,
-        createdAt: "13 ngày trước",
-    },
-];
 
 export default function CFlashcardPage({ flashcard }: { flashcard: IListFlashcard[] }) {
     const [searchTerm, setSearchTerm] = useState("");
@@ -108,7 +34,7 @@ export default function CFlashcardPage({ flashcard }: { flashcard: IListFlashcar
                         <CreditCard className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{flashcards.length}</div>
+                        <div className="text-2xl font-bold">{flashcard.length}</div>
                         <p className="text-xs text-muted-foreground">Tất cả bộ thẻ trong hệ thống</p>
                     </CardContent>
                 </Card>
@@ -118,7 +44,7 @@ export default function CFlashcardPage({ flashcard }: { flashcard: IListFlashcar
                         <Unlock className="h-4 w-4 text-green-600" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-green-600">{flashcards.filter((f) => f.difficulty === "public").length}</div>
+                        <div className="text-2xl font-bold text-green-600">{flashcard.filter((f) => f.public).length}</div>
                         <p className="text-xs text-muted-foreground">Có thể truy cập công khai</p>
                     </CardContent>
                 </Card>
@@ -128,17 +54,17 @@ export default function CFlashcardPage({ flashcard }: { flashcard: IListFlashcar
                         <Lock className="h-4 w-4 text-red-600" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-red-600">{flashcards.filter((f) => f.difficulty === "private").length}</div>
+                        <div className="text-2xl font-bold text-red-600">{flashcard.filter((f) => !f.public).length}</div>
                         <p className="text-xs text-muted-foreground">Chỉ tác giả có thể truy cập</p>
                     </CardContent>
                 </Card>
                 <Card className="dark:border-white/10">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Tổng thẻ</CardTitle>
+                        <CardTitle className="text-sm font-medium">Tổng từ vựng</CardTitle>
                         <CreditCard className="h-4 w-4 text-blue-600" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-blue-600">{flashcards.reduce((sum, f) => sum + f.cardCount, 0)}</div>
+                        <div className="text-2xl font-bold text-blue-600">{flashcard.reduce((sum, f) => sum + f.flashcards.length, 0)}</div>
                         <p className="text-xs text-muted-foreground">Tổng số thẻ học</p>
                     </CardContent>
                 </Card>

@@ -245,6 +245,9 @@ export interface IReport {
     content: string;
     status: string;
     is_violated: boolean;
+    resolved_by: string;
+    resolved_date: Date;
+    resolved_content: string;
     created_at: Date;
     __v: number;
 }

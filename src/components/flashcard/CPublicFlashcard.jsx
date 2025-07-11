@@ -97,39 +97,50 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
     // Generate page numbers for pagination
     const getPageNumbers = () => {
         const pages = [];
-        const maxVisiblePages = 5;
+        const maxVisiblePages = itemsPerPage ? 3 : 5; // Ít hơn trên mobile
 
         if (totalPages <= maxVisiblePages) {
             for (let i = 1; i <= totalPages; i++) {
                 pages.push(i);
             }
         } else {
-            if (currentPage <= 3) {
-                for (let i = 1; i <= 4; i++) {
-                    pages.push(i);
-                }
-                pages.push("...");
-                pages.push(totalPages);
-            } else if (currentPage >= totalPages - 2) {
-                pages.push(1);
-                pages.push("...");
-                for (let i = totalPages - 3; i <= totalPages; i++) {
-                    pages.push(i);
+            if (itemsPerPage) {
+                // ✅ Logic đơn giản hơn cho mobile
+                if (currentPage === 1) {
+                    pages.push(1, 2, "...", totalPages);
+                } else if (currentPage === totalPages) {
+                    pages.push(1, "...", totalPages - 1, totalPages);
+                } else {
+                    pages.push(1, "...", currentPage, "...", totalPages);
                 }
             } else {
-                pages.push(1);
-                pages.push("...");
-                for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-                    pages.push(i);
+                // Logic cũ cho desktop
+                if (currentPage <= 3) {
+                    for (let i = 1; i <= 4; i++) {
+                        pages.push(i);
+                    }
+                    pages.push("...");
+                    pages.push(totalPages);
+                } else if (currentPage >= totalPages - 2) {
+                    pages.push(1);
+                    pages.push("...");
+                    for (let i = totalPages - 3; i <= totalPages; i++) {
+                        pages.push(i);
+                    }
+                } else {
+                    pages.push(1);
+                    pages.push("...");
+                    for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+                        pages.push(i);
+                    }
+                    pages.push("...");
+                    pages.push(totalPages);
                 }
-                pages.push("...");
-                pages.push(totalPages);
             }
         }
 
         return pages;
     };
-
     return (
         <div className=" py-5 pt-20 flex justify-center items-center">
             <div className="text-third dark:text-white px-3 md:px-0 min-h-screen w-full md:w-[1000px] xl:w-[1200px]">
@@ -324,8 +335,8 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
                     </TabsContent>
                     <TabsContent value="community">
                         <div className="flex items-center flex-col md:flex-row gap-4 p-4 bg-white dark:bg-slate-700/80 rounded-lg shadow-sm border">
-                            <div className="flex items-center gap-2 ">
-                                <Globe className="w-5 h-5 text-gray-500" />
+                            <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                                <Globe className="w-5 h-5 " />
                                 <span className="font-medium text-gray-700 dark:text-white/80">Lọc theo ngôn ngữ:</span>
                             </div>{" "}
                             <div className="flex flex-wrap gap-2">

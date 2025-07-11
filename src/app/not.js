@@ -2,12 +2,12 @@ const fs = require("fs");
 const path = require("path");
 
 async function generateSitemap() {
-    await fetch(`https://quizzet-be.onrender.com/api/admin/suboutline`)
+    await fetch(`https://quizzet-be.vercel.app/api/so/admin`)
         .then((res) => res.json())
         .then((data) => {
             console.log(data);
             // Chuyển đổi dữ liệu thành định dạng XML cho sitemap
-            const urls = data
+            const urls = data.findText
                 .map(
                     (post) => `
   <url>
