@@ -1,5 +1,5 @@
 import CHome from "@/components/CHome";
-import { getCachedDeCuong, getCachedFlashcardPublic, getCachedQuizzet } from "@/lib/cacheData";
+import { getCachedFlashcardPublic, getCachedQuizzet } from "@/lib/cacheData";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import React from "react";
@@ -22,9 +22,7 @@ export async function generateMetadata() {
 
 export default async function HomePage() {
     const quizzet = await getCachedQuizzet();
-    const res = await getCachedDeCuong();
-    const findText = res?.findText;
-    const findFile = res?.findFile;
+
     const publicFlashcards = await getCachedFlashcardPublic();
     const cookieStore = cookies();
     const authToken = cookieStore.get("token")?.value || "";
@@ -32,7 +30,7 @@ export default async function HomePage() {
         <div>
             <div className="flex items-center justify-center">
                 <div className="w-full md:w-[1000px] xl:w-[1200px] py-5 pt-20">
-                    <CHome quizData={quizzet} findText={findText} findFile={findFile} publicFlashcards={publicFlashcards} />
+                    <CHome quizData={quizzet} publicFlashcards={publicFlashcards} />
                 </div>
             </div>
             {!authToken && (

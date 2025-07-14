@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { languages } from "@/lib/languageOption";
 import Cookies from "js-cookie";
 import PublicFC from "./PublicFC";
-import { AlertCircle, BookOpen, Brain, CheckCircle, ChevronLeft, ChevronRight, Clock, Globe, NotepadTextDashed, Plus, RotateCcw, Search, Target, TrendingUp, Users } from "lucide-react";
+import { ChevronLeft, ChevronRight, Globe, Info, Plus, Search, Users, X } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "../ui/input";
 import { CreateFlashcardModal } from "@/components/flashcard/CreateFlashcardModal";
@@ -13,11 +13,9 @@ import UserFC from "@/components/flashcard/UserFC";
 import Image from "next/image";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem } from "../ui/pagination";
 import { cn } from "@/lib/utils";
-import { Badge } from "../ui/badge";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { useRouter } from "next/navigation";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import Loading from "../ui/loading";
+import CDataWordsFC from "./CDataWordsFC";
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogFooter, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 export default function CPublicFlashCard({ publicFlashcards, summary }) {
     const [loading, setLoading] = useState(false);
     const [language, setLanguage] = useState("all");
@@ -34,8 +32,20 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const currentItems = data?.slice(startIndex, endIndex);
-    const router = useRouter();
     const displayFC = currentItems;
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleClose = () => {
+        setIsOpen(false);
+        localStorage.setItem("tutorialFC", "true"); // Lưu trạng thái đã xem
+    };
+
+    useEffect(() => {
+        const tutorialFC = localStorage.getItem("tutorialFC");
+        if (!tutorialFC) {
+            setIsOpen(true);
+        }
+    }, []);
 
     const token = Cookies.get("token");
     useEffect(() => {
@@ -144,141 +154,42 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
     return (
         <div className=" py-5 pt-20 flex justify-center items-center">
             <div className="text-third dark:text-white px-3 md:px-0 min-h-screen w-full md:w-[1000px] xl:w-[1200px]">
-                <div className="flex flex-col gap-10 ">
-                    <div className="">
+                <div className="flex flex-col gap-10">
+                    <div className="relative">
                         <h1 className="text-center text-4xl font-bold bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text">Flashcard</h1>
+
                         <p className="text-center max-w-2xl mx-auto mt-3 text-lg text-gray-600 dark:text-white/60">
                             Flashcard là một trong những cách tốt nhất để ghi nhớ những kiến thức quan trọng. Hãy cùng Quizzet tham khảo và tạo những bộ flashcards bạn nhé!
                         </p>
+                        <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+                            <AlertDialogTrigger>
+                                <Button size="sm" className="text-white absolute right-0 top-0 mt-2 mr-2" variant="secondary">
+                                    <Info />
+                                    Hướng dẫn
+                                </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent className="max-w-6xl">
+                                <div style={{ position: "relative", paddingBottom: "calc(50.520833333333336% + 41px)", height: 0, width: "100%" }}>
+                                    <iframe
+                                        src="https://demo.arcade.software/oaLbWAhnHqRBrKJrUsmt?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true"
+                                        title="Tạo bộ flashcard mới để học từ vựng"
+                                        frameBorder="0"
+                                        loading="lazy"
+                                        allowFullScreen
+                                        allow="clipboard-write"
+                                        style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", colorScheme: "light" }}
+                                    />
+                                </div>
+                                <AlertDialogFooter>
+                                    <AlertDialogAction className="text-white" onClick={handleClose}>
+                                        <X /> Đóng
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     </div>
                     {/* Statistics Cards with Dynamic Layout */}
-                    {token && (
-                        <div className={`grid gap-2 md:gap-4 grid-cols-2 lg:grid-cols-5`}>
-                            {/* Total Cards - Enhanced */}
-                            <div className={`bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200 dark:from-blue-800/50 dark:to-blue-900/50 dark:border-white/10`}>
-                                <div className="flex items-center justify-between mb-3">
-                                    <div className="p-2 bg-blue-600 rounded-lg">
-                                        <BookOpen className="w-5 h-5 text-white" />
-                                    </div>
-                                    <Badge variant="secondary" className="text-xs">
-                                        Tổng
-                                    </Badge>
-                                </div>
-                                <div className="text-3xl font-bold text-blue-900 dark:text-blue-400 mb-1">{summary?.statusCounts?.total || 0}</div>
-                                <div className="text-sm text-blue-700 dark:text-blue-300">Tất cả từ vựng</div>
-                                <div className="mt-2 text-xs text-blue-600 flex items-center gap-1">
-                                    <TrendingUp className="w-3 h-3" />+{summary?.weeklyReviewedWordsCount || 0} từ đã học tuần này
-                                </div>
-                            </div>
-
-                            {/* Learned Cards */}
-                            <Dialog>
-                                <DialogTrigger className="flex-1 w-full">
-                                    <div
-                                        className={`bg-gradient-to-br from-green-50 to-green-100 dark:from-green-800/50 dark:to-green-900/50 dark:border-white/10 rounded-xl p-6 border border-green-200 w-full h-full`}>
-                                        <div className="flex items-center justify-between mb-3">
-                                            <div className="p-2 bg-green-600 rounded-lg">
-                                                <CheckCircle className="w-5 h-5 text-white" />
-                                            </div>
-                                            <Badge className="text-xs bg-green-100 text-green-800">Hoàn thành</Badge>
-                                        </div>
-                                        <div className="text-3xl font-bold text-green-900 dark:text-green-400 mb-1">{summary?.statusCounts?.learned || 0}</div>
-                                        <div className="text-sm text-green-700 dark:text-green-300">Đã học thuộc</div>
-                                        <div className="mt-2 w-full bg-green-200 rounded-full h-2">
-                                            <div className="bg-green-600 h-2 rounded-full" style={{ width: `${summary?.statusCounts?.learned || 0}%` }}></div>
-                                        </div>
-                                    </div>
-                                </DialogTrigger>
-                                <DialogContent>
-                                    <DialogHeader>
-                                        <DialogTitle>Tất cả các từ đã học thuộc</DialogTitle>
-                                    </DialogHeader>
-                                    <div className="h-[500px] overflow-y-scroll grid grid-flow-col gap-5 rounded-lg">
-                                        {summary &&
-                                            summary?.learnedWords?.map((word, index) => (
-                                                <div
-                                                    className="border-2  border-dashed bg-green-50 dark:bg-green-800/50 dark:border-green-600 rounded-lg p-5 dark:text-green-400 text-green-600 "
-                                                    key={index}>
-                                                    <h1 className="text-green-800 dark:text-green-300 font-medium">{word.title}</h1>
-                                                    <p className="text-sm">{word.define}</p>
-                                                </div>
-                                            ))}
-                                        {summary?.learnedWords?.length <= 0 && (
-                                            <div className="h-full flex items-center flex-col gap-3 justify-center text-gray-500 dark:text-gray-300">
-                                                <NotepadTextDashed size={45} />
-                                                <p>Không có từ nào đã học thuộc...</p>
-                                            </div>
-                                        )}
-                                    </div>
-                                </DialogContent>
-                            </Dialog>
-
-                            {/* Known Cards */}
-                            <div
-                                className={`bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200 dark:from-purple-800/50 dark:to-purple-900/50 dark:border-white/10`}>
-                                <div className="flex items-center justify-between mb-3">
-                                    <div className="p-2 bg-purple-600 rounded-lg">
-                                        <Brain className="w-5 h-5 text-white" />
-                                    </div>
-                                    <Badge className="text-xs bg-purple-100 text-purple-800">Ghi nhớ</Badge>
-                                </div>
-                                <div className="text-3xl font-bold text-purple-900 mb-1 dark:text-purple-300">{summary?.statusCounts?.remembered || 0}</div>
-                                <div className="text-sm text-purple-700 dark:text-purple-400">Đã nhớ lâu</div>
-                                <div className="mt-2 text-xs text-purple-600 flex items-center gap-1">
-                                    <Clock className="w-3 h-3" />
-                                    Cần ôn lại
-                                </div>
-                            </div>
-
-                            {/* Review Cards */}
-                            <div
-                                className={`bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 border border-orange-200 dark:from-orange-800/50 dark:to-orange-900/50 dark:border-white/10 cursor-pointer hover:scale-105 transiton-all duration-300`}
-                                onClick={() => router.push("/flashcard/practice-science")}>
-                                <div className="flex items-center justify-between mb-3">
-                                    <div className="p-2 bg-orange-600 rounded-lg">
-                                        <RotateCcw className="w-5 h-5 text-white" />
-                                    </div>
-                                    <Badge className="text-xs bg-orange-100 text-orange-800">Cần ôn</Badge>
-                                </div>
-                                <div className="text-3xl font-bold text-orange-900 dark:text-orange-400 mb-1">{summary?.statusCounts?.reviewing || 0}</div>
-                                <div className="text-sm text-orange-700 dark:text-orange-300">Bấm vào đây để ôn tập</div>
-                                <div className="mt-2 text-xs text-orange-600 dark:text-orange-400 flex items-center gap-1">
-                                    <AlertCircle className="w-3 h-3" />
-                                    Ưu tiên cao
-                                </div>
-                            </div>
-
-                            {/* Accuracy Percentage */}
-                            <Tooltip>
-                                <TooltipTrigger className="w-full">
-                                    <div
-                                        className={`h-full w-full col-span-2 md:col-span-1 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-6 border border-indigo-200 dark:from-indigo-800/50 dark:to-indigo-900/50 dark:border-white/10`}>
-                                        <div className="flex items-center justify-between mb-3">
-                                            <div className="p-2 bg-indigo-600 rounded-lg">
-                                                <Target className="w-5 h-5 text-white" />
-                                            </div>
-                                            <Badge className="text-xs bg-indigo-100 text-indigo-800">Độ chính xác</Badge>
-                                        </div>
-                                        <div className="text-3xl font-bold text-indigo-900 dark:text-indigo-400 mb-1">{summary?.wordAccuracy?.accuracyPercentage || 0}%</div>
-                                        <div className="text-sm text-indigo-700 dark:text-indigo-300">Tỷ lệ đúng</div>
-                                        <div className="mt-2 flex items-center gap-2">
-                                            <div className="flex-1 bg-indigo-200 rounded-full h-2">
-                                                <div className="bg-indigo-600 h-2 rounded-full" style={{ width: `${summary?.wordAccuracy?.accuracyPercentage || 0}%` }}></div>
-                                            </div>
-                                            <span className="text-xs text-indigo-600 dark:text-indigo-400">
-                                                {summary?.wordAccuracy?.correctReviews}/{summary?.wordAccuracy?.totalReviews}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <div className="text-sm dark:text-gray-200 text-gray-500 md:w-[200px]">
-                                        <p className="">Được tính dựa trên tổng số lần ôn tập/số lần ôn tập đúng của từng từ (trên mức 3: Bình thường, dễ nhớ, hoàn hảo)</p>
-                                    </div>
-                                </TooltipContent>
-                            </Tooltip>
-                        </div>
-                    )}
+                    {token && <CDataWordsFC summary={summary} />}
                 </div>
                 <Tabs defaultValue="my-sets" className="mt-8" value={tabFlashcard} onValueChange={setTabFlashcard}>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-2 rounded-lg shadow-sm border dark:bg-slate-700">

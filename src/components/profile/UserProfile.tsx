@@ -35,6 +35,7 @@ import {
     Upload,
     LinkIcon,
     ArrowRight,
+    Users,
 } from "lucide-react";
 import { Progress } from "../ui/progress";
 import UserFC from "../flashcard/UserFC";
@@ -648,7 +649,7 @@ export default function UserProfile({ profile, quiz, flashcard }: PropsProfile) 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-h-[500px] overflow-y-auto">
                             {quiz &&
                                 quiz.map((post) => (
-                                    <Card key={post._id} className={`border shadow-md hover:shadow-lg transition-shadow cursor-pointer group`}>
+                                    <Card onClick={() => router.push(`/quiz/detail/${post.slug}`)} key={post._id} className={`border shadow-md hover:shadow-lg transition-shadow cursor-pointer group`}>
                                         <div className="relative w-full h-32">
                                             <Image src={post.img} alt="" className="absolute object-cover" fill></Image>
                                             <Badge variant="secondary" className="text-xs absolute z-1 top-1 left-1">
@@ -670,15 +671,15 @@ export default function UserProfile({ profile, quiz, flashcard }: PropsProfile) 
                                         <CardContent className="pt-0">
                                             <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
                                                 <div className="flex items-center gap-4">
-                                                    <span className="flex items-center gap-1">
+                                                    <span className="flex items-center gap-1" title="Lượt xem">
                                                         <Eye className="w-3 h-3" />
                                                         {post.view}
                                                     </span>
-                                                    <span className="flex items-center gap-1">
-                                                        <Heart className="w-3 h-3" />
+                                                    <span className="flex items-center gap-1" title="Lượt làm">
+                                                        <Users className="w-3 h-3" />
                                                         {post.noa}
                                                     </span>
-                                                    <span className="flex items-center gap-1">
+                                                    <span className="flex items-center gap-1" title="Lượt bình luận">
                                                         <MessageCircle className="w-3 h-3" />
                                                         {post.comment.length}
                                                     </span>

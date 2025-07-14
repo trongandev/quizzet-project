@@ -47,7 +47,6 @@ export default function QuizItem({ item }: { item: IQuiz }) {
                             <div className="">
                                 <div className="flex items-center gap-1">
                                     <h2 className="text-sm line-clamp-1 w-[100px] overflow-hidden">{item.uid.displayName}</h2>
-                                    {item.uid.verify ? <MdOutlineVerified color="#3b82f6" /> : ""}
                                 </div>
                                 <p className="text-[#D9D9D9] text-[10px] flex gap-1 items-center">
                                     <CiTimer color="#D9D9D9" /> {handleCompareDate(item.date)}

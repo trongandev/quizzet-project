@@ -1,21 +1,34 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import Link from "next/link";
 import "@/app/globals.css";
 import CQuiz from "./quiz/CQuiz";
-import { IListFlashcard, IQuiz, ISO } from "@/types/type";
+import { IListFlashcard, IQuiz } from "@/types/type";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, BookOpen, Brain, Chrome, FileText, Github, Info, Save, Star, TrendingUp, Users, Zap } from "lucide-react";
+import { ArrowRight, BookOpen, Brain, Chrome, Sparkles, FileText, Github, Save, Star, TrendingUp, Users, Zap, X } from "lucide-react";
 import { Badge } from "./ui/badge";
 import { Card, CardContent } from "./ui/card";
 import PublicFCHome from "./flashcard/PublicFCHome";
 import { useRouter } from "next/navigation";
-import CDeCuongTypeText from "./decuong/CDeCuongTypeText";
-import DeCuongTypeFile from "./decuong/DeCuongTypeFile";
-
-export default function CHome({ quizData, findText, findFile, publicFlashcards }: { quizData: IQuiz[]; findFile: ISO[]; findText: ISO[]; publicFlashcards: IListFlashcard[] }) {
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import Image from "next/image";
+export default function CHome({ quizData, publicFlashcards }: { quizData: IQuiz[]; publicFlashcards: IListFlashcard[] }) {
     const router = useRouter();
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleClose = () => {
+        setIsOpen(false);
+        localStorage.setItem("newMember", "true"); // Lưu trạng thái đã xem
+    };
+
+    useEffect(() => {
+        const newMember = localStorage.getItem("newMember");
+        if (!newMember) {
+            setIsOpen(true);
+        }
+    }, []);
     return (
         <div className="">
             <div className="px-2  dark:text-white">
@@ -107,7 +120,7 @@ export default function CHome({ quizData, findText, findFile, publicFlashcards }
                 {/* <div className="mb-10">
                     <CDeCuongTypeText findText={findText} />
                 </div>
-                <DeCuongTypeFile findFile={findFile} />
+                <DeCuongTypeFile findFile={findFile} /> */}
                 <div className="mt-10 bg-gradient-to-r from-emerald-200/80 to-lime-200/80 dark:from-emerald-800/50 dark:to-lime-800/50 pt-5 rounded-xl shadow-md border border-gray-300 dark:border-white/10 overflow-hidden">
                     <div className="flex items-center justify-center flex-col gap-3  px-3">
                         <Badge className="flex gap-2 items-center bg-emerald-100 text-emerald-700 dark:bg-emerald-800 dark:text-emerald-200">
@@ -168,15 +181,6 @@ export default function CHome({ quizData, findText, findFile, publicFlashcards }
                                         <ArrowRight className="w-4 h-4 ml-2" />
                                     </Button>
                                 </Link>
-                                <Link href="/extension">
-                                    <Button
-                                        size="lg"
-                                        variant="outline"
-                                        className="dark:border-emerald-200/50 text-emerald-600 dark:bg-transparent dark:hover:bg-transparent hover:text-emerald-500 dark:text-emerald-200 hover:scale-105 transition-transform duration-300">
-                                        <Info />
-                                        Xem thêm thông tin
-                                    </Button>
-                                </Link>
                             </div>
                             <div className="flex flex-wrap items-center justify-center gap-3 md:gap-6 mt-6 text-emerald-600 dark:text-emerald-100 ">
                                 <div className="flex items-center gap-2">
@@ -194,7 +198,115 @@ export default function CHome({ quizData, findText, findFile, publicFlashcards }
                             </div>
                         </div>
                     </div>
-                </div> */}
+                </div>
+                <Dialog open={isOpen} onOpenChange={handleClose}>
+                    <DialogContent className="max-w-2xl bg-slate-900 border-slate-700 text-white max-h-[700px] overflow-y-auto">
+                        <DialogHeader className="relative">
+                            <div className="text-center space-y-2">
+                                <div className="flex items-center justify-center space-x-2">
+                                    <Sparkles className="w-6 h-6 text-blue-400" />
+                                    <DialogTitle className="text-2xl font-bold">
+                                        Chào mừng đến với <span className="text-blue-400">Quizzet</span>!
+                                    </DialogTitle>
+                                    <Sparkles className="w-6 h-6 text-blue-400" />
+                                </div>
+                                <p className="text-slate-300">Bấm vào để khám phá những tính năng</p>
+                            </div>
+                        </DialogHeader>
+
+                        <div className="space-y-6 py-4">
+                            {/* Features List */}
+                            <div className="space-y-4">
+                                <div className="px-4 pt-2 rounded-lg dark:bg-slate-800/50 dark:hover:bg-slate-800 border border-slate-700 ">
+                                    <Accordion type="single" collapsible>
+                                        <AccordionItem value="item-1" className="border-b-transparent">
+                                            <AccordionTrigger className="flex items-start space-x-4 !no-underline">
+                                                <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                    <BookOpen className="w-5 h-5 text-white" />
+                                                </div>
+                                                <div className="flex items-start flex-col  mb-1">
+                                                    <div className="flex gap-2">
+                                                        <h3 className="font-semibold">Flashcard AI</h3>
+                                                        <Badge variant="secondary" className="bg-blue-600/20 text-blue-400 border-blue-600/30 ">
+                                                            Phổ biến
+                                                        </Badge>
+                                                    </div>
+                                                    <p className="text-sm text-slate-300">
+                                                        Hệ thống flashcard tạo từ vựng siêu nhanh bằng AI, hỗ trợ thêm nhiều từ, luyện tập từ, kiểm tra độ ghi nhớ của từ, đa ngôn ngữ
+                                                    </p>
+                                                </div>
+                                            </AccordionTrigger>
+                                            <AccordionContent>
+                                                <div className="relative w-full h-[200px] md:h-[300px] rounded-lg overflow-hidden">
+                                                    <Image src="/how-to-use/tao-flashcard.gif" alt="" fill className="absolute object-cover"></Image>
+                                                </div>
+                                            </AccordionContent>
+                                        </AccordionItem>
+                                    </Accordion>
+                                </div>
+                                <div className="px-4 pt-2 rounded-lg bg-slate-800/50 border dark:hover:bg-slate-800  border-slate-700">
+                                    <Accordion type="single" collapsible>
+                                        <AccordionItem value="item-1" className="border-b-transparent">
+                                            <AccordionTrigger className="flex items-start space-x-4 !no-underline">
+                                                <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                    <Brain className="w-5 h-5 text-white" />
+                                                </div>
+                                                <div className="flex items-start flex-col  mb-1">
+                                                    <div className="flex gap-2">
+                                                        <h3 className="font-semibold">Quiz AI</h3>
+                                                        <Badge variant="secondary" className="bg-teal-600/20 text-teal-400 border-teal-600/30">
+                                                            AI-Powered
+                                                        </Badge>
+                                                    </div>
+                                                    <p className="text-sm text-slate-300">Tạo quiz tự động với AI, điều chỉnh độ khó thông minh dựa trên khả năng học tập của bạn</p>
+                                                </div>
+                                            </AccordionTrigger>
+                                            <AccordionContent>
+                                                <div className="relative w-full h-[200px] md:h-[300px] rounded-lg overflow-hidden">
+                                                    <Image src="/how-to-use/tao-quiz.gif" alt="" fill className="absolute object-cover"></Image>
+                                                </div>
+                                            </AccordionContent>
+                                        </AccordionItem>
+                                    </Accordion>
+                                </div>
+                            </div>
+                            <div className="">
+                                <h4 className="font-medium text-center text-slate-300 mb-3">Bắt đầu học ngay hôm nay!</h4>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <Button
+                                        onClick={() => {
+                                            router.push("/flashcard");
+                                            handleClose();
+                                        }}
+                                        className="bg-blue-600 hover:bg-blue-700 flex items-center justify-center space-x-2 text-white">
+                                        <BookOpen className="w-4 h-4" />
+                                        <span>Flashcard</span>
+                                        <ArrowRight className="w-4 h-4" />
+                                    </Button>
+
+                                    <Button
+                                        onClick={() => {
+                                            router.push("/quiz");
+                                            handleClose();
+                                        }}
+                                        className="bg-teal-600 hover:bg-teal-700 flex items-center justify-center space-x-2 text-white">
+                                        <Brain className="w-4 h-4" />
+                                        <span>Quiz AI</span>
+                                        <ArrowRight className="w-4 h-4" />
+                                    </Button>
+                                </div>
+                            </div>
+                            {/* Action Buttons */}
+                            <div className="space-y-3 pt-4 border-t dark:border-white/10 border-slate-700">
+                                <Button variant="outline" onClick={handleClose} className="w-full border-slate-600 text-slate-300 hover:bg-slate-800 bg-transparent">
+                                    <X className="w-4 h-4" />
+                                    Không hiển thị lại
+                                </Button>
+                            </div>
+                        </div>
+                    </DialogContent>
+                </Dialog>
             </div>
         </div>
     );

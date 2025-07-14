@@ -23,6 +23,7 @@ export default async function page() {
     const token = cookieStore.get("token")?.value || "";
     const publicFlashcards = await getCachedFlashcardPublic();
     const summary = await GET_API("/flashcard/summary", token);
+    console.log("summary", summary);
     return (
         <Suspense fallback={LoadingScreen()}>
             <CPublicFlashcard publicFlashcards={publicFlashcards} summary={summary} />

@@ -1,16 +1,9 @@
 "use client";
-import handleCompareDate from "@/lib/CompareDate";
 import { IQuiz } from "@/types/type";
-import Image from "next/image";
 import Link from "next/link";
 import React, { useCallback, useEffect, useState } from "react";
-import { CiTimer } from "react-icons/ci";
-import { FaRegEye } from "react-icons/fa";
-import { IoArrowForwardCircleOutline } from "react-icons/io5";
-import { MdOutlineVerified } from "react-icons/md";
-import { ArrowDownNarrowWide, ArrowUpNarrowWide, Grid2X2, Grid3x3, Play, Plus, ChevronLeft, ChevronRight, Filter, Search } from "lucide-react";
+import { ArrowDownNarrowWide, ArrowUpNarrowWide, Grid2X2, Grid3x3, Plus, ChevronLeft, ChevronRight, Filter, Search } from "lucide-react";
 import { SiQuizlet } from "react-icons/si";
-import { Tooltip } from "antd";
 import { subjectOption } from "@/lib/subjectOption";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +13,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem } from "@/components/ui/pagination";
 import QuizItem from "./QuizItem";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
     const [sortOrder, setSortOrder] = useState("asc"); // "asc" or "desc"
     const [searchTerm, setSearchTerm] = useState("");
@@ -191,60 +185,74 @@ export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
                                 </Select>
                             </div>
                             <div className="flex items-center border border-gray-400/50 dark:border-white/10 rounded-s-md rounded-r-md overflow-hidden">
-                                <Tooltip placement="top" title="Sắp xếp theo số lượt làm tăng dần">
-                                    <div
-                                        className={`h-11 w-10  flex items-center justify-center dark:hover:text-gray-300 cursor-pointer ${
-                                            sortOrder === "asc" ? "bg-primary text-white" : "bg-gray-200 dark:bg-gray-700 text-gray-500"
-                                        }`}
-                                        onClick={() => {
-                                            setSortOrder("asc");
-                                            handleSortByNumber("noa", "asc");
-                                        }}>
-                                        <ArrowUpNarrowWide className="w-4 h-4  " />
-                                    </div>
+                                <Tooltip delayDuration={100}>
+                                    <TooltipTrigger>
+                                        <div
+                                            className={`h-11 w-10  flex items-center justify-center dark:hover:text-gray-300 cursor-pointer ${
+                                                sortOrder === "asc" ? "bg-primary text-white" : "bg-gray-200 dark:bg-gray-700 text-gray-500"
+                                            }`}
+                                            onClick={() => {
+                                                setSortOrder("asc");
+                                                handleSortByNumber("noa", "asc");
+                                            }}>
+                                            <ArrowUpNarrowWide className="w-4 h-4  " />
+                                        </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Sắp xếp theo số lượt làm tăng dần</p>
+                                    </TooltipContent>
                                 </Tooltip>
-                                <Tooltip placement="top" title="Sắp xếp theo số lượt làm giảm dần">
-                                    <div
-                                        className={`h-11 w-10  flex items-center justify-center dark:hover:text-gray-300 cursor-pointer ${
-                                            sortOrder === "desc" ? "bg-primary text-white" : "bg-gray-200 dark:bg-gray-700 text-gray-500"
-                                        }`}
-                                        onClick={() => {
-                                            setSortOrder("desc");
-                                            handleSortByNumber("noa", "desc");
-                                        }}>
-                                        <ArrowDownNarrowWide className="w-4 h-4  " />
-                                    </div>
+                                <Tooltip delayDuration={100}>
+                                    <TooltipTrigger>
+                                        <div
+                                            className={`h-11 w-10  flex items-center justify-center dark:hover:text-gray-300 cursor-pointer ${
+                                                sortOrder === "desc" ? "bg-primary text-white" : "bg-gray-200 dark:bg-gray-700 text-gray-500"
+                                            }`}
+                                            onClick={() => {
+                                                setSortOrder("desc");
+                                                handleSortByNumber("noa", "desc");
+                                            }}>
+                                            <ArrowDownNarrowWide className="w-4 h-4  " />
+                                        </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Sắp xếp theo số lượt làm giảm dần</p>
+                                    </TooltipContent>
                                 </Tooltip>
                             </div>
                             <div className="hidden md:flex items-center border border-gray-400/50 dark:border-white/10 rounded-s-md rounded-r-md overflow-hidden">
-                                <Tooltip placement="top" title="Dạng lưới 4x2">
-                                    <div
-                                        className={`h-11 w-10  flex items-center justify-center dark:hover:text-gray-300 cursor-pointer ${
-                                            viewMode === 4 ? "bg-primary text-white" : "bg-gray-200 dark:bg-gray-700 text-gray-500"
-                                        }`}
-                                        onClick={() => setViewMode(4)}>
-                                        <Grid3x3 className="w-4 h-4  " />
-                                    </div>
+                                <Tooltip delayDuration={100}>
+                                    <TooltipTrigger>
+                                        <div
+                                            className={`h-11 w-10  flex items-center justify-center dark:hover:text-gray-300 cursor-pointer ${
+                                                viewMode === 4 ? "bg-primary text-white" : "bg-gray-200 dark:bg-gray-700 text-gray-500"
+                                            }`}
+                                            onClick={() => setViewMode(4)}>
+                                            <Grid3x3 className="w-4 h-4  " />
+                                        </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Dạng lưới 4x2</p>
+                                    </TooltipContent>
                                 </Tooltip>
-                                <Tooltip placement="top" title="Dạng lưới 3x2">
-                                    <div
-                                        className={`h-11 w-10  flex items-center justify-center dark:hover:text-gray-300 cursor-pointer ${
-                                            viewMode === 3 ? "bg-primary text-white" : "bg-gray-200 dark:bg-gray-700 text-gray-500"
-                                        }`}
-                                        onClick={() => setViewMode(3)}>
-                                        <Grid2X2 className="w-4 h-4  " />
-                                    </div>
+                                <Tooltip delayDuration={100}>
+                                    <TooltipTrigger>
+                                        <div
+                                            className={`h-11 w-10  flex items-center justify-center dark:hover:text-gray-300 cursor-pointer ${
+                                                viewMode === 3 ? "bg-primary text-white" : "bg-gray-200 dark:bg-gray-700 text-gray-500"
+                                            }`}
+                                            onClick={() => setViewMode(3)}>
+                                            <Grid2X2 className="w-4 h-4  " />
+                                        </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Dạng lưới 3x2</p>
+                                    </TooltipContent>
                                 </Tooltip>
                             </div>
                         </div>
                         <div className="w-[0.4px] h-10 bg-gray-500/50  hidden md:block"></div>
                         <div className="flex items-center gap-2">
-                            {/* <Link href="/quiz/nganhang" className="">
-                                <Button className="h-11" variant="secondary" disabled>
-                                    <Play className="h-4 w-4" />
-                                    Thi thử
-                                </Button>
-                            </Link> */}
                             <Link href="/quiz/themcauhoi" className="">
                                 <Button className="h-11 relative group overflow-hidden  bg-gradient-to-r from-blue-500 to-purple-500 text-white">
                                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50  dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>

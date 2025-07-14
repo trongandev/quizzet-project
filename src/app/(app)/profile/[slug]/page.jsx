@@ -49,5 +49,5 @@ export default async function ProfileUID({ params }) {
     //     setConfirmLoading(false);
     // };
     const req = await GET_API(`/profile/${slug}`);
-    return <UserProfile profile={req?.user} quiz={req?.quiz} />;
+    return <UserProfile profile={req?.user} quiz={req?.quiz} flashcard={req?.flashcards} />;
 }
