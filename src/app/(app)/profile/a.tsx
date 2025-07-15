@@ -2,7 +2,6 @@
 // import React, { useEffect, useState } from "react";
 // import { MdOutlineVerified } from "react-icons/md";
 // import Swal from "sweetalert2";
-// import { Modal, Input, Popover, Button, message } from "antd";
 // import { IoMdSettings } from "react-icons/io";
 // import { HiDotsHorizontal } from "react-icons/hi";
 // import { CiTimer } from "react-icons/ci";
@@ -10,7 +9,6 @@
 // import { FaRegEye, FaTrash } from "react-icons/fa";
 // import { FaEye } from "react-icons/fa";
 // import Cookies from "js-cookie";
-// import { Spin } from "antd";
 // import { LoadingOutlined } from "@ant-design/icons";
 // import Image from "next/image";
 // import Link from "next/link";

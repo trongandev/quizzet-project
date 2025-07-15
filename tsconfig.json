@@ -34,7 +34,7 @@
         "src/app/(app)/page.tsx",
         "src/app/(whatheo)/whatheo/users/page.jsx",
         "src/app/(app)/quiz/themcauhoi/gui/page.jsx",
-        "src/app/(app)/edit-tool/[slug]/page.jsx",
+        "src/app/(app)/edit-tool/[slug]/a.jsx",
         "src/components/CDeCuongDetail.tsx",
         "src/app/(app)/dapan/[slug]/page.jsx",
         "src/app/(app)/congdong/ChatArea.jsx",
@@ -42,7 +42,8 @@
         "src/app/(app)/congdong/page.jsx",
         "src/components/flashcard/CPublicFlashcard.jsx",
         "src/app/(app)/flashcard/practice/[slug]/page.tsx",
-        "src/app/(app)/decuong/flashcard/[id]/page.tsx"
+        "src/app/(app)/decuong/flashcard/[id]/page.tsx",
+        "src/components/CShowMessage.jsx"
     ],
     "exclude": ["node_modules"]
 }

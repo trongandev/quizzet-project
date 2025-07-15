@@ -3,8 +3,6 @@ import { useSocket } from "@/context/socketContext";
 import { useUser } from "@/context/userContext";
 import handleCompareDate from "@/lib/CompareDate";
 import { GET_API } from "@/lib/fetchAPI";
-import { CloseOutlined, LoadingOutlined } from "@ant-design/icons";
-import { message, Popover, Spin, Image as Images } from "antd";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -16,7 +14,7 @@ import axios from "axios";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import Loading from "./ui/loading";
-import { Send } from "lucide-react";
+import { Send, X } from "lucide-react";
 export default function CShowMessage({ chatMessId, handleDeleteChat, token, socket, checkOnline }) {
     const lastMessageRef = useRef(null);
     const [messages, setMessages] = useState([]);
@@ -29,7 +27,6 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
     const [searchEmoji, setSearchEmoji] = useState("");
     const [emojiData, setEmojiData] = useState([]);
     const [replyingTo, setReplyingTo] = useState(null);
-    const [messageApi, contextHolder] = message.useMessage();
     const { user } = useUser();
     const userId = user?._id;
     const handleOpenChange = (newOpen) => {
@@ -187,7 +184,6 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
     };
     return (
         <>
-            {contextHolder}
             {messages?.participants?.length > 0 && messages && (
                 <div className="fixed right-5 bottom-0 ">
                     <div className="bg-white dark:bg-slate-800 border dark:border-white/10 w-[338px] h-[455px] rounded-t-lg shadow-sm overflow-hidden">
@@ -222,7 +218,7 @@ export default function CShowMessage({ chatMessId, handleDeleteChat, token, sock
                                 <IoIosArrowDown size={14} />
                             </Link>
                             <div className="w-12 h-full hover:text-red-500 cursor-pointer flex items-center justify-center" onClick={handleDeleteChat}>
-                                <CloseOutlined />
+                                <X />
                             </div>
                         </div>
 

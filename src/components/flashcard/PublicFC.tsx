@@ -1,5 +1,5 @@
 import handleCompareDate from "@/lib/CompareDate";
-import { Bookmark, Star, Users } from "lucide-react";
+import { Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -8,7 +8,7 @@ export default function PublicFC({ item }: any) {
     return (
         <Link
             href={`/flashcard/${item?._id}`}
-            className="relative group overflow-hidden w-full   bg-white/80  dark:bg-slate-800/50  hover:scale-105  border border-white/10 rounded-xl shadow-sm px-2 md:px-5 hover:shadow-md transition-all duration-300 flex justify-center flex-col gap-3 h-40">
+            className="relative group overflow-hidden w-full   bg-white/80  dark:bg-slate-800/50   border border-white/10 rounded-xl shadow-sm px-2 md:px-5 hover:shadow-md transition-all duration-300 flex justify-center flex-col gap-3 h-40">
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
             <div className="flex items-start justify-between mt-0">
                 <div className="">

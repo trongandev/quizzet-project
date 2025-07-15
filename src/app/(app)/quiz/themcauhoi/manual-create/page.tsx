@@ -1,4 +1,4 @@
-import { ManualCreateView } from "@/components/quiz/ManualCreateView";
+import { ManualCreateView } from "@/components/quiz/ManualCreate/ManualCreateView";
 import React from "react";
 
 export default function ManualCreatePage() {

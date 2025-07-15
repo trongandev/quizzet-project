@@ -28,6 +28,8 @@ export default function PractiveFlashcard({ params }) {
     const [inputAnswer, setInputAnswer] = useState("");
     const [progress, setProgress] = useState({ known: [], unknown: [] });
     const [quizOptions, setQuizOptions] = useState([]);
+    const [loadingAudio, setLoadingAudio] = useState(false);
+
     // random moder
     const [isRandomMode, setIsRandomMode] = useState(false);
     const [isRandomFeature, setIsRandomFeature] = useState(false);
@@ -115,6 +117,7 @@ export default function PractiveFlashcard({ params }) {
     const speakWord = useCallback(
         async (text, language) => {
             try {
+                setLoadingAudio(true);
                 const response = await tts.create({
                     input: text,
                     options: {
@@ -140,6 +143,9 @@ export default function PractiveFlashcard({ params }) {
                     position: "top-center",
                 });
             } finally {
+                setTimeout(() => {
+                    setLoadingAudio(false);
+                }, 500);
             }
         },
         [tts, voiceSetting]
@@ -176,6 +182,7 @@ export default function PractiveFlashcard({ params }) {
     // Progress tracking
     const handleProgress = useCallback(
         (type) => {
+            if (loadingAudio === true) return; // Prevent progress change while audio is playing
             const currentId = flashcards[index]._id;
             if (type === "known") {
                 setProgress((prev) => ({
@@ -193,7 +200,7 @@ export default function PractiveFlashcard({ params }) {
                 handleChangeIndex("prev");
             }
         },
-        [index, flashcards]
+        [index, flashcards, loadingAudio]
     );
 
     const handlePlayAudio = (method) => {
@@ -274,9 +281,11 @@ export default function PractiveFlashcard({ params }) {
                     }
                     break;
                 case "arrowleft":
+                    if (loadingAudio === true) return; // Prevent progress change while audio is playing
                     handleChangeIndex("prev");
                     break;
                 case "arrowright":
+                    if (loadingAudio === true) return; // Prevent progress change while audio is playing
                     handleChangeIndex("next");
                     break;
                 case " ":
@@ -319,9 +328,9 @@ export default function PractiveFlashcard({ params }) {
 
     return (
         <Suspense fallback={LoadingScreen()}>
-            <div className="relative z-10  dark:bg-slate-700 py-5 px-3 flex justify-center items-center">
+            <div className="relative z-10 dark:bg-slate-700 py-5 px-3 flex justify-center items-center">
                 <div className="w-full md:w-[1000px] xl:w-[1200px] focus-visible:outline-none min-h-screen" onKeyDown={handleKeyDown} tabIndex={0}>
-                    <div className="w-full flex items-center justify-center h-[80vh] flex-col gap-2 md:pt-14">
+                    <div className="w-full flex items-center justify-center min-h-[80vh] flex-col gap-2 md:pt-14">
                         <div className="w-full text-left">
                             <Button className="w-full md:w-auto" variant="outline" onClick={() => router.back()}>
                                 <ArrowLeft /> Quay lại
@@ -370,8 +379,9 @@ export default function PractiveFlashcard({ params }) {
                                                             speakWord(flashcards[index]?.title, flashcards[index]?.language);
                                                         }}
                                                         className=""
-                                                        variant="secondary">
-                                                        <Volume2 size={24} />
+                                                        disabled={loadingAudio}
+                                                        variant="outline">
+                                                        {loadingAudio ? <Loading /> : <Volume2 size={24} />}
                                                     </Button>
                                                 </div>
                                                 <p className="text-gray-500 text-lg font-bold">{flashcards[index]?.transcription}</p>

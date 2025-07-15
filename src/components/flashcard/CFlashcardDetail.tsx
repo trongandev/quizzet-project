@@ -1,39 +1,27 @@
-"use client";
-import { GET_API, POST_API } from "@/lib/fetchAPI";
-import { useFlashcard } from "@/hooks/useOptimizedFetch";
-import React, { useEffect, useState, useCallback } from "react";
+"use client"
+import { GET_API, GET_API_WITHOUT_COOKIE, POST_API } from "@/lib/fetchAPI"
+import React, { useEffect, useState, useCallback } from "react"
 
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { useUser } from "@/context/userContext";
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { useUser } from "@/context/userContext"
 // import { languageOption } from "@/lib/languageOption";
-import { EdgeSpeechTTS } from "@lobehub/tts";
-import { Button } from "@/components/ui/button";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { AlertCircle, ArrowLeft, BookOpen, Brain, Flag, GalleryVerticalEnd, Gift, Grid3x3, PencilLine, Plus, RefreshCcw, RotateCcw, Target, Trash2, User, Volume2 } from "lucide-react";
-import { EditListFlashcardModal } from "./EditListFlashcardModal";
-import AddVocaModal from "./AddVocaModal";
-import { Badge } from "../ui/badge";
-import { Flashcard, IEditFlashcard, IListFlashcard } from "@/types/type";
-import VocaCardItem from "./VocaCardItem";
-import Cookies from "js-cookie";
-import { toast } from "sonner";
-import Loading from "../ui/loading";
-import VoiceSelectionModal from "./VoiceSelectionModal";
-import { revalidateCache } from "@/lib/revalidate";
-import AddMoreVocaModal from "./AddMoreVocaModal";
-import EditVocaModal from "./EditVocaModal";
-import { getCachedFlashcardDetail } from "@/lib/cacheData";
+import { EdgeSpeechTTS } from "@lobehub/tts"
+import { Button } from "@/components/ui/button"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import { ArrowLeft, BookOpen, Brain, Flag, GalleryVerticalEnd, Gift, Grid3x3, PencilLine, Plus, RefreshCcw, RotateCcw, Target, Trash2, User, Volume2 } from "lucide-react"
+import { EditListFlashcardModal } from "./EditListFlashcardModal"
+import AddVocaModal from "./AddVocaModal"
+import { Badge } from "../ui/badge"
+import { Flashcard, IEditFlashcard, IListFlashcard, IWordCount } from "@/types/type"
+import VocaCardItem from "./VocaCardItem"
+import Cookies from "js-cookie"
+import { toast } from "sonner"
+import Loading from "../ui/loading"
+import VoiceSelectionModal from "./VoiceSelectionModal"
+import { revalidateCache } from "@/lib/revalidate"
+import AddMoreVocaModal from "./AddMoreVocaModal"
+import EditVocaModal from "./EditVocaModal"
 
 const getLanguageFlag = (lang: string) => {
     const flags: { [key: string]: string } = {
@@ -44,9 +32,9 @@ const getLanguageFlag = (lang: string) => {
         vietnamese: "🇻🇳",
         germany: "🇩🇪",
         france: "🇫🇷",
-    };
-    return flags[lang] || "🌐";
-};
+    }
+    return flags[lang] || "🌐"
+}
 
 const getLanguageName = (lang: string) => {
     const names: { [key: string]: string } = {
@@ -57,71 +45,47 @@ const getLanguageName = (lang: string) => {
         vietnamese: "Tiếng Việt",
         germany: "Deutsch",
         france: "Français",
-    };
-    return names[lang] || "Khác";
-};
+    }
+    return names[lang] || "Khác"
+}
 
-export default function CFlashcardDetail({ id_flashcard, initialData, statusCounts }: any) {
-    const [loading, setLoading] = useState(false);
-    const [loadingConfirm, setLoadingConfirm] = useState(false);
-    const [flashcard, setFlashcard] = useState<Flashcard>(); // các flashcard
-    const [loadingAudio, setLoadingAudio] = useState(null);
-    const [disableAudio, setDisableAudio] = useState(false);
-    const [selectedVoice, setSelectedVoice] = useState("");
-    const [editFlashcard, setEditFlashcard] = useState<Flashcard>();
-    const [isEditOpen, setIsEditOpen] = useState(false);
-    const token = Cookies.get("token") || "";
-    const router = useRouter();
-    const { user } = useUser() || { user: null };
+export default function CFlashcardDetail({ id_flashcard }: any) {
+    const [loading, setLoading] = useState(false)
+    const [loadingConfirm, setLoadingConfirm] = useState(false)
+    const [loadingAudio, setLoadingAudio] = useState(null)
+    const [disableAudio, setDisableAudio] = useState(false)
+    const [selectedVoice, setSelectedVoice] = useState("")
+    const [editFlashcard, setEditFlashcard] = useState<Flashcard>()
+    const [isEditOpen, setIsEditOpen] = useState(false)
+    const token = Cookies.get("token") || ""
+    const router = useRouter()
+    const { user } = useUser() || { user: null }
     const sortFlashcards = (flashcards: any) => {
         return flashcards?.sort((a: any, b: any) => {
-            return new Date(b?.created_at).getTime() - new Date(a?.created_at).getTime();
-        });
-    };
+            return new Date(b?.created_at).getTime() - new Date(a?.created_at).getTime()
+        })
+    }
 
-    const [filteredFlashcards, setFilteredFlashcards] = useState<Flashcard[]>(() => {
-        return initialData?.flashcards ? sortFlashcards(initialData.flashcards) : [];
-    });
-    const [listFlashcard, setListFlashcard] = useState<IListFlashcard>(initialData);
-    const [editListFlashcard, setEditListFlashcard] = useState<IEditFlashcard>(initialData);
-
-    useEffect(() => {
-        const sortedFlashcards = sortFlashcards(initialData.flashcards);
-        setFlashcard(sortedFlashcards);
-        setListFlashcard(initialData);
-        // if (fetchedData && fetchedData !== initialData) {
-
-        //     // setFilteredFlashcards((prevFiltered) => {
-        //     //     const initialLength = initialData?.flashcards?.length || 0;
-        //     //     const hasLocalChanges = prevFiltered.length > initialLength;
-
-        //     //     if (hasLocalChanges) {
-        //     //         return prevFiltered; // Giữ nguyên local changes
-        //     //     } else {
-        //     //         return sortedFlashcards; // Update với data mới
-        //     //     }
-        //     // });
-
-        //     setEditListFlashcard({
-        //         _id: fetchedData._id,
-        //         title: fetchedData.title,
-        //         language: fetchedData.language,
-        //         desc: fetchedData.desc,
-        //         public: fetchedData.public,
-        //     });
-        // }
-    }, [initialData]);
-    const handleAddNewFlashcard = useCallback((newFlashcard: Flashcard) => {
-        setFilteredFlashcards((prev) => [newFlashcard, ...prev]);
-
-        setListFlashcard((prev) => ({
-            ...prev,
-            flashcards: [newFlashcard, ...(prev?.flashcards || [])],
-        }));
-    }, []);
+    const [filteredFlashcards, setFilteredFlashcards] = useState<Flashcard[]>([])
+    const [listFlashcard, setListFlashcard] = useState<IListFlashcard>()
+    const [editListFlashcard, setEditListFlashcard] = useState<IEditFlashcard>()
+    const [statusCounts, setStatusCount] = useState<IWordCount>()
 
     useEffect(() => {
-        if (!listFlashcard?.language) return; // Đợi listFlashcard load xong
+        const fetchAPI = async () => {
+            const req = await GET_API_WITHOUT_COOKIE(`/flashcards/${id_flashcard}`)
+            if (req?.ok) {
+                setListFlashcard(req?.listFlashCards)
+                setFilteredFlashcards(sortFlashcards(req?.listFlashCards?.flashcards))
+                setEditListFlashcard(req?.listFlashCards)
+                setStatusCount(req?.statusCounts)
+            }
+        }
+        fetchAPI()
+    }, [id_flashcard])
+
+    useEffect(() => {
+        if (!listFlashcard?.language) return // Đợi listFlashcard load xong
 
         const defaultVoices = {
             english: "en-GB-SoniaNeural",
@@ -131,207 +95,214 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
             japan: "ja-JP-NanamiNeural",
             korea: "ko-KR-SunHiNeural",
             chinese: "zh-CN-XiaoxiaoNeural",
-        };
+        }
 
         // Lấy hoặc tạo mới defaultVoices trong localStorage
-        let savedVoices;
-        const savedVoiceString = localStorage.getItem("defaultVoices");
+        let savedVoices
+        const savedVoiceString = localStorage.getItem("defaultVoices")
 
         if (savedVoiceString) {
             try {
-                savedVoices = JSON.parse(savedVoiceString);
+                savedVoices = JSON.parse(savedVoiceString)
             } catch (error) {
-                console.error("Error parsing saved voices:", error);
-                savedVoices = defaultVoices;
-                localStorage.setItem("defaultVoices", JSON.stringify(defaultVoices));
+                console.error("Error parsing saved voices:", error)
+                savedVoices = defaultVoices
+                localStorage.setItem("defaultVoices", JSON.stringify(defaultVoices))
             }
         } else {
-            savedVoices = defaultVoices;
-            localStorage.setItem("defaultVoices", JSON.stringify(defaultVoices));
+            savedVoices = defaultVoices
+            localStorage.setItem("defaultVoices", JSON.stringify(defaultVoices))
         }
 
         // Lấy voice cho ngôn ngữ hiện tại
-        const currentVoice = savedVoices[listFlashcard.language as keyof typeof defaultVoices] || defaultVoices.english;
-        setSelectedVoice(currentVoice);
-    }, [listFlashcard?.language]);
+        const currentVoice = savedVoices[listFlashcard.language as keyof typeof defaultVoices] || defaultVoices.english
+        setSelectedVoice(currentVoice)
+    }, [listFlashcard?.language])
 
     const handleDeleteListFlashcard = async () => {
         try {
-            setLoadingConfirm(true);
-            const req = await POST_API(`/list-flashcards/${id_flashcard}`, {}, "DELETE", token);
-            const res = await req?.json();
+            setLoadingConfirm(true)
+            const req = await POST_API(`/list-flashcards/${id_flashcard}`, {}, "DELETE", token)
+            const res = await req?.json()
             if (res?.ok) {
-                router.back();
+                router.back()
             }
         } catch (error) {
-            console.error("Error deleting list flashcard:", error);
+            console.error("Error deleting list flashcard:", error)
             toast.error("Xoá bộ flashcard không thành công", {
                 description: error instanceof Error ? error.message : "Lỗi không xác định",
                 duration: 3000,
                 position: "top-center",
-            });
+            })
         } finally {
-            setLoadingConfirm(false);
+            setLoadingConfirm(false)
         }
-    };
+    }
 
     const handleEditListFlashcard = async (values: any) => {
         try {
-            setLoading(true);
+            setLoading(true)
 
-            const req = await POST_API(`/list-flashcards/${values._id}`, values, "PATCH", token);
-            const res = await req?.json();
+            const req = await POST_API(`/list-flashcards/${values._id}`, values, "PATCH", token)
+            const res = await req?.json()
 
             if (res.ok) {
-                setListFlashcard(res.listFlashCard || values);
+                setListFlashcard(res.listFlashCard || values)
 
                 // ✅ Revalidate multiple caches
+
                 await revalidateCache({
-                    tag: [`flashcard_${id_flashcard}`, "flashcards"],
+                    tag: [`flashcard_${id_flashcard}`, "flashcards-detail"],
                     path: `/flashcard/${id_flashcard}`,
-                });
+                })
 
                 // ✅ Revalidate public cache if needed
                 if (values.public) {
                     await revalidateCache({
                         tag: "flashcard_public",
-                    });
+                    })
                 }
 
-                toast.success("Cập nhật thành công!");
+                toast.success("Cập nhật thành công!")
             }
         } catch (error) {
-            toast.error("Có lỗi xảy ra", { description: error instanceof Error ? error.message : "Lỗi không xác định", duration: 3000, position: "top-center" });
+            toast.error("Có lỗi xảy ra", {
+                description: error instanceof Error ? error.message : "Lỗi không xác định",
+                duration: 3000,
+                position: "top-center",
+            })
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    };
-    const [tts] = useState(() => new EdgeSpeechTTS({ locale: "en-US" }));
+    }
+    const [tts] = useState(() => new EdgeSpeechTTS({ locale: "en-US" }))
 
     const speakWord = useCallback(
         async (text: string, id: any) => {
-            if (disableAudio) return;
+            if (disableAudio) return
 
-            const voice = selectedVoice;
+            const voice = selectedVoice
 
             try {
-                setLoadingAudio(id);
-                setDisableAudio(true);
+                setLoadingAudio(id)
+                setDisableAudio(true)
 
                 const response = await tts.create({
                     input: text,
                     options: {
                         voice: voice,
                     },
-                });
+                })
 
-                const audioBuffer = await response.arrayBuffer();
-                const blob = new Blob([audioBuffer], { type: "audio/mpeg" });
-                const url = URL.createObjectURL(blob);
-                const audio = new Audio(url);
+                const audioBuffer = await response.arrayBuffer()
+                const blob = new Blob([audioBuffer], { type: "audio/mpeg" })
+                const url = URL.createObjectURL(blob)
+                const audio = new Audio(url)
 
                 audio.addEventListener("ended", () => {
-                    URL.revokeObjectURL(url);
-                });
+                    URL.revokeObjectURL(url)
+                })
 
-                audio.play();
+                audio.play()
             } catch (error) {
-                console.error("TTS Error:", error);
+                console.error("TTS Error:", error)
                 toast.error("Có lỗi sảy ra", {
                     description: error instanceof Error ? error.message : "Lỗi không xác định",
                     duration: 3000,
                     position: "top-center",
-                });
+                })
             } finally {
-                setLoadingAudio(null);
+                setLoadingAudio(null)
                 setTimeout(() => {
-                    setDisableAudio(false);
-                }, 1000);
+                    setDisableAudio(false)
+                }, 1000)
             }
         },
         [disableAudio, listFlashcard?.language, tts, selectedVoice]
-    );
+    )
 
     const handleDelete = useCallback(
         async (id: string) => {
             try {
-                setLoadingConfirm(true);
-                const req = await POST_API(`/flashcards/${id}`, { list_flashcard_id: listFlashcard?._id }, "DELETE", token);
-                const res = await req?.json();
+                setLoadingConfirm(true)
+                const req = await POST_API(`/flashcards/${id}`, { list_flashcard_id: listFlashcard?._id }, "DELETE", token)
+                const res = await req?.json()
 
                 if (res.ok) {
-                    setFilteredFlashcards((prev) => prev.filter((item) => item._id !== id));
+                    setFilteredFlashcards((prev) => prev.filter((item) => item._id !== id))
 
-                    setListFlashcard((prev) => ({
-                        ...prev,
-                        flashcards: prev?.flashcards?.filter((item) => item._id !== id) || [],
-                    }));
+                    setListFlashcard((prev) => {
+                        if (!prev) return prev
+                        return {
+                            ...prev,
+                            flashcards: prev.flashcards?.filter((item) => item._id !== id) || [],
+                        }
+                    })
 
-                    toast.success("Xóa flashcard thành công");
+                    toast.success("Xóa flashcard thành công")
                 }
             } catch (error) {
-                console.error("Error deleting flashcard:", error);
-                toast.error("Xóa flashcard không thành công");
+                console.error("Error deleting flashcard:", error)
+                toast.error("Xóa flashcard không thành công")
             } finally {
-                setLoadingConfirm(false);
+                setLoadingConfirm(false)
             }
         },
         [listFlashcard?._id, token]
-    );
+    )
 
     const handleFilter = (filter: string) => {
-        if (!listFlashcard?.flashcards) return;
+        if (!listFlashcard?.flashcards) return
 
-        let filtered = listFlashcard.flashcards;
+        let filtered = listFlashcard.flashcards
 
         switch (filter) {
             case "learned":
-                filtered = listFlashcard.flashcards.filter((item) => item.status === "learned");
-                break;
+                filtered = listFlashcard.flashcards.filter((item) => item.status === "learned")
+                break
             case "remembered":
-                filtered = listFlashcard.flashcards.filter((item) => item.status === "remembered");
-                break;
+                filtered = listFlashcard.flashcards.filter((item) => item.status === "remembered")
+                break
             case "reviewing":
-                filtered = listFlashcard.flashcards.filter((item) => item.status === "reviewing");
-                break;
+                filtered = listFlashcard.flashcards.filter((item) => item.status === "reviewing")
+                break
             case "all":
-                filtered = listFlashcard.flashcards;
+                filtered = listFlashcard.flashcards
         }
 
-        setFilteredFlashcards(sortFlashcards(filtered));
-    };
+        setFilteredFlashcards(sortFlashcards(filtered))
+    }
 
     const handleRefresh = async () => {
         try {
-            setLoading(true);
+            setLoading(true)
 
             await revalidateCache({
                 tag: [`flashcard_${id_flashcard}`, "flashcards-detail"],
                 path: `/flashcard/${id_flashcard}`,
-            });
+            })
 
-            const newData = await GET_API(`/flashcards/${id_flashcard}`, token);
+            const newData = await GET_API(`/flashcards/${id_flashcard}`, token)
 
             if (newData?.listFlashCards) {
-                const sortedFlashcards = sortFlashcards(newData.listFlashCards.flashcards);
-                setFlashcard(sortedFlashcards);
-                setListFlashcard(newData.listFlashCards);
-                setFilteredFlashcards(sortedFlashcards);
-                setEditListFlashcard(newData.listFlashCards);
+                const sortedFlashcards = sortFlashcards(newData.listFlashCards.flashcards)
+                setListFlashcard(newData.listFlashCards)
+                setFilteredFlashcards(sortedFlashcards)
+                setEditListFlashcard(newData.listFlashCards)
 
-                toast.success("Đã làm mới dữ liệu!", { position: "top-center" });
+                toast.success("Đã làm mới dữ liệu!", { position: "top-center" })
             }
         } catch (error: any) {
-            console.error("Error refreshing flashcard:", error);
+            console.error("Error refreshing flashcard:", error)
             toast.error("Làm mới không thành công", {
                 description: error.message,
                 position: "top-center",
                 id: "refresh-flashcard",
-            });
+            })
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    };
+    }
 
     return (
         <div className="w-full space-y-5 relative z-[10] dark:bg-slate-700 bg-gray-200">
@@ -351,7 +322,7 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                             <RefreshCcw className={`${loading && "animate-spin"}`} />
                             Làm mới
                         </Button>
-                        <VoiceSelectionModal selectedVoice={selectedVoice} setSelectedVoice={setSelectedVoice} language={listFlashcard?.language}>
+                        <VoiceSelectionModal selectedVoice={selectedVoice} setSelectedVoice={setSelectedVoice} language={listFlashcard?.language || "english"}>
                             <Button className="dark:text-white" variant="outline">
                                 <Volume2 /> Chọn giọng nói
                             </Button>
@@ -359,17 +330,11 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
 
                         <div className={` items-center gap-2 md:gap-3 flex-wrap ${user?._id === String(listFlashcard?.userId._id) ? "flex" : "hidden"}`}>
                             <EditListFlashcardModal handleEditListFlashcard={handleEditListFlashcard} editListFlashcard={editListFlashcard} setEditListFlashcard={setEditListFlashcard} token={token}>
-                                <Button className="dark:text-white" variant="outline" onClick={() => setEditListFlashcard({ ...listFlashcard })}>
+                                <Button className="dark:text-white" variant="outline" onClick={() => listFlashcard && setEditListFlashcard(listFlashcard as IEditFlashcard)}>
                                     <PencilLine /> Chỉnh Sửa
                                 </Button>
                             </EditListFlashcardModal>
-                            <AddMoreVocaModal
-                                listFlashcard={listFlashcard}
-                                setListFlashcard={setListFlashcard}
-                                filteredFlashcards={filteredFlashcards}
-                                setFilteredFlashcards={setFilteredFlashcards}
-                                token={token}
-                                speakWord={speakWord}>
+                            <AddMoreVocaModal listFlashcard={listFlashcard} setListFlashcard={setListFlashcard} filteredFlashcards={filteredFlashcards} setFilteredFlashcards={setFilteredFlashcards} token={token} speakWord={speakWord}>
                                 <Button className="dark:text-white" variant="outline">
                                     <Grid3x3 /> Thêm nhiều
                                 </Button>
@@ -408,7 +373,7 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                     <div className="flex items-center gap-2">
                         <User className="w-4 h-4" />
                         <span>Người chia sẻ:</span>
-                        <span className="font-medium cursor-pointer hover:underline" onClick={() => router.push(`/profile/${listFlashcard.userId._id}`)}>
+                        <span className="font-medium cursor-pointer hover:underline" onClick={() => router.push(`/profile/${listFlashcard?.userId._id}`)}>
                             {listFlashcard?.userId?.displayName || "N/A"}
                         </span>
                     </div>
@@ -417,29 +382,9 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
 
             <div className="px-5">
                 <div className="">
-                    {/* Header with Layout Controls */}
-                    {/* <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-lg font-semibold text-gray-900">Tiến độ học tập</h2>
-                        <div className="flex items-center gap-2">
-                            <span className="text-sm text-gray-600">Layout:</span>
-                            <div className="flex bg-gray-100 rounded-lg p-1">
-                                <Button variant={statsLayout === "1x1" ? "default" : "ghost"} size="sm" onClick={() => setStatsLayout("1x1")} className="h-8 px-3 text-xs">
-                                    1×1
-                                </Button>
-                                <Button variant={statsLayout === "2x1" ? "default" : "ghost"} size="sm" onClick={() => setStatsLayout("2x1")} className="h-8 px-3 text-xs">
-                                    2×1
-                                </Button>
-                                <Button variant={statsLayout === "3x1" ? "default" : "ghost"} size="sm" onClick={() => setStatsLayout("3x1")} className="h-8 px-3 text-xs">
-                                    3×1
-                                </Button>
-                            </div>
-                        </div>
-                    </div> */}
                     {user?._id === String(listFlashcard?.userId?._id) && (
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
-                            <div
-                                onClick={() => handleFilter("all")}
-                                className={`w-full h-24 px-5 bg-indigo-300/60 dark:bg-indigo-800/50 rounded-xl flex items-center justify-between border border-indigo-500/50 dark:border-white/10 shadow-sm shadow-indigo-500/50 hover:scale-105 transition-transform cursor-pointer duration-500  dark:hover:bg-indigo-700`}>
+                            <div onClick={() => handleFilter("all")} className={`w-full h-24 px-5 bg-indigo-300/60 dark:bg-indigo-800/50 rounded-xl flex items-center justify-between border border-indigo-500/50 dark:border-white/10 shadow-sm shadow-indigo-500/50 hover:scale-105 transition-transform cursor-pointer duration-500  dark:hover:bg-indigo-700`}>
                                 <div className="">
                                     <p className="text-gray-600 dark:text-white/60">Tất cả thẻ</p>
                                     <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">{listFlashcard?.flashcards?.length || 0}</h3>
@@ -448,9 +393,7 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                                     <GalleryVerticalEnd />
                                 </div>
                             </div>
-                            <div
-                                onClick={() => handleFilter("learned")}
-                                className={`w-full h-24 px-5 bg-green-300/60 dark:bg-green-800/50 rounded-xl flex items-center justify-between border border-green-500/50 dark:border-white/10 shadow-sm shadow-green-500/50 hover:scale-105 transition-transform cursor-pointer duration-500  dark:hover:bg-green-700`}>
+                            <div onClick={() => handleFilter("learned")} className={`w-full h-24 px-5 bg-green-300/60 dark:bg-green-800/50 rounded-xl flex items-center justify-between border border-green-500/50 dark:border-white/10 shadow-sm shadow-green-500/50 hover:scale-105 transition-transform cursor-pointer duration-500  dark:hover:bg-green-700`}>
                                 <div className="">
                                     <p className="text-gray-600 dark:text-white/60">Đã nhớ</p>
                                     <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">{statusCounts?.learned || 0}</h3>
@@ -459,9 +402,7 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                                     <BookOpen />
                                 </div>
                             </div>
-                            <div
-                                onClick={() => handleFilter("remembered")}
-                                className={`w-full h-24 px-5 bg-blue-300/60 dark:bg-blue-800/50 rounded-xl flex items-center justify-between border border-blue-500/50 dark:border-white/10 shadow-sm shadow-blue-500/50 hover:scale-105 transition-transform cursor-pointer duration-500  dark:hover:bg-blue-700`}>
+                            <div onClick={() => handleFilter("remembered")} className={`w-full h-24 px-5 bg-blue-300/60 dark:bg-blue-800/50 rounded-xl flex items-center justify-between border border-blue-500/50 dark:border-white/10 shadow-sm shadow-blue-500/50 hover:scale-105 transition-transform cursor-pointer duration-500  dark:hover:bg-blue-700`}>
                                 <div className="">
                                     <p className="text-gray-600 dark:text-white/60">Đang ghi nhớ</p>
                                     <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">{statusCounts?.remembered || 0}</h3>
@@ -470,9 +411,7 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                                     <Brain />
                                 </div>
                             </div>
-                            <div
-                                onClick={() => handleFilter("reviewing")}
-                                className={`w-full h-24 px-5 bg-red-300/60 dark:bg-red-800/50 rounded-xl flex items-center justify-between border border-red-500/50 dark:border-white/10 shadow-sm shadow-red-500/50 hover:scale-105 transition-transform cursor-pointer duration-500  dark:hover:bg-red-700`}>
+                            <div onClick={() => handleFilter("reviewing")} className={`w-full h-24 px-5 bg-red-300/60 dark:bg-red-800/50 rounded-xl flex items-center justify-between border border-red-500/50 dark:border-white/10 shadow-sm shadow-red-500/50 hover:scale-105 transition-transform cursor-pointer duration-500  dark:hover:bg-red-700`}>
                                 <div className="">
                                     <p className="text-gray-600 dark:text-white/60">Cần ôn tập</p>
                                     <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">{statusCounts?.reviewing || 0}</h3>
@@ -483,25 +422,6 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                             </div>
                         </div>
                     )}
-
-                    {/* Quick Stats Summary */}
-                    {/* <div className="mt-4 p-4 bg-gray-50 dark:bg-slate-800/50 rounded-lg border border-gray-200 dark:border-white/10">
-                        <div className="flex items-center justify-between text-sm">
-                            <div className="flex items-center gap-4">
-                                <span className="text-gray-600 dark:text-white/60">Học hôm nay:</span>
-                                <span className="font-medium text-gray-900 dark:text-white/80">0 từ</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                                <Flame className="text-orange-600" />
-
-                                <span className="font-medium ">0 ngày</span>
-                            </div>
-                            <div className="flex items-center gap-2 text-blue-600">
-                                <Timer />
-                                <span className="font-medium ">0 phút</span>
-                            </div>
-                        </div>
-                    </div> */}
                 </div>
             </div>
             <div className="flex items-center px-5 gap-2 md:gap-5 flex-wrap">
@@ -513,12 +433,7 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
 
                 {user?._id === String(listFlashcard?.userId?._id) && (
                     <>
-                        <AddVocaModal
-                            token={token}
-                            filteredFlashcards={filteredFlashcards}
-                            setFilteredFlashcards={setFilteredFlashcards}
-                            listFlashcard={listFlashcard}
-                            setListFlashcard={setListFlashcard}>
+                        <AddVocaModal token={token} filteredFlashcards={filteredFlashcards} setFilteredFlashcards={setFilteredFlashcards} listFlashcard={listFlashcard} setListFlashcard={setListFlashcard}>
                             <Button className="dark:text-white h-16 text-md md:text-xl uppercase bg-gradient-to-r from-indigo-500 to-purple-500 text-white md:px-10">
                                 <Plus size={24} /> Thêm từ vựng
                             </Button>
@@ -534,18 +449,7 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:p-5 w-full px-3">
                 {filteredFlashcards && filteredFlashcards?.length > 0 ? (
-                    filteredFlashcards.map((item: Flashcard) => (
-                        <VocaCardItem
-                            key={item._id}
-                            data={item}
-                            speakWord={speakWord}
-                            loadingAudio={loadingAudio}
-                            handleDelete={handleDelete}
-                            setEditFlashcard={setEditFlashcard}
-                            setIsEditOpen={setIsEditOpen}
-                            user={user}
-                        />
-                    ))
+                    filteredFlashcards.map((item: Flashcard) => <VocaCardItem key={item._id} data={item} speakWord={speakWord} loadingAudio={loadingAudio} handleDelete={handleDelete} setEditFlashcard={setEditFlashcard} setIsEditOpen={setIsEditOpen} user={user} />)
                 ) : (
                     <div className="col-span-3 text-center h-[80vh] flex flex-col gap-2 items-center justify-center">
                         <h1 className="text-xl">Không có từ vựng nào trong flashcard này</h1>
@@ -553,16 +457,7 @@ export default function CFlashcardDetail({ id_flashcard, initialData, statusCoun
                     </div>
                 )}
             </div>
-            <EditVocaModal
-                isEditOpen={isEditOpen}
-                setIsEditOpen={setIsEditOpen}
-                editFlashcard={editFlashcard}
-                setEditFlashcard={setEditFlashcard}
-                listFlashcard={listFlashcard}
-                token={token}
-                filteredFlashcards={filteredFlashcards}
-                setFilteredFlashcards={setFilteredFlashcards}
-                setListFlashcard={setListFlashcard}></EditVocaModal>
+            <EditVocaModal isEditOpen={isEditOpen} setIsEditOpen={setIsEditOpen} editFlashcard={editFlashcard} setEditFlashcard={setEditFlashcard} listFlashcard={listFlashcard} token={token} filteredFlashcards={filteredFlashcards} setFilteredFlashcards={setFilteredFlashcards} setListFlashcard={setListFlashcard}></EditVocaModal>
         </div>
-    );
+    )
 }

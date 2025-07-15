@@ -68,7 +68,7 @@ const ChatCard = forwardRef<HTMLDivElement, MessageCardProps>(({ message, isLast
                         </div>
                         <Dialog open={open} onOpenChange={setOpen}>
                             <DialogTrigger asChild>
-                                {user?._id === message?.userId._id && (
+                                {(user?.role === "admin" || user?._id === message?.userId._id) && (
                                     <div className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-800 dark:text-gray-400 dark:text-white/60 hover:text-white">
                                         <Trash size={14} />
                                     </div>

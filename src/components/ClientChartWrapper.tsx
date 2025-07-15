@@ -14,7 +14,7 @@ export function ClientChartWrapper({ data, config }: ClientChartWrapperProps) {
         <ChartContainer config={config}>
             <AreaChart accessibilityLayer data={data} margin={{ left: 12, right: 12 }}>
                 <CartesianGrid vertical={false} />
-                <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} tickFormatter={(value) => value.slice(0, 3)} />
+                <XAxis dataKey="month" color="blue" tickLine={false} axisLine={false} tickMargin={8} tickFormatter={(value) => value.slice(0, 3)} />
                 <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
                 <Area dataKey="count" type="natural" fill="var(--color-desktop)" fillOpacity={0.4} stroke="var(--color-desktop)" />
             </AreaChart>

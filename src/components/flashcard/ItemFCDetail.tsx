@@ -1,14 +1,15 @@
-import handleCompareDate from "@/lib/CompareDate";
-import { LoadingOutlined, QuestionCircleOutlined } from "@ant-design/icons";
-import { Modal, Popconfirm, Popover, Spin } from "antd";
-import React from "react";
-import { FaBrain } from "react-icons/fa";
-import { HiMiniSpeakerWave } from "react-icons/hi2";
-import { IoClose } from "react-icons/io5";
-import { MdOutlineQuestionMark } from "react-icons/md";
-import { TiEdit } from "react-icons/ti";
-import { Button } from "../ui/button";
-
+import handleCompareDate from "@/lib/CompareDate"
+import React from "react"
+import { HiMiniSpeakerWave } from "react-icons/hi2"
+import { TiEdit } from "react-icons/ti"
+import { Button } from "../ui/button"
+import Loading from "@/components/ui/loading"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import { X } from "lucide-react"
 export default function ItemFC({
     item,
     index,
@@ -31,16 +32,36 @@ export default function ItemFC({
     handleSendPrompt,
 }: any) {
     return (
-        <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-5 shadow-sm rounded-xl" key={index}>
+        <div
+            className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-5 shadow-sm rounded-xl"
+            key={index}
+        >
             <div className="flex items-center justify-between">
                 <div
                     className={`rounded-full text-white text-[12px] px-3 py-[1px] font-bold ${
-                        item?.status === "reviewing" ? "bg-[#FFC107]" : item?.status === "remembered" ? "bg-[#2196F3]" : "bg-[#4CAF50]"
-                    }`}>
-                    {item?.status === "reviewing" ? "Cần ôn tập" : item?.status === "remembered" ? "Đã nhớ" : "Đã học"}
+                        item?.status === "reviewing"
+                            ? "bg-[#FFC107]"
+                            : item?.status === "remembered"
+                            ? "bg-[#2196F3]"
+                            : "bg-[#4CAF50]"
+                    }`}
+                >
+                    {item?.status === "reviewing"
+                        ? "Cần ôn tập"
+                        : item?.status === "remembered"
+                        ? "Đã nhớ"
+                        : "Đã học"}
                 </div>
-                <div className={`rounded-full text-white text-[12px] px-3 py-[1px] font-bold bg-[#4CAF50]`}>Số lần học: {item?.progress?.learnedTimes}</div>
-                <div className={`rounded-full text-white text-[12px] px-3 py-[1px] font-bold bg-[#9C27B0]`}>Ghi nhớ: {item?.progress?.percentage}%</div>
+                <div
+                    className={`rounded-full text-white text-[12px] px-3 py-[1px] font-bold bg-[#4CAF50]`}
+                >
+                    Số lần học: {item?.progress?.learnedTimes}
+                </div>
+                <div
+                    className={`rounded-full text-white text-[12px] px-3 py-[1px] font-bold bg-[#9C27B0]`}
+                >
+                    Ghi nhớ: {item?.progress?.percentage}%
+                </div>
             </div>
             <div className="flex items-center justify-between gap-5">
                 <div className="flex gap-2 items-center font-bold flex-wrap">
@@ -51,47 +72,72 @@ export default function ItemFC({
                     <p>{item?.transcription}</p>
                     {listFlashcard?.language == "english" ? (
                         <>
-                            <div className="flex items-center gap-1 mr-2 cursor-pointer hover:text-secondary" onClick={() => speakWord(item?.title, 1, item?._id)}>
-                                {loadingAudio == item?._id ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ color: "blue" }} /> : <HiMiniSpeakerWave />}
+                            <div
+                                className="flex items-center gap-1 mr-2 cursor-pointer hover:text-secondary"
+                                onClick={() =>
+                                    speakWord(item?.title, 1, item?._id)
+                                }
+                            >
+                                {loadingAudio == item?._id ? (
+                                    <Loading />
+                                ) : (
+                                    <HiMiniSpeakerWave />
+                                )}
                                 <p>UK</p>
                             </div>
-                            <div className="flex items-center gap-1 cursor-pointer hover:text-secondary" onClick={() => speakWord(item?.title, 2, item?._id)}>
-                                {loadingAudio == item?._id ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ color: "blue" }} /> : <HiMiniSpeakerWave />}
+                            <div
+                                className="flex items-center gap-1 cursor-pointer hover:text-secondary"
+                                onClick={() =>
+                                    speakWord(item?.title, 2, item?._id)
+                                }
+                            >
+                                {loadingAudio == item?._id ? (
+                                    <Loading />
+                                ) : (
+                                    <HiMiniSpeakerWave />
+                                )}
                                 US
                             </div>
                         </>
                     ) : (
-                        <HiMiniSpeakerWave className="flex items-center gap-1 cursor-pointer hover:text-secondary" onClick={() => speakWord(item?.title, 2, item?._id)} />
+                        <HiMiniSpeakerWave
+                            className="flex items-center gap-1 cursor-pointer hover:text-secondary"
+                            onClick={() => speakWord(item?.title, 2, item?._id)}
+                        />
                     )}
                 </div>
                 {user?._id == listFlashcard?.userId?._id ? (
                     <div className="flex gap-2 items-center">
-                        <TiEdit className="hover:text-primary cursor-pointer" onClick={() => handleEditWord(item)} />
-                        <Popconfirm
-                            title={`Xóa từ "${item?.title}"`}
-                            description="Bạn có chắc muốn xóa từ này không?"
-                            okText="Chắc chắn"
-                            onConfirm={() => confirmDelete(item._id)}
-                            okButtonProps={{
-                                loading: loadingConfirm,
-                            }}
-                            cancelText="Để suy nghĩ lại"
-                            icon={
-                                <QuestionCircleOutlined
-                                    style={{
-                                        color: "red",
-                                    }}
-                                />
-                            }>
-                            <IoClose className="hover:text-red-500 cursor-pointer" />
-                        </Popconfirm>
+                        <TiEdit
+                            className="hover:text-primary cursor-pointer"
+                            onClick={() => handleEditWord(item)}
+                        />
+                        <Popover>
+                            <PopoverTrigger>
+                                <X className="text-red-500" />
+                            </PopoverTrigger>
+                            <PopoverContent>
+                                <div className="flex flex-col gap-2">
+                                    <p className="text-sm">
+                                        Bạn có chắc muốn xóa từ này?
+                                    </p>
+                                    <Button
+                                        variant="destructive"
+                                        onClick={() => confirmDelete(item._id)}
+                                        disabled={loadingConfirm}
+                                    >
+                                        Xóa
+                                    </Button>
+                                </div>
+                            </PopoverContent>
+                        </Popover>
                     </div>
                 ) : (
                     ""
                 )}
 
                 {/* model chỉnh sửa từ */}
-                <Modal
+                {/* <Modal
                     title="Chỉnh sửa từ"
                     open={openEditWord == item?._id}
                     onOk={handleOkEditWord}
@@ -128,7 +174,7 @@ export default function ItemFC({
                                 />
                             </div>
                             <Button onClick={() => handleSendPrompt(1)}>
-                                {loading ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ color: "white" }} /> : <FaBrain />}
+                                {loading ? <Loading /> : <FaBrain />}
                                 AI Generate
                             </Button>
                         </div>
@@ -171,15 +217,22 @@ export default function ItemFC({
                             </div>
                         </div>
                     </div>
-                </Modal>
+                </Modal> */}
             </div>
-            <p className="font-bold text-gray-600 dark:text-white/60">({item?.type_of_word || "Không có loại từ"})</p>
+            <p className="font-bold text-gray-600 dark:text-white/60">
+                ({item?.type_of_word || "Không có loại từ"})
+            </p>
             <p className="font-bold text-gray-600 dark:text-white">
-                Định nghĩa: <span className="italic font-thin">{item?.define}</span>
+                Định nghĩa:{" "}
+                <span className="italic font-thin">{item?.define}</span>
             </p>
             <div className="flex items-center justify-between">
-                <p className="font-bold text-gray-600 dark:text-white/60">Ví dụ: </p>
-                <p className="text-xs text-gray-600 dark:text-white/60">{item?.created_at && handleCompareDate(item?.created_at)}</p>
+                <p className="font-bold text-gray-600 dark:text-white/60">
+                    Ví dụ:{" "}
+                </p>
+                <p className="text-xs text-gray-600 dark:text-white/60">
+                    {item?.created_at && handleCompareDate(item?.created_at)}
+                </p>
             </div>
 
             <div className=" border border-secondary dark:border-white/10 rounded-sm px-5 py-3 my-3 h-[220px] overflow-y-auto">
@@ -190,33 +243,72 @@ export default function ItemFC({
                                 <p className="text-gray-600 dark:text-white/50 font-bold">
                                     {idx + 1}. {ex.en}
                                 </p>
-                                {listFlashcard?.language != "english" && <HiMiniSpeakerWave className="cursor-pointer hover:text-primary" onClick={() => speakWord(ex.en, 2, item?._id + idx)} />}
+                                {listFlashcard?.language != "english" && (
+                                    <HiMiniSpeakerWave
+                                        className="cursor-pointer hover:text-primary"
+                                        onClick={() =>
+                                            speakWord(ex.en, 2, item?._id + idx)
+                                        }
+                                    />
+                                )}
                             </div>
-                            <p className="text-gray-600 dark:text-white/50  font-bold">{ex?.trans}</p>
+                            <p className="text-gray-600 dark:text-white/50  font-bold">
+                                {ex?.trans}
+                            </p>
                             <div className="text-xs text-gray-500 flex">
                                 {listFlashcard?.language == "english" && (
                                     <>
-                                        <div className="flex items-center gap-1 mr-3 cursor-pointer hover:text-secondary" onClick={() => speakWord(ex.en, 1, item?._id + idx)}>
-                                            {loadingAudio == item?._id + idx ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ color: "blue" }} /> : <HiMiniSpeakerWave />}
+                                        <div
+                                            className="flex items-center gap-1 mr-3 cursor-pointer hover:text-secondary"
+                                            onClick={() =>
+                                                speakWord(
+                                                    ex.en,
+                                                    1,
+                                                    item?._id + idx
+                                                )
+                                            }
+                                        >
+                                            {loadingAudio == item?._id + idx ? (
+                                                <Loading />
+                                            ) : (
+                                                <HiMiniSpeakerWave />
+                                            )}
                                             <p>UK</p>
                                         </div>
-                                        <div className="flex items-center gap-1 cursor-pointer hover:text-secondary" onClick={() => speakWord(ex.en, 2, item?._id + idx)}>
-                                            {loadingAudio == item?._id + idx ? <Spin indicator={<LoadingOutlined spin />} size="small" style={{ color: "blue" }} /> : <HiMiniSpeakerWave />}
+                                        <div
+                                            className="flex items-center gap-1 cursor-pointer hover:text-secondary"
+                                            onClick={() =>
+                                                speakWord(
+                                                    ex.en,
+                                                    2,
+                                                    item?._id + idx
+                                                )
+                                            }
+                                        >
+                                            {loadingAudio == item?._id + idx ? (
+                                                <Loading />
+                                            ) : (
+                                                <HiMiniSpeakerWave />
+                                            )}
                                             US
                                         </div>
                                     </>
                                 )}
                             </div>
                         </div>
-                        <p className="text-sm text-gray-600 dark:text-white/50 italic">{ex.vi}</p>
+                        <p className="text-sm text-gray-600 dark:text-white/50 italic">
+                            {ex.vi}
+                        </p>
                     </div>
                 ))}
-                {item?.example?.length === 0 && <p className="text-gray-500 text-sm">Không có ví dụ...</p>}
+                {item?.example?.length === 0 && (
+                    <p className="text-gray-500 text-sm">Không có ví dụ...</p>
+                )}
             </div>
 
             <p className="font-bold text-gray-600 dark:text-white">
                 Ghi chú: <span className="italic font-thin">{item?.note}</span>
             </p>
         </div>
-    );
+    )
 }

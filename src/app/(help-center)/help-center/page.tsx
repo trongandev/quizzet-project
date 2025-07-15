@@ -1,7 +1,6 @@
-"use client";
+"use client"
 
-import React, { useState } from "react";
-import { Input, Collapse, Card, Button, Form, message, Divider } from "antd";
+import React, { useState } from "react"
 import {
     SearchOutlined,
     QuestionCircleOutlined,
@@ -9,16 +8,22 @@ import {
     UserOutlined,
     SettingOutlined,
     NotificationOutlined,
-    MailOutlined,
     FileTextOutlined,
     BulbOutlined,
     RightOutlined,
-} from "@ant-design/icons";
-import Link from "next/link";
+} from "@ant-design/icons"
+import Link from "next/link"
+import { Input } from "@/components/ui/input"
+import { Card } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
 // import Image from "next/image";
-
-const { Panel } = Collapse;
-const { TextArea } = Input;
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion"
 
 // FAQ Data
 const faqData = [
@@ -63,11 +68,13 @@ const faqData = [
                 answer: "Hiện tại Quizzet hỗ trợ câu hỏi trắc nghiệm 4 đáp án (A, B, C, D). Chúng tôi đang phát triển thêm các loại câu hỏi khác như điền từ, đúng/sai trong các phiên bản tương lai.",
             },
             {
-                question: "Tính năng 'Tạo Quiz bằng AI theo chủ đề' hoạt động như thế nào?",
+                question:
+                    "Tính năng 'Tạo Quiz bằng AI theo chủ đề' hoạt động như thế nào?",
                 answer: "Chỉ cần nhập chủ đề mong muốn (ví dụ: 'Lịch sử Việt Nam', 'Toán lớp 10'), AI sẽ tự động tạo ra bộ câu hỏi phù hợp với độ khó và số lượng bạn chọn.",
             },
             {
-                question: "Tính năng import file .docx/.xlsx sẽ ra mắt khi nào?",
+                question:
+                    "Tính năng import file .docx/.xlsx sẽ ra mắt khi nào?",
                 answer: "Tính năng này đang trong giai đoạn phát triển và dự kiến ra mắt trong Q2/2025. Bạn sẽ có thể import câu hỏi trực tiếp từ file Word/Excel.",
             },
         ],
@@ -133,13 +140,14 @@ const faqData = [
             },
         ],
     },
-];
+]
 
 // Quick guides data
 const quickGuides = [
     {
         title: "Hướng dẫn tạo Quiz với AI",
-        description: "Học cách sử dụng AI để tạo bài quiz chất lượng trong 5 phút",
+        description:
+            "Học cách sử dụng AI để tạo bài quiz chất lượng trong 5 phút",
         link: "#",
         icon: <QuestionCircleOutlined />,
     },
@@ -161,71 +169,91 @@ const quickGuides = [
         link: "#",
         icon: <SettingOutlined />,
     },
-];
+]
 
 export default function HelpCenter() {
-    const [searchTerm, setSearchTerm] = useState("");
-    const [form] = Form.useForm();
-    const [messageApi, contextHolder] = message.useMessage();
+    const [searchTerm, setSearchTerm] = useState("")
+    // const [form] = Form.useForm()
 
     // Filter FAQ based on search term
     const filteredFaqData = faqData
         .map((category) => ({
             ...category,
-            items: category.items.filter((item) => item.question.toLowerCase().includes(searchTerm.toLowerCase()) || item.answer.toLowerCase().includes(searchTerm.toLowerCase())),
+            items: category.items.filter(
+                (item) =>
+                    item.question
+                        .toLowerCase()
+                        .includes(searchTerm.toLowerCase()) ||
+                    item.answer.toLowerCase().includes(searchTerm.toLowerCase())
+            ),
         }))
-        .filter((category) => category.items.length > 0);
+        .filter((category) => category.items.length > 0)
 
     const handleSearch = (value: string) => {
-        setSearchTerm(value);
-    };
+        setSearchTerm(value)
+    }
 
-    const handleContactSubmit = async (values: any) => {
-        try {
-            // Here you would typically send the form data to your backend
-            messageApi.success("Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi trong vòng 24 giờ.");
-            form.resetFields();
-        } catch (error) {
-            console.error("Contact form error:", error);
-            messageApi.error("Có lỗi xảy ra. Vui lòng thử lại sau.");
-        }
-    };
+    // const handleContactSubmit = async (values: any) => {
+    //     try {
+    //         // Here you would typically send the form data to your backend
+    //         messageApi.success(
+    //             "Cảm ơn bạn đã liên hệ! Chúng tôi sẽ phản hồi trong vòng 24 giờ."
+    //         )
+    //         form.resetFields()
+    //     } catch (error) {
+    //         console.error("Contact form error:", error)
+    //         messageApi.error("Có lỗi xảy ra. Vui lòng thử lại sau.")
+    //     }
+    // }
 
     return (
         <>
-            {contextHolder}
             <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
                 <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Header */}
                     <div className="text-center mb-12">
-                        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">Trung tâm trợ giúp Quizzet</h1>
-                        <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">Tìm câu trả lời cho mọi thắc mắc về việc sử dụng Quizzet</p>
+                        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                            Trung tâm trợ giúp Quizzet
+                        </h1>
+                        <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
+                            Tìm câu trả lời cho mọi thắc mắc về việc sử dụng
+                            Quizzet
+                        </p>
 
                         {/* Search Bar */}
                         <div className="max-w-2xl mx-auto">
                             <Input
-                                size="large"
                                 placeholder="Tìm kiếm câu hỏi, tính năng hoặc hướng dẫn..."
-                                prefix={<SearchOutlined className="text-gray-400" />}
                                 value={searchTerm}
                                 onChange={(e) => handleSearch(e.target.value)}
-                                className="rounded-lg"
                             />
                         </div>
                     </div>
 
                     {/* Quick Guides */}
                     <div className="mb-12">
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Hướng dẫn nhanh</h2>
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+                            Hướng dẫn nhanh
+                        </h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             {quickGuides.map((guide, index) => (
-                                <Card key={index} hoverable className="h-full cursor-pointer transition-all duration-300 hover:shadow-lg">
+                                <Card
+                                    key={index}
+                                    className="h-full cursor-pointer transition-all duration-300 p-5 hover:shadow-lg"
+                                >
                                     <div className="text-center">
-                                        <div className="text-3xl text-blue-500 mb-4">{guide.icon}</div>
-                                        <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{guide.title}</h3>
-                                        <p className="text-gray-600 dark:text-gray-300 text-sm">{guide.description}</p>
-                                        <Button type="link" className="mt-3 p-0">
-                                            Xem hướng dẫn <RightOutlined className="text-xs" />
+                                        <div className="text-3xl text-blue-500 mb-4">
+                                            {guide.icon}
+                                        </div>
+                                        <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
+                                            {guide.title}
+                                        </h3>
+                                        <p className="text-gray-600 dark:text-gray-300 text-sm">
+                                            {guide.description}
+                                        </p>
+                                        <Button className="mt-3 p-0">
+                                            Xem hướng dẫn{" "}
+                                            <RightOutlined className="text-xs" />
                                         </Button>
                                     </div>
                                 </Card>
@@ -235,31 +263,42 @@ export default function HelpCenter() {
 
                     {/* FAQ Section */}
                     <div className="mb-12">
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Câu hỏi thường gặp (FAQ)</h2>{" "}
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+                            Câu hỏi thường gặp (FAQ)
+                        </h2>{" "}
                         {filteredFaqData.length > 0 ? (
                             <div className="space-y-6">
                                 {filteredFaqData.map((category) => (
-                                    <Card key={category.key} className="shadow-sm">
+                                    <Card
+                                        key={category.key}
+                                        className="shadow-sm"
+                                    >
                                         <div className="flex items-center mb-4">
-                                            <div className="text-blue-500 text-xl mr-3">{category.icon}</div>
-                                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{category.title}</h3>
+                                            <div className="text-blue-500 text-xl mr-3">
+                                                {category.icon}
+                                            </div>
+                                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                                {category.title}
+                                            </h3>
                                         </div>
 
-                                        <Collapse ghost size="large" expandIconPosition="end">
-                                            {category.items.map((item, index) => (
-                                                <Panel header={<span className="font-medium text-gray-800 dark:text-gray-200">{item.question}</span>} key={`${category.key}-${index}`}>
-                                                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{item.answer}</p>
-                                                    {/* {item.link && (
-                                                        <Link href={item.link} className="mt-2">Hoặc bấm vào đây</Link>)}
-                                                    {item.image && (
-                                                        <div>
-                                                            <Image src={item.image} alt="Tutorial" className="object-cover" width={500} height={350} ></Image>
-
-                                                        </div>
-                                                    )} */}
-                                                </Panel>
-                                            ))}
-                                        </Collapse>
+                                        {category.items.map((item, index) => (
+                                            <Accordion
+                                                type="single"
+                                                collapsible
+                                                key={index}
+                                                className="w-full mb-4"
+                                            >
+                                                <AccordionItem value="item-1">
+                                                    <AccordionTrigger>
+                                                        {item.question}
+                                                    </AccordionTrigger>
+                                                    <AccordionContent>
+                                                        {item.answer}
+                                                    </AccordionContent>
+                                                </AccordionItem>
+                                            </Accordion>
+                                        ))}
                                     </Card>
                                 ))}
                             </div>
@@ -268,8 +307,13 @@ export default function HelpCenter() {
                                 <div className="text-gray-400 text-4xl mb-4">
                                     <SearchOutlined />
                                 </div>
-                                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Không tìm thấy kết quả</h3>
-                                <p className="text-gray-600 dark:text-gray-300">Thử tìm kiếm với từ khóa khác hoặc liên hệ với chúng tôi để được hỗ trợ</p>
+                                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                                    Không tìm thấy kết quả
+                                </h3>
+                                <p className="text-gray-600 dark:text-gray-300">
+                                    Thử tìm kiếm với từ khóa khác hoặc liên hệ
+                                    với chúng tôi để được hỗ trợ
+                                </p>
                             </Card>
                         )}
                     </div>
@@ -287,9 +331,18 @@ export default function HelpCenter() {
                                         <BulbOutlined className="text-blue-500" />
                                     </div>
                                     <div className="flex-1">
-                                        <h4 className="font-semibold text-gray-900 dark:text-white mb-1">Tính năng mới: Luyện tập Flashcard theo khoa học</h4>
-                                        <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">Dựa trên đường cong lãng quên Ebbinghaus để tối ưu hóa việc ghi nhớ</p>
-                                        <span className="text-xs text-gray-500">19/06/2025</span>
+                                        <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
+                                            Tính năng mới: Luyện tập Flashcard
+                                            theo khoa học
+                                        </h4>
+                                        <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
+                                            Dựa trên đường cong lãng quên
+                                            Ebbinghaus để tối ưu hóa việc ghi
+                                            nhớ
+                                        </p>
+                                        <span className="text-xs text-gray-500">
+                                            19/06/2025
+                                        </span>
                                     </div>
                                 </div>
                             </Card>
@@ -300,9 +353,16 @@ export default function HelpCenter() {
                                         <SettingOutlined className="text-green-500" />
                                     </div>
                                     <div className="flex-1">
-                                        <h4 className="font-semibold text-gray-900 dark:text-white mb-1">Cải thiện hiệu suất hệ thống</h4>
-                                        <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">Tăng tốc độ tải trang và cải thiện trải nghiệm người dùng</p>
-                                        <span className="text-xs text-gray-500">15/06/2025</span>
+                                        <h4 className="font-semibold text-gray-900 dark:text-white mb-1">
+                                            Cải thiện hiệu suất hệ thống
+                                        </h4>
+                                        <p className="text-gray-600 dark:text-gray-300 text-sm mb-2">
+                                            Tăng tốc độ tải trang và cải thiện
+                                            trải nghiệm người dùng
+                                        </p>
+                                        <span className="text-xs text-gray-500">
+                                            15/06/2025
+                                        </span>
                                     </div>
                                 </div>
                             </Card>
@@ -311,13 +371,8 @@ export default function HelpCenter() {
 
                     {/* Contact Support */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-                        <Card
-                            title={
-                                <span className="flex items-center">
-                                    <MailOutlined className="mr-2" />
-                                    Liên hệ hỗ trợ
-                                </span>
-                            }>
+                        {/* <Card
+                           >
                             <Form form={form} layout="vertical" onFinish={handleContactSubmit}>
                                 <Form.Item name="name" label="Họ và tên" rules={[{ required: true, message: "Vui lòng nhập họ tên!" }]}>
                                     <Input placeholder="Nhập họ và tên của bạn" />
@@ -347,27 +402,39 @@ export default function HelpCenter() {
                                     </Button>
                                 </Form.Item>
                             </Form>
-                        </Card>
+                        </Card> */}
 
                         <Card title="Thông tin liên hệ khác" className="h-fit">
                             <div className="space-y-4">
                                 <div>
-                                    <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Email hỗ trợ</h4>
-                                    <p className="text-blue-500">support@quizzet.com</p>
+                                    <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+                                        Email hỗ trợ
+                                    </h4>
+                                    <p className="text-blue-500">
+                                        support@quizzet.com
+                                    </p>
                                 </div>
 
-                                <Divider />
+                                <Separator />
 
                                 <div>
-                                    <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Thời gian hỗ trợ</h4>
-                                    <p className="text-gray-600 dark:text-gray-300">Thứ 2 - Chủ nhật: 8:00 - 22:00 (GMT+7)</p>
+                                    <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+                                        Thời gian hỗ trợ
+                                    </h4>
+                                    <p className="text-gray-600 dark:text-gray-300">
+                                        Thứ 2 - Chủ nhật: 8:00 - 22:00 (GMT+7)
+                                    </p>
                                 </div>
 
-                                <Divider />
+                                <Separator />
 
                                 <div>
-                                    <h4 className="font-semibold text-gray-900 dark:text-white mb-2">Thời gian phản hồi</h4>
-                                    <p className="text-gray-600 dark:text-gray-300">Thường trong vòng 24 giờ</p>
+                                    <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+                                        Thời gian phản hồi
+                                    </h4>
+                                    <p className="text-gray-600 dark:text-gray-300">
+                                        Thường trong vòng 24 giờ
+                                    </p>
                                 </div>
                             </div>
                         </Card>
@@ -378,31 +445,46 @@ export default function HelpCenter() {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <Link
                                 href="/privacy-policy"
-                                className="flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                className="flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                            >
                                 <FileTextOutlined className="text-blue-500 mr-3" />
                                 <div>
-                                    <h4 className="font-medium text-gray-900 dark:text-white">Chính sách bảo mật</h4>
-                                    <p className="text-sm text-gray-600 dark:text-gray-300">Cách chúng tôi bảo vệ dữ liệu của bạn</p>
+                                    <h4 className="font-medium text-gray-900 dark:text-white">
+                                        Chính sách bảo mật
+                                    </h4>
+                                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                                        Cách chúng tôi bảo vệ dữ liệu của bạn
+                                    </p>
                                 </div>
                             </Link>
 
                             <Link
                                 href="/terms-of-service"
-                                className="flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                className="flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                            >
                                 <FileTextOutlined className="text-blue-500 mr-3" />
                                 <div>
-                                    <h4 className="font-medium text-gray-900 dark:text-white">Điều khoản dịch vụ</h4>
-                                    <p className="text-sm text-gray-600 dark:text-gray-300">Quy định sử dụng nền tảng</p>
+                                    <h4 className="font-medium text-gray-900 dark:text-white">
+                                        Điều khoản dịch vụ
+                                    </h4>
+                                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                                        Quy định sử dụng nền tảng
+                                    </p>
                                 </div>
                             </Link>
 
                             <Link
                                 href="/copyright-policy"
-                                className="flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                className="flex items-center p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                            >
                                 <FileTextOutlined className="text-blue-500 mr-3" />
                                 <div>
-                                    <h4 className="font-medium text-gray-900 dark:text-white">Chính sách bản quyền</h4>
-                                    <p className="text-sm text-gray-600 dark:text-gray-300">Về nội dung và sở hữu trí tuệ</p>
+                                    <h4 className="font-medium text-gray-900 dark:text-white">
+                                        Chính sách bản quyền
+                                    </h4>
+                                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                                        Về nội dung và sở hữu trí tuệ
+                                    </p>
                                 </div>
                             </Link>
                         </div>
@@ -410,5 +492,5 @@ export default function HelpCenter() {
                 </div>
             </div>
         </>
-    );
+    )
 }

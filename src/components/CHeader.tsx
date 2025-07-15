@@ -1,57 +1,60 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import Cookies from "js-cookie";
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import { useUser } from "../context/userContext";
-import { GET_API } from "@/lib/fetchAPI";
-import CNotify from "./CNotify";
-import CChat from "./CChat";
-import { Bell, History, LogOut, Mailbox, Moon, Sun, User } from "lucide-react";
-import { useTheme } from "next-themes";
-import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { toast } from "sonner";
+"use client"
+import React, { useEffect, useState } from "react"
+import Cookies from "js-cookie"
+import Link from "next/link"
+import Image from "next/image"
+import { usePathname, useRouter } from "next/navigation"
+import { useUser } from "../context/userContext"
+import { GET_API } from "@/lib/fetchAPI"
+import CNotify from "./CNotify"
+import CChat from "./CChat"
+import { Bell, History, LogOut, Mailbox, Moon, Sun, User } from "lucide-react"
+import { useTheme } from "next-themes"
+import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 export default function CHeader() {
-    const [openNoti, setOpenNoti] = useState(false);
-    const [notify, setNotify] = useState([]);
-    const [unreadCountNotify, setUnreadCountNotify] = useState<number>(0);
-    const pathname = usePathname();
-    const router = useRouter();
-    const { theme, setTheme } = useTheme();
-    const token = Cookies.get("token") || "";
+    const [openNoti, setOpenNoti] = useState(false)
+    const [notify, setNotify] = useState([])
+    const [unreadCountNotify, setUnreadCountNotify] = useState<number>(0)
+    const pathname = usePathname()
+    const router = useRouter()
+    const { theme, setTheme } = useTheme()
+    const token = Cookies.get("token") || ""
 
-    const { user, clearUser } = useUser() || { user: undefined, clearUser: () => {} };
+    const { user, clearUser } = useUser() || {
+        user: undefined,
+        clearUser: () => {},
+    }
 
     const handleLogout = async () => {
-        const req = await GET_API("/auth/logout", token);
-        clearUser();
-    };
+        const req = await GET_API("/auth/logout", token)
+        clearUser()
+    }
 
-    // useEffect(() => {
-    //     const fetchAPI = async () => {
-    //         const req = await GET_API("/notify", token);
-    //         if (req.ok) {
-    //             setNotify(req?.data?.notifications);
-    //             setUnreadCountNotify(req?.data?.unreadCount || 0);
-    //         }
-    //     };
+    useEffect(() => {
+        const fetchAPI = async () => {
+            const req = await GET_API("/notify", token)
+            if (req.ok) {
+                setNotify(req?.notifications)
+                setUnreadCountNotify(req?.unreadCount || 0)
+            }
+        }
 
-    //     if (user) {
-    //         fetchAPI();
-    //     }
-    // }, [user, token]);
+        if (token) {
+            fetchAPI()
+        }
+    }, [token])
 
     const handleRouterNotify = async (item: any) => {
-        const req = await GET_API(`/notify/${item?._id}`, token);
+        const req = await GET_API(`/notify/${item?._id}`, token)
         if (req.ok) {
-            setUnreadCountNotify(req?.data?.unreadCount || 0);
-            router.push(item?.link);
-            setOpenNoti(false);
+            // setUnreadCountNotify(req?.data?.unreadCount || 0);
+            setUnreadCountNotify((prev) => prev - 1)
+            router.push(item?.link)
+            setOpenNoti(false)
         }
-    };
+    }
 
     return (
         <header className="bg-white text-primary dark:text-white dark:bg-gray-800 w-full flex items-center justify-center fixed z-10 border-b border-white/70 dark:border-white/10">
@@ -90,15 +93,11 @@ export default function CHeader() {
                 <div className="flex items-center gap-3">
                     <div className="flex items-center gap-2">
                         {theme === "dark" ? (
-                            <div
-                                className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-primary dark:text-white/60 hover:text-white"
-                                onClick={() => setTheme("light")}>
+                            <div className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-primary dark:text-white/60 hover:text-white" onClick={() => setTheme("light")}>
                                 <Sun size={18} className="" />
                             </div>
                         ) : (
-                            <div
-                                className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-primary dark:text-white/60 hover:text-white"
-                                onClick={() => setTheme("dark")}>
+                            <div className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-primary dark:text-white/60 hover:text-white" onClick={() => setTheme("dark")}>
                                 <Moon size={18} className="" />
                             </div>
                         )}
@@ -118,14 +117,13 @@ export default function CHeader() {
                             <div className="flex gap-3 items-center">
                                 <Popover>
                                     <PopoverTrigger asChild>
-                                        <div className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-primary dark:text-white/60 hover:text-white">
+                                        <div className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-primary dark:text-white/60 hover:text-white relative">
+                                            {unreadCountNotify > 0 && <div className="absolute -top-1 -right-1 h-[14px] w-[14px] text-[8px] rounded-full bg-red-500 text-white flex items-center justify-center font-mono tabular-nums">{unreadCountNotify}</div>}
                                             <Bell size={18} />
                                         </div>
                                     </PopoverTrigger>
-                                    <PopoverContent className="w-80">
-                                        <div className="w-full md:w-[400px] max-h-[600px] overflow-y-scroll">
-                                            <CNotify notify={notify} handleRouter={handleRouterNotify} />
-                                        </div>
+                                    <PopoverContent className="w-full md:w-[400px] max-h-[600px] overflow-y-scroll dark:text-white">
+                                        <CNotify notify={notify} handleRouter={handleRouterNotify} />
                                     </PopoverContent>
                                 </Popover>
                                 {user && <CChat token={token} user={user} router={router} />}
@@ -133,14 +131,7 @@ export default function CHeader() {
                                 <DropdownMenu>
                                     <DropdownMenuTrigger>
                                         <div className="w-[40px] h-[40px] md:w-[35px] md:h-[35px] rounded-full overflow-hidden relative">
-                                            <Image
-                                                unoptimized
-                                                src={user?.profilePicture || "/avatar.jpg"}
-                                                alt=""
-                                                className="object-cover h-full absolute"
-                                                fill
-                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                            />
+                                            <Image unoptimized src={user?.profilePicture || "/avatar.jpg"} alt="" className="object-cover h-full absolute" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                                         </div>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent>
@@ -184,5 +175,5 @@ export default function CHeader() {
                 </Modal> */}
             </div>
         </header>
-    );
+    )
 }

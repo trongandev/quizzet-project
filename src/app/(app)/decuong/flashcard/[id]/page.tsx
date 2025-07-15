@@ -1,185 +1,207 @@
-"use client";
-import { GET_API_WITHOUT_COOKIE } from "@/lib/fetchAPI";
-import React, { useEffect, useState, useCallback } from "react";
-import { Spin, message } from "antd";
-import { GrFormNext, GrFormPrevious } from "react-icons/gr";
-import { Button } from "@/components/ui/button";
+"use client"
+import { GET_API_WITHOUT_COOKIE } from "@/lib/fetchAPI"
+import React, { useEffect, useState, useCallback } from "react"
+import { GrFormNext, GrFormPrevious } from "react-icons/gr"
+import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
+import { LoadingScreen } from "@/components/LoadingScreen"
 const FEATURES = {
     FLASHCARD: 1,
     QUIZ: 2,
-};
+}
 
 export default function TaiLieuFlashcard({ params }: any) {
-    const [isFlipped, setIsFlipped] = useState(false);
-    const [index, setIndex] = useState(0);
-    const [feature, setFeature] = useState(FEATURES.FLASHCARD);
-    const [flashcards, setFlashcards] = useState<any[]>([]);
-    const [progress, setProgress] = useState<{ known: any[]; unknown: any[] }>({ known: [], unknown: [] });
-    const [quizOptions, setQuizOptions] = useState<string[]>([]);
-    const [messageApi, contextHolder] = message.useMessage();
+    const [isFlipped, setIsFlipped] = useState(false)
+    const [index, setIndex] = useState(0)
+    const [feature, setFeature] = useState(FEATURES.FLASHCARD)
+    const [flashcards, setFlashcards] = useState<any[]>([])
+    const [progress, setProgress] = useState<{ known: any[]; unknown: any[] }>({
+        known: [],
+        unknown: [],
+    })
+    const [quizOptions, setQuizOptions] = useState<string[]>([])
     // random moder
-    const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string | null>>({});
+    const [selectedAnswers, setSelectedAnswers] = useState<
+        Record<number, string | null>
+    >({})
 
     const shuffle = (array: any) => {
         let currentIndex = array.length,
-            randomIndex;
+            randomIndex
         while (currentIndex != 0) {
-            randomIndex = Math.floor(Math.random() * currentIndex);
-            currentIndex--;
-            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            randomIndex = Math.floor(Math.random() * currentIndex)
+            currentIndex--
+            ;[array[currentIndex], array[randomIndex]] = [
+                array[randomIndex],
+                array[currentIndex],
+            ]
         }
-        return array;
-    };
+        return array
+    }
     // Fetch flashcards data
 
     useEffect(() => {
         const fetchFlashCards = async () => {
             // const req = await GET_API(`/flashcards/${params?.slug}`, token);
-            const req = await GET_API_WITHOUT_COOKIE(`/admin/suboutline/${params.id}`);
-            const result = req?.quest?.data_so;
+            const req = await GET_API_WITHOUT_COOKIE(
+                `/admin/suboutline/${params.id}`
+            )
+            const result = req?.quest?.data_so
 
-            setFlashcards(shuffle(result));
-            generateQuizOptions(result[0]);
-        };
-        fetchFlashCards();
-    }, [params?.slug]);
+            setFlashcards(shuffle(result))
+            generateQuizOptions(result[0])
+        }
+        fetchFlashCards()
+    }, [params?.slug])
 
     useEffect(() => {
         if (flashcards.length > 0) {
-            generateQuizOptions(flashcards[0]);
+            generateQuizOptions(flashcards[0])
         }
-    }, [flashcards]);
+    }, [flashcards])
 
     const generateQuizOptions = useCallback(
         (currentCard: any) => {
-            if (!currentCard || flashcards.length < 4) return;
+            if (!currentCard || flashcards.length < 4) return
 
             // Đáp án đúng
-            const correctOption = currentCard.answer;
+            const correctOption = currentCard.answer
 
             // Các đáp án sai
-            const availableCards = flashcards.filter((card) => card.answer !== currentCard.answer);
-            const wrongOptions = [];
+            const availableCards = flashcards.filter(
+                (card) => card.answer !== currentCard.answer
+            )
+            const wrongOptions = []
             while (wrongOptions.length < 3 && availableCards.length > 0) {
-                const randomIndex = Math.floor(Math.random() * availableCards.length);
-                wrongOptions.push(availableCards[randomIndex].answer);
-                availableCards.splice(randomIndex, 1);
+                const randomIndex = Math.floor(
+                    Math.random() * availableCards.length
+                )
+                wrongOptions.push(availableCards[randomIndex].answer)
+                availableCards.splice(randomIndex, 1)
             }
 
             // Trộn đáp án đúng và đáp án sai
-            const options = [correctOption, ...wrongOptions];
-            setQuizOptions(options.sort(() => Math.random() - 0.5));
+            const options = [correctOption, ...wrongOptions]
+            setQuizOptions(options.sort(() => Math.random() - 0.5))
         },
         [flashcards]
-    );
+    )
 
     // Navigation handlers
     const handleChangeIndex = useCallback(
         async (type: any) => {
-            const newIndex = type === "next" ? (index < flashcards.length - 1 ? index + 1 : 0) : index > 0 ? index - 1 : flashcards.length - 1;
+            const newIndex =
+                type === "next"
+                    ? index < flashcards.length - 1
+                        ? index + 1
+                        : 0
+                    : index > 0
+                    ? index - 1
+                    : flashcards.length - 1
 
-            setIndex(newIndex);
-            setIsFlipped(false);
+            setIndex(newIndex)
+            setIsFlipped(false)
 
-            generateQuizOptions(flashcards[newIndex]);
+            generateQuizOptions(flashcards[newIndex])
         },
         [index, flashcards, feature]
-    );
+    )
 
     // Progress tracking
     const handleProgress = useCallback(
         (type: any) => {
-            const currentId = flashcards[index].answer;
+            const currentId = flashcards[index].answer
             if (type === "known") {
                 setProgress((prev) => ({
                     ...prev,
                     known: Array.from(new Set([...prev.known, currentId])),
                     unknown: prev.unknown.filter((id) => id !== currentId),
-                }));
-                handleChangeIndex("next");
+                }))
+                handleChangeIndex("next")
             } else {
                 setProgress((prev) => ({
                     ...prev,
                     unknown: Array.from(new Set([...prev.unknown, currentId])),
                     known: prev.known.filter((id) => id !== currentId),
-                }));
-                handleChangeIndex("prev");
+                }))
+                handleChangeIndex("prev")
             }
         },
         [index, flashcards]
-    );
+    )
 
     const handlePlayAudio = (method: any) => {
         if (method == "correct") {
-            const audio = new Audio("/audio/correct.mp3");
-            audio.play();
+            const audio = new Audio("/audio/correct.mp3")
+            audio.play()
         } else if (method == "wrong") {
-            const audio = new Audio("/audio/wrong.mp3");
-            audio.play();
+            const audio = new Audio("/audio/wrong.mp3")
+            audio.play()
         }
-    };
+    }
 
     // Quiz answer handler
     const handleQuizAnswer = async (selectedAnswer: any, idx: any) => {
-        const isCorrect = selectedAnswer === flashcards[index].answer;
-        messageApi[isCorrect ? "success" : "error"](isCorrect ? "Chính xác, giỏi quá" : "Sai rồi, thử lại nhé! ^^");
+        const isCorrect = selectedAnswer === flashcards[index].answer
+        toast[isCorrect ? "success" : "error"](
+            isCorrect ? "Chính xác, giỏi quá" : "Sai rồi, thử lại nhé! ^^"
+        )
         setSelectedAnswers({
             ...selectedAnswers,
             [idx]: isCorrect ? "correct" : "incorrect",
-        });
+        })
         if (isCorrect) {
-            handlePlayAudio("correct");
+            handlePlayAudio("correct")
 
             setTimeout(() => {
-                handleProgress("known");
-                setSelectedAnswers({});
-            }, 1000);
+                handleProgress("known")
+                setSelectedAnswers({})
+            }, 1000)
         } else {
-            handlePlayAudio("wrong");
+            handlePlayAudio("wrong")
 
             setTimeout(() => {
                 setSelectedAnswers((prev) => ({
                     ...prev,
                     [idx]: null,
-                }));
-            }, 820);
+                }))
+            }, 820)
         }
-    };
+    }
 
     // Keyboard navigation
     const handleKeyDown = useCallback(
         (e: any) => {
             switch (e.key.toLowerCase()) {
                 case "arrowleft":
-                    handleChangeIndex("prev");
-                    break;
+                    handleChangeIndex("prev")
+                    break
                 case "arrowright":
-                    handleChangeIndex("next");
-                    break;
+                    handleChangeIndex("next")
+                    break
                 case " ":
-                    e.preventDefault();
+                    e.preventDefault()
                     if (feature === FEATURES.FLASHCARD) {
-                        setIsFlipped((prev) => !prev);
+                        setIsFlipped((prev) => !prev)
                     }
-                    break;
+                    break
             }
         },
         [feature, handleChangeIndex, handleProgress]
-    );
+    )
 
     if (!flashcards.length) {
-        return (
-            <div className="flex items-center justify-center h-screen">
-                <Spin size="large" />
-            </div>
-        );
+        return LoadingScreen()
     }
 
     return (
         <div className="flex items-center justify-center">
             <div className="w-full md:w-[1000px] xl:w-[1200px] py-5 pt-20">
-                <div className="px-3 md:px-0 focus-visible:outline-none min-h-screen" onKeyDown={handleKeyDown} tabIndex={0}>
-                    {contextHolder}
+                <div
+                    className="px-3 md:px-0 focus-visible:outline-none min-h-screen"
+                    onKeyDown={handleKeyDown}
+                    tabIndex={0}
+                >
                     <div className="w-full flex items-center justify-center h-[90%] flex-col gap-5">
                         <div className="w-full flex flex-col md:flex-row gap-5 items-start">
                             <div className="w-full flex flex-col gap-5">
@@ -187,31 +209,62 @@ export default function TaiLieuFlashcard({ params }: any) {
                                 <div
                                     className=" relative w-full h-[500px] border border-white/10 rounded-lg  shadow-md bg-white dark:bg-slate-800/50 dark:text-white"
                                     style={{ perspective: "1000px" }}
-                                    onClick={feature === FEATURES.FLASHCARD ? () => setIsFlipped(!isFlipped) : undefined}>
+                                    onClick={
+                                        feature === FEATURES.FLASHCARD
+                                            ? () => setIsFlipped(!isFlipped)
+                                            : undefined
+                                    }
+                                >
                                     {/* Flashcard Feature */}
                                     {feature === FEATURES.FLASHCARD && (
                                         <div
-                                            className={`rounded-lg  cursor-pointer absolute inset-0 w-full h-full transition-transform duration-500 transform ${isFlipped ? "rotate-y-180" : ""}`}
-                                            style={{ transformStyle: "preserve-3d" }}>
+                                            className={`rounded-lg  cursor-pointer absolute inset-0 w-full h-full transition-transform duration-500 transform ${
+                                                isFlipped ? "rotate-y-180" : ""
+                                            }`}
+                                            style={{
+                                                transformStyle: "preserve-3d",
+                                            }}
+                                        >
                                             {/* Front Side */}
                                             <div
                                                 className="rounded-lg  absolute inset-0 bg-white dark:bg-slate-800/50 flex flex-col items-center justify-center backface-hidden p-5"
-                                                style={{ backfaceVisibility: "hidden" }}>
+                                                style={{
+                                                    backfaceVisibility:
+                                                        "hidden",
+                                                }}
+                                            >
                                                 <div className="flex items-center gap-2 mb-4">
-                                                    <p className="text-2xl font-semibold">{flashcards[index]?.question}</p>
+                                                    <p className="text-2xl font-semibold">
+                                                        {
+                                                            flashcards[index]
+                                                                ?.question
+                                                        }
+                                                    </p>
                                                 </div>
 
-                                                <p className="text-gray-500 text-sm">(Click to flip)</p>
+                                                <p className="text-gray-500 text-sm">
+                                                    (Click to flip)
+                                                </p>
                                             </div>
 
                                             {/* Back Side */}
                                             <div
                                                 className="rounded-lg  absolute inset-0 bg-white dark:bg-slate-800/50 flex flex-col items-center justify-center p-5 backface-hidden"
                                                 style={{
-                                                    backfaceVisibility: "hidden",
-                                                    transform: "rotateY(180deg)",
-                                                }}>
-                                                {isFlipped && <p className="text-lg ">{flashcards[index]?.answer}</p>}
+                                                    backfaceVisibility:
+                                                        "hidden",
+                                                    transform:
+                                                        "rotateY(180deg)",
+                                                }}
+                                            >
+                                                {isFlipped && (
+                                                    <p className="text-lg ">
+                                                        {
+                                                            flashcards[index]
+                                                                ?.answer
+                                                        }
+                                                    </p>
+                                                )}
                                             </div>
                                         </div>
                                     )}
@@ -221,30 +274,74 @@ export default function TaiLieuFlashcard({ params }: any) {
                                         <div className="p-5 h-full flex flex-col">
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-1">
-                                                    <h1 className="text-xl font-bold ">Chọn đáp án đúng</h1>
+                                                    <h1 className="text-xl font-bold ">
+                                                        Chọn đáp án đúng
+                                                    </h1>
                                                 </div>
-                                                <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">Quiz</span>
+                                                <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">
+                                                    Quiz
+                                                </span>
                                             </div>
-                                            <p className=" mb-4 text-gray-500"> (nếu không có đáp án đúng vui lòng bấm bỏ qua)</p>
-                                            <p className="text-lg mb-6">{flashcards[index]?.question}</p>
+                                            <p className=" mb-4 text-gray-500">
+                                                {" "}
+                                                (nếu không có đáp án đúng vui
+                                                lòng bấm bỏ qua)
+                                            </p>
+                                            <p className="text-lg mb-6">
+                                                {flashcards[index]?.question}
+                                            </p>
                                             <div className="grid grid-cols-2 gap-5 flex-1">
-                                                {quizOptions.map((option, idx) => (
-                                                    <Button
-                                                        key={idx}
-                                                        variant="secondary"
-                                                        onClick={() => handleQuizAnswer(option, idx)}
-                                                        disabled={!!selectedAnswers[idx]}
-                                                        className={` h-full w-full relative text-white transition-colors
-                                                                    ${selectedAnswers[idx] === "correct" ? "!border-green-500 border-2 tada" : ""}
-                                                                    ${selectedAnswers[idx] === "incorrect" ? "!border-red-500 border-2 shake" : ""}
-                                                                    `}>
-                                                        <div className="absolute top-1 left-1 h-8 w-8 flex items-center justify-center rounded-full bg-gray-500 text-gray-900 dark:text-white/80  dark:bg-slate-900/50">
-                                                            {idx + 1}
-                                                        </div>
-                                                        <p className="flex-1 text-center px-2 break-words whitespace-normal">{option}</p>
-                                                    </Button>
-                                                ))}
-                                                {quizOptions.length < 4 && <p className="text-red-500">Cảnh báo: Chưa đủ đáp án để trộn ngẫu nhiên (Yêu cầu trên 4)</p>}
+                                                {quizOptions.map(
+                                                    (option, idx) => (
+                                                        <Button
+                                                            key={idx}
+                                                            variant="secondary"
+                                                            onClick={() =>
+                                                                handleQuizAnswer(
+                                                                    option,
+                                                                    idx
+                                                                )
+                                                            }
+                                                            disabled={
+                                                                !!selectedAnswers[
+                                                                    idx
+                                                                ]
+                                                            }
+                                                            className={` h-full w-full relative text-white transition-colors
+                                                                    ${
+                                                                        selectedAnswers[
+                                                                            idx
+                                                                        ] ===
+                                                                        "correct"
+                                                                            ? "!border-green-500 border-2 tada"
+                                                                            : ""
+                                                                    }
+                                                                    ${
+                                                                        selectedAnswers[
+                                                                            idx
+                                                                        ] ===
+                                                                        "incorrect"
+                                                                            ? "!border-red-500 border-2 shake"
+                                                                            : ""
+                                                                    }
+                                                                    `}
+                                                        >
+                                                            <div className="absolute top-1 left-1 h-8 w-8 flex items-center justify-center rounded-full bg-gray-500 text-gray-900 dark:text-white/80  dark:bg-slate-900/50">
+                                                                {idx + 1}
+                                                            </div>
+                                                            <p className="flex-1 text-center px-2 break-words whitespace-normal">
+                                                                {option}
+                                                            </p>
+                                                        </Button>
+                                                    )
+                                                )}
+                                                {quizOptions.length < 4 && (
+                                                    <p className="text-red-500">
+                                                        Cảnh báo: Chưa đủ đáp án
+                                                        để trộn ngẫu nhiên (Yêu
+                                                        cầu trên 4)
+                                                    </p>
+                                                )}
                                             </div>
                                         </div>
                                     )}
@@ -255,13 +352,17 @@ export default function TaiLieuFlashcard({ params }: any) {
                                 <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 rounded-md overflow-hidden w-full flex items-center justify-between shadow-md text-2xl">
                                     <div
                                         className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer"
-                                        onClick={() => handleProgress("unknown")}>
+                                        onClick={() =>
+                                            handleProgress("unknown")
+                                        }
+                                    >
                                         <GrFormPrevious />
                                         <p className="text-sm">Lùi lại</p>
                                     </div>
                                     <div
                                         className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer"
-                                        onClick={() => handleProgress("known")}>
+                                        onClick={() => handleProgress("known")}
+                                    >
                                         <GrFormNext />
                                         <p className="text-sm">Tiến tới</p>
                                     </div>
@@ -279,9 +380,16 @@ export default function TaiLieuFlashcard({ params }: any) {
                                         }).map(([name, value]) => (
                                             <Button
                                                 key={value}
-                                                onClick={() => setFeature(value)}
-                                                variant={feature === value ? "default" : "secondary"}
-                                                className={`text-white transition-colors  border border-white/10 `}>
+                                                onClick={() =>
+                                                    setFeature(value)
+                                                }
+                                                variant={
+                                                    feature === value
+                                                        ? "default"
+                                                        : "secondary"
+                                                }
+                                                className={`text-white transition-colors  border border-white/10 `}
+                                            >
                                                 {name}
                                             </Button>
                                         ))}
@@ -301,7 +409,11 @@ export default function TaiLieuFlashcard({ params }: any) {
                                             <div
                                                 className="h-full bg-primary"
                                                 style={{
-                                                    width: `${(progress.known.length / flashcards.length) * 100}%`,
+                                                    width: `${
+                                                        (progress.known.length /
+                                                            flashcards.length) *
+                                                        100
+                                                    }%`,
                                                 }}
                                             />
                                         </div>
@@ -313,15 +425,21 @@ export default function TaiLieuFlashcard({ params }: any) {
                                     <h2 className="font-medium">Phím tắt</h2>
                                     <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg space-y-3 text-gray-500 dark:text-white">
                                         <div className="flex items-center gap-2">
-                                            <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">→</kbd>
+                                            <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">
+                                                →
+                                            </kbd>
                                             <span className="">Tiến tới</span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">←</kbd>
+                                            <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">
+                                                ←
+                                            </kbd>
                                             <span className="">Lùi lại</span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Space</kbd>
+                                            <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">
+                                                Space
+                                            </kbd>
                                             <span className="">Lật thẻ </span>
                                         </div>
                                     </div>
@@ -332,5 +450,5 @@ export default function TaiLieuFlashcard({ params }: any) {
                 </div>
             </div>
         </div>
-    );
+    )
 }

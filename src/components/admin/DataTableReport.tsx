@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import React, { useState } from "react";
+import React, { useState } from "react"
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -12,48 +12,90 @@ import {
     SortingState,
     useReactTable,
     VisibilityState,
-} from "@tanstack/react-table";
-import { ArrowUpDown, BookUser, CalendarMinus2, CheckCircle, ChevronDown, Clock, Edit, LocateFixed, Mail, MegaphoneOff, MoreHorizontal, Pencil, Search, User, X } from "lucide-react";
+} from "@tanstack/react-table"
+import {
+    ArrowUpDown,
+    BookUser,
+    CalendarMinus2,
+    CheckCircle,
+    ChevronDown,
+    Clock,
+    Edit,
+    LocateFixed,
+    Mail,
+    MegaphoneOff,
+    MoreHorizontal,
+    Pencil,
+    Search,
+    User,
+    X,
+} from "lucide-react"
 
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { IHistory, IQuiz, IReport, ISO, IUser } from "@/types/type";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import handleCompareDate from "@/lib/CompareDate";
-import { Badge } from "../ui/badge";
-import { GoogleOutlined } from "@ant-design/icons";
-import Link from "next/link";
-import Image from "next/image";
-import { Label } from "../ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { Textarea } from "../ui/textarea";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
-import { ColumnReport } from "./ColumnReport";
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import {
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
+import { IHistory, IQuiz, IReport, ISO, IUser } from "@/types/type"
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import handleCompareDate from "@/lib/CompareDate"
+import { Badge } from "../ui/badge"
+import { GoogleOutlined } from "@ant-design/icons"
+import Link from "next/link"
+import Image from "next/image"
+import { Label } from "../ui/label"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "../ui/select"
+import { Textarea } from "../ui/textarea"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from "../ui/dialog"
+import { ColumnReport } from "./ColumnReport"
 
 export function DataTableReport({ report }: { report: IReport[] }) {
-    const [sorting, setSorting] = React.useState<SortingState>([]);
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-    const [rowSelection, setRowSelection] = useState({});
-    const [selectedReport, setSelectedReport] = useState<IReport | null>(null);
-    const [isResolveModalOpen, setIsResolveModalOpen] = useState(false);
+    const [sorting, setSorting] = React.useState<SortingState>([])
+    const [columnFilters, setColumnFilters] =
+        React.useState<ColumnFiltersState>([])
+    const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+        {}
+    )
+    const [rowSelection, setRowSelection] = useState({})
+    const [selectedReport, setSelectedReport] = useState<IReport | null>(null)
+    const [isResolveModalOpen, setIsResolveModalOpen] = useState(false)
     // const [newDataReport, setNewDataReport] = useState({resolved_content: "",is_violated:"", status: ""});
 
     const handleResolveReport = (report: any) => {
-        setSelectedReport(report);
-        setIsResolveModalOpen(true);
-    };
+        setSelectedReport(report)
+        setIsResolveModalOpen(true)
+    }
 
     // const handleSaveResolution = () => {
     //     // Here you would typically call an API to update the report
-    //     console.log("Resolving report:", {
-    //         reportId: selectedReport.id,
-    //         status: resolveStatus,
-    //         content: resolveContent,
-    //     });
+    //
     //     setIsResolveModalOpen(false);
     //     setSelectedReport(null);
     //     setResolveStatus("");
@@ -77,7 +119,7 @@ export function DataTableReport({ report }: { report: IReport[] }) {
             columnVisibility,
             rowSelection,
         },
-    });
+    })
 
     return (
         <div className="w-full">
@@ -88,8 +130,16 @@ export function DataTableReport({ report }: { report: IReport[] }) {
                         <Input
                             placeholder="Tìm kiếm tên người đăng..."
                             className="pl-10 w-full md:w-64 "
-                            value={(table.getColumn("displayName")?.getFilterValue() as string) ?? ""}
-                            onChange={(event) => table.getColumn("displayName")?.setFilterValue(event.target.value)}
+                            value={
+                                (table
+                                    .getColumn("displayName")
+                                    ?.getFilterValue() as string) ?? ""
+                            }
+                            onChange={(event) =>
+                                table
+                                    .getColumn("displayName")
+                                    ?.setFilterValue(event.target.value)
+                            }
                         />
                     </div>
                     <div className="relative w-full ">
@@ -97,8 +147,16 @@ export function DataTableReport({ report }: { report: IReport[] }) {
                         <Input
                             placeholder="Tìm kiếm tiêu đề..."
                             className="pl-10 w-full md:w-64 "
-                            value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-                            onChange={(event) => table.getColumn("title")?.setFilterValue(event.target.value)}
+                            value={
+                                (table
+                                    .getColumn("title")
+                                    ?.getFilterValue() as string) ?? ""
+                            }
+                            onChange={(event) =>
+                                table
+                                    .getColumn("title")
+                                    ?.setFilterValue(event.target.value)
+                            }
                         />
                     </div>
                 </div>
@@ -115,10 +173,17 @@ export function DataTableReport({ report }: { report: IReport[] }) {
                             .filter((column) => column.getCanHide())
                             .map((column) => {
                                 return (
-                                    <DropdownMenuCheckboxItem key={column.id} className="capitalize" checked={column.getIsVisible()} onCheckedChange={(value) => column.toggleVisibility(!!value)}>
+                                    <DropdownMenuCheckboxItem
+                                        key={column.id}
+                                        className="capitalize"
+                                        checked={column.getIsVisible()}
+                                        onCheckedChange={(value) =>
+                                            column.toggleVisibility(!!value)
+                                        }
+                                    >
                                         {column.id}
                                     </DropdownMenuCheckboxItem>
-                                );
+                                )
                             })}
                     </DropdownMenuContent>
                 </DropdownMenu>
@@ -129,7 +194,17 @@ export function DataTableReport({ report }: { report: IReport[] }) {
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => {
-                                    return <TableHead key={header.id}>{header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}</TableHead>;
+                                    return (
+                                        <TableHead key={header.id}>
+                                            {header.isPlaceholder
+                                                ? null
+                                                : flexRender(
+                                                      header.column.columnDef
+                                                          .header,
+                                                      header.getContext()
+                                                  )}
+                                        </TableHead>
+                                    )
                                 })}
                             </TableRow>
                         ))}
@@ -137,15 +212,28 @@ export function DataTableReport({ report }: { report: IReport[] }) {
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
-                                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                                <TableRow
+                                    key={row.id}
+                                    data-state={
+                                        row.getIsSelected() && "selected"
+                                    }
+                                >
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                                        <TableCell key={cell.id}>
+                                            {flexRender(
+                                                cell.column.columnDef.cell,
+                                                cell.getContext()
+                                            )}
+                                        </TableCell>
                                     ))}
                                 </TableRow>
                             ))
                         ) : (
                             <TableRow>
-                                <TableCell colSpan={ColumnReport().length} className="h-24 text-center">
+                                <TableCell
+                                    colSpan={ColumnReport().length}
+                                    className="h-24 text-center"
+                                >
                                     No results.
                                 </TableCell>
                             </TableRow>
@@ -155,13 +243,24 @@ export function DataTableReport({ report }: { report: IReport[] }) {
             </div>
             <div className="flex items-center justify-end space-x-2 py-4">
                 <div className="text-muted-foreground flex-1 text-sm">
-                    {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s) selected.
+                    {table.getFilteredSelectedRowModel().rows.length} of{" "}
+                    {table.getFilteredRowModel().rows.length} row(s) selected.
                 </div>
                 <div className="space-x-2">
-                    <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                    >
                         Previous
                     </Button>
-                    <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                    >
                         Next
                     </Button>
                 </div>
@@ -252,5 +351,5 @@ export function DataTableReport({ report }: { report: IReport[] }) {
                 </DialogContent>
             </Dialog> */}
         </div>
-    );
+    )
 }

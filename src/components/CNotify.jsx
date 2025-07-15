@@ -14,60 +14,75 @@ export default function CNotify({ notify, handleRouter }) {
                     switch (item.type) {
                         case "reject":
                             return (
-                                <div onClick={() => handleRouter(item)} key={index} className="p-2 hover:bg-gray-200 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
-                                    <div className="w-[56px] h-[56px] flex items-center justify-center bg-red-500 text-white rounded-full">
+                                <div
+                                    onClick={() => handleRouter(item)}
+                                    key={index}
+                                    className="p-2 hover:bg-gray-200 dark:hover:bg-slate-800 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
+                                    <div className="w-12 h-12 flex items-center justify-center bg-red-500 text-white rounded-full">
                                         <IoCloseSharp size={20} />
                                     </div>
                                     <div className="flex-1">
-                                        <p className="text-gray-700 line-clamp-2">{item?.content}</p>
-                                        <p className="text-gray-500 text-[12px]">{item?.created_at && handleCompareDate(item?.created_at)}</p>
+                                        <p className="text-xs line-clamp-2">{item?.content}</p>
+                                        <p className="dark:text-gray-400 text-gray-500 text-xs">{item?.created_at && handleCompareDate(item?.created_at)}</p>
                                     </div>
                                     {!item?.is_read && <div className="w-3 h-3 rounded-full bg-primary"></div>}
                                 </div>
                             );
                         case "approve":
                             return (
-                                <div onClick={() => handleRouter(item)} key={index} className="p-2 hover:bg-gray-200 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
-                                    <div className="w-[56px] h-[56px] flex items-center justify-center bg-green-500 text-white rounded-full">
+                                <div
+                                    onClick={() => handleRouter(item)}
+                                    key={index}
+                                    className="p-2 hover:bg-gray-200 dark:hover:bg-slate-800 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
+                                    <div className="w-12 h-12 flex items-center justify-center bg-green-500 text-white rounded-full">
                                         <FaCheck size={16} />
                                     </div>
                                     <div className="flex-1">
-                                        <p className="text-gray-700 line-clamp-2">{item?.content}</p>
-                                        <p className="text-gray-500 text-[12px]">{item?.created_at && handleCompareDate(item?.created_at)}</p>
+                                        <p className="text-xs line-clamp-2">{item?.content}</p>
+                                        <p className="dark:text-gray-400 text-gray-500 text-xs">{item?.created_at && handleCompareDate(item?.created_at)}</p>
                                     </div>
                                     {!item?.is_read && <div className="w-3 h-3 rounded-full bg-primary"></div>}
                                 </div>
                             );
                         case "system":
                             return (
-                                <div onClick={() => handleRouter(item)} key={index} className="p-2 hover:bg-gray-200 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
-                                    <div className="w-[56px] h-[56px] flex items-center justify-center bg-cyan-500 text-white rounded-full">
+                                <div
+                                    onClick={() => handleRouter(item)}
+                                    key={index}
+                                    className="p-2 hover:bg-gray-200 dark:hover:bg-slate-800 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
+                                    <div className="w-12 h-12 flex items-center justify-center bg-cyan-500 text-white rounded-full">
                                         <GrSystem size={20} />
                                     </div>
                                     <div className="flex-1">
-                                        <p className="text-gray-700 line-clamp-2">{item?.content}</p>
-                                        <p className="text-gray-500 text-[12px]">{item?.created_at && handleCompareDate(item?.created_at)}</p>
+                                        <p className="text-xs line-clamp-2">{item?.content}</p>
+                                        <p className="dark:text-gray-400 text-gray-500 text-xs">{item?.created_at && handleCompareDate(item?.created_at)}</p>
                                     </div>
                                     {!item?.is_read && <div className="w-3 h-3 rounded-full bg-primary"></div>}
                                 </div>
                             );
                         case "report":
                             return (
-                                <div onClick={() => handleRouter(item)} key={index} className="p-2 hover:bg-gray-200 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
-                                    <div className="w-[56px] h-[56px] flex items-center justify-center bg-yellow-500 text-white rounded-full">
+                                <div
+                                    onClick={() => handleRouter(item)}
+                                    key={index}
+                                    className="p-2 hover:bg-gray-200 dark:hover:bg-slate-800 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
+                                    <div className="w-12 h-12 flex items-center justify-center bg-yellow-500 text-white rounded-full">
                                         <MdOutlineReport size={20} />
                                     </div>
                                     <div className="flex-1">
-                                        <p className="text-gray-700 line-clamp-2">{item?.content}</p>
-                                        <p className="text-gray-500 text-[12px]">{item?.created_at && handleCompareDate(item?.created_at)}</p>
+                                        <p className="text-xs line-clamp-2">{item?.content}</p>
+                                        <p className="dark:text-gray-400 text-gray-500 text-xs">{item?.created_at && handleCompareDate(item?.created_at)}</p>
                                     </div>
                                     {!item?.is_read && <div className="w-3 h-3 rounded-full bg-primary"></div>}
                                 </div>
                             );
                         default:
                             return (
-                                <div onClick={() => handleRouter(item)} key={index} className="p-2 hover:bg-gray-200 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
-                                    <div className="w-[56px] h-[56px] relative">
+                                <div
+                                    onClick={() => handleRouter(item)}
+                                    key={index}
+                                    className="p-2 hover:bg-gray-200 dark:hover:bg-slate-800 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
+                                    <div className="w-12 h-12 relative">
                                         <Image
                                             src={item?.sender?.profilePicture || "/avatar.png"}
                                             alt=""
@@ -78,13 +93,13 @@ export default function CNotify({ notify, handleRouter }) {
                                         {item.type === "comment" && <FaComment className="absolute z-1 right-0 bottom-0 text-primary" />}
                                     </div>
                                     <div className="flex-1">
-                                        <p className="text-gray-700 line-clamp-2">
+                                        <p className="text-xs line-clamp-2">
                                             <label htmlFor="" className="font-bold">
                                                 {item?.sender?.displayName}
                                             </label>{" "}
                                             {item?.content}
                                         </p>
-                                        <p className="text-gray-500 text-[12px]">{item?.created_at && handleCompareDate(item?.created_at)}</p>
+                                        <p className="dark:text-gray-400 text-gray-500 text-xs">{item?.created_at && handleCompareDate(item?.created_at)}</p>
                                     </div>
                                     {!item?.is_read && <div className="w-3 h-3 rounded-full bg-primary"></div>}
                                 </div>

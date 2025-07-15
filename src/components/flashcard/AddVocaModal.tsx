@@ -1,49 +1,49 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Sparkles, Volume2, BookOpen, MessageCircle, Lightbulb, Plus, Trash2, Type, Languages, LoaderCircle, CheckCircle } from "lucide-react";
-import { DialogTrigger } from "@radix-ui/react-dialog";
-import { optimizedPromptFCSingle } from "@/lib/optimizedPrompt";
-import { POST_API } from "@/lib/fetchAPI";
-import { toast } from "sonner";
-import Loading from "../ui/loading";
-import { revalidateCache } from "@/lib/revalidate";
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { Badge } from "@/components/ui/badge"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import { Sparkles, Volume2, BookOpen, MessageCircle, Lightbulb, Plus, Trash2, Type, Languages, LoaderCircle, CheckCircle } from "lucide-react"
+import { DialogTrigger } from "@radix-ui/react-dialog"
+import { optimizedPromptFCSingle } from "@/lib/optimizedPrompt"
+import { POST_API } from "@/lib/fetchAPI"
+import { toast } from "sonner"
+import Loading from "../ui/loading"
+import { revalidateCache } from "@/lib/revalidate"
 
 interface AddVocabularyModalProps {
-    children: React.ReactNode;
-    listFlashcard?: any;
-    token: any;
-    filteredFlashcards: any;
-    setFilteredFlashcards: any;
-    setListFlashcard: any;
+    children: React.ReactNode
+    listFlashcard?: any
+    token: any
+    filteredFlashcards: any
+    setFilteredFlashcards: any
+    setListFlashcard: any
 }
 
 interface VocabularyData {
-    title: string;
-    transcription: string;
-    define: string;
-    language: string;
-    type_of_word: string;
+    title: string
+    transcription: string
+    define: string
+    language: string
+    type_of_word: string
     examples: Array<{
-        en: string;
-        trans: string;
-        vi: string;
-    }>;
-    note: string;
+        en: string
+        trans: string
+        vi: string
+    }>
+    note: string
 }
 
 export default function AddVocaModal({ children, listFlashcard, setListFlashcard, token, filteredFlashcards, setFilteredFlashcards }: AddVocabularyModalProps) {
-    const [open, setOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
+    const [open, setOpen] = useState(false)
+    const [loading, setLoading] = useState(false)
     const defaultData: VocabularyData = {
         title: "",
         transcription: "",
@@ -52,94 +52,112 @@ export default function AddVocaModal({ children, listFlashcard, setListFlashcard
         type_of_word: "",
         examples: [{ en: "", trans: "", vi: "" }],
         note: "",
-    };
-    const [formData, setFormData] = useState<VocabularyData>(defaultData);
+    }
+    const [formData, setFormData] = useState<VocabularyData>(defaultData)
 
-    const [isGenerating, setIsGenerating] = useState(false);
+    const [isGenerating, setIsGenerating] = useState(false)
 
     const handleAddExample = () => {
         setFormData((prev) => ({
             ...prev,
             examples: [...prev.examples, { en: "", trans: "", vi: "" }],
-        }));
-    };
+        }))
+    }
 
     const handleRemoveExample = (index: number) => {
         setFormData((prev) => ({
             ...prev,
             examples: prev.examples.filter((_, i) => i !== index),
-        }));
-    };
+        }))
+    }
 
     const handleExampleChange = (index: number, field: string, value: string) => {
         setFormData((prev) => ({
             ...prev,
             examples: prev.examples.map((example, i) => (i === index ? { ...example, [field]: value } : example)),
-        }));
-    };
+        }))
+    }
 
     const handleAIGenerate = async (e: any) => {
-        e.preventDefault();
+        e.preventDefault()
         try {
-            const optimizedPrompt = optimizedPromptFCSingle(formData.title, listFlashcard?.language);
-            setIsGenerating(true);
+            const optimizedPrompt = optimizedPromptFCSingle(formData.title, listFlashcard?.language)
+            setIsGenerating(true)
 
-            const req = await POST_API("/flashcards/create-ai", { prompt: optimizedPrompt, list_flashcard_id: listFlashcard._id, language: listFlashcard?.language || "" }, "POST", token);
-            const res = await req?.json();
+            const req = await POST_API(
+                "/flashcards/create-ai",
+                {
+                    prompt: optimizedPrompt,
+                    list_flashcard_id: listFlashcard._id,
+                    language: listFlashcard?.language || "",
+                },
+                "POST",
+                token
+            )
+            const res = await req?.json()
             if (res.ok) {
-                toast.success("Tạo flashcard thành công từ AI");
-
-                setFilteredFlashcards([res?.flashcard, ...filteredFlashcards]);
-                setListFlashcard((prev: any) => ({ ...prev, flashcards: [res?.flashcard, ...prev.flashcards] }));
-                setOpen(false);
-                // Reset form data with AI generated content
-                setFormData(defaultData);
-                // 4. Revalidate cache
                 await revalidateCache({
-                    tag: [`flashcard_${listFlashcard._id}`],
+                    tag: [`flashcard_${listFlashcard._id}`, "flashcards-detail"],
                     path: `/flashcard/${listFlashcard._id}`,
-                });
+                })
+                toast.success("Tạo flashcard thành công từ AI")
+
+                setFilteredFlashcards([res?.flashcard, ...filteredFlashcards])
+                setListFlashcard((prev: any) => ({
+                    ...prev,
+                    flashcards: [res?.flashcard, ...prev.flashcards],
+                }))
+                setOpen(false)
+                // Reset form data with AI generated content
+                setFormData(defaultData)
+                // 4. Revalidate cache
             }
         } catch (error) {
-            toast.error("Đã có lỗi xảy ra, vui lòng thử lại sau", { description: error instanceof Error ? error.message : "Lỗi không xác định" });
+            toast.error("Đã có lỗi xảy ra, vui lòng thử lại sau", {
+                description: error instanceof Error ? error.message : "Lỗi không xác định",
+            })
         } finally {
-            setIsGenerating(false);
+            setIsGenerating(false)
         }
-    };
+    }
 
     const handleSubmit = async () => {
         try {
-            setLoading(true);
-            const req = await POST_API("/flashcards", { ...formData, list_flashcard_id: listFlashcard._id }, "POST", token);
-            const res = await req?.json();
+            setLoading(true)
+            const req = await POST_API("/flashcards", { ...formData, list_flashcard_id: listFlashcard._id }, "POST", token)
+            const res = await req?.json()
             if (res.ok) {
-                toast.success("Tạo flashcard thành công");
-                setOpen(false);
-                setFilteredFlashcards([res?.flashcard, ...filteredFlashcards]);
-                setFormData(defaultData);
+                toast.success("Tạo flashcard thành công")
+                setOpen(false)
+                setListFlashcard((prev: any) => ({
+                    ...prev,
+                    flashcards: [res?.flashcard, ...prev.flashcards],
+                }))
+                setFilteredFlashcards([res?.flashcard, ...filteredFlashcards])
+                setFormData(defaultData)
                 // 4. Revalidate cache
                 await revalidateCache({
                     tag: [`flashcard_${listFlashcard._id}`],
                     path: `/flashcard/${listFlashcard._id}`,
-                });
+                })
             }
         } catch (error) {
-            console.error("Error adding vocabulary:", error);
+            console.error("Error adding vocabulary:", error)
             toast.error("Đã có lỗi xảy ra khi thêm từ vựng", {
                 description: error instanceof Error ? error.message : "Lỗi không xác định",
-            });
+            })
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    };
+    }
 
     const handleEnterKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter" && !e.shiftKey) {
-            handleAIGenerate(e);
+            handleAIGenerate(e)
         }
-    };
+    }
 
-    const isFormValid = formData.title.trim() && formData.define.trim();
+    const isFormValid = formData.title.trim() && formData.define.trim()
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -178,18 +196,19 @@ export default function AddVocaModal({ children, listFlashcard, setListFlashcard
                                         <Input
                                             id="title"
                                             value={formData.title}
-                                            onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
+                                            onChange={(e) =>
+                                                setFormData((prev) => ({
+                                                    ...prev,
+                                                    title: e.target.value,
+                                                }))
+                                            }
                                             autoFocus
                                             autoComplete="off"
                                             onKeyDown={handleEnterKey}
                                             placeholder="Nhập từ hoặc câu bằng tiếng việt..."
                                             className="flex-1"
                                         />
-                                        <Button
-                                            type="button"
-                                            onClick={handleAIGenerate}
-                                            disabled={isGenerating}
-                                            className="dark:text-white gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
+                                        <Button type="button" onClick={handleAIGenerate} disabled={isGenerating} className="dark:text-white gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
                                             {isGenerating ? <Loading /> : <Sparkles className="w-4 h-4" />}
 
                                             {isGenerating ? "Đang tạo..." : "Tạo bằng AI"}
@@ -207,7 +226,12 @@ export default function AddVocaModal({ children, listFlashcard, setListFlashcard
                                             <Input
                                                 id="transcription"
                                                 value={formData.transcription}
-                                                onChange={(e) => setFormData((prev) => ({ ...prev, transcription: e.target.value }))}
+                                                onChange={(e) =>
+                                                    setFormData((prev) => ({
+                                                        ...prev,
+                                                        transcription: e.target.value,
+                                                    }))
+                                                }
                                                 placeholder="Nhập phiên âm..."
                                                 className="flex-1 font-mono"
                                             />
@@ -221,7 +245,15 @@ export default function AddVocaModal({ children, listFlashcard, setListFlashcard
                                         <Label htmlFor="type_of_word" className="text-sm font-medium">
                                             Loại từ
                                         </Label>
-                                        <Select value={formData.type_of_word} onValueChange={(value) => setFormData((prev) => ({ ...prev, type_of_word: value }))}>
+                                        <Select
+                                            value={formData.type_of_word}
+                                            onValueChange={(value) =>
+                                                setFormData((prev) => ({
+                                                    ...prev,
+                                                    type_of_word: value,
+                                                }))
+                                            }
+                                        >
                                             <SelectTrigger>
                                                 <SelectValue placeholder="Chọn loại từ..." />
                                             </SelectTrigger>
@@ -247,7 +279,12 @@ export default function AddVocaModal({ children, listFlashcard, setListFlashcard
                                     <Textarea
                                         id="define"
                                         value={formData.define}
-                                        onChange={(e) => setFormData((prev) => ({ ...prev, define: e.target.value }))}
+                                        onChange={(e) =>
+                                            setFormData((prev) => ({
+                                                ...prev,
+                                                define: e.target.value,
+                                            }))
+                                        }
                                         placeholder="Nhập nghĩa tiếng Việt..."
                                         rows={2}
                                         className="resize-none"
@@ -281,22 +318,13 @@ export default function AddVocaModal({ children, listFlashcard, setListFlashcard
 
                                         <div className="space-y-2">
                                             <Input value={example.en} onChange={(e) => handleExampleChange(index, "en", e.target.value)} placeholder="Câu ví dụ của ngôn ngữ bạn đang học" />
-                                            <Input
-                                                value={example.trans}
-                                                onChange={(e) => handleExampleChange(index, "trans", e.target.value)}
-                                                placeholder="Phiên âm..."
-                                                className="font-mono text-sm"
-                                            />
+                                            <Input value={example.trans} onChange={(e) => handleExampleChange(index, "trans", e.target.value)} placeholder="Phiên âm..." className="font-mono text-sm" />
                                             <Input value={example.vi} onChange={(e) => handleExampleChange(index, "vi", e.target.value)} placeholder="Dịch nghĩa..." />
                                         </div>
                                     </div>
                                 ))}
 
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    onClick={handleAddExample}
-                                    className="w-full gap-2 border-dashed border-green-300 text-green-700 dark:text-green-300 hover:bg-green-50 dark:bg-green-800/50 hover:opacity-85">
+                                <Button type="button" variant="outline" onClick={handleAddExample} className="w-full gap-2 border-dashed border-green-300 text-green-700 dark:text-green-300 hover:bg-green-50 dark:bg-green-800/50 hover:opacity-85">
                                     <Plus className="w-4 h-4" />
                                     Thêm ví dụ
                                 </Button>
@@ -317,7 +345,12 @@ export default function AddVocaModal({ children, listFlashcard, setListFlashcard
                             <CardContent>
                                 <Textarea
                                     value={formData.note}
-                                    onChange={(e) => setFormData((prev) => ({ ...prev, note: e.target.value }))}
+                                    onChange={(e) =>
+                                        setFormData((prev) => ({
+                                            ...prev,
+                                            note: e.target.value,
+                                        }))
+                                    }
                                     placeholder="Thêm ghi chú, mẹo nhớ, hoặc thông tin bổ sung..."
                                     rows={3}
                                     className="resize-none"
@@ -340,5 +373,5 @@ export default function AddVocaModal({ children, listFlashcard, setListFlashcard
                 </DialogFooter>
             </DialogContent>
         </Dialog>
-    );
+    )
 }
