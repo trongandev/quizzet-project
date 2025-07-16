@@ -1,26 +1,26 @@
-"use client";
-import "../globals.css";
-import { UserProvider } from "../../context/userContext";
-import { SocketProvider } from "../../context/socketContext";
-import CHeader from "../../components/CHeader";
-import CFooter from "../../components/Footer";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Analytics } from "@vercel/analytics/react";
-import { GoogleAnalytics } from "@next/third-parties/google";
-import Script from "next/script";
-import { SiQuizlet } from "react-icons/si";
-import { FaPeopleGroup } from "react-icons/fa6";
-import { AiFillHome } from "react-icons/ai";
-import { FaFileAlt } from "react-icons/fa";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import { FaRegCreditCard } from "react-icons/fa";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+"use client"
+import "../globals.css"
+import { UserProvider } from "../../context/userContext"
+import { SocketProvider } from "../../context/socketContext"
+import CHeader from "../../components/CHeader"
+import CFooter from "../../components/Footer"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { Analytics } from "@vercel/analytics/react"
+import { GoogleAnalytics } from "@next/third-parties/google"
+import Script from "next/script"
+import { SiQuizlet } from "react-icons/si"
+import { FaPeopleGroup } from "react-icons/fa6"
+import { AiFillHome } from "react-icons/ai"
+import { FaFileAlt } from "react-icons/fa"
+import { SpeedInsights } from "@vercel/speed-insights/next"
+import { FaRegCreditCard } from "react-icons/fa"
+import { ThemeProvider } from "@/components/theme-provider"
+import { Toaster } from "@/components/ui/sonner"
+import { TooltipProvider } from "@/components/ui/tooltip"
 
 export default function RootLayout({ children }: any) {
-    const pathname = usePathname();
+    const pathname = usePathname()
 
     return (
         <html lang="en">
@@ -42,6 +42,7 @@ export default function RootLayout({ children }: any) {
                 />
 
                 <Script async src="https://www.googletagmanager.com/gtag/js?id=G-L681038P5E"></Script>
+                <meta name="google-site-verification" content="DuQVeLh37iTPFVESiVVs5Fh5B-cbES9nd2xKpCWXqCA" />
                 <Script defer src="https://cloud.umami.is/script.js" data-website-id="01e0d2d3-5b2d-460e-b7e0-b3dff7bc0294"></Script>
             </head>
             <body className="bg-gray-200">
@@ -93,5 +94,5 @@ export default function RootLayout({ children }: any) {
                 </ThemeProvider>
             </body>
         </html>
-    );
+    )
 }
