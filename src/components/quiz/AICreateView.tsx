@@ -1,52 +1,52 @@
-"use client";
+"use client"
 
-import { useMemo, useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { Slider } from "@/components/ui/slider";
-import { Bot, Sparkles, Wand2, Clock, Users, BookOpen, Eye, CheckCircle, Save, Gamepad2, File } from "lucide-react";
-import { AIResultPreview } from "./AIResuiltPreview";
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { toast } from "sonner";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { optimizedPromptQuiz } from "@/lib/optimizedPrompt";
+import { useMemo, useState } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Badge } from "@/components/ui/badge"
+import { Slider } from "@/components/ui/slider"
+import { Bot, Sparkles, Wand2, Clock, Users, BookOpen, Eye, CheckCircle, Save, Gamepad2, File } from "lucide-react"
+import { AIResultPreview } from "./AIResuiltPreview"
+import { GoogleGenerativeAI } from "@google/generative-ai"
+import { toast } from "sonner"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { optimizedPromptQuiz } from "@/lib/optimizedPrompt"
 
-import DialogAddMoreInfoQuiz from "./DialogAddMoreInfoQuiz";
-import { Game2048Smooth } from "./Game2048Smooth";
-import { SidebarTrigger } from "../ui/sidebar";
-import { useRouter } from "next/navigation";
+import DialogAddMoreInfoQuiz from "./DialogAddMoreInfoQuiz"
+import { Game2048Smooth } from "./Game2048Smooth"
+import { SidebarTrigger } from "../ui/sidebar"
+import { useRouter } from "next/navigation"
 interface QuizQuestion {
-    title: string;
-    subject: string;
-    content: string;
-    questions: Quiz[];
+    title: string
+    subject: string
+    content: string
+    questions: Quiz[]
 }
 
 interface Quiz {
-    id: string;
-    type: "multiple-choice" | "true-false" | "short-answer";
-    question: string;
-    answers?: string[];
-    correct: string;
-    points: number;
+    id: string
+    type: "multiple-choice" | "true-false" | "short-answer"
+    question: string
+    answers?: string[]
+    correct: string
+    points: number
 }
 
 export function AICreateView() {
-    const [topic, setTopic] = useState("");
-    const [openAddMoreInfo, setOpenAddMoreInfo] = useState(false);
-    const [description, setDescription] = useState("");
-    const [difficulty, setDifficulty] = useState("medium");
-    const [questionCount, setQuestionCount] = useState([10]);
+    const [topic, setTopic] = useState("")
+    const [openAddMoreInfo, setOpenAddMoreInfo] = useState(false)
+    const [description, setDescription] = useState("")
+    const [difficulty, setDifficulty] = useState("medium")
+    const [questionCount, setQuestionCount] = useState([10])
     // const [questionTypes, setQuestionTypes] = useState<string[]>(["multiple-choice"]);
-    const [isGenerating, setIsGenerating] = useState(false);
-    const [generatedQuiz, setGeneratedQuiz] = useState<QuizQuestion | null>(null);
-    const [showPreview, setShowPreview] = useState(false);
-    const [openGame, setOpenGame] = useState(false);
-    const router = useRouter();
+    const [isGenerating, setIsGenerating] = useState(false)
+    const [generatedQuiz, setGeneratedQuiz] = useState<QuizQuestion | null>(null)
+    const [showPreview, setShowPreview] = useState(false)
+    const [openGame, setOpenGame] = useState(false)
+    const router = useRouter()
     const difficultyOptions = [
         { value: "easy", label: "Cơ bản", badge: "Cơ bản", desc: "Phù hợp cho người mới bắt đầu", color: "bg-green-100 text-green-800 dark:bg-green-800/40 dark:text-green-200" },
         {
@@ -57,7 +57,7 @@ export function AICreateView() {
             color: "bg-yellow-100 text-yellow-800 dark:bg-yellow-800/40 dark:text-yellow-200",
         },
         { value: "hard", label: "Nâng cao", badge: "Khó", desc: "Đòi hỏi kiến thức chuyên sâu", color: "bg-red-100 text-red-800 dark:bg-red-800/40 dark:text-red-200" },
-    ];
+    ]
 
     // const questionTypeOptions = [
     //     { value: "multiple-choice", label: "Trắc nghiệm" },
@@ -66,30 +66,30 @@ export function AICreateView() {
     //     { value: "essay", label: "Tự luận" },
     // ];
 
-    const topicSuggestions = ["Toán học cơ bản", "Lịch sử Việt Nam", "Tiếng Anh giao tiếp", "Khoa học tự nhiên", "Công nghệ thông tin", "Kinh tế học", "Văn học Việt Nam", "Địa lý thế giới"];
+    const topicSuggestions = ["Toán học cơ bản", "Lịch sử Việt Nam", "Tiếng Anh giao tiếp", "Khoa học tự nhiên", "Công nghệ thông tin", "Kinh tế học", "Văn học Việt Nam", "Địa lý thế giới"]
 
     // const handleQuestionTypeToggle = (type: string) => {
     //     setQuestionTypes((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]));
     // };
-    const genAI = useMemo(() => new GoogleGenerativeAI(process.env.API_KEY_AI || ""), []);
+    const genAI = useMemo(() => new GoogleGenerativeAI(process.env.API_KEY_AI || ""), [])
     const handleGenerate = async () => {
         try {
-            setGeneratedQuiz(null);
-            setIsGenerating(true);
-            setOpenGame(true);
-            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-            const prompt = optimizedPromptQuiz(topic, description, questionCount[0], difficulty);
-            const result = await model.generateContent(prompt);
+            setGeneratedQuiz(null)
+            setIsGenerating(true)
+            setOpenGame(true)
+            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" })
+            const prompt = optimizedPromptQuiz(topic, description, questionCount[0], difficulty)
+            const result = await model.generateContent(prompt)
 
             const responseText = result?.response
                 .text()
                 // ✅ Chỉ xóa wrapper markdown, giữ lại code blocks bên trong content
                 .replace(/^```json\s*/, "") // Xóa ```json ở đầu
                 .replace(/^```html\s*/, "") // Xóa ```html ở đầu
-                .replace(/```\s*$/, ""); // Xóa ``` ở cuối
-            const jsonOutput = JSON.parse(responseText || "");
-            setIsGenerating(false);
-            setGeneratedQuiz(jsonOutput);
+                .replace(/```\s*$/, "") // Xóa ``` ở cuối
+            const jsonOutput = JSON.parse(responseText || "")
+            setIsGenerating(false)
+            setGeneratedQuiz(jsonOutput)
             toast.success("Quiz đã được tạo thành công!", {
                 description: `Với chủ đề "${topic}" và độ khó "${difficulty}".`,
                 position: "top-center",
@@ -98,21 +98,21 @@ export function AICreateView() {
                     label: "Xem trước",
                     onClick: () => setShowPreview(true),
                 },
-            });
+            })
         } catch (error) {
-            console.error("Error generating quiz:", error);
-            toast.error("Đã xảy ra lỗi khi tạo quiz.", { description: error instanceof Error ? error.message : "Lỗi không xác định", position: "top-center", duration: 5000 });
-            return;
+            console.error("Error generating quiz:", error)
+            toast.error("Đã xảy ra lỗi khi tạo quiz.", { description: error instanceof Error ? error.message : "Lỗi không xác định", position: "top-center", duration: 5000 })
+            return
         } finally {
-            setIsGenerating(false);
+            setIsGenerating(false)
         }
-    };
+    }
     // const handleQuizUpdate = (updatedQuiz: typeof generatedQuiz) => {
     //     setGeneratedQuiz(updatedQuiz);
     // };
 
     const handleAddToDraft = () => {
-        const draftStorage = localStorage.getItem("draftQuiz");
+        const draftStorage = localStorage.getItem("draftQuiz")
         const draft = {
             ...generatedQuiz,
             createdAt: new Date().toISOString(),
@@ -121,17 +121,17 @@ export function AICreateView() {
             createdBy: "ai",
             status: "draft",
             difficulty: difficulty,
-        };
-
-        if (draftStorage) {
-            const existingDrafts = JSON.parse(draftStorage);
-            localStorage.setItem("draftQuiz", JSON.stringify([...existingDrafts, draft]));
-        } else {
-            localStorage.setItem("draftQuiz", JSON.stringify([draft]));
         }
 
-        toast.success("Quiz đã được lưu vào nháp", { description: "Bạn có thể xem lại trong phần Draft", duration: 5000, action: { label: "Xem nháp", onClick: () => router.push("drafts") } });
-    };
+        if (draftStorage) {
+            const existingDrafts = JSON.parse(draftStorage)
+            localStorage.setItem("draftQuiz", JSON.stringify([...existingDrafts, draft]))
+        } else {
+            localStorage.setItem("draftQuiz", JSON.stringify([draft]))
+        }
+
+        toast.success("Quiz đã được lưu vào nháp", { description: "Bạn có thể xem lại trong phần Draft", duration: 5000, action: { label: "Xem nháp", onClick: () => router.push("drafts") } })
+    }
 
     return (
         <div className="p-6 max-w-4xl mx-auto space-y-6">
@@ -173,14 +173,7 @@ export function AICreateView() {
 
                             <div>
                                 <Label htmlFor="description">Mô tả chi tiết (tùy chọn)</Label>
-                                <Textarea
-                                    id="description"
-                                    placeholder="Mô tả thêm về nội dung, phạm vi, yêu cầu đặc biệt..."
-                                    value={description}
-                                    onChange={(e) => setDescription(e.target.value)}
-                                    className="mt-1"
-                                    rows={3}
-                                />
+                                <Textarea id="description" placeholder="Mô tả thêm về nội dung, phạm vi, yêu cầu đặc biệt..." value={description} onChange={(e) => setDescription(e.target.value)} className="mt-1" rows={3} />
                             </div>
                         </CardContent>
                     </Card>
@@ -205,19 +198,11 @@ export function AICreateView() {
                                 <Label>Lựa chọn độ khó</Label>
                                 <div className="flex gap-2  flex-col md:flex-row ">
                                     {difficultyOptions.map((option) => (
-                                        <Card
-                                            key={option.value}
-                                            className={`relative !ml-0 flex-1 p-3 rounded-lg cursor-pointer dark:border-white/10 ${
-                                                difficulty === option.value ? option.color : "bg-white dark:bg-gray-800"
-                                            } hover:shadow-md transition-shadow ml-2`}
-                                            onClick={() => setDifficulty(option.value)}>
+                                        <Card key={option.value} className={`relative !ml-0 flex-1 p-3 rounded-lg cursor-pointer dark:border-white/10 ${difficulty === option.value ? option.color : "bg-white dark:bg-gray-800"} hover:shadow-md transition-shadow ml-2`} onClick={() => setDifficulty(option.value)}>
                                             <div className="flex items-center space-x-2">
                                                 <Badge className={`${option.color} dark:border-white/10 `}>{option.badge}</Badge>
                                                 <span className="text-sm">{option.label}</span>
-                                                <div
-                                                    className={`absolute top-1 right-1 w-3 h-3  rounded-full dark:border-white/50 ${
-                                                        difficulty === option.value ? option.color + " border-2" : ""
-                                                    }`}></div>
+                                                <div className={`absolute top-1 right-1 w-3 h-3  rounded-full dark:border-white/50 ${difficulty === option.value ? option.color + " border-2" : ""}`}></div>
                                             </div>
                                             <p className="text-xs text-muted-foreground mt-2"> {option.desc}</p>
                                         </Card>
@@ -298,50 +283,68 @@ export function AICreateView() {
                                 <span className="text-sm mr-2">Độ khó:</span>
                                 <Badge className={difficultyOptions.find((d) => d.value === difficulty)?.color}>{difficultyOptions.find((d) => d.value === difficulty)?.label}</Badge>
                             </div>
+                            <Dialog open={openGame} onOpenChange={setOpenGame}>
+                                <DialogTrigger>
+                                    <Button size="lg" variant="outline" className={`flex`}>
+                                        <Gamepad2 className="mr-2 h-4 w-4" />
+                                        Chơi game 2048
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-xs sm:max-w-lg">
+                                    <DialogHeader>
+                                        <DialogTitle className="flex items-center gap-5">Giải trí trong lúc đợi AI {!generatedQuiz ? <Clock className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4 text-green-500" />}</DialogTitle>
+                                        {!generatedQuiz ? (
+                                            <DialogDescription>
+                                                <p className="mb-2 hidden md:block">Hệ thống AI đang tổng hợp các câu hỏi cho bạn.</p>
+                                                <p className="mb-4">Quá trình này có thể mất chút thời gian tùy thuộc vào số lượng câu hỏi</p>
+                                            </DialogDescription>
+                                        ) : (
+                                            <DialogDescription>
+                                                <p className="mb-2 text-green-300">AI đã tạo xong quiz cho bạn!</p>
+                                                <p className="mb-4 text-green-300">Bạn có thể xem trước kết quả hoặc lưu vào nháp để chỉnh sửa sau.</p>
+                                            </DialogDescription>
+                                        )}
+                                    </DialogHeader>
+
+                                    <div className="flex justify-center">
+                                        <Game2048Smooth />
+                                    </div>
+
+                                    <DialogFooter>
+                                        <p className=" hidden md:block text-xs text-muted-foreground text-center w-full">Chơi game để thời gian chờ trở nên thú vị hơn!</p>
+                                        <DialogClose asChild className="hidden md:block">
+                                            <Button variant="outline">Đóng</Button>
+                                        </DialogClose>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
                         </CardContent>
                     </Card>
                 </div>
             </div>
 
-            <div className="flex justify-center flex-col gap-5">
-                <div className={`flex items-center gap-5 flex-col md:flex-row `}>
-                    <Dialog open={openGame} onOpenChange={setOpenGame}>
-                        <DialogTrigger>
-                            <Button size="lg" variant="outline" className={`flex`}>
-                                <Gamepad2 className="mr-2 h-4 w-4" />
-                                Chơi game 2048
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-xs sm:max-w-lg">
-                            <DialogHeader>
-                                <DialogTitle className="flex items-center gap-5">
-                                    Giải trí trong lúc đợi AI {!generatedQuiz ? <Clock className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4 text-green-500" />}
-                                </DialogTitle>
-                                {!generatedQuiz ? (
-                                    <DialogDescription>
-                                        <p className="mb-2 hidden md:block">Hệ thống AI đang tổng hợp các câu hỏi cho bạn.</p>
-                                        <p className="mb-4">Quá trình này có thể mất chút thời gian tùy thuộc vào số lượng câu hỏi</p>
-                                    </DialogDescription>
-                                ) : (
-                                    <DialogDescription>
-                                        <p className="mb-2 text-green-300">AI đã tạo xong quiz cho bạn!</p>
-                                        <p className="mb-4 text-green-300">Bạn có thể xem trước kết quả hoặc lưu vào nháp để chỉnh sửa sau.</p>
-                                    </DialogDescription>
-                                )}
-                            </DialogHeader>
-
-                            <div className="flex justify-center">
-                                <Game2048Smooth />
+            <div className="flex justify-center flex-col gap-5  mt-10">
+                <div className={`flex items-center gap-3 flex-col md:flex-row `}>
+                    {generatedQuiz && (
+                        <div className="space-y-4">
+                            <div className="flex justify-center gap-3 flex-col md:flex-row">
+                                <Button size="lg" variant="outline" onClick={() => setShowPreview(true)}>
+                                    <Eye className="mr-2 h-4 w-4" />
+                                    Xem trước kết quả
+                                </Button>
+                                <Button size="lg" variant="outline" onClick={() => handleAddToDraft()}>
+                                    <File className="mr-2 h-4 w-4" />
+                                    Lưu vào nháp
+                                </Button>
+                                <DialogAddMoreInfoQuiz generatedQuiz={generatedQuiz} openAddMoreInfo={openAddMoreInfo} setOpenAddMoreInfo={setOpenAddMoreInfo}>
+                                    <Button size="lg" className="w-full md:w-auto text-white bg-gradient-to-r from-blue-500 to-cyan-500">
+                                        <Save className="mr-2 h-4 w-4" />
+                                        Lưu và xuất bản
+                                    </Button>
+                                </DialogAddMoreInfoQuiz>
                             </div>
-
-                            <DialogFooter>
-                                <p className=" hidden md:block text-xs text-muted-foreground text-center w-full">Chơi game để thời gian chờ trở nên thú vị hơn!</p>
-                                <DialogClose asChild className="hidden md:block">
-                                    <Button variant="outline">Đóng</Button>
-                                </DialogClose>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
+                        </div>
+                    )}
                     <Button size="lg" className="dark:text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90" onClick={handleGenerate} disabled={!topic.trim() || isGenerating}>
                         {isGenerating ? (
                             <>
@@ -356,38 +359,8 @@ export function AICreateView() {
                         )}
                     </Button>
                 </div>
-                {generatedQuiz && (
-                    <div className="space-y-4 mt-10">
-                        <div className="text-center">
-                            <div className="flex items-center justify-center space-x-2 mb-2">
-                                <CheckCircle className="h-6 w-6 text-green-500" />
-                                <span className="text-lg font-medium text-green-700 dark:text-gray-400">Quiz đã được tạo thành công!</span>
-                            </div>
-                            <p className="text-muted-foreground dark:text-gray-400">
-                                AI đã tạo {generatedQuiz?.questions?.length} câu hỏi cho chủ đề &quot;{topic}&quot;
-                            </p>
-                        </div>
-
-                        <div className="flex justify-center gap-3 flex-col md:flex-row">
-                            <Button size="lg" variant="outline" onClick={() => setShowPreview(true)}>
-                                <Eye className="mr-2 h-4 w-4" />
-                                Xem trước kết quả
-                            </Button>
-                            <Button size="lg" variant="outline" onClick={() => handleAddToDraft()}>
-                                <File className="mr-2 h-4 w-4" />
-                                Lưu vào nháp
-                            </Button>
-                            <DialogAddMoreInfoQuiz generatedQuiz={generatedQuiz} openAddMoreInfo={openAddMoreInfo} setOpenAddMoreInfo={setOpenAddMoreInfo}>
-                                <Button size="lg" className="w-full md:w-auto text-white bg-gradient-to-r from-blue-500 to-cyan-500">
-                                    <Save className="mr-2 h-4 w-4" />
-                                    Lưu và xuất bản
-                                </Button>
-                            </DialogAddMoreInfoQuiz>
-                        </div>
-                    </div>
-                )}
             </div>
             {generatedQuiz && <AIResultPreview open={showPreview} onOpenChange={setShowPreview} quiz={generatedQuiz} setGeneratedQuiz={setGeneratedQuiz} setOpenAddMoreInfo={setOpenAddMoreInfo} />}
         </div>
-    );
+    )
 }

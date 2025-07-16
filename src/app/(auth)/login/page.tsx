@@ -1,28 +1,28 @@
-"use client";
-import React, { useEffect } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import Cookies from "js-cookie";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { POST_API } from "@/lib/fetchAPI";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ArrowLeft } from "lucide-react";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import Loading from "@/components/ui/loading";
-import { toast } from "sonner";
-import { useUser } from "@/context/userContext";
-import ChangePassword from "@/components/ChangePassword";
+"use client"
+import React, { useEffect } from "react"
+import { useFormik } from "formik"
+import * as Yup from "yup"
+import Cookies from "js-cookie"
+import Link from "next/link"
+import { usePathname, useRouter } from "next/navigation"
+import { POST_API } from "@/lib/fetchAPI"
+import Image from "next/image"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { ArrowLeft } from "lucide-react"
+import { Label } from "@/components/ui/label"
+import { Separator } from "@/components/ui/separator"
+import Loading from "@/components/ui/loading"
+import { toast } from "sonner"
+import { useUser } from "@/context/userContext"
+import ChangePassword from "@/components/ChangePassword"
 
 export default function LoginForm() {
-    const router = useRouter();
-    const pathname = usePathname();
-    const [loading, setLoading] = React.useState(false);
-    const { refetchUser } = useUser() || {};
-    const [isOpen, setIsOpen] = React.useState(false);
+    const router = useRouter()
+    const pathname = usePathname()
+    const [loading, setLoading] = React.useState(false)
+    const { refetchUser } = useUser() || {}
+    const [isOpen, setIsOpen] = React.useState(false)
     const formik = useFormik({
         initialValues: {
             email: "",
@@ -33,80 +33,56 @@ export default function LoginForm() {
             password: Yup.string().required("Vui lòng nhập password"),
         }),
         onSubmit: (values) => {
-            fetchLogin(values);
+            fetchLogin(values)
         },
-    });
+    })
 
     const fetchProfileAndSaveCookie = async (data: any) => {
         Cookies.set("token", data.token, {
             expires: 30,
             secure: true,
             sameSite: "none",
-        });
+        })
         // Fetch user profile sau khi đăng nhập thành công
-        refetchUser?.();
-    };
+        refetchUser?.()
+    }
 
     const fetchLogin = async (values: any) => {
         try {
-            setLoading(true);
-            const res = await POST_API("/auth/login", values, "POST", "");
-            const data = await res?.json();
+            setLoading(true)
+            const res = await POST_API("/auth/login", values, "POST", "")
+            const data = await res?.json()
             if (data.isChangePassword) {
-                fetchProfileAndSaveCookie(data);
-                setIsOpen(true);
-                return;
+                fetchProfileAndSaveCookie(data)
+                setIsOpen(true)
+                return
             } else if (res?.ok && !data.isChangePassword) {
                 toast.success("Đăng nhập thành công!", {
                     description: "Đang chuyển hướng đến trang chính...",
                     position: "top-center",
-                });
-                fetchProfileAndSaveCookie(data);
-                router.push("/");
+                })
+                fetchProfileAndSaveCookie(data)
+                router.push("/")
             } else {
-                toast.warning(data.message, { position: "top-center" });
+                toast.warning(data.message, { position: "top-center" })
             }
         } catch (error) {
-            toast.error((error as Error).message);
+            toast.error((error as Error).message)
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    };
+    }
 
     const handleBackRouter = (e: any) => {
-        e.preventDefault();
-        router.back();
-    };
+        e.preventDefault()
+        router.back()
+    }
 
     const handleLoginGoogle = async (e: any) => {
-        e.preventDefault();
-        if (loading) return; // Prevent multiple clicks
-        window.location.href = process.env.API_ENDPOINT + "/auth/google";
-    };
-
-    useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get("token");
-
-        if (token) {
-            try {
-                Cookies.set("token", token, {
-                    expires: 30,
-                    secure: true,
-                    sameSite: "none",
-                });
-            } catch (e) {
-                console.warn("Failed to save cookie:", e);
-            }
-            // Sử dụng refetchUser thay vì gọi API trực tiếp
-            refetchUser?.();
-            toast.success("Đăng nhập thành công!", {
-                description: "Đang chuyển hướng đến trang chính...",
-                position: "top-center",
-            });
-            router.push("/");
-        }
-    }, [router, refetchUser]);
+        e.preventDefault()
+        if (loading) return // Prevent multiple clicks
+        window.location.href = process.env.API_ENDPOINT + "/auth/google"
+    }
 
     return (
         <div className="min-h-screen flex items-center justify-center p-4">
@@ -130,10 +106,7 @@ export default function LoginForm() {
 
                 {/* Google Login - Highlighted */}
                 <div className="space-y-4">
-                    <Button
-                        variant="outline"
-                        onClick={handleLoginGoogle}
-                        className="relative group overflow-hidden w-full h-12 bg-gradient-to-r from-red-800/90 via-yellow-800/90 to-blue-800/90 text-white border-0 shadow-md transform hover:scale-105 transition-all duration-200 ">
+                    <Button variant="outline" onClick={handleLoginGoogle} className="relative group overflow-hidden w-full h-12 bg-gradient-to-r from-red-800/90 via-yellow-800/90 to-blue-800/90 text-white border-0 shadow-md transform hover:scale-105 transition-all duration-200 ">
                         <Image src="https://www.svgrepo.com/show/303108/google-icon-logo.svg" alt="" width={30} height={30} className="mr-3"></Image>
                         Đăng nhập bằng Google
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/80  dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
@@ -166,15 +139,7 @@ export default function LoginForm() {
                             <Label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Mật khẩu
                             </Label>
-                            <Input
-                                id="password"
-                                type="password"
-                                placeholder="Nhập mật khẩu của bạn"
-                                className="h-11"
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                value={formik.values.password}
-                            />
+                            <Input id="password" type="password" placeholder="Nhập mật khẩu của bạn" className="h-11" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.password} />
                         </div>
 
                         <Button type="submit" className="relative group overflow-hidden w-full h-11 bg-primary  text-white hover:scale-105 transition-all duration-200" disabled={loading}>
@@ -200,5 +165,5 @@ export default function LoginForm() {
                 </div>
             </div>
         </div>
-    );
+    )
 }
