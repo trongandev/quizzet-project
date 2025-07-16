@@ -114,7 +114,7 @@ export default async function DashboardPage() {
                             Hoạt động gần đây
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-4  max-h-[350px] overflow-y-auto">
                         {res.activity.map((activity: IActivity, index: number) => (
                             <div className="flex items-center gap-3" key={index}>
                                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>

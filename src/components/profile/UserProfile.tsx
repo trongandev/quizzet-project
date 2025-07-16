@@ -228,8 +228,8 @@ export default function UserProfile({ profile, quiz, flashcard }: PropsProfile) 
                     </Tabs>
                     <div className="">
                         <div className="flex justify-between items-center mb-3">
-                            <h2 className="text-2xl font-bold">Bộ Quiz của {userProfile?._id === userProfile?._id ? "bạn" : userProfile?.displayName}</h2>
-                            <Badge variant="secondary" className="bg-slate-700">
+                            <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200">Bộ Quiz của {userProfile?._id === userProfile?._id ? "bạn" : userProfile?.displayName}</h2>
+                            <Badge variant="secondary" className="dark:bg-slate-700">
                                 {quiz?.length || 0} bộ quiz
                             </Badge>
                         </div>
@@ -238,8 +238,8 @@ export default function UserProfile({ profile, quiz, flashcard }: PropsProfile) 
                     </div>
                     <div className="mt-5">
                         <div className="flex justify-between items-center mb-3">
-                            <h2 className="text-2xl font-bold">Bộ Flashcard của {userProfile?._id === userProfile?._id ? "bạn" : userProfile?.displayName}</h2>
-                            <Badge variant="secondary" className="bg-slate-700">
+                            <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200">Bộ Flashcard của {userProfile?._id === userProfile?._id ? "bạn" : userProfile?.displayName}</h2>
+                            <Badge variant="secondary" className="dark:bg-slate-700">
                                 {(flashcard && flashcard?.length) || 0} flashcard
                             </Badge>
                         </div>

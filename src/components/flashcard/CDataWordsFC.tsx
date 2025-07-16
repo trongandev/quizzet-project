@@ -197,7 +197,7 @@ export default function CDataWordsFC({ summary }: { summary: ISummary }) {
                         </div>
                     </TooltipTrigger>
                     <TooltipContent>
-                        <div className="text-sm dark:text-gray-200 text-gray-500 md:w-[200px]">
+                        <div className="text-sm     text-gray-200 md:w-[200px]">
                             <p className="">Được tính dựa trên tổng số lần ôn tập/số lần ôn tập đúng của từng từ (trên mức 3: Bình thường, dễ nhớ, hoàn hảo)</p>
                         </div>
                     </TooltipContent>

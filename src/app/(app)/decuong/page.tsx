@@ -1,5 +1,5 @@
-import CTaiLieu from "@/components/decuong/CDeCuong";
-import { getCachedDeCuong } from "@/lib/cacheData";
+import CTaiLieu from "@/components/decuong/CDeCuong"
+import { getCachedDeCuong } from "@/lib/cacheData"
 
 export async function generateMetadata() {
     return {
@@ -12,16 +12,16 @@ export async function generateMetadata() {
             images: "/decuong.png",
             url: "https://quizzet.site/decuong",
         },
-    };
+    }
 }
 
 export default async function SubjectOutline() {
-    const res = await getCachedDeCuong();
-    const findText = res?.findText;
-    const findFile = res?.findFile;
+    const res = await getCachedDeCuong()
+    const findText = res?.findText
+    const findFile = res?.findFile
     return (
-        <div className="py-20">
+        <div className="py-20 px-2 md:px-0">
             <CTaiLieu findText={findText} findFile={findFile} />
         </div>
-    );
+    )
 }

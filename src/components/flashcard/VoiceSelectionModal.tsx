@@ -172,7 +172,7 @@ export default function VoiceSelectionModal({ children, selectedVoice, setSelect
     return (
         <Dialog open={open} onOpenChange={handleDialogChange}>
             <DialogTrigger asChild>{children}</DialogTrigger>
-            <DialogContent className="sm:max-w-[800px] max-h-[80vh]">
+            <DialogContent className="sm:max-w-[800px] max-h-[90vh]">
                 <DialogHeader>
                     <DialogTitle className="text-xl font-semibold flex items-center gap-2">
                         <Volume2 className="w-5 h-5 text-blue-600" />
@@ -206,7 +206,7 @@ export default function VoiceSelectionModal({ children, selectedVoice, setSelect
                     </TabsList>
 
                     <TabsContent value={activeTab} className="mt-4">
-                        <div className="grid gap-3 max-h-[400px] overflow-y-auto pr-2">
+                        <div className="grid gap-3 max-h-[300px] md:max-h-[400px] overflow-y-auto pr-2">
                             {getFilteredVoices().map((voice) => (
                                 <Card key={voice.id} className={`w-full cursor-pointer transition-all duration-200 border dark:border-white/10 border-gray-300/50  ${selectedVoice === voice.id ? "border-b-4 border-b-blue-500 bg-blue-50 dark:bg-blue-900/50" : "hover:bg-gray-50 dark:hover:bg-gray-700/50"}`} onClick={() => handleSelectVoice(voice.sample, voice.id)}>
                                     <CardContent className="p-4">
@@ -220,7 +220,7 @@ export default function VoiceSelectionModal({ children, selectedVoice, setSelect
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-center gap-2 mb-1">
                                                     <h3 className="font-medium text-gray-900 dark:text-gray-200">{voice.name}</h3>
-                                                    <Badge variant="outline" className="text-xs">
+                                                    <Badge variant="outline" className="text-xs hidden md:block">
                                                         {getCountryFlag(voice.country)} {voice.language}
                                                     </Badge>
                                                     {voice.premium && <Badge className="text-xs bg-gradient-to-r from-purple-600 to-blue-600 dark:text-white">Premium</Badge>}
@@ -232,7 +232,7 @@ export default function VoiceSelectionModal({ children, selectedVoice, setSelect
                                                     )}
                                                 </div>
                                                 <p className="text-sm text-gray-600 mb-2 dark:text-gray-400">{voice.description}</p>
-                                                <p className="text-xs text-gray-500 italic dark:text-gray-300">&quot;{voice.sample}&quot;</p>
+                                                <p className="text-xs text-gray-500 italic dark:text-gray-300 line-clamp-2 md:line-clamp-none">&quot;{voice.sample}&quot;</p>
                                             </div>
 
                                             {/* Controls - Cải thiện UI */}
