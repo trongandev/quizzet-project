@@ -1,12 +1,5 @@
 import React, { useRef, useState } from "react"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -25,12 +18,7 @@ interface Props {
     user?: IUser | null // Optional user prop to reset tempProfile
     refetchUser: () => void // Function to refetch user data after update
 }
-export default function UpdateProfile({
-    isSettingsOpen,
-    setIsSettingsOpen,
-    user,
-    refetchUser,
-}: Props) {
+export default function UpdateProfile({ isSettingsOpen, setIsSettingsOpen, user, refetchUser }: Props) {
     const [tempProfile, setTempProfile] = useState<IUser | null>(user || null)
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
     const [loading, setLoading] = useState(false)
@@ -38,12 +26,7 @@ export default function UpdateProfile({
 
     const handleFileSelect = (file: File) => {
         // Validate file type
-        const allowedTypes = [
-            "image/png",
-            "image/jpeg",
-            "image/jpg",
-            "image/gif",
-        ]
+        const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/gif"]
         if (!allowedTypes.includes(file.type)) {
             alert("Please select a PNG, JPG, or GIF file.")
             return
@@ -72,10 +55,7 @@ export default function UpdateProfile({
     }
     const token = Cookies.get("token") || ""
     const handleSaveSettings = async () => {
-        if (
-            user?.displayName === tempProfile?.displayName &&
-            user?.profilePicture === tempProfile?.profilePicture
-        ) {
+        if (user?.displayName === tempProfile?.displayName && user?.profilePicture === tempProfile?.profilePicture) {
             setIsSettingsOpen(false)
         }
         try {
@@ -85,24 +65,15 @@ export default function UpdateProfile({
                 const formData = new FormData()
 
                 formData.append("image", selectedFile)
-                const uploadResponse = await axios.post(
-                    `${process.env.API_ENDPOINT}/upload`,
-                    formData,
-                    {
-                        headers: {
-                            "Content-Type": "multipart/form-data",
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                )
+                const uploadResponse = await axios.post(`${process.env.API_ENDPOINT}/upload`, formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
                 imageUrl = uploadResponse?.data?.url
             }
-            const res = await POST_API(
-                "/profile",
-                { ...tempProfile, profilePicture: imageUrl },
-                "PATCH",
-                token
-            )
+            const res = await POST_API("/profile", { ...tempProfile, profilePicture: imageUrl }, "PATCH", token)
             const data = await res?.json()
             if (res?.ok) {
                 toast.success("Cập nhật thành công", {
@@ -146,9 +117,7 @@ export default function UpdateProfile({
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle>Cài đặt thông tin cá nhân</DialogTitle>
-                    <DialogDescription>
-                        Cập nhật thông tin hồ sơ của bạn tại đây.
-                    </DialogDescription>
+                    <DialogDescription>Cập nhật thông tin hồ sơ của bạn tại đây.</DialogDescription>
                 </DialogHeader>
 
                 <div className="space-y-6">
@@ -157,34 +126,17 @@ export default function UpdateProfile({
                         <Label>Ảnh đại diện</Label>
                         <div className="flex justify-center">
                             <Avatar className="w-20 h-20 relative group cursor-pointer">
-                                <AvatarImage
-                                    src={
-                                        selectedFile
-                                            ? URL.createObjectURL(selectedFile)
-                                            : tempProfile?.profilePicture
-                                    }
-                                    alt="Preview"
-                                    className="object-cover group-hover:brightness-75 transition-all duration-300"
-                                />
+                                <AvatarImage src={selectedFile ? URL.createObjectURL(selectedFile) : tempProfile?.profilePicture} alt="Preview" className="object-cover group-hover:brightness-75 transition-all duration-300" />
                                 <AvatarFallback>
                                     {tempProfile?.displayName
                                         .split(" ")
                                         .map((n) => n[0])
                                         .join("")}
                                 </AvatarFallback>
-                                <div
-                                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center"
-                                    onClick={handleButtonClick}
-                                >
+                                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center" onClick={handleButtonClick}>
                                     <Camera />
                                 </div>
-                                <input
-                                    ref={fileInputRef}
-                                    type="file"
-                                    accept=".png,.jpg,.jpeg,.gif"
-                                    onChange={handleFileChange}
-                                    className="hidden"
-                                />
+                                <input ref={fileInputRef} type="file" accept=".png,.jpg,.jpeg,.gif" onChange={handleFileChange} className="hidden" />
                             </Avatar>
                         </div>
                     </div>
@@ -194,6 +146,7 @@ export default function UpdateProfile({
                         <Label htmlFor="name">Tên hiển thị</Label>
                         <Input
                             id="name"
+                            required
                             value={tempProfile?.displayName}
                             onChange={(e) =>
                                 setTempProfile(
@@ -211,15 +164,8 @@ export default function UpdateProfile({
                     {/* Email (disabled) */}
                     <div className="space-y-2">
                         <Label htmlFor="email">Email</Label>
-                        <Input
-                            id="email"
-                            value={tempProfile?.email}
-                            disabled
-                            className=""
-                        />
-                        <p className="text-sm text-gray-500 dark:text-white/60">
-                            Email không thể thay đổi
-                        </p>
+                        <Input id="email" value={tempProfile?.email} disabled className="" />
+                        <p className="text-sm text-gray-500 dark:text-white/60">Email không thể thay đổi</p>
                     </div>
 
                     {/* Password Link */}
@@ -244,11 +190,7 @@ export default function UpdateProfile({
                         >
                             Hủy
                         </Button>
-                        <Button
-                            onClick={handleSaveSettings}
-                            className="flex-1 text-white"
-                            disabled={loading}
-                        >
+                        <Button onClick={handleSaveSettings} className="flex-1 text-white" disabled={loading}>
                             {loading ? <Loading /> : <Save />}
                             Lưu thay đổi
                         </Button>

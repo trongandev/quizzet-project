@@ -21,7 +21,6 @@ export default function CDeCuongDetail({ DeCuongData }: { DeCuongData: ISO | nul
         }
         handleChangeRouterDeCuong()
     }, [])
-    console.log("DeCuongData", DeCuongData)
     const filteredQuestions = DeCuongData?.quest?.data_so.filter((q) => q.question.toLowerCase().includes(searchQuery.toLowerCase()) || q.answer.toLowerCase().includes(searchQuery.toLowerCase()))
     return (
         <div className="flex items-center justify-center">

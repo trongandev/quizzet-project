@@ -1,23 +1,30 @@
 // components/charts/ClientChartWrapper.tsx
-"use client";
+"use client"
 
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
 interface ClientChartWrapperProps {
-    data: any[];
-    config: ChartConfig;
+    chartData: any[]
+    chartConfig: ChartConfig
 }
 
-export function ClientChartWrapper({ data, config }: ClientChartWrapperProps) {
+export function ClientChartWrapper({ chartData, chartConfig }: ClientChartWrapperProps) {
+    // Tạo function để convert số tháng thành tên tháng
+    const formatMonth = (monthNumber: number) => {
+        const months = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"]
+        return months[monthNumber] || `Tháng ${monthNumber + 1}`
+    }
+
     return (
-        <ChartContainer config={config}>
-            <AreaChart accessibilityLayer data={data} margin={{ left: 12, right: 12 }}>
+        <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+            <BarChart accessibilityLayer data={chartData}>
                 <CartesianGrid vertical={false} />
-                <XAxis dataKey="month" color="blue" tickLine={false} axisLine={false} tickMargin={8} tickFormatter={(value) => value.slice(0, 3)} />
-                <ChartTooltip cursor={false} content={<ChartTooltipContent indicator="line" />} />
-                <Area dataKey="count" type="natural" fill="var(--color-desktop)" fillOpacity={0.4} stroke="var(--color-desktop)" />
-            </AreaChart>
+                <XAxis dataKey="month" tickLine={false} tickMargin={10} axisLine={false} tickFormatter={(value) => formatMonth(value)} />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <ChartLegend content={<ChartLegendContent />} />
+                <Bar dataKey="count" fill="#2563eb" radius={4} />
+            </BarChart>
         </ChartContainer>
-    );
+    )
 }

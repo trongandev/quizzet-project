@@ -1,31 +1,8 @@
 import React, { useMemo } from "react"
-import {
-    AlertCircle,
-    ArrowRight,
-    BookOpen,
-    Brain,
-    CheckCircle,
-    Clock,
-    NotepadTextDashed,
-    RotateCcw,
-    Target,
-    TrendingUp,
-} from "lucide-react"
+import { AlertCircle, ArrowRight, BookOpen, Brain, CheckCircle, Clock, NotepadTextDashed, RotateCcw, Target, TrendingUp } from "lucide-react"
 import { Badge } from "../ui/badge"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { useRouter } from "next/navigation"
 import { Button } from "../ui/button"
 import { formatDistanceToNowStrict } from "date-fns"
@@ -75,8 +52,7 @@ export default function CDataWordsFC({ summary }: { summary: ISummary }) {
     }, [learnedWords, rememberedWords, reviewingWords])
 
     const [open, setOpen] = React.useState(false)
-    const [selectedWords, setSelectedWords] =
-        React.useState<ISelectedWord | null>(null)
+    const [selectedWords, setSelectedWords] = React.useState<ISelectedWord | null>(null)
 
     const handleSelectWord = (title: string) => {
         switch (title) {
@@ -109,11 +85,7 @@ export default function CDataWordsFC({ summary }: { summary: ISummary }) {
                     title: "Tất cả từ vựng",
                     type: "all",
                     define: "Danh sách này bao gồm tất cả các từ vựng bạn đã học, không phân biệt trạng thái. Bạn có thể xem tất cả các từ đã học thuộc, đã nhớ lâu và cần ôn tập.",
-                    words: [
-                        ...(summary?.words?.learnedWords || []),
-                        ...(summary?.words?.rememberedWords || []),
-                        ...(summary?.words?.reviewingWords || []),
-                    ],
+                    words: [...(summary?.words?.learnedWords || []), ...(summary?.words?.rememberedWords || []), ...(summary?.words?.reviewingWords || [])],
                 })
                 break
             default:
@@ -121,7 +93,6 @@ export default function CDataWordsFC({ summary }: { summary: ISummary }) {
         }
         setOpen(true)
     }
-    console.log("Selected Words:", selectedWords)
 
     const getBackgroundColor = (type: string) => {
         switch (type) {
@@ -139,10 +110,7 @@ export default function CDataWordsFC({ summary }: { summary: ISummary }) {
         <div className="">
             <div className={`grid gap-2 md:gap-4 grid-cols-2 lg:grid-cols-5`}>
                 {/* Total Cards - Enhanced */}
-                <div
-                    className={`bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200 dark:from-blue-800/50 dark:to-blue-900/50 dark:border-white/10 cursor-pointer hover:scale-105 transiton-all duration-300`}
-                    onClick={() => handleSelectWord("all")}
-                >
+                <div className={`bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200 dark:from-blue-800/50 dark:to-blue-900/50 dark:border-white/10 cursor-pointer hover:scale-105 transiton-all duration-300`} onClick={() => handleSelectWord("all")}>
                     <div className="flex items-center justify-between mb-3">
                         <div className="p-2 bg-blue-600 rounded-lg">
                             <BookOpen className="w-5 h-5 text-white" />
@@ -151,87 +119,51 @@ export default function CDataWordsFC({ summary }: { summary: ISummary }) {
                             Tổng
                         </Badge>
                     </div>
-                    <div className="text-3xl font-bold text-blue-900 dark:text-blue-400 mb-1">
-                        {total || 0}
-                    </div>
-                    <div className="text-sm text-blue-700 dark:text-blue-300">
-                        Tất cả từ vựng
-                    </div>
+                    <div className="text-3xl font-bold text-blue-900 dark:text-blue-400 mb-1">{total || 0}</div>
+                    <div className="text-sm text-blue-700 dark:text-blue-300">Tất cả từ vựng</div>
                     <div className="mt-2 text-xs text-blue-600 flex items-center gap-1">
-                        <TrendingUp className="w-3 h-3" />+
-                        {summary?.weeklyReviewedWordsCount || 0} từ đã học tuần
-                        này
+                        <TrendingUp className="w-3 h-3" />+{summary?.weeklyReviewedWordsCount || 0} từ đã học tuần này
                     </div>
                 </div>
                 {/* Learned Cards */}
-                <div
-                    className={`bg-gradient-to-br from-green-50 to-green-100 dark:from-green-800/50 dark:to-green-900/50 dark:border-white/10 rounded-xl p-6 border border-green-200 w-full h-full cursor-pointer hover:scale-105 transiton-all duration-300`}
-                    onClick={() => handleSelectWord("learnedWords")}
-                >
+                <div className={`bg-gradient-to-br from-green-50 to-green-100 dark:from-green-800/50 dark:to-green-900/50 dark:border-white/10 rounded-xl p-6 border border-green-200 w-full h-full cursor-pointer hover:scale-105 transiton-all duration-300`} onClick={() => handleSelectWord("learnedWords")}>
                     <div className="flex items-center justify-between mb-3">
                         <div className="p-2 bg-green-600 rounded-lg">
                             <CheckCircle className="w-5 h-5 text-white" />
                         </div>
-                        <Badge className="text-xs bg-green-100 text-green-800">
-                            Hoàn thành
-                        </Badge>
+                        <Badge className="text-xs bg-green-100 text-green-800">Hoàn thành</Badge>
                     </div>
-                    <div className="text-3xl font-bold text-green-900 dark:text-green-400 mb-1">
-                        {learnedWords}
-                    </div>
-                    <div className="text-sm text-green-700 dark:text-green-300">
-                        Đã học thuộc
-                    </div>
+                    <div className="text-3xl font-bold text-green-900 dark:text-green-400 mb-1">{learnedWords}</div>
+                    <div className="text-sm text-green-700 dark:text-green-300">Đã học thuộc</div>
                     <div className="mt-2 w-full bg-green-200 rounded-full h-2">
-                        <div
-                            className="bg-green-600 h-2 rounded-full"
-                            style={{ width: `${learnedWords}%` }}
-                        ></div>
+                        <div className="bg-green-600 h-2 rounded-full" style={{ width: `${learnedWords}%` }}></div>
                     </div>
                 </div>
                 {/* Known Cards */}
-                <div
-                    className={`bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200 dark:from-purple-800/50 dark:to-purple-900/50 dark:border-white/10 cursor-pointer hover:scale-105 transiton-all duration-300`}
-                    onClick={() => handleSelectWord("rememberedWords")}
-                >
+                <div className={`bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 border border-purple-200 dark:from-purple-800/50 dark:to-purple-900/50 dark:border-white/10 cursor-pointer hover:scale-105 transiton-all duration-300`} onClick={() => handleSelectWord("rememberedWords")}>
                     <div className="flex items-center justify-between mb-3">
                         <div className="p-2 bg-purple-600 rounded-lg">
                             <Brain className="w-5 h-5 text-white" />
                         </div>
-                        <Badge className="text-xs bg-purple-100 text-purple-800">
-                            Ghi nhớ
-                        </Badge>
+                        <Badge className="text-xs bg-purple-100 text-purple-800">Ghi nhớ</Badge>
                     </div>
-                    <div className="text-3xl font-bold text-purple-900 mb-1 dark:text-purple-300">
-                        {rememberedWords}
-                    </div>
-                    <div className="text-sm text-purple-700 dark:text-purple-400">
-                        Đã nhớ lâu
-                    </div>
+                    <div className="text-3xl font-bold text-purple-900 mb-1 dark:text-purple-300">{rememberedWords}</div>
+                    <div className="text-sm text-purple-700 dark:text-purple-400">Đã nhớ lâu</div>
                     <div className="mt-2 text-xs text-purple-600 flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         Cần ôn lại
                     </div>
                 </div>
                 {/* Review Cards */}
-                <div
-                    className={`bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 border border-orange-200 dark:from-orange-800/50 dark:to-orange-900/50 dark:border-white/10 cursor-pointer hover:scale-105 transiton-all duration-300`}
-                    onClick={() => handleSelectWord("reviewingWords")}
-                >
+                <div className={`bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 border border-orange-200 dark:from-orange-800/50 dark:to-orange-900/50 dark:border-white/10 cursor-pointer hover:scale-105 transiton-all duration-300`} onClick={() => handleSelectWord("reviewingWords")}>
                     <div className="flex items-center justify-between mb-3">
                         <div className="p-2 bg-orange-600 rounded-lg">
                             <RotateCcw className="w-5 h-5 text-white" />
                         </div>
-                        <Badge className="text-xs bg-orange-100 text-orange-800">
-                            Cần ôn
-                        </Badge>
+                        <Badge className="text-xs bg-orange-100 text-orange-800">Cần ôn</Badge>
                     </div>
-                    <div className="text-3xl font-bold text-orange-900 dark:text-orange-400 mb-1">
-                        {reviewingWords}
-                    </div>
-                    <div className="text-sm text-orange-700 dark:text-orange-300">
-                        Bấm vào đây để ôn tập
-                    </div>
+                    <div className="text-3xl font-bold text-orange-900 dark:text-orange-400 mb-1">{reviewingWords}</div>
+                    <div className="text-sm text-orange-700 dark:text-orange-300">Bấm vào đây để ôn tập</div>
                     <div className="mt-2 text-xs text-orange-600 dark:text-orange-400 flex items-center gap-1">
                         <AlertCircle className="w-3 h-3" />
                         Ưu tiên cao
@@ -240,50 +172,33 @@ export default function CDataWordsFC({ summary }: { summary: ISummary }) {
                 {/* Accuracy Percentage */}
                 <Tooltip delayDuration={50}>
                     <TooltipTrigger className="w-full cursor-default">
-                        <div
-                            className={`h-full w-full col-span-2 md:col-span-1 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-6 border border-indigo-200 dark:from-indigo-800/50 dark:to-indigo-900/50 dark:border-white/10`}
-                        >
+                        <div className={`h-full w-full col-span-2 md:col-span-1 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-6 border border-indigo-200 dark:from-indigo-800/50 dark:to-indigo-900/50 dark:border-white/10`}>
                             <div className="flex items-center justify-between mb-3">
                                 <div className="p-2 bg-indigo-600 rounded-lg">
                                     <Target className="w-5 h-5 text-white" />
                                 </div>
-                                <Badge className="text-xs bg-indigo-100 text-indigo-800">
-                                    Độ chính xác
-                                </Badge>
+                                <Badge className="text-xs bg-indigo-100 text-indigo-800">Độ chính xác</Badge>
                             </div>
-                            <div className="text-3xl font-bold text-indigo-900 dark:text-indigo-400 mb-1">
-                                {summary?.wordAccuracy?.accuracyPercentage || 0}
-                                %
-                            </div>
-                            <div className="text-sm text-indigo-700 dark:text-indigo-300">
-                                Tỷ lệ đúng
-                            </div>
+                            <div className="text-3xl font-bold text-indigo-900 dark:text-indigo-400 mb-1">{summary?.wordAccuracy?.accuracyPercentage || 0}%</div>
+                            <div className="text-sm text-indigo-700 dark:text-indigo-300">Tỷ lệ đúng</div>
                             <div className="mt-2 flex items-center gap-2">
                                 <div className="flex-1 bg-indigo-200 rounded-full h-2">
                                     <div
                                         className="bg-indigo-600 h-2 rounded-full"
                                         style={{
-                                            width: `${
-                                                summary?.wordAccuracy
-                                                    ?.accuracyPercentage || 0
-                                            }%`,
+                                            width: `${summary?.wordAccuracy?.accuracyPercentage || 0}%`,
                                         }}
                                     ></div>
                                 </div>
                                 <span className="text-xs text-indigo-600 dark:text-indigo-400">
-                                    {summary?.wordAccuracy?.correctReviews}/
-                                    {summary?.wordAccuracy?.totalReviews}
+                                    {summary?.wordAccuracy?.correctReviews}/{summary?.wordAccuracy?.totalReviews}
                                 </span>
                             </div>
                         </div>
                     </TooltipTrigger>
                     <TooltipContent>
                         <div className="text-sm dark:text-gray-200 text-gray-500 md:w-[200px]">
-                            <p className="">
-                                Được tính dựa trên tổng số lần ôn tập/số lần ôn
-                                tập đúng của từng từ (trên mức 3: Bình thường,
-                                dễ nhớ, hoàn hảo)
-                            </p>
+                            <p className="">Được tính dựa trên tổng số lần ôn tập/số lần ôn tập đúng của từng từ (trên mức 3: Bình thường, dễ nhớ, hoàn hảo)</p>
                         </div>
                     </TooltipContent>
                 </Tooltip>
@@ -293,51 +208,28 @@ export default function CDataWordsFC({ summary }: { summary: ISummary }) {
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>{selectedWords?.title}</DialogTitle>
-                        <DialogDescription>
-                            {selectedWords?.define}
-                        </DialogDescription>
+                        <DialogDescription>{selectedWords?.define}</DialogDescription>
                     </DialogHeader>
                     <div className="h-[500px] overflow-y-scroll grid grid-cols-2 grid-flow-row gap-2 md:gap-3 rounded-lg">
                         {selectedWords &&
                             selectedWords?.words?.map((word, index) => (
-                                <div
-                                    className={`border-2  border-dashed  rounded-lg p-5 ${getBackgroundColor(
-                                        selectedWords.type
-                                    )} `}
-                                    key={index}
-                                >
-                                    <h1 className=" font-medium">
-                                        {word.title}
-                                    </h1>
-                                    {selectedWords.type ===
-                                        "reviewingWords" && (
+                                <div className={`border-2  border-dashed  rounded-lg p-5 ${getBackgroundColor(selectedWords.type)} `} key={index}>
+                                    <h1 className=" font-medium">{word.title}</h1>
+                                    {selectedWords.type === "reviewingWords" && (
                                         <span className="text-xs text-orange-300">
-                                            {new Date(word.nextReviewDate) >
-                                            new Date()
-                                                ? `Còn ${formatDistanceToNowStrict(
-                                                      new Date(
-                                                          word.nextReviewDate
-                                                      ),
-                                                      {
-                                                          locale: vi,
-                                                          addSuffix: true,
-                                                      }
-                                                  )} để ôn tập lại`
-                                                : `Quá hạn ${formatDistanceToNowStrict(
-                                                      new Date(
-                                                          word.nextReviewDate
-                                                      ),
-                                                      {
-                                                          locale: vi,
-                                                          addSuffix: true,
-                                                      }
-                                                  )}`}
+                                            {new Date(word.nextReviewDate) > new Date()
+                                                ? `Còn ${formatDistanceToNowStrict(new Date(word.nextReviewDate), {
+                                                      locale: vi,
+                                                      addSuffix: true,
+                                                  })} để ôn tập lại`
+                                                : `Quá hạn ${formatDistanceToNowStrict(new Date(word.nextReviewDate), {
+                                                      locale: vi,
+                                                      addSuffix: true,
+                                                  })}`}
                                         </span>
                                     )}
 
-                                    <p className="text-sm opacity-85">
-                                        {word.define}
-                                    </p>
+                                    <p className="text-sm opacity-85">{word.define}</p>
                                 </div>
                             ))}
                         {selectedWords && selectedWords?.words?.length <= 0 && (
@@ -349,12 +241,7 @@ export default function CDataWordsFC({ summary }: { summary: ISummary }) {
                     </div>
                     {selectedWords?.type === "reviewingWords" && (
                         <DialogFooter>
-                            <Button
-                                onClick={() =>
-                                    router.push("/flashcard/practice-science")
-                                }
-                                className="text-white bg-orange-600 hover:bg-orange-700"
-                            >
+                            <Button onClick={() => router.push("/flashcard/practice-science")} className="text-white bg-orange-600 hover:bg-orange-700">
                                 Bấm vào để ôn tập ngay <ArrowRight />
                             </Button>
                         </DialogFooter>

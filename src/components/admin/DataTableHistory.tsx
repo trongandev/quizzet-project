@@ -1,32 +1,21 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import {
-    ColumnDef,
-    ColumnFiltersState,
-    flexRender,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    SortingState,
-    useReactTable,
-    VisibilityState,
-} from "@tanstack/react-table";
-import { ArrowUpDown, BookUser, CalendarMinus2, CheckCircle, ChevronDown, Clock, Edit, LocateFixed, Mail, MegaphoneOff, MoreHorizontal, Pencil, Search, User, X } from "lucide-react";
+import * as React from "react"
+import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable, VisibilityState } from "@tanstack/react-table"
+import { ArrowUpDown, BookUser, CalendarMinus2, CheckCircle, ChevronDown, Clock, Edit, LocateFixed, Mail, MegaphoneOff, MoreHorizontal, Pencil, Search, User, X } from "lucide-react"
 
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { IHistory, IQuiz, IUser } from "@/types/type";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import handleCompareDate from "@/lib/CompareDate";
-import { Badge } from "../ui/badge";
-import { GoogleOutlined } from "@ant-design/icons";
-import Link from "next/link";
-import Image from "next/image";
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Input } from "@/components/ui/input"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { IHistory, IQuiz, IUser } from "@/types/type"
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import handleCompareDate from "@/lib/CompareDate"
+import { Badge } from "../ui/badge"
+import { GoogleOutlined } from "@ant-design/icons"
+import Link from "next/link"
+import Image from "next/image"
 
 const getStatusBadge = (status: boolean) => {
     switch (status) {
@@ -36,36 +25,30 @@ const getStatusBadge = (status: boolean) => {
                     <CheckCircle className="w-3 h-3 mr-1" />
                     Đã duyệt
                 </Badge>
-            );
+            )
         case false:
             return (
                 <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">
                     <Clock className="w-3 h-3 mr-1" />
                     Chờ duyệt
                 </Badge>
-            );
+            )
         case undefined:
             return (
                 <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
                     <X className="w-3 h-3 mr-1" />
                     Từ chối
                 </Badge>
-            );
+            )
         default:
-            return <Badge variant="secondary">{status}</Badge>;
+            return <Badge variant="secondary">{status}</Badge>
     }
-};
+}
 
 export const columns: ColumnDef<IHistory>[] = [
     {
         id: "select",
-        header: ({ table }) => (
-            <Checkbox
-                checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                aria-label="Select all"
-            />
-        ),
+        header: ({ table }) => <Checkbox checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")} onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)} aria-label="Select all" />,
         cell: ({ row }) => <Checkbox className="mr-3" checked={row.getIsSelected()} onCheckedChange={(value) => row.toggleSelected(!!value)} aria-label="Select row" />,
         enableSorting: false,
         enableHiding: false,
@@ -78,7 +61,7 @@ export const columns: ColumnDef<IHistory>[] = [
                     Người làm
                     <ArrowUpDown />
                 </Button>
-            );
+            )
         },
         cell: ({ row }) => (
             <Link href={`/profile/${row.original.user_id._id}`} className="capitalize flex items-center gap-2">
@@ -91,7 +74,7 @@ export const columns: ColumnDef<IHistory>[] = [
                             .join("") || ""}
                     </AvatarFallback>
                 </Avatar>
-                <p className="text-white/80 font-medium w-[80px] line-clamp-1" title={row.original.user_id.displayName}>
+                <p className="text-white/80 font-medium w-[150px] line-clamp-1" title={row.original.user_id.displayName}>
                     {row.original.user_id.displayName}
                 </p>
             </Link>
@@ -114,7 +97,7 @@ export const columns: ColumnDef<IHistory>[] = [
                     Tiêu đề
                     <ArrowUpDown />
                 </Button>
-            );
+            )
         },
         cell: ({ row }) => <p className="text-white/80">{row.original.quiz_id.title}</p>,
     },
@@ -126,7 +109,7 @@ export const columns: ColumnDef<IHistory>[] = [
                     Nội dung
                     <ArrowUpDown />
                 </Button>
-            );
+            )
         },
         cell: ({ row }) => <p className="text-xs text-white/60">{row.original.quiz_id.subject}</p>,
     },
@@ -139,7 +122,7 @@ export const columns: ColumnDef<IHistory>[] = [
                     Điểm số
                     <ArrowUpDown />
                 </Button>
-            );
+            )
         },
         cell: ({ row }) => (
             <Badge variant="secondary" className="uppercase text-xs font-thin">
@@ -155,7 +138,7 @@ export const columns: ColumnDef<IHistory>[] = [
                     Ngày làm
                     <ArrowUpDown />
                 </Button>
-            );
+            )
         },
         cell: ({ row }) => <div className="text-xs">{handleCompareDate(row.original.date)}</div>,
     },
@@ -237,7 +220,7 @@ export const columns: ColumnDef<IHistory>[] = [
         id: "actions",
         enableHiding: false,
         cell: ({ row }) => {
-            const payment = row.original;
+            const payment = row.original
 
             return (
                 <DropdownMenu>
@@ -262,16 +245,16 @@ export const columns: ColumnDef<IHistory>[] = [
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
-            );
+            )
         },
     },
-];
+]
 
 export function DataTableHistory({ history }: { history: IHistory[] }) {
-    const [sorting, setSorting] = React.useState<SortingState>([]);
-    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
-    const [rowSelection, setRowSelection] = React.useState({});
+    const [sorting, setSorting] = React.useState<SortingState>([])
+    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+    const [rowSelection, setRowSelection] = React.useState({})
 
     const table = useReactTable<IHistory>({
         data: history,
@@ -290,7 +273,7 @@ export function DataTableHistory({ history }: { history: IHistory[] }) {
             columnVisibility,
             rowSelection,
         },
-    });
+    })
 
     return (
         <div className="w-full">
@@ -298,21 +281,11 @@ export function DataTableHistory({ history }: { history: IHistory[] }) {
                 <div className="flex items-center gap-5">
                     <div className="relative w-full ">
                         <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                        <Input
-                            placeholder="Tìm kiếm tên người đăng..."
-                            className="pl-10 w-full md:w-64 "
-                            value={(table.getColumn("displayName")?.getFilterValue() as string) ?? ""}
-                            onChange={(event) => table.getColumn("displayName")?.setFilterValue(event.target.value)}
-                        />
+                        <Input placeholder="Tìm kiếm tên người đăng..." className="pl-10 w-full md:w-64 " value={(table.getColumn("displayName")?.getFilterValue() as string) ?? ""} onChange={(event) => table.getColumn("displayName")?.setFilterValue(event.target.value)} />
                     </div>
                     <div className="relative w-full ">
                         <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                        <Input
-                            placeholder="Tìm kiếm tiêu đề..."
-                            className="pl-10 w-full md:w-64 "
-                            value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-                            onChange={(event) => table.getColumn("title")?.setFilterValue(event.target.value)}
-                        />
+                        <Input placeholder="Tìm kiếm tiêu đề..." className="pl-10 w-full md:w-64 " value={(table.getColumn("title")?.getFilterValue() as string) ?? ""} onChange={(event) => table.getColumn("title")?.setFilterValue(event.target.value)} />
                     </div>
                 </div>
 
@@ -331,7 +304,7 @@ export function DataTableHistory({ history }: { history: IHistory[] }) {
                                     <DropdownMenuCheckboxItem key={column.id} className="capitalize" checked={column.getIsVisible()} onCheckedChange={(value) => column.toggleVisibility(!!value)}>
                                         {column.id}
                                     </DropdownMenuCheckboxItem>
-                                );
+                                )
                             })}
                     </DropdownMenuContent>
                 </DropdownMenu>
@@ -342,7 +315,7 @@ export function DataTableHistory({ history }: { history: IHistory[] }) {
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => {
-                                    return <TableHead key={header.id}>{header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}</TableHead>;
+                                    return <TableHead key={header.id}>{header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}</TableHead>
                                 })}
                             </TableRow>
                         ))}
@@ -380,5 +353,5 @@ export function DataTableHistory({ history }: { history: IHistory[] }) {
                 </div>
             </div>
         </div>
-    );
+    )
 }

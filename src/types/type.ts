@@ -265,4 +265,13 @@ interface Userreport {
     profilePicture: string
 }
 
+export interface IActivity {
+    _id: string
+    userId: UserId
+    action: string
+    targetType: string
+    targetId: string
+    timestamp: Date
+}
+
 export type { IUser, INotify, IQuestion, IComment, IHistory, ISO, IQuiz, IDataQuiz, IListFlashcard, IProgress, Flashcard, Example, IMessage, IChat, IChatCommunity, IChatCommunityMessage }

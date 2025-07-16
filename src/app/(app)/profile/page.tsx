@@ -8,11 +8,5 @@ export default async function CProfile() {
 
     const token = cookieStore.get("token")?.value || ""
     const req = await GET_API("/profile", token)
-    return (
-        <UserProfile
-            profile={req}
-            quiz={req?.quiz}
-            flashcard={req?.flashcards}
-        />
-    )
+    return <UserProfile profile={req?.user} quiz={req?.quiz} flashcard={req?.flashcards} />
 }
