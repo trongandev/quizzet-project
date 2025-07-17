@@ -21,9 +21,7 @@ export default function TaiLieuFlashcard({ params }: any) {
     })
     const [quizOptions, setQuizOptions] = useState<string[]>([])
     // random moder
-    const [selectedAnswers, setSelectedAnswers] = useState<
-        Record<number, string | null>
-    >({})
+    const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string | null>>({})
 
     const shuffle = (array: any) => {
         let currentIndex = array.length,
@@ -31,10 +29,7 @@ export default function TaiLieuFlashcard({ params }: any) {
         while (currentIndex != 0) {
             randomIndex = Math.floor(Math.random() * currentIndex)
             currentIndex--
-            ;[array[currentIndex], array[randomIndex]] = [
-                array[randomIndex],
-                array[currentIndex],
-            ]
+            ;[array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]]
         }
         return array
     }
@@ -43,9 +38,7 @@ export default function TaiLieuFlashcard({ params }: any) {
     useEffect(() => {
         const fetchFlashCards = async () => {
             // const req = await GET_API(`/flashcards/${params?.slug}`, token);
-            const req = await GET_API_WITHOUT_COOKIE(
-                `/admin/suboutline/${params.id}`
-            )
+            const req = await GET_API_WITHOUT_COOKIE(`/admin/suboutline/${params.id}`)
             const result = req?.quest?.data_so
 
             setFlashcards(shuffle(result))
@@ -68,14 +61,10 @@ export default function TaiLieuFlashcard({ params }: any) {
             const correctOption = currentCard.answer
 
             // Các đáp án sai
-            const availableCards = flashcards.filter(
-                (card) => card.answer !== currentCard.answer
-            )
+            const availableCards = flashcards.filter((card) => card.answer !== currentCard.answer)
             const wrongOptions = []
             while (wrongOptions.length < 3 && availableCards.length > 0) {
-                const randomIndex = Math.floor(
-                    Math.random() * availableCards.length
-                )
+                const randomIndex = Math.floor(Math.random() * availableCards.length)
                 wrongOptions.push(availableCards[randomIndex].answer)
                 availableCards.splice(randomIndex, 1)
             }
@@ -90,14 +79,7 @@ export default function TaiLieuFlashcard({ params }: any) {
     // Navigation handlers
     const handleChangeIndex = useCallback(
         async (type: any) => {
-            const newIndex =
-                type === "next"
-                    ? index < flashcards.length - 1
-                        ? index + 1
-                        : 0
-                    : index > 0
-                    ? index - 1
-                    : flashcards.length - 1
+            const newIndex = type === "next" ? (index < flashcards.length - 1 ? index + 1 : 0) : index > 0 ? index - 1 : flashcards.length - 1
 
             setIndex(newIndex)
             setIsFlipped(false)
@@ -143,9 +125,7 @@ export default function TaiLieuFlashcard({ params }: any) {
     // Quiz answer handler
     const handleQuizAnswer = async (selectedAnswer: any, idx: any) => {
         const isCorrect = selectedAnswer === flashcards[index].answer
-        toast[isCorrect ? "success" : "error"](
-            isCorrect ? "Chính xác, giỏi quá" : "Sai rồi, thử lại nhé! ^^"
-        )
+        toast[isCorrect ? "success" : "error"](isCorrect ? "Chính xác, giỏi quá" : "Sai rồi, thử lại nhé! ^^")
         setSelectedAnswers({
             ...selectedAnswers,
             [idx]: isCorrect ? "correct" : "incorrect",
@@ -197,30 +177,16 @@ export default function TaiLieuFlashcard({ params }: any) {
     return (
         <div className="flex items-center justify-center">
             <div className="w-full md:w-[1000px] xl:w-[1200px] py-5 pt-20">
-                <div
-                    className="px-3 md:px-0 focus-visible:outline-none min-h-screen"
-                    onKeyDown={handleKeyDown}
-                    tabIndex={0}
-                >
+                <div className="px-3 md:px-0 focus-visible:outline-none min-h-screen" onKeyDown={handleKeyDown} tabIndex={0}>
                     <div className="w-full flex items-center justify-center h-[90%] flex-col gap-5">
                         <div className="w-full flex flex-col md:flex-row gap-5 items-start">
                             <div className="w-full flex flex-col gap-5">
                                 {/* Main Flashcard Container */}
-                                <div
-                                    className=" relative w-full h-[500px] border border-white/10 rounded-lg  shadow-md bg-white dark:bg-slate-800/50 dark:text-white"
-                                    style={{ perspective: "1000px" }}
-                                    onClick={
-                                        feature === FEATURES.FLASHCARD
-                                            ? () => setIsFlipped(!isFlipped)
-                                            : undefined
-                                    }
-                                >
+                                <div className=" relative w-full h-[500px] border border-white/10 rounded-lg  shadow-md bg-white dark:bg-slate-800/50 dark:text-white" style={{ perspective: "1000px" }} onClick={feature === FEATURES.FLASHCARD ? () => setIsFlipped(!isFlipped) : undefined}>
                                     {/* Flashcard Feature */}
                                     {feature === FEATURES.FLASHCARD && (
                                         <div
-                                            className={`rounded-lg  cursor-pointer absolute inset-0 w-full h-full transition-transform duration-500 transform ${
-                                                isFlipped ? "rotate-y-180" : ""
-                                            }`}
+                                            className={`rounded-lg  cursor-pointer absolute inset-0 w-full h-full transition-transform duration-500 transform ${isFlipped ? "rotate-y-180" : ""}`}
                                             style={{
                                                 transformStyle: "preserve-3d",
                                             }}
@@ -229,42 +195,25 @@ export default function TaiLieuFlashcard({ params }: any) {
                                             <div
                                                 className="rounded-lg  absolute inset-0 bg-white dark:bg-slate-800/50 flex flex-col items-center justify-center backface-hidden p-5"
                                                 style={{
-                                                    backfaceVisibility:
-                                                        "hidden",
+                                                    backfaceVisibility: "hidden",
                                                 }}
                                             >
                                                 <div className="flex items-center gap-2 mb-4">
-                                                    <p className="text-2xl font-semibold">
-                                                        {
-                                                            flashcards[index]
-                                                                ?.question
-                                                        }
-                                                    </p>
+                                                    <p className="text-2xl font-semibold">{flashcards[index]?.question}</p>
                                                 </div>
 
-                                                <p className="text-gray-500 text-sm">
-                                                    (Click to flip)
-                                                </p>
+                                                <p className="text-gray-500 text-sm">(Click to flip)</p>
                                             </div>
 
                                             {/* Back Side */}
                                             <div
                                                 className="rounded-lg  absolute inset-0 bg-white dark:bg-slate-800/50 flex flex-col items-center justify-center p-5 backface-hidden"
                                                 style={{
-                                                    backfaceVisibility:
-                                                        "hidden",
-                                                    transform:
-                                                        "rotateY(180deg)",
+                                                    backfaceVisibility: "hidden",
+                                                    transform: "rotateY(180deg)",
                                                 }}
                                             >
-                                                {isFlipped && (
-                                                    <p className="text-lg ">
-                                                        {
-                                                            flashcards[index]
-                                                                ?.answer
-                                                        }
-                                                    </p>
-                                                )}
+                                                {isFlipped && <p className="text-lg ">{flashcards[index]?.answer}</p>}
                                             </div>
                                         </div>
                                     )}
@@ -274,74 +223,29 @@ export default function TaiLieuFlashcard({ params }: any) {
                                         <div className="p-5 h-full flex flex-col">
                                             <div className="flex items-center justify-between">
                                                 <div className="flex items-center gap-1">
-                                                    <h1 className="text-xl font-bold ">
-                                                        Chọn đáp án đúng
-                                                    </h1>
+                                                    <h1 className="text-xl font-bold ">Chọn đáp án đúng</h1>
                                                 </div>
-                                                <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">
-                                                    Quiz
-                                                </span>
+                                                <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">Quiz</span>
                                             </div>
-                                            <p className=" mb-4 text-gray-500">
-                                                {" "}
-                                                (nếu không có đáp án đúng vui
-                                                lòng bấm bỏ qua)
-                                            </p>
-                                            <p className="text-lg mb-6">
-                                                {flashcards[index]?.question}
-                                            </p>
+                                            <p className=" mb-4 text-gray-500"> (nếu không có đáp án đúng vui lòng bấm bỏ qua)</p>
+                                            <p className="text-lg mb-6">{flashcards[index]?.question}</p>
                                             <div className="grid grid-cols-2 gap-5 flex-1">
-                                                {quizOptions.map(
-                                                    (option, idx) => (
-                                                        <Button
-                                                            key={idx}
-                                                            variant="secondary"
-                                                            onClick={() =>
-                                                                handleQuizAnswer(
-                                                                    option,
-                                                                    idx
-                                                                )
-                                                            }
-                                                            disabled={
-                                                                !!selectedAnswers[
-                                                                    idx
-                                                                ]
-                                                            }
-                                                            className={` h-full w-full relative text-white transition-colors
-                                                                    ${
-                                                                        selectedAnswers[
-                                                                            idx
-                                                                        ] ===
-                                                                        "correct"
-                                                                            ? "!border-green-500 border-2 tada"
-                                                                            : ""
-                                                                    }
-                                                                    ${
-                                                                        selectedAnswers[
-                                                                            idx
-                                                                        ] ===
-                                                                        "incorrect"
-                                                                            ? "!border-red-500 border-2 shake"
-                                                                            : ""
-                                                                    }
+                                                {quizOptions.map((option, idx) => (
+                                                    <Button
+                                                        key={idx}
+                                                        variant="secondary"
+                                                        onClick={() => handleQuizAnswer(option, idx)}
+                                                        disabled={!!selectedAnswers[idx]}
+                                                        className={` h-full w-full relative text-white transition-colors
+                                                                    ${selectedAnswers[idx] === "correct" ? "!border-green-500 border-2 tada" : ""}
+                                                                    ${selectedAnswers[idx] === "incorrect" ? "!border-red-500 border-2 shake" : ""}
                                                                     `}
-                                                        >
-                                                            <div className="absolute top-1 left-1 h-8 w-8 flex items-center justify-center rounded-full bg-gray-500 text-gray-900 dark:text-white/80  dark:bg-slate-900/50">
-                                                                {idx + 1}
-                                                            </div>
-                                                            <p className="flex-1 text-center px-2 break-words whitespace-normal">
-                                                                {option}
-                                                            </p>
-                                                        </Button>
-                                                    )
-                                                )}
-                                                {quizOptions.length < 4 && (
-                                                    <p className="text-red-500">
-                                                        Cảnh báo: Chưa đủ đáp án
-                                                        để trộn ngẫu nhiên (Yêu
-                                                        cầu trên 4)
-                                                    </p>
-                                                )}
+                                                    >
+                                                        <div className="absolute top-1 left-1 h-8 w-8 flex items-center justify-center rounded-full bg-gray-500 text-gray-900 dark:text-white/80  dark:bg-slate-900/50">{idx + 1}</div>
+                                                        <p className="flex-1 text-center px-2 break-words whitespace-normal">{option}</p>
+                                                    </Button>
+                                                ))}
+                                                {quizOptions.length < 4 && <p className="text-red-500">Cảnh báo: Chưa đủ đáp án để trộn ngẫu nhiên (Yêu cầu trên 4)</p>}
                                             </div>
                                         </div>
                                     )}
@@ -350,19 +254,11 @@ export default function TaiLieuFlashcard({ params }: any) {
                                 {/* Navigation Controls */}
 
                                 <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 rounded-md overflow-hidden w-full flex items-center justify-between shadow-md text-2xl">
-                                    <div
-                                        className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer"
-                                        onClick={() =>
-                                            handleProgress("unknown")
-                                        }
-                                    >
+                                    <div className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer" onClick={() => handleProgress("unknown")}>
                                         <GrFormPrevious />
                                         <p className="text-sm">Lùi lại</p>
                                     </div>
-                                    <div
-                                        className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer"
-                                        onClick={() => handleProgress("known")}
-                                    >
+                                    <div className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer" onClick={() => handleProgress("known")}>
                                         <GrFormNext />
                                         <p className="text-sm">Tiến tới</p>
                                     </div>
@@ -378,18 +274,7 @@ export default function TaiLieuFlashcard({ params }: any) {
                                             Flashcard: FEATURES.FLASHCARD,
                                             Quiz: FEATURES.QUIZ,
                                         }).map(([name, value]) => (
-                                            <Button
-                                                key={value}
-                                                onClick={() =>
-                                                    setFeature(value)
-                                                }
-                                                variant={
-                                                    feature === value
-                                                        ? "default"
-                                                        : "secondary"
-                                                }
-                                                className={`text-white transition-colors  border border-white/10 `}
-                                            >
+                                            <Button key={value} onClick={() => setFeature(value)} variant={feature === value ? "default" : "secondary"} className={`text-white transition-colors  border border-white/10 `}>
                                                 {name}
                                             </Button>
                                         ))}
@@ -409,11 +294,7 @@ export default function TaiLieuFlashcard({ params }: any) {
                                             <div
                                                 className="h-full bg-primary"
                                                 style={{
-                                                    width: `${
-                                                        (progress.known.length /
-                                                            flashcards.length) *
-                                                        100
-                                                    }%`,
+                                                    width: `${(progress.known.length / flashcards.length) * 100}%`,
                                                 }}
                                             />
                                         </div>
@@ -425,21 +306,15 @@ export default function TaiLieuFlashcard({ params }: any) {
                                     <h2 className="font-medium">Phím tắt</h2>
                                     <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg space-y-3 text-gray-500 dark:text-white">
                                         <div className="flex items-center gap-2">
-                                            <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">
-                                                →
-                                            </kbd>
+                                            <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">→</kbd>
                                             <span className="">Tiến tới</span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">
-                                                ←
-                                            </kbd>
+                                            <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">←</kbd>
                                             <span className="">Lùi lại</span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">
-                                                Space
-                                            </kbd>
+                                            <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Space</kbd>
                                             <span className="">Lật thẻ </span>
                                         </div>
                                     </div>

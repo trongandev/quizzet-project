@@ -1,160 +1,160 @@
-"use client";
-import { GET_API } from "@/lib/fetchAPI";
-import React, { useEffect, useState, useCallback, Suspense } from "react";
-import Cookies from "js-cookie";
-import { EdgeSpeechTTS } from "@lobehub/tts";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, ChevronLeft, ChevronRight, Eye, Lightbulb, Send, Volume2 } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { LoadingScreen } from "@/components/LoadingScreen";
-import Loading from "@/components/ui/loading";
-import { Switch } from "@/components/ui/switch";
+"use client"
+import { GET_API } from "@/lib/fetchAPI"
+import React, { useEffect, useState, useCallback, Suspense } from "react"
+import Cookies from "js-cookie"
+import { EdgeSpeechTTS } from "@lobehub/tts"
+import { Button } from "@/components/ui/button"
+import { ArrowLeft, ChevronLeft, ChevronRight, Eye, Lightbulb, Send, Volume2 } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
+import { LoadingScreen } from "@/components/LoadingScreen"
+import Loading from "@/components/ui/loading"
+import { Switch } from "@/components/ui/switch"
 const FEATURES = {
     FLASHCARD: 1,
     QUIZ: 2,
     LISTENING: 3,
     FILL_BLANK: 4,
-};
+}
 
 export default function PractiveFlashcard({ params }) {
-    const [isFlipped, setIsFlipped] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [index, setIndex] = useState(0);
-    const [feature, setFeature] = useState(FEATURES.FLASHCARD);
-    const [showAns, setShowAns] = useState(false);
-    const [flashcards, setFlashcards] = useState([]);
-    const [inputAnswer, setInputAnswer] = useState("");
-    const [progress, setProgress] = useState({ known: [], unknown: [] });
-    const [quizOptions, setQuizOptions] = useState([]);
-    const [loadingAudio, setLoadingAudio] = useState(false);
+    const [isFlipped, setIsFlipped] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [index, setIndex] = useState(0)
+    const [feature, setFeature] = useState(FEATURES.FLASHCARD)
+    const [showAns, setShowAns] = useState(false)
+    const [flashcards, setFlashcards] = useState([])
+    const [inputAnswer, setInputAnswer] = useState("")
+    const [progress, setProgress] = useState({ known: [], unknown: [] })
+    const [quizOptions, setQuizOptions] = useState([])
+    const [loadingAudio, setLoadingAudio] = useState(false)
 
     // random moder
-    const [isRandomMode, setIsRandomMode] = useState(false);
-    const [isRandomFeature, setIsRandomFeature] = useState(false);
-    const [selectedAnswers, setSelectedAnswers] = useState({});
-    const [isCorrectAns, setIsCorrectAns] = useState(null);
-    const [voiceSetting, setVoiceSetting] = useState();
-    const [languageFC, setLanguageFC] = useState("en-US");
-    const [isShiftDisabled, setIsShiftDisabled] = useState(false);
-    const router = useRouter();
+    const [isRandomMode, setIsRandomMode] = useState(false)
+    const [isRandomFeature, setIsRandomFeature] = useState(false)
+    const [selectedAnswers, setSelectedAnswers] = useState({})
+    const [isCorrectAns, setIsCorrectAns] = useState(null)
+    const [voiceSetting, setVoiceSetting] = useState()
+    const [languageFC, setLanguageFC] = useState("en-US")
+    const [isShiftDisabled, setIsShiftDisabled] = useState(false)
+    const router = useRouter()
     const shuffle = (array) => {
         let currentIndex = array.length,
-            randomIndex;
+            randomIndex
         while (currentIndex != 0) {
-            randomIndex = Math.floor(Math.random() * currentIndex);
-            currentIndex--;
-            [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            randomIndex = Math.floor(Math.random() * currentIndex)
+            currentIndex--
+            ;[array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]]
         }
-        return array;
-    };
+        return array
+    }
     // Fetch flashcards data
 
     useEffect(() => {
         const fetchFlashCards = async () => {
             try {
-                setLoading(true);
-                const token = Cookies.get("token");
-                const req = await GET_API(`/flashcards/${params?.slug}`, token);
+                setLoading(true)
+                const token = Cookies.get("token")
+                const req = await GET_API(`/flashcards/${params?.slug}`, token)
                 if (req.ok) {
-                    const result = req?.listFlashCards?.flashcards;
-                    setLanguageFC(req?.listFlashCards?.language);
-                    setFlashcards(shuffle(result));
-                    generateQuizOptions(result[0]);
+                    const result = req?.listFlashCards?.flashcards
+                    setLanguageFC(req?.listFlashCards?.language)
+                    setFlashcards(shuffle(result))
+                    generateQuizOptions(result[0])
 
-                    const savedVoiceString = JSON.parse(localStorage.getItem("defaultVoices") || "{}");
-                    setVoiceSetting(savedVoiceString);
+                    const savedVoiceString = JSON.parse(localStorage.getItem("defaultVoices") || "{}")
+                    setVoiceSetting(savedVoiceString)
                 } else {
                     toast.error("Không tìm thấy flashcards", {
                         description: "Vui lòng kiểm tra lại slug hoặc tạo flashcards mới.",
                         duration: 3000,
-                    });
+                    })
                 }
             } catch (error) {
                 toast.error("Lỗi khi tải flashcards", {
                     description: error.message,
                     duration: 3000,
-                });
+                })
             } finally {
-                setLoading(false);
+                setLoading(false)
             }
-        };
-        fetchFlashCards();
-    }, [params?.slug]);
+        }
+        fetchFlashCards()
+    }, [params?.slug])
 
     useEffect(() => {
         if (flashcards.length > 0) {
-            generateQuizOptions(flashcards[0]);
+            generateQuizOptions(flashcards[0])
         }
-    }, [flashcards]);
+    }, [flashcards])
 
     const generateQuizOptions = useCallback(
         (currentCard) => {
-            if (!currentCard || flashcards.length < 4) return;
+            if (!currentCard || flashcards.length < 4) return
 
             // Đáp án đúng
-            const correctOption = currentCard.title;
+            const correctOption = currentCard.title
 
             // Các đáp án sai
-            const availableCards = flashcards.filter((card) => card._id !== currentCard._id);
-            const wrongOptions = [];
+            const availableCards = flashcards.filter((card) => card._id !== currentCard._id)
+            const wrongOptions = []
             while (wrongOptions.length < 3 && availableCards.length > 0) {
-                const randomIndex = Math.floor(Math.random() * availableCards.length);
-                wrongOptions.push(availableCards[randomIndex].title);
-                availableCards.splice(randomIndex, 1);
+                const randomIndex = Math.floor(Math.random() * availableCards.length)
+                wrongOptions.push(availableCards[randomIndex].title)
+                availableCards.splice(randomIndex, 1)
             }
 
             // Trộn đáp án đúng và đáp án sai
-            const options = [correctOption, ...wrongOptions];
-            setQuizOptions(options.sort(() => Math.random() - 0.5));
+            const options = [correctOption, ...wrongOptions]
+            setQuizOptions(options.sort(() => Math.random() - 0.5))
         },
         [flashcards]
-    );
+    )
 
-    const [tts] = useState(() => new EdgeSpeechTTS({ locale: "en-US" }));
+    const [tts] = useState(() => new EdgeSpeechTTS({ locale: "en-US" }))
 
     const speakWord = useCallback(
         async (text, language) => {
             try {
-                setLoadingAudio(true);
+                setLoadingAudio(true)
                 const response = await tts.create({
                     input: text,
                     options: {
                         voice: language !== undefined ? voiceSetting[language] : voiceSetting[languageFC],
                     },
-                });
+                })
 
-                const audioBuffer = await response.arrayBuffer();
-                const blob = new Blob([audioBuffer], { type: "audio/mpeg" });
-                const url = URL.createObjectURL(blob);
-                const audio = new Audio(url);
+                const audioBuffer = await response.arrayBuffer()
+                const blob = new Blob([audioBuffer], { type: "audio/mpeg" })
+                const url = URL.createObjectURL(blob)
+                const audio = new Audio(url)
 
                 audio.addEventListener("ended", () => {
-                    URL.revokeObjectURL(url);
-                });
+                    URL.revokeObjectURL(url)
+                })
 
-                await audio.play();
+                await audio.play()
             } catch (error) {
-                console.error("TTS Error:", error);
+                console.error("TTS Error:", error)
                 toast.error("Không có kết nối mạng", {
                     description: error.message,
                     duration: 3000,
                     position: "top-center",
-                });
+                })
             } finally {
                 setTimeout(() => {
-                    setLoadingAudio(false);
-                }, 500);
+                    setLoadingAudio(false)
+                }, 500)
             }
         },
         [tts, voiceSetting]
-    );
+    )
 
     // Navigation handlers
     const handleChangeIndex = useCallback(
         async (type) => {
-            let newIndex;
+            let newIndex
 
             // if (isRandomMode) {
             //     // Generate random index different from current
@@ -163,155 +163,155 @@ export default function PractiveFlashcard({ params }) {
             //     } while (newIndex === index && flashcards.length > 1);
             // } else {
             // }
-            newIndex = type === "next" ? (index < flashcards.length - 1 ? index + 1 : 0) : index > 0 ? index - 1 : flashcards.length - 1;
+            newIndex = type === "next" ? (index < flashcards.length - 1 ? index + 1 : 0) : index > 0 ? index - 1 : flashcards.length - 1
 
-            setIndex(newIndex);
-            setIsFlipped(false);
-            setInputAnswer("");
-            setShowAns(false);
+            setIndex(newIndex)
+            setIsFlipped(false)
+            setInputAnswer("")
+            setShowAns(false)
 
             if (feature === FEATURES.FLASHCARD || feature === FEATURES.LISTENING) {
-                await speakWord(flashcards[newIndex].title, flashcards[newIndex].language);
+                await speakWord(flashcards[newIndex].title, flashcards[newIndex].language)
             }
 
-            generateQuizOptions(flashcards[newIndex]);
+            generateQuizOptions(flashcards[newIndex])
         },
         [index, flashcards, feature, isRandomMode, isRandomFeature]
-    );
+    )
 
     // Progress tracking
     const handleProgress = useCallback(
         (type) => {
-            if (loadingAudio === true) return; // Prevent progress change while audio is playing
-            const currentId = flashcards[index]._id;
+            if (loadingAudio === true) return // Prevent progress change while audio is playing
+            const currentId = flashcards[index]._id
             if (type === "known") {
                 setProgress((prev) => ({
                     ...prev,
                     known: [...new Set([...prev.known, currentId])],
                     unknown: prev.unknown.filter((id) => id !== currentId),
-                }));
-                handleChangeIndex("next");
+                }))
+                handleChangeIndex("next")
             } else {
                 setProgress((prev) => ({
                     ...prev,
                     unknown: [...new Set([...prev.unknown, currentId])],
                     known: prev.known.filter((id) => id !== currentId),
-                }));
-                handleChangeIndex("prev");
+                }))
+                handleChangeIndex("prev")
             }
         },
         [index, flashcards, loadingAudio]
-    );
+    )
 
     const handlePlayAudio = (method) => {
         if (method == "correct") {
-            const audio = new Audio("/audio/correct.mp3");
-            audio.play();
+            const audio = new Audio("/audio/correct.mp3")
+            audio.play()
         } else if (method == "wrong") {
-            const audio = new Audio("/audio/wrong.mp3");
-            audio.play();
+            const audio = new Audio("/audio/wrong.mp3")
+            audio.play()
         }
-    };
+    }
 
     // Quiz answer handler
     const handleQuizAnswer = async (selectedAnswer, idx) => {
-        const isCorrect = selectedAnswer === flashcards[index].title;
+        const isCorrect = selectedAnswer === flashcards[index].title
         toast[isCorrect ? "success" : "error"](isCorrect ? "Chính xác, giỏi quá" : "Sai rồi, thử lại nhé! ^^", {
             duration: 2000,
             position: "top-center",
-        });
+        })
         // messageApi[isCorrect ? "success" : "error"](isCorrect ? "Chính xác, giỏi quá" : "Sai rồi, thử lại nhé! ^^");
         setSelectedAnswers({
             ...selectedAnswers,
             [idx]: isCorrect ? "correct" : "incorrect",
-        });
+        })
         if (isCorrect) {
-            handlePlayAudio("correct");
-            await speakWord(flashcards[index].title, flashcards[index].language);
+            handlePlayAudio("correct")
+            await speakWord(flashcards[index].title, flashcards[index].language)
 
             setTimeout(() => {
-                handleProgress("known");
-                setSelectedAnswers({});
-            }, 1000);
+                handleProgress("known")
+                setSelectedAnswers({})
+            }, 1000)
         } else {
-            handlePlayAudio("wrong");
+            handlePlayAudio("wrong")
             setTimeout(() => {
                 setSelectedAnswers((prev) => ({
                     ...prev,
                     [idx]: null,
-                }));
-            }, 820);
+                }))
+            }, 820)
         }
-    };
+    }
 
     // Listening practice handler
     const checkListeningAnswer = useCallback(() => {
-        const isCorrect = inputAnswer.toLowerCase() === flashcards[index].title.toLowerCase();
+        const isCorrect = inputAnswer.toLowerCase() === flashcards[index].title.toLowerCase()
         toast[isCorrect ? "success" : "error"](isCorrect ? "Chính xác, giỏi quá" : "Sai rồi, thử lại nhé! ^^", {
             duration: 2000,
             position: "top-center",
-        });
+        })
         // messageApi[isCorrect ? "success" : "error"](isCorrect ? "Chính xác, giỏi quá" : "Sai rồi, thử lại nhé! ^^");
-        setIsCorrectAns(isCorrect ? "correct" : "incorrect");
+        setIsCorrectAns(isCorrect ? "correct" : "incorrect")
         if (isCorrect) {
-            handlePlayAudio("correct");
+            handlePlayAudio("correct")
             setTimeout(() => {
-                handleProgress("known");
-                setIsCorrectAns(null); // Reset về null thay vì false
-            }, 1000);
+                handleProgress("known")
+                setIsCorrectAns(null) // Reset về null thay vì false
+            }, 1000)
         } else {
-            handlePlayAudio("wrong");
+            handlePlayAudio("wrong")
             setTimeout(() => {
-                setIsCorrectAns(null);
-            }, 820);
+                setIsCorrectAns(null)
+            }, 820)
         }
-    }, [inputAnswer, flashcards, index, handleProgress]);
+    }, [inputAnswer, flashcards, index, handleProgress])
 
     // Keyboard navigation
     const handleKeyDown = useCallback(
         async (e) => {
             switch (e.key.toLowerCase()) {
                 case "alt":
-                    e.preventDefault();
+                    e.preventDefault()
                     if (feature === FEATURES.LISTENING || feature === FEATURES.FILL_BLANK) {
-                        setShowAns((prev) => !prev);
+                        setShowAns((prev) => !prev)
                         if (!showAns) {
-                            setInputAnswer(flashcards[index].title); // Hiển thị đáp án khi bấm space
+                            setInputAnswer(flashcards[index].title) // Hiển thị đáp án khi bấm space
                         }
                     }
-                    break;
+                    break
                 case "arrowleft":
-                    if (loadingAudio === true) return; // Prevent progress change while audio is playing
-                    handleChangeIndex("prev");
-                    break;
+                    if (loadingAudio === true) return // Prevent progress change while audio is playing
+                    handleChangeIndex("prev")
+                    break
                 case "arrowright":
-                    if (loadingAudio === true) return; // Prevent progress change while audio is playing
-                    handleChangeIndex("next");
-                    break;
+                    if (loadingAudio === true) return // Prevent progress change while audio is playing
+                    handleChangeIndex("next")
+                    break
                 case " ":
                     if (feature === FEATURES.FLASHCARD) {
-                        setIsFlipped((prev) => !prev);
+                        setIsFlipped((prev) => !prev)
                     }
-                    break;
+                    break
                 case "enter":
                     if (feature === FEATURES.LISTENING || feature === FEATURES.FILL_BLANK) {
-                        checkListeningAnswer();
+                        checkListeningAnswer()
                     }
-                    break;
+                    break
                 case "shift":
                     // Phát âm thanh với accent đang được chọn
                     if (!isShiftDisabled) {
-                        setIsShiftDisabled(true);
-                        speakWord(flashcards[index]?.title, flashcards[index]?.language);
+                        setIsShiftDisabled(true)
+                        speakWord(flashcards[index]?.title, flashcards[index]?.language)
                         setTimeout(() => {
-                            setIsShiftDisabled(false);
-                        }, 2000);
+                            setIsShiftDisabled(false)
+                        }, 2000)
                     }
-                    break;
+                    break
             }
         },
         [feature, handleChangeIndex, checkListeningAnswer, handleProgress]
-    );
+    )
 
     if (flashcards === null || flashcards === undefined) {
         return (
@@ -323,14 +323,14 @@ export default function PractiveFlashcard({ params }) {
                     <ArrowLeft /> Quay lại
                 </Button>
             </div>
-        );
+        )
     }
 
     return (
         <Suspense fallback={LoadingScreen()}>
-            <div className="relative z-10 dark:bg-slate-700 py-5 px-3 flex justify-center items-center">
+            <div className="relative z-10 bg-gray-200 dark:bg-slate-700  px-3 flex justify-center items-center py-5">
                 <div className="w-full md:w-[1000px] xl:w-[1200px] focus-visible:outline-none min-h-screen" onKeyDown={handleKeyDown} tabIndex={0}>
-                    <div className="w-full flex items-center justify-center min-h-[80vh] flex-col gap-2 md:pt-14">
+                    <div className="w-full flex items-center justify-center min-h-[80vh] flex-col gap-2">
                         <div className="w-full text-left">
                             <Button className="w-full md:w-auto" variant="outline" onClick={() => router.back()}>
                                 <ArrowLeft /> Quay lại
@@ -358,29 +358,23 @@ export default function PractiveFlashcard({ params }) {
                         <div className="w-full flex flex-col md:flex-row gap-5 items-start">
                             <div className="w-full flex flex-col gap-5">
                                 {/* Main Flashcard Container */}
-                                <div
-                                    className=" relative w-full h-[500px] border border-white/10 rounded-md  shadow-md bg-white dark:bg-slate-800/50 dark:text-white"
-                                    style={{ perspective: "1000px" }}
-                                    onClick={feature === FEATURES.FLASHCARD ? () => setIsFlipped(!isFlipped) : undefined}>
+                                <div className=" relative w-full h-[500px] border border-white/10 rounded-md  shadow-md bg-white dark:bg-slate-800/50 dark:text-white" style={{ perspective: "1000px" }} onClick={feature === FEATURES.FLASHCARD ? () => setIsFlipped(!isFlipped) : undefined}>
                                     {/* Flashcard Feature */}
                                     {feature === FEATURES.FLASHCARD && (
-                                        <div
-                                            className={`rounded-lg  cursor-pointer absolute inset-0 w-full h-full transition-transform duration-500 transform ${isFlipped ? "rotate-y-180" : ""}`}
-                                            style={{ transformStyle: "preserve-3d" }}>
+                                        <div className={`rounded-lg  cursor-pointer absolute inset-0 w-full h-full transition-transform duration-500 transform ${isFlipped ? "rotate-y-180" : ""}`} style={{ transformStyle: "preserve-3d" }}>
                                             {/* Front Side */}
-                                            <div
-                                                className="rounded-lg  absolute inset-0 bg-white dark:bg-slate-800/50 flex flex-col items-center justify-center backface-hidden p-5"
-                                                style={{ backfaceVisibility: "hidden" }}>
+                                            <div className="rounded-lg  absolute inset-0 bg-white dark:bg-slate-800/50 flex flex-col items-center justify-center backface-hidden p-5" style={{ backfaceVisibility: "hidden" }}>
                                                 <div className="flex items-center gap-2 mb-4">
                                                     <p className="text-2xl font-semibold">{flashcards[index]?.title}</p>
                                                     <Button
                                                         onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            speakWord(flashcards[index]?.title, flashcards[index]?.language);
+                                                            e.stopPropagation()
+                                                            speakWord(flashcards[index]?.title, flashcards[index]?.language)
                                                         }}
                                                         className=""
                                                         disabled={loadingAudio}
-                                                        variant="outline">
+                                                        variant="outline"
+                                                    >
                                                         {loadingAudio ? <Loading /> : <Volume2 size={24} />}
                                                     </Button>
                                                 </div>
@@ -395,7 +389,8 @@ export default function PractiveFlashcard({ params }) {
                                                 style={{
                                                     backfaceVisibility: "hidden",
                                                     transform: "rotateY(180deg)",
-                                                }}>
+                                                }}
+                                            >
                                                 {isFlipped && <p className="text-lg ">{flashcards[index]?.define}</p>}
 
                                                 {flashcards[index]?.example && (
@@ -446,10 +441,9 @@ export default function PractiveFlashcard({ params }) {
                                                         className={`h-full relative text-gray-700 dark:text-white  transition-colors
                                                                 ${selectedAnswers[idx] === "correct" ? "!border-green-500 border-2 tada" : ""}
                                                                 ${selectedAnswers[idx] === "incorrect" ? "!border-red-500 border-2 shake" : ""}
-                                            `}>
-                                                        <div className="absolute top-1 left-1 h-8 w-8 flex items-center justify-center rounded-full bg-gray-300 text-gray-900 dark:text-white   dark:bg-slate-900/50">
-                                                            {idx + 1}
-                                                        </div>
+                                            `}
+                                                    >
+                                                        <div className="absolute top-1 left-1 h-8 w-8 flex items-center justify-center rounded-full bg-gray-300 text-gray-900 dark:text-white   dark:bg-slate-900/50">{idx + 1}</div>
                                                         <p className="flex-1 text-center px-2">{option}</p>
                                                     </Button>
                                                 ))}
@@ -508,11 +502,7 @@ export default function PractiveFlashcard({ params }) {
                                                 <p className=" mb-4">{flashcards[index]?.define}</p>
                                                 <div className="bg-gray-50 dark:bg-slate-800/50 p-4 rounded-lg mb-4">
                                                     <p className="text-gray-600 dark:text-white/70 font-medium mb-2">Ví dụ:</p>
-                                                    <p className="text-lg">
-                                                        {showAns
-                                                            ? flashcards[index]?.example?.[0]?.en
-                                                            : flashcards[index]?.example?.[0]?.en.replace(new RegExp(flashcards[index]?.title, "gi"), "______")}
-                                                    </p>
+                                                    <p className="text-lg">{showAns ? flashcards[index]?.example?.[0]?.en : flashcards[index]?.example?.[0]?.en.replace(new RegExp(flashcards[index]?.title, "gi"), "______")}</p>
                                                 </div>
                                                 <Input
                                                     type="text"
@@ -520,7 +510,7 @@ export default function PractiveFlashcard({ params }) {
                                                     onChange={(e) => setInputAnswer(e.target.value)}
                                                     onKeyDown={(e) => {
                                                         if (e.key === " ") {
-                                                            e.stopPropagation(); // Prevent space key event from bubbling up
+                                                            e.stopPropagation() // Prevent space key event from bubbling up
                                                         }
                                                     }}
                                                     placeholder="Điền từ còn thiếu..."
@@ -547,15 +537,11 @@ export default function PractiveFlashcard({ params }) {
                                 {/* Navigation Controls */}
 
                                 <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 rounded-md overflow-hidden w-full flex items-center justify-between shadow-md text-2xl">
-                                    <div
-                                        className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer"
-                                        onClick={() => handleProgress("unknown")}>
+                                    <div className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer" onClick={() => handleProgress("unknown")}>
                                         <ChevronLeft />
                                         <p className="text-sm">Lùi lại</p>
                                     </div>
-                                    <div
-                                        className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer"
-                                        onClick={() => handleProgress("known")}>
+                                    <div className="flex-1 p-3 hover:bg-primary hover:text-white flex flex-col gap-1 justify-center items-center cursor-pointer" onClick={() => handleProgress("known")}>
                                         <ChevronRight />
                                         <p className="text-sm">Tiến tới</p>
                                     </div>
@@ -648,5 +634,5 @@ export default function PractiveFlashcard({ params }) {
                 </div>
             </div>
         </Suspense>
-    );
+    )
 }

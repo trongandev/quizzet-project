@@ -1,20 +1,20 @@
-"use client";
-import { GET_API, POST_API } from "@/lib/fetchAPI";
-import React, { useEffect, useState, useCallback, Suspense } from "react";
-import Cookies from "js-cookie";
-import { HiMiniSpeakerWave } from "react-icons/hi2";
-import { BiSlideshow } from "react-icons/bi";
-import { TbConfetti } from "react-icons/tb";
-import { BsEmojiDizzy, BsEmojiExpressionless, BsEmojiFrown, BsEmojiLaughing, BsEmojiNeutral, BsEmojiSunglasses } from "react-icons/bs";
-import { Button } from "@/components/ui/button";
-import { EdgeSpeechTTS } from "@lobehub/tts";
-import { ArrowLeft } from "lucide-react";
-import { Flashcard } from "@/types/type";
-import { toast } from "sonner";
-import Loading from "@/components/ui/loading";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { useUser } from "@/context/userContext";
-import { useRouter } from "next/navigation";
+"use client"
+import { GET_API, POST_API } from "@/lib/fetchAPI"
+import React, { useEffect, useState, useCallback, Suspense } from "react"
+import Cookies from "js-cookie"
+import { HiMiniSpeakerWave } from "react-icons/hi2"
+import { BiSlideshow } from "react-icons/bi"
+import { TbConfetti } from "react-icons/tb"
+import { BsEmojiDizzy, BsEmojiExpressionless, BsEmojiFrown, BsEmojiLaughing, BsEmojiNeutral, BsEmojiSunglasses } from "react-icons/bs"
+import { Button } from "@/components/ui/button"
+import { EdgeSpeechTTS } from "@lobehub/tts"
+import { ArrowLeft } from "lucide-react"
+import { Flashcard } from "@/types/type"
+import { toast } from "sonner"
+import Loading from "@/components/ui/loading"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { useUser } from "@/context/userContext"
+import { useRouter } from "next/navigation"
 const rateOptions = [
     {
         label: "Quên hoàn toàn",
@@ -46,90 +46,90 @@ const rateOptions = [
         mean: "Bạn trả lời đúng hoàn hảo, không chút do dự.",
         icon: BsEmojiSunglasses,
     },
-];
+]
 
 export default function CFlashcardPracticeScience({ flashcards }: { flashcards: Flashcard[] }) {
-    const [currentIndex, setCurrentIndex] = useState(0); // Vị trí hiện tại trong danh sách flashcards
-    const [isFlipped, setIsFlipped] = useState(false);
-    const [isSuccess, setIsSuccess] = useState(false);
-    const [loadingAudio, setLoadingAudio] = useState(false);
-    const [sessionRatings, setSessionRatings] = useState<Array<{ id: string; quality: number; userId: string }>>([]); // Mảng lưu trữ các đánh giá trong phiên
-    const [voiceSetting, setVoiceSetting] = useState<any>({});
-    const token = Cookies.get("token") || "";
-    const { user } = useUser() || {};
-    const userId = user?._id || "";
-    const router = useRouter();
+    const [currentIndex, setCurrentIndex] = useState(0) // Vị trí hiện tại trong danh sách flashcards
+    const [isFlipped, setIsFlipped] = useState(false)
+    const [isSuccess, setIsSuccess] = useState(false)
+    const [loadingAudio, setLoadingAudio] = useState(false)
+    const [sessionRatings, setSessionRatings] = useState<Array<{ id: string; quality: number; userId: string }>>([]) // Mảng lưu trữ các đánh giá trong phiên
+    const [voiceSetting, setVoiceSetting] = useState<any>({})
+    const token = Cookies.get("token") || ""
+    const { user } = useUser() || {}
+    const userId = user?._id || ""
+    const router = useRouter()
     useEffect(() => {
-        const savedVoiceString = JSON.parse(localStorage.getItem("defaultVoices") || "{}");
-        setVoiceSetting(savedVoiceString);
-    }, [flashcards]);
+        const savedVoiceString = JSON.parse(localStorage.getItem("defaultVoices") || "{}")
+        setVoiceSetting(savedVoiceString)
+    }, [flashcards])
     // Lấy hoặc tạo mới defaultVoices trong localStorage
-    const [tts] = useState(() => new EdgeSpeechTTS({ locale: "en-US" }));
+    const [tts] = useState(() => new EdgeSpeechTTS({ locale: "en-US" }))
     const speakWord = useCallback(
         async (text: string, language: string) => {
             try {
-                setLoadingAudio(true);
+                setLoadingAudio(true)
                 const response = await tts.create({
                     input: text,
                     options: {
                         voice: voiceSetting[language],
                     },
-                });
+                })
 
-                const audioBuffer = await response.arrayBuffer();
-                const blob = new Blob([audioBuffer], { type: "audio/mpeg" });
-                const url = URL.createObjectURL(blob);
-                const audio = new Audio(url);
+                const audioBuffer = await response.arrayBuffer()
+                const blob = new Blob([audioBuffer], { type: "audio/mpeg" })
+                const url = URL.createObjectURL(blob)
+                const audio = new Audio(url)
 
                 audio.addEventListener("ended", () => {
-                    URL.revokeObjectURL(url);
-                });
+                    URL.revokeObjectURL(url)
+                })
 
-                await audio.play();
+                await audio.play()
             } catch (error) {
-                console.error("TTS Error:", error);
+                console.error("TTS Error:", error)
                 toast.error("Lỗi khi phát âm thanh:", {
                     description: error instanceof Error ? error.message : "Lỗi không xác định",
                     duration: 5000,
                     position: "top-center",
-                });
+                })
             } finally {
                 setTimeout(() => {
-                    setLoadingAudio(false);
-                }, 500);
+                    setLoadingAudio(false)
+                }, 500)
             }
         },
         [tts, voiceSetting]
-    );
+    )
 
     // Keyboard handlers
     const handleKeyDown = useCallback(
         (e: any) => {
-            if (loadingAudio) return; // Nếu đang phát âm thanh, không xử lý phím
+            if (loadingAudio) return // Nếu đang phát âm thanh, không xử lý phím
             if (e.key === "Enter") {
             } else if (e.key === "Shift") {
                 if (flashcards && flashcards.length > 0) {
-                    const currentCard = flashcards?.[currentIndex];
+                    const currentCard = flashcards?.[currentIndex]
                     if (currentCard) {
-                        speakWord(currentCard.title, currentCard.language || "english");
+                        speakWord(currentCard.title, currentCard.language || "english")
                     }
                 }
             } else if (e.key === "1") {
-                handleRate(0);
+                handleRate(0)
             } else if (e.key === "2") {
-                handleRate(1); // Rate option 2 = index 1
+                handleRate(1) // Rate option 2 = index 1
             } else if (e.key === "3") {
-                handleRate(2); // ✅ Sửa: Rate option 3 = index 2
+                handleRate(2) // ✅ Sửa: Rate option 3 = index 2
             } else if (e.key === "4") {
-                handleRate(3); // Rate option 4 = index 3
+                handleRate(3) // Rate option 4 = index 3
             } else if (e.key === "5") {
-                handleRate(4); // Rate option 5 = index 4
+                handleRate(4) // Rate option 5 = index 4
             } else if (e.key === "6") {
-                handleRate(5); // Rate option 6 = index 5
+                handleRate(5) // Rate option 6 = index 5
             }
         },
         [currentIndex, flashcards, loadingAudio, speakWord]
-    );
+    )
 
     // No data state
     if (flashcards.length === 0) {
@@ -145,45 +145,45 @@ export default function CFlashcardPracticeScience({ flashcards }: { flashcards: 
                     </Button>
                 </div>
             </div>
-        );
+        )
     }
 
-    const currentCard = flashcards[currentIndex];
+    const currentCard = flashcards[currentIndex]
 
     // === 3. Xử lý đánh giá chất lượng thẻ (0-5) ===
     const handleRate = (quality: number) => {
-        if (loadingAudio) return;
-        if (flashcards && flashcards.length === 0) return;
+        if (loadingAudio) return
+        if (flashcards && flashcards.length === 0) return
 
         // ✅ Tạo rating mới
-        const newRating = { id: flashcards[currentIndex]._id, quality: quality, userId: userId };
+        const newRating = { id: flashcards[currentIndex]._id, quality: quality, userId: userId }
 
         // ✅ Tính toán array mới trực tiếp
-        const updatedSessionRatings = [...sessionRatings, newRating];
+        const updatedSessionRatings = [...sessionRatings, newRating]
 
         // ✅ Update state
-        setSessionRatings(updatedSessionRatings);
+        setSessionRatings(updatedSessionRatings)
 
         toast.success(`Đã đánh giá thẻ với chất lượng ${quality + 1}`, {
             duration: 3000,
             position: "top-center",
-        });
+        })
 
         // Chuyển sang thẻ tiếp theo
-        setIsFlipped(false);
-        speakWord((flashcards && flashcards[currentIndex + 1]?.title) || "", (flashcards && flashcards[currentIndex + 1]?.language) || "english");
+        setIsFlipped(false)
+        speakWord((flashcards && flashcards[currentIndex + 1]?.title) || "", (flashcards && flashcards[currentIndex + 1]?.language) || "english")
 
         if (flashcards && currentIndex < flashcards.length - 1) {
-            setCurrentIndex((prevIndex) => prevIndex + 1);
+            setCurrentIndex((prevIndex) => prevIndex + 1)
         } else {
             // ✅ Sử dụng updatedSessionRatings thay vì sessionRatings
             if (updatedSessionRatings.length > 0) {
-                setIsSuccess(true);
+                setIsSuccess(true)
                 toast.success("Đã hoàn thành phiên ôn tập!", {
                     duration: 5000,
-                });
+                })
                 // ✅ Truyền updatedSessionRatings vào function
-                handleCompleteSession(updatedSessionRatings);
+                handleCompleteSession(updatedSessionRatings)
             }
         }
 
@@ -193,76 +193,76 @@ export default function CFlashcardPracticeScience({ flashcards }: { flashcards: 
 
         //     handleCompleteSession(); // Gửi các đánh giá hiện có
         // }
-    };
+    }
 
     // ✅ Update handleCompleteSession để nhận parameter
     const handleCompleteSession = async (ratingsToSend?: Array<{ id: string; quality: number; userId: string }>) => {
         // ✅ Sử dụng parameter hoặc fallback về state
-        const dataToSend = ratingsToSend || sessionRatings;
+        const dataToSend = ratingsToSend || sessionRatings
 
         if (dataToSend.length === 0) {
-            toast.error("Không có đánh giá nào để gửi");
-            return;
+            toast.error("Không có đánh giá nào để gửi")
+            return
         }
 
-        setSessionRatings([]); // Clear state
-        setCurrentIndex(1); // Reset current index
+        setSessionRatings([]) // Clear state
+        setCurrentIndex(1) // Reset current index
 
         toast.loading("Đang gửi dữ liệu ôn tập...", {
             duration: 5000,
             position: "top-center",
             id: "send-session",
-        });
+        })
 
         try {
-            const res = await POST_API(`/flashcards/batch-rate`, { cards: dataToSend }, "PUT", token);
-            const result = await res?.json();
+            const res = await POST_API(`/flashcards/batch-rate`, { cards: dataToSend }, "PUT", token)
+            const result = await res?.json()
 
             if (res?.ok) {
                 toast.success("Đã gửi dữ liệu ôn tập thành công!", {
                     duration: 10000,
                     position: "top-center",
                     id: "send-session",
-                });
+                })
 
-                setCurrentIndex(0);
+                setCurrentIndex(0)
                 // setFlashcards((prev) => (prev ? prev.slice(dataToSend.length) : []));
             } else {
                 toast.error(`Lỗi khi gửi dữ liệu ôn tập: ${result?.message || "Lỗi không xác định."}`, {
                     duration: 5000,
                     position: "top-center",
                     id: "send-session",
-                });
+                })
             }
         } catch (error: any) {
-            console.error("Lỗi khi gửi batch-rate:", error.message || "Lỗi không xác định.");
+            console.error("Lỗi khi gửi batch-rate:", error.message || "Lỗi không xác định.")
             toast.error(`Lỗi khi gửi dữ liệu ôn tập`, {
                 description: error instanceof Error ? error.message : "Lỗi không xác định",
                 duration: 5000,
                 position: "top-center",
                 id: "send-session",
-            });
+            })
         }
-    };
+    }
 
     const getColorMemorize = (name: string) => {
         switch (name) {
             case "Quên hoàn toàn":
-                return "hover:bg-red-700 text-red-400";
+                return "hover:bg-red-700 text-red-400"
             case "Rất khó nhớ":
-                return "hover:bg-red-600 text-red-200";
+                return "hover:bg-red-600 text-red-400"
             case "Khó nhớ":
-                return "hover:bg-orange-600 text-orange-200";
+                return "hover:bg-orange-600 text-orange-400"
             case "Bình thường":
-                return "hover:bg-yellow-600 text-yellow-200";
+                return "hover:bg-yellow-600 text-yellow-400"
             case "Dễ nhớ":
-                return "hover:bg-green-600 text-green-200";
+                return "hover:bg-green-600 text-green-400"
             case "Hoàn hảo":
-                return "hover:bg-emerald-700 text-emerald-200";
+                return "hover:bg-emerald-700 text-emerald-400"
             default:
-                return "bg-gray-500 hover:bg-gray-600 text-gray-200"; // Mặc định nếu không khớp
+                return "bg-gray-500 hover:bg-gray-600 text-gray-400" // Mặc định nếu không khớp
         }
-    };
+    }
 
     if (isSuccess) {
         return (
@@ -274,7 +274,7 @@ export default function CFlashcardPracticeScience({ flashcards }: { flashcards: 
                     <ArrowLeft /> Quay lại
                 </Button>
             </div>
-        );
+        )
     }
 
     return (
@@ -284,28 +284,22 @@ export default function CFlashcardPracticeScience({ flashcards }: { flashcards: 
                     <div className="w-full flex flex-col md:flex-row gap-5 items-start">
                         <div className="w-full flex flex-col gap-5">
                             {/* Main Flashcard Container */}
-                            <div
-                                className="relative w-full h-[500px] border border-white/10  shadow-md bg-white text-white dark:bg-slate-800/50 rounded-md"
-                                style={{ perspective: "1000px" }}
-                                onClick={() => setIsFlipped(!isFlipped)}>
+                            <div className="relative w-full h-[500px] border border-white/10  shadow-md bg-white text-white dark:bg-slate-800/50 rounded-md" style={{ perspective: "1000px" }} onClick={() => setIsFlipped(!isFlipped)}>
                                 {/* Flashcard Feature */}
-                                <div
-                                    className={`cursor-pointer absolute inset-0 w-full h-full transition-transform duration-500 transform ${isFlipped ? "rotate-y-180" : ""}`}
-                                    style={{ transformStyle: "preserve-3d" }}>
+                                <div className={`cursor-pointer absolute inset-0 w-full h-full transition-transform duration-500 transform ${isFlipped ? "rotate-y-180" : ""}`} style={{ transformStyle: "preserve-3d" }}>
                                     {/* Front Side */}
-                                    <div
-                                        className="absolute inset-0 bg-white dark:bg-slate-800/50 rounded-md flex flex-col items-center justify-center backface-hidden p-5"
-                                        style={{ backfaceVisibility: "hidden" }}>
+                                    <div className="absolute inset-0 bg-white dark:bg-slate-800/50 rounded-md flex flex-col items-center justify-center backface-hidden p-5" style={{ backfaceVisibility: "hidden" }}>
                                         <div className="flex items-center gap-2 mb-4">
                                             <p className="text-2xl font-semibold text-slate-800 dark:text-white/80">{currentCard?.title}</p>
                                             <Button
                                                 onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    speakWord(currentCard?.title, currentCard?.language || "english");
+                                                    e.stopPropagation()
+                                                    speakWord(currentCard?.title, currentCard?.language || "english")
                                                 }}
-                                                className="h-10 w-10 dark:text-white rounded-full"
+                                                className="h-10 w-10 text-gray-500 dark:text-white rounded-full"
                                                 disabled={loadingAudio}
-                                                variant="outline">
+                                                variant="outline"
+                                            >
                                                 {loadingAudio ? <Loading /> : <HiMiniSpeakerWave size={24} />}
                                             </Button>
                                         </div>
@@ -320,7 +314,8 @@ export default function CFlashcardPracticeScience({ flashcards }: { flashcards: 
                                         style={{
                                             backfaceVisibility: "hidden",
                                             transform: "rotateY(180deg)",
-                                        }}>
+                                        }}
+                                    >
                                         {isFlipped && <p className="text-lg text-gray-700 dark:text-white">{currentCard?.define}</p>}
 
                                         {currentCard?.example && (
@@ -350,12 +345,7 @@ export default function CFlashcardPracticeScience({ flashcards }: { flashcards: 
                                 {rateOptions.map((option, index) => (
                                     <Tooltip key={index}>
                                         <TooltipTrigger className="w-full">
-                                            <div
-                                                key={index}
-                                                className={`flex-1 w-full h-full px-1 py-3 flex flex-col gap-1 justify-start md:justify-center  items-center cursor-pointer ${getColorMemorize(
-                                                    option.label
-                                                )}`}
-                                                onClick={() => handleRate(index)}>
+                                            <div key={index} className={`flex-1 w-full h-full px-1 py-3 flex flex-col gap-1 justify-start md:justify-center  items-center cursor-pointer ${getColorMemorize(option.label)}`} onClick={() => handleRate(index)}>
                                                 <option.icon />
 
                                                 <p className="text-sm h-full flex items-center justify-center">
@@ -421,5 +411,5 @@ export default function CFlashcardPracticeScience({ flashcards }: { flashcards: 
                 </div>
             </div>
         </div>
-    );
+    )
 }

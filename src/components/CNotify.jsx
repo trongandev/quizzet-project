@@ -1,10 +1,10 @@
-import Image from "next/image";
-import React from "react";
-import { FaCheck, FaComment } from "react-icons/fa";
-import handleCompareDate from "@/lib/CompareDate";
-import { GrSystem } from "react-icons/gr";
-import { IoCloseSharp } from "react-icons/io5";
-import { MdOutlineReport } from "react-icons/md";
+import Image from "next/image"
+import React from "react"
+import { FaCheck, FaComment } from "react-icons/fa"
+import handleCompareDate from "@/lib/CompareDate"
+import { GrSystem } from "react-icons/gr"
+import { IoCloseSharp } from "react-icons/io5"
+import { MdOutlineReport } from "react-icons/md"
 
 export default function CNotify({ notify, handleRouter }) {
     return (
@@ -14,10 +14,7 @@ export default function CNotify({ notify, handleRouter }) {
                     switch (item.type) {
                         case "reject":
                             return (
-                                <div
-                                    onClick={() => handleRouter(item)}
-                                    key={index}
-                                    className="p-2 hover:bg-gray-200 dark:hover:bg-slate-800 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
+                                <div onClick={() => handleRouter(item)} key={index} className="p-2 hover:bg-gray-200 dark:hover:bg-slate-800 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
                                     <div className="w-12 h-12 flex items-center justify-center bg-red-500 text-white rounded-full">
                                         <IoCloseSharp size={20} />
                                     </div>
@@ -27,13 +24,10 @@ export default function CNotify({ notify, handleRouter }) {
                                     </div>
                                     {!item?.is_read && <div className="w-3 h-3 rounded-full bg-primary"></div>}
                                 </div>
-                            );
+                            )
                         case "approve":
                             return (
-                                <div
-                                    onClick={() => handleRouter(item)}
-                                    key={index}
-                                    className="p-2 hover:bg-gray-200 dark:hover:bg-slate-800 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
+                                <div onClick={() => handleRouter(item)} key={index} className="p-2 hover:bg-gray-200 dark:hover:bg-slate-800 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
                                     <div className="w-12 h-12 flex items-center justify-center bg-green-500 text-white rounded-full">
                                         <FaCheck size={16} />
                                     </div>
@@ -43,13 +37,10 @@ export default function CNotify({ notify, handleRouter }) {
                                     </div>
                                     {!item?.is_read && <div className="w-3 h-3 rounded-full bg-primary"></div>}
                                 </div>
-                            );
+                            )
                         case "system":
                             return (
-                                <div
-                                    onClick={() => handleRouter(item)}
-                                    key={index}
-                                    className="p-2 hover:bg-gray-200 dark:hover:bg-slate-800 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
+                                <div onClick={() => handleRouter(item)} key={index} className="p-2 hover:bg-gray-200 dark:hover:bg-slate-800 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
                                     <div className="w-12 h-12 flex items-center justify-center bg-cyan-500 text-white rounded-full">
                                         <GrSystem size={20} />
                                     </div>
@@ -59,13 +50,10 @@ export default function CNotify({ notify, handleRouter }) {
                                     </div>
                                     {!item?.is_read && <div className="w-3 h-3 rounded-full bg-primary"></div>}
                                 </div>
-                            );
+                            )
                         case "report":
                             return (
-                                <div
-                                    onClick={() => handleRouter(item)}
-                                    key={index}
-                                    className="p-2 hover:bg-gray-200 dark:hover:bg-slate-800 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
+                                <div onClick={() => handleRouter(item)} key={index} className="p-2 hover:bg-gray-200 dark:hover:bg-slate-800 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
                                     <div className="w-12 h-12 flex items-center justify-center bg-yellow-500 text-white rounded-full">
                                         <MdOutlineReport size={20} />
                                     </div>
@@ -75,21 +63,12 @@ export default function CNotify({ notify, handleRouter }) {
                                     </div>
                                     {!item?.is_read && <div className="w-3 h-3 rounded-full bg-primary"></div>}
                                 </div>
-                            );
+                            )
                         default:
                             return (
-                                <div
-                                    onClick={() => handleRouter(item)}
-                                    key={index}
-                                    className="p-2 hover:bg-gray-200 dark:hover:bg-slate-800 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
+                                <div onClick={() => handleRouter(item)} key={index} className="p-2 hover:bg-gray-200 dark:hover:bg-slate-800 flex items-center gap-2 cursor-pointer rounded-lg h-[80px]">
                                     <div className="w-12 h-12 relative">
-                                        <Image
-                                            src={item?.sender?.profilePicture || "/avatar.png"}
-                                            alt=""
-                                            className="object-cover h-full absolute overflow-hidden rounded-full"
-                                            fill
-                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                        />
+                                        <Image src={item?.sender?.profilePicture || "/avatar.png"} alt="" className="object-cover h-full absolute overflow-hidden rounded-full" fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                                         {item.type === "comment" && <FaComment className="absolute z-1 right-0 bottom-0 text-primary" />}
                                     </div>
                                     <div className="flex-1">
@@ -103,12 +82,12 @@ export default function CNotify({ notify, handleRouter }) {
                                     </div>
                                     {!item?.is_read && <div className="w-3 h-3 rounded-full bg-primary"></div>}
                                 </div>
-                            );
+                            )
                     }
                 })
             ) : (
                 <div className="p-2">Không có thông báo...</div>
             )}
         </>
-    );
+    )
 }

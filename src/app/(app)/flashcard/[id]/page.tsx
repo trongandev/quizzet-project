@@ -3,7 +3,6 @@ import { Metadata } from "next"
 import CFlashcardDetail from "@/components/flashcard/CFlashcardDetail"
 import { getCachedFlashcardDetail } from "@/lib/cacheData"
 
-// ✅ 2. Metadata cho SEO và caching
 export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
     try {
         const req = await getCachedFlashcardDetail(params.id)()

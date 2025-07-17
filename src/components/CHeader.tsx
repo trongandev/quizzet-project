@@ -122,7 +122,7 @@ export default function CHeader() {
                                             <Bell size={18} />
                                         </div>
                                     </PopoverTrigger>
-                                    <PopoverContent className="w-full md:w-[400px] max-h-[600px] overflow-y-scroll dark:text-white">
+                                    <PopoverContent className="md:w-[500px] max-h-[600px] overflow-y-scroll dark:text-white">
                                         <CNotify notify={notify} handleRouter={handleRouterNotify} />
                                     </PopoverContent>
                                 </Popover>

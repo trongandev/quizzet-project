@@ -181,7 +181,7 @@ export default function CQuizPage({ publicQuizData }: { publicQuizData: IQuiz[] 
                 </div>
                 <div className="">
                     <Tabs defaultValue="my" className="mt-8" value={tab} onValueChange={setTab}>
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-2 rounded-lg shadow-sm border dark:bg-slate-700">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 ">
                             <TabsList className="grid w-full sm:w-auto grid-cols-2 bg-gray-100 dark:bg-slate-600">
                                 <TabsTrigger value="my" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-primary">
                                     Quiz của tôi
@@ -194,7 +194,7 @@ export default function CQuizPage({ publicQuizData }: { publicQuizData: IQuiz[] 
                             <div className="flex items-center flex-col md:flex-row gap-3">
                                 <div className="relative w-full ">
                                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                                    <Input placeholder="Tìm kiếm flashcard..." className="pl-10 w-full md:w-64 " value={searchQuiz} onChange={(e) => handleSearchQuiz(e.target.value)} />
+                                    <Input placeholder="Tìm kiếm flashcard..." className="pl-10 w-full md:w-64 border border-gray-300 dark:border-white/10 " value={searchQuiz} onChange={(e) => handleSearchQuiz(e.target.value)} />
                                 </div>
                                 <Button onClick={() => router.push("/quiz/themcauhoi")} className="h-11 w-full md:w-auto px-10 relative group overflow-hidden  bg-gradient-to-r from-blue-500 to-purple-500 text-white">
                                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50  dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
