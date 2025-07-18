@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function RootLayout({ children }: any) {
     return (
-        <html lang="vi">
+        <html lang="vi" suppressHydrationWarning>
             <body>
                 <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
                     <SidebarProvider>

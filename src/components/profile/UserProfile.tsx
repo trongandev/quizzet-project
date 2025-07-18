@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import { IListFlashcard, IQuiz, IUser } from "@/types/type"
+import { IAchievement, IGamification, IListFlashcard, IQuiz, IUser } from "@/types/type"
 import handleCompareDate from "@/lib/CompareDate"
 import { useUser } from "@/context/userContext"
 import { Flame, BookOpen, Calendar, Crown, Zap, Mail } from "lucide-react"
@@ -23,8 +23,10 @@ interface PropsProfile {
     profile: IUser
     quiz: IQuiz[]
     flashcard: IListFlashcard[]
+    achievements: IAchievement[]
+    gamificationProfile: IGamification[]
 }
-export default function UserProfile({ profile, quiz, flashcard }: PropsProfile) {
+export default function UserProfile({ profile, quiz, flashcard, gamificationProfile, achievements }: PropsProfile) {
     const { user, refetchUser } = useUser() || {
         user: null,
         refetchUser: () => {},
@@ -151,7 +153,7 @@ export default function UserProfile({ profile, quiz, flashcard }: PropsProfile) 
                         </TabsContent>
 
                         <TabsContent value="achievements" className="space-y-6">
-                            <Achievement />
+                            <Achievement gamificationProfile={gamificationProfile} achievements={achievements} />
                         </TabsContent>
 
                         <TabsContent value="levels" className="space-y-6">

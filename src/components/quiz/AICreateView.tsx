@@ -195,7 +195,7 @@ export function AICreateView() {
                                 </div>
                             </div>
                             <div>
-                                <Label>Lựa chọn độ khó</Label>
+                                <Label>Lựa chọn cấp độ</Label>
                                 <div className="flex gap-2  flex-col md:flex-row ">
                                     {difficultyOptions.map((option) => (
                                         <Card key={option.value} className={`relative !ml-0 flex-1 p-3 rounded-lg cursor-pointer dark:border-white/10 ${difficulty === option.value ? option.color : "bg-white dark:bg-gray-800"} hover:shadow-md transition-shadow ml-2`} onClick={() => setDifficulty(option.value)}>

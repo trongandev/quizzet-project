@@ -274,4 +274,40 @@ export interface IActivity {
     timestamp: Date
 }
 
+export interface IAchievement {
+    _id: string
+    achievementId: string
+    name: string
+    description: string
+    xpReward: number
+    icon: string
+}
+
+export interface IUnlockedAchievement {
+    achievement: IAchievement[]
+    unlockedAt: Date
+}
+
+export interface IDailyProgress {
+    date: Date
+    reviewCardXP: number
+    addWordXP: number
+    createQuizXP: number
+    doQuizXP: number
+    rateQuizXP: number
+}
+
+export interface IGamification {
+    _id: string
+    user_id: IUser
+    xp: number
+    level: number
+    dailyStreak: {
+        current: number
+        lastActivityDate: Date
+    }
+    dailyProgress: IDailyProgress
+    achievements: IUnlockedAchievement[]
+}
+
 export type { IUser, INotify, IQuestion, IComment, IHistory, ISO, IQuiz, IDataQuiz, IListFlashcard, IProgress, Flashcard, Example, IMessage, IChat, IChatCommunity, IChatCommunityMessage }

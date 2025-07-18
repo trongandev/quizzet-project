@@ -27,43 +27,43 @@ export default async function DashboardPage() {
     const analyze = [
         {
             title: "Tổng người dùng",
-            value: res.total.user,
+            value: res?.total?.user,
             icon: <Users className="h-4 w-4 text-muted-foreground" />,
             description: "Tất cả người dùng trong hệ thống",
             bgColor: "dark:bg-gray-900/50",
-            change: res.percentageChanges.user,
+            change: res?.percentageChanges?.user,
         },
         {
             title: "Bài đăng",
-            value: res.total.quiz,
+            value: res?.total?.quiz,
             icon: <FileText className="h-4 w-4 text-muted-foreground" />,
             description: "Tất cả bài đăng trong hệ thống",
             bgColor: "dark:bg-purple-900/50",
-            change: res.percentageChanges.quiz,
+            change: res?.percentageChanges?.quiz,
         },
         {
             title: "Báo cáo",
-            value: res.total.report,
+            value: res?.total?.report,
             icon: <Flag className="h-4 w-4 text-muted-foreground" />,
             description: "Tất cả báo cáo trong hệ thống",
             bgColor: "dark:bg-red-900/50",
-            change: res.percentageChanges.report,
+            change: res?.percentageChanges?.report,
         },
         {
             title: "Bộ Flashcards",
-            value: res.total.listFlashCard || 0,
+            value: res?.total?.listFlashCard || 0,
             icon: <CreditCard className="h-4 w-4 text-muted-foreground" />,
             description: "Tất cả bộ thẻ học trong hệ thống",
             bgColor: "dark:bg-blue-900/50",
-            change: res.percentageChanges.listFlashCard,
+            change: res?.percentageChanges?.listFlashCard,
         },
         {
             title: "Tổng số từ vựng",
-            value: res.total.flashcard,
+            value: res?.total?.flashcard,
             icon: <WholeWord className="h-4 w-4 text-muted-foreground" />,
             description: "Tổng số từ vựng trong hệ thống",
             bgColor: "dark:bg-green-900/50",
-            change: res.percentageChanges.flashcard,
+            change: res?.percentageChanges?.flashcard,
         },
     ]
 
@@ -80,21 +80,22 @@ export default async function DashboardPage() {
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
-                {analyze.map((item, index) => (
-                    <Card className={`dark:border-white/10 ${item.bgColor}`} key={index}>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">{item.title}</CardTitle>
-                            {item.icon}
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{item.value}</div>
-                            <p className="text-xs text-muted-foreground">{item.description}</p>
-                            <p className="text-xs text-muted-foreground">
-                                <span className="">{item.change}%</span> so với tháng trước
-                            </p>
-                        </CardContent>
-                    </Card>
-                ))}
+                {analyze &&
+                    analyze.map((item, index) => (
+                        <Card className={`dark:border-white/10 ${item.bgColor}`} key={index}>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">{item.title}</CardTitle>
+                                {item.icon}
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">{item.value}</div>
+                                <p className="text-xs text-muted-foreground">{item.description}</p>
+                                <p className="text-xs text-muted-foreground">
+                                    <span className="">{item.change}%</span> so với tháng trước
+                                </p>
+                            </CardContent>
+                        </Card>
+                    ))}
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
@@ -115,7 +116,7 @@ export default async function DashboardPage() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4  max-h-[350px] overflow-y-auto">
-                        {res.activity.map((activity: IActivity, index: number) => (
+                        {res?.activity?.map((activity: IActivity, index: number) => (
                             <div className="flex items-center gap-3" key={index}>
                                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                                 <div className="text-sm">
