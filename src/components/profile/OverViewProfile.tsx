@@ -6,6 +6,9 @@ import { IGamification, ILevel } from "@/types/type"
 
 export default function OverViewProfile({ gamificationProfile, levels }: { gamificationProfile: IGamification; levels: ILevel[] }) {
     const currentLevel = levels[gamificationProfile.level]
+    if (!currentLevel) {
+        return <div className="text-center text-red-500">Cấp độ không hợp lệ</div>
+    }
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Recent Activity */}

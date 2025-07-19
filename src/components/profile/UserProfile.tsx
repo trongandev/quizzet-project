@@ -72,10 +72,12 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
                                 <div className="flex-1 text-center md:text-left">
                                     <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
                                         <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-300 ">{userProfile?.displayName || "N/A"}</h1>
-                                        <Badge variant="secondary" className="bg-blue-600 text-white flex items-center gap-1">
-                                            <Image src={levels[gamificationProfile.level].levelIcon} width={16} height={16} alt="" />
-                                            Cấp {currentLevel}
-                                        </Badge>
+                                        {levels && gamificationProfile && gamificationProfile.level && levels[gamificationProfile.level] && (
+                                            <Badge variant="secondary" className="bg-blue-600 text-white flex items-center gap-1">
+                                                <Image src={levels[gamificationProfile.level].levelIcon} width={16} height={16} alt="" />
+                                                Cấp {currentLevel}
+                                            </Badge>
+                                        )}
                                     </div>
                                     <p className="text-slate-400 mb-1">Học viên tập sự</p>
 
