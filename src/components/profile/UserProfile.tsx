@@ -2,13 +2,13 @@
 import React, { useEffect, useState } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import { IAchievement, IGamification, IListFlashcard, IQuiz, IUser } from "@/types/type"
+import { IAchievement, IGamification, ILevel, IListFlashcard, IQuiz, IUser } from "@/types/type"
 import handleCompareDate from "@/lib/CompareDate"
 import { useUser } from "@/context/userContext"
-import { Flame, BookOpen, Calendar, Crown, Zap, Mail } from "lucide-react"
+import { Flame, BookOpen, Calendar, Mail } from "lucide-react"
 import { Progress } from "../ui/progress"
 import UserFC from "../flashcard/UserFC"
 import Achievement from "@/components/profile/Achievement"
@@ -16,6 +16,8 @@ import LevelProfile from "@/components/profile/LevelProfile"
 import OverViewProfile from "@/components/profile/OverViewProfile"
 import UpdateProfile from "@/components/profile/UpdateProfile"
 import QuizInProfile from "@/components/profile/QuizInProfile"
+import InstructionEarnLevel from "@/components/profile/InstructionEarnLevel"
+import Image from "next/image"
 
 // Level configuration with unique designs
 
@@ -24,9 +26,10 @@ interface PropsProfile {
     quiz: IQuiz[]
     flashcard: IListFlashcard[]
     achievements: IAchievement[]
-    gamificationProfile: IGamification[]
+    gamificationProfile: IGamification
+    levels: ILevel[]
 }
-export default function UserProfile({ profile, quiz, flashcard, gamificationProfile, achievements }: PropsProfile) {
+export default function UserProfile({ profile, quiz, flashcard, gamificationProfile, achievements, levels }: PropsProfile) {
     const { user, refetchUser } = useUser() || {
         user: null,
         refetchUser: () => {},
@@ -34,12 +37,7 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
     const [userProfile, setUserProfile] = useState<IUser | null>(null)
     const [isSettingsOpen, setIsSettingsOpen] = useState(false)
     const [currentLevel] = useState(1)
-    const [currentXP] = useState(10)
-    const [dailyStreak] = useState(1)
 
-    const nextLevel = currentLevel + 1
-    const xpForNextLevel = nextLevel * 100
-    const xpProgress = (currentXP / xpForNextLevel) * 100
     useEffect(() => {
         const tempUser = user?._id === profile._id ? user : profile
         setUserProfile(tempUser)
@@ -75,7 +73,7 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
                                     <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
                                         <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-300 ">{userProfile?.displayName || "N/A"}</h1>
                                         <Badge variant="secondary" className="bg-blue-600 text-white flex items-center gap-1">
-                                            <BookOpen className="w-4 h-4" />
+                                            <Image src={levels[gamificationProfile.level].levelIcon} width={16} height={16} alt="" />
                                             Cấp {currentLevel}
                                         </Badge>
                                     </div>
@@ -92,12 +90,12 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
                                     </div>
                                     <div className="space-y-2">
                                         <div className="flex justify-between text-sm">
-                                            <span>{currentXP} XP</span>
-                                            <span>{xpForNextLevel} XP</span>
+                                            <span>{gamificationProfile?.xp || 0} XP</span>
+                                            <span>{achievements[gamificationProfile?.level - 1]?.xpReward || 0} XP</span>
                                         </div>
-                                        <Progress value={xpProgress} className="h-2" />
+                                        <Progress value={(gamificationProfile?.xp / achievements[gamificationProfile?.level - 1]?.xpReward) * 100 || 0} className="h-2" />
                                         <p className="text-xs text-slate-400">
-                                            Còn {xpForNextLevel - currentXP} XP để lên cấp {nextLevel}
+                                            Còn {achievements[gamificationProfile?.level - 1]?.xpReward - gamificationProfile?.xp || 0} XP để lên cấp {gamificationProfile?.level + 1 || 0}
                                         </p>
                                     </div>
                                 </div>
@@ -108,18 +106,18 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
                                         <div>
                                             <div className="flex items-center gap-1 text-orange-400">
                                                 <Flame className="w-4 h-4" />
-                                                <span className="font-bold">{dailyStreak}</span>
+                                                <span className="font-bold">{gamificationProfile?.dailyStreak?.current || 0}</span>
                                             </div>
                                             <p className="text-xs text-slate-400">Ngày liên tiếp</p>
                                         </div>
                                         <div>
-                                            <div className="text-yellow-400 font-bold">{currentXP}</div>
+                                            <div className="text-yellow-400 font-bold">{gamificationProfile?.xp || 0}</div>
                                             <p className="text-xs text-slate-400">Tổng XP</p>
                                         </div>
-                                        <div>
+                                        {/* <div>
                                             <div className="text-green-400 font-bold">156</div>
                                             <p className="text-xs text-slate-400">Thẻ đã học</p>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                             </div>
@@ -149,83 +147,19 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
                         </div>
 
                         <TabsContent value="overview" className="space-y-6">
-                            <OverViewProfile />
+                            {gamificationProfile && <OverViewProfile gamificationProfile={gamificationProfile} levels={levels} />}
                         </TabsContent>
 
                         <TabsContent value="achievements" className="space-y-6">
-                            <Achievement gamificationProfile={gamificationProfile} achievements={achievements} />
+                            {gamificationProfile && <Achievement gamificationProfile={gamificationProfile} achievements={achievements} />}
                         </TabsContent>
 
                         <TabsContent value="levels" className="space-y-6">
-                            <LevelProfile />
+                            {gamificationProfile && <LevelProfile gamificationProfile={gamificationProfile} levels={levels} />}
                         </TabsContent>
 
                         <TabsContent value="guide" className="space-y-6">
-                            <h2 className="text-2xl font-bold">Hướng dẫn kiếm XP</h2>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <Card className="dark:bg-slate-800 dark:border-slate-700">
-                                    <CardHeader>
-                                        <CardTitle className="flex items-center gap-2">
-                                            <Zap className="w-5 h-5 text-yellow-400" />
-                                            Cách kiếm điểm kinh nghiệm
-                                        </CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="space-y-4">
-                                        <div className="space-y-3">
-                                            <div className="flex justify-between items-center">
-                                                <span>Hoàn thành ôn tập một thẻ</span>
-                                                <Badge className="bg-green-600">+10 XP</Badge>
-                                            </div>
-                                            <div className="flex justify-between items-center">
-                                                <span>Đánh giá thẻ &apos;Hoàn hảo&apos; (5/5)</span>
-                                                <Badge className="bg-blue-600">+5 XP</Badge>
-                                            </div>
-                                            <div className="flex justify-between items-center">
-                                                <span>Hoàn thành một bộ thẻ</span>
-                                                <Badge className="bg-purple-600">+50 XP</Badge>
-                                            </div>
-                                            <div className="flex justify-between items-center">
-                                                <span>Thêm thẻ mới</span>
-                                                <Badge className="bg-orange-600">+5 XP</Badge>
-                                            </div>
-                                            <div className="flex justify-between items-center">
-                                                <span>Duy trì chuỗi ngày học</span>
-                                                <Badge className="bg-red-600">+20 XP</Badge>
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-
-                                <Card className="dark:bg-slate-800 dark:border-slate-700">
-                                    <CardHeader>
-                                        <CardTitle className="flex items-center gap-2">
-                                            <Crown className="w-5 h-5 text-purple-400" />
-                                            Hệ thống cấp độ
-                                        </CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="space-y-4">
-                                        <div className="space-y-3 dark:text-slate-300">
-                                            <div className="p-3 dark:bg-slate-700 rounded-lg">
-                                                <h4 className="font-semibold text-green-400 mb-2">Người mới (Cấp 1-5)</h4>
-                                                <p className="text-sm dark:text-slate-300">Học viên tập sự, Người khám phá từ vựng, Người làm chủ chữ cái...</p>
-                                            </div>
-                                            <div className="p-3 dark:bg-slate-700 rounded-lg">
-                                                <h4 className="font-semibold text-blue-400 mb-2">Trung cấp (Cấp 6-15)</h4>
-                                                <p className="text-sm dark:text-slate-300">Thợ rèn từ, Người kể chuyện, Đàm phán viên ngôn ngữ...</p>
-                                            </div>
-                                            <div className="p-3 dark:bg-slate-700 rounded-lg">
-                                                <h4 className="font-semibold text-purple-400 mb-2">Cao cấp (Cấp 16-25)</h4>
-                                                <p className="text-sm dark:text-slate-300">Người bạn của từ, Nhà thông thái ngôn ngữ, Nghệ sĩ từ vựng...</p>
-                                            </div>
-                                            <div className="p-3 dark:bg-slate-700 rounded-lg">
-                                                <h4 className="font-semibold text-yellow-400 mb-2">Bậc thầy (Cấp 26+)</h4>
-                                                <p className="text-sm dark:text-slate-300">Bậc thầy ngôn ngữ, Ngôn sứ từ vựng, Huyền thoại ngôn ngữ...</p>
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </div>
+                            <InstructionEarnLevel gamificationProfile={gamificationProfile} />
                         </TabsContent>
                     </Tabs>
                     <div className="">

@@ -284,17 +284,18 @@ export interface IAchievement {
 }
 
 export interface IUnlockedAchievement {
-    achievement: IAchievement[]
+    achievement: IAchievement
     unlockedAt: Date
+}
+
+export interface DailyTask {
+    count: number
+    taskId: string
 }
 
 export interface IDailyProgress {
     date: Date
-    reviewCardXP: number
-    addWordXP: number
-    createQuizXP: number
-    doQuizXP: number
-    rateQuizXP: number
+    tasks: DailyTask[]
 }
 
 export interface IGamification {
@@ -308,6 +309,14 @@ export interface IGamification {
     }
     dailyProgress: IDailyProgress
     achievements: IUnlockedAchievement[]
+}
+
+export interface ILevel {
+    _id: string
+    level: number
+    name: string
+    xpRequired: number
+    levelIcon: string
 }
 
 export type { IUser, INotify, IQuestion, IComment, IHistory, ISO, IQuiz, IDataQuiz, IListFlashcard, IProgress, Flashcard, Example, IMessage, IChat, IChatCommunity, IChatCommunityMessage }

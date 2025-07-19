@@ -1,8 +1,11 @@
-import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Brain, Calendar, Crown, Zap } from "lucide-react";
+import React from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Brain, Calendar, Crown } from "lucide-react"
+import Image from "next/image"
+import { IGamification, ILevel } from "@/types/type"
 
-export default function OverViewProfile() {
+export default function OverViewProfile({ gamificationProfile, levels }: { gamificationProfile: IGamification; levels: ILevel[] }) {
+    const currentLevel = levels[gamificationProfile.level]
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Recent Activity */}
@@ -67,17 +70,18 @@ export default function OverViewProfile() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="text-center">
-                        <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center">
-                            <Zap className="w-8 h-8 text-white" />
+                        <div className={`w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center  bg-gradient-to-br from-indigo-400 to-indigo-600 ring-4 ring-indigo-500/50`}>
+                            <Image src={currentLevel.levelIcon} alt="" width={40} height={40} />
                         </div>
-                        <h3 className="font-bold">Cấp 1</h3>
-                        <p className="text-sm text-slate-400">Người kể chuyện</p>
+
+                        <h3 className="font-bold">Cấp {gamificationProfile.level + 1}</h3>
+                        <p className="text-sm text-slate-400">{currentLevel.name}</p>
                     </div>
                     <div className="text-center">
-                        <p className="text-xs text-slate-400">Còn 190 XP</p>
+                        <p className="text-xs text-slate-400">Còn {currentLevel.xpRequired - gamificationProfile.xp} XP</p>
                     </div>
                 </CardContent>
             </Card>
         </div>
-    );
+    )
 }
