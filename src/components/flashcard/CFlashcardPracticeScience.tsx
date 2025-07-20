@@ -1,6 +1,6 @@
 "use client"
-import { GET_API, POST_API } from "@/lib/fetchAPI"
-import React, { useEffect, useState, useCallback, Suspense } from "react"
+import { POST_API } from "@/lib/fetchAPI"
+import React, { useEffect, useState, useCallback } from "react"
 import Cookies from "js-cookie"
 import { HiMiniSpeakerWave } from "react-icons/hi2"
 import { BiSlideshow } from "react-icons/bi"
@@ -15,6 +15,12 @@ import Loading from "@/components/ui/loading"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { useUser } from "@/context/userContext"
 import { useRouter } from "next/navigation"
+
+interface ISessionRating {
+    id: string
+    quality: number
+    userId: string
+}
 const rateOptions = [
     {
         label: "Quên hoàn toàn",
@@ -49,11 +55,12 @@ const rateOptions = [
 ]
 
 export default function CFlashcardPracticeScience({ flashcards }: { flashcards: Flashcard[] }) {
+    const [flashcard, setFlashcard] = useState<Flashcard[]>([])
     const [currentIndex, setCurrentIndex] = useState(0) // Vị trí hiện tại trong danh sách flashcards
     const [isFlipped, setIsFlipped] = useState(false)
     const [isSuccess, setIsSuccess] = useState(false)
     const [loadingAudio, setLoadingAudio] = useState(false)
-    const [sessionRatings, setSessionRatings] = useState<Array<{ id: string; quality: number; userId: string }>>([]) // Mảng lưu trữ các đánh giá trong phiên
+    const [sessionRatings, setSessionRatings] = useState<ISessionRating[]>([]) // Mảng lưu trữ các đánh giá trong phiên
     const [voiceSetting, setVoiceSetting] = useState<any>({})
     const token = Cookies.get("token") || ""
     const { user } = useUser() || {}
@@ -62,7 +69,15 @@ export default function CFlashcardPracticeScience({ flashcards }: { flashcards: 
     useEffect(() => {
         const savedVoiceString = JSON.parse(localStorage.getItem("defaultVoices") || "{}")
         setVoiceSetting(savedVoiceString)
+        setFlashcard(flashcards || [])
     }, [flashcards])
+
+    useEffect(() => {
+        console.log("SessionRatings đã được cập nhật (trong useEffect):", sessionRatings)
+        if (sessionRatings.length > 0 && sessionRatings.length % 5 === 0) {
+            handleCompleteSession() // Gửi các đánh giá hiện có
+        }
+    }, [sessionRatings]) // Chạy lại khi sessionRatings thay đổi
     // Lấy hoặc tạo mới defaultVoices trong localStorage
     const [tts] = useState(() => new EdgeSpeechTTS({ locale: "en-US" }))
     const speakWord = useCallback(
@@ -108,8 +123,8 @@ export default function CFlashcardPracticeScience({ flashcards }: { flashcards: 
             if (loadingAudio) return // Nếu đang phát âm thanh, không xử lý phím
             if (e.key === "Enter") {
             } else if (e.key === "Shift") {
-                if (flashcards && flashcards.length > 0) {
-                    const currentCard = flashcards?.[currentIndex]
+                if (flashcard && flashcard.length > 0) {
+                    const currentCard = flashcard?.[currentIndex]
                     if (currentCard) {
                         speakWord(currentCard.title, currentCard.language || "english")
                     }
@@ -128,11 +143,11 @@ export default function CFlashcardPracticeScience({ flashcards }: { flashcards: 
                 handleRate(5) // Rate option 6 = index 5
             }
         },
-        [currentIndex, flashcards, loadingAudio, speakWord]
+        [currentIndex, flashcard, loadingAudio, speakWord]
     )
 
     // No data state
-    if (flashcards.length === 0) {
+    if (flashcard.length === 0) {
         return (
             <div className="flex items-center justify-center h-screen flex-col gap-3 text-gray-500 dark:text-gray-400">
                 <BiSlideshow size={50} className="" />
@@ -148,59 +163,43 @@ export default function CFlashcardPracticeScience({ flashcards }: { flashcards: 
         )
     }
 
-    const currentCard = flashcards[currentIndex]
+    const currentCard = flashcard[currentIndex]
 
     // === 3. Xử lý đánh giá chất lượng thẻ (0-5) ===
     const handleRate = (quality: number) => {
         if (loadingAudio) return
-        if (flashcards && flashcards.length === 0) return
+        if (flashcard && flashcard.length === 0) return
 
         // ✅ Tạo rating mới
-        const newRating = { id: flashcards[currentIndex]._id, quality: quality, userId: userId }
-
-        // ✅ Tính toán array mới trực tiếp
-        const updatedSessionRatings = [...sessionRatings, newRating]
-
-        // ✅ Update state
-        setSessionRatings(updatedSessionRatings)
+        const newRating = { id: flashcard[currentIndex]._id, quality: quality, userId: userId }
+        setSessionRatings([...sessionRatings, newRating]) // Cập nhật mảng đánh giá
 
         toast.success(`Đã đánh giá thẻ với chất lượng ${quality + 1}`, {
             duration: 3000,
             position: "top-center",
         })
 
-        // Chuyển sang thẻ tiếp theo
+        // // Chuyển sang thẻ tiếp theo
         setIsFlipped(false)
-        speakWord((flashcards && flashcards[currentIndex + 1]?.title) || "", (flashcards && flashcards[currentIndex + 1]?.language) || "english")
+        speakWord((flashcard && flashcard[currentIndex + 1]?.title) || "", (flashcard && flashcard[currentIndex + 1]?.language) || "english")
 
-        if (flashcards && currentIndex < flashcards.length - 1) {
+        if (flashcard && currentIndex < flashcard.length - 1) {
             setCurrentIndex((prevIndex) => prevIndex + 1)
         } else {
-            // ✅ Sử dụng updatedSessionRatings thay vì sessionRatings
-            if (updatedSessionRatings.length > 0) {
+            if (sessionRatings.length > 0) {
                 setIsSuccess(true)
                 toast.success("Đã hoàn thành phiên ôn tập!", {
                     duration: 5000,
                 })
-                // ✅ Truyền updatedSessionRatings vào function
-                handleCompleteSession(updatedSessionRatings)
+                handleCompleteSession()
             }
         }
-
-        // // // Tùy chọn: Tự động gửi dữ liệu sau mỗi N thẻ
-        // if (updatedSessionRatings.length + 1 >= 5) {
-        //     // Ví dụ: gửi sau mỗi 5 thẻ
-
-        //     handleCompleteSession(); // Gửi các đánh giá hiện có
-        // }
     }
 
-    // ✅ Update handleCompleteSession để nhận parameter
-    const handleCompleteSession = async (ratingsToSend?: Array<{ id: string; quality: number; userId: string }>) => {
+    const handleCompleteSession = async () => {
         // ✅ Sử dụng parameter hoặc fallback về state
-        const dataToSend = ratingsToSend || sessionRatings
-
-        if (dataToSend.length === 0) {
+        console.log("Sending ratings:", sessionRatings)
+        if (sessionRatings.length === 0) {
             toast.error("Không có đánh giá nào để gửi")
             return
         }
@@ -215,7 +214,7 @@ export default function CFlashcardPracticeScience({ flashcards }: { flashcards: 
         })
 
         try {
-            const res = await POST_API(`/flashcards/batch-rate`, { cards: dataToSend }, "PUT", token)
+            const res = await POST_API(`/flashcards/batch-rate`, { cards: sessionRatings }, "PUT", token)
             const result = await res?.json()
 
             if (res?.ok) {
@@ -226,7 +225,7 @@ export default function CFlashcardPracticeScience({ flashcards }: { flashcards: 
                 })
 
                 setCurrentIndex(0)
-                // setFlashcards((prev) => (prev ? prev.slice(dataToSend.length) : []));
+                setFlashcard((prev) => (prev ? prev.slice(sessionRatings.length) : []))
             } else {
                 toast.error(`Lỗi khi gửi dữ liệu ôn tập: ${result?.message || "Lỗi không xác định."}`, {
                     duration: 5000,
@@ -377,10 +376,10 @@ export default function CFlashcardPracticeScience({ flashcards }: { flashcards: 
                                 <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg">
                                     <div className="flex justify-between mb-2">
                                         <span>Tổng số câu</span>
-                                        <span>{`${currentIndex + 1}/${flashcards.length}`}</span>
+                                        <span>{`${currentIndex + 1}/${flashcard.length}`}</span>
                                     </div>
                                     <div className="h-2 bg-gray-200 dark:bg-gray-500/50 rounded-full">
-                                        <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${((currentIndex + 1) / flashcards.length) * 100}%` }} />
+                                        <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${((currentIndex + 1) / flashcard.length) * 100}%` }} />
                                     </div>
                                 </div>
                             </div>

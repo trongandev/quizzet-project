@@ -24,5 +24,13 @@ export default async function CProfile() {
             </div>
         )
     }
-    return <UserProfile profile={req?.user} quiz={req?.quiz} flashcard={req?.flashcards} gamificationProfile={req?.gamificationProfile} achievements={req.achievements} levels={req.levels} />
+    if (req?.ok) return <UserProfile profile={req?.user} quiz={req?.quiz} flashcard={req?.flashcards} gamificationProfile={req?.gamificationProfile} achievements={req.achievements} levels={req.levels} activities={req?.activities} />
+    else {
+        return (
+            <div className="h-screen flex items-center justify-center flex-col gap-3 px-5 md:px-0">
+                <h3 className="font-semibold text-3xl">Oh no</h3>
+                <p>Đã có lỗi xảy ra khi tải thông tin người dùng. Vui lòng thử lại sau.</p>
+            </div>
+        )
+    }
 }

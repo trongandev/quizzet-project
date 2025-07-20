@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
-import { IAchievement, IGamification, ILevel, IListFlashcard, IQuiz, IUser } from "@/types/type"
+import { IAchievement, IActivity, IGamification, ILevel, IListFlashcard, IQuiz, IUser } from "@/types/type"
 import handleCompareDate from "@/lib/CompareDate"
 import { useUser } from "@/context/userContext"
 import { Flame, Calendar, Mail } from "lucide-react"
@@ -27,8 +27,9 @@ interface PropsProfile {
     achievements: IAchievement[]
     gamificationProfile: IGamification
     levels: ILevel[]
+    activities: IActivity[]
 }
-export default function UserProfile({ profile, quiz, flashcard, gamificationProfile, achievements, levels }: PropsProfile) {
+export default function UserProfile({ profile, quiz, flashcard, gamificationProfile, achievements, levels, activities }: PropsProfile) {
     const { user, refetchUser } = useUser() || {
         user: null,
         refetchUser: () => {},
@@ -48,6 +49,7 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
             </div>
         )
     }
+    const currentLevel = levels[gamificationProfile?.level]
     return (
         <div className="flex items-center justify-center dark:text-white/80 text-gray-400">
             <div className="w-full md:w-[1000px] xl:w-[1200px] ">
@@ -91,11 +93,11 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
                                     <div className="space-y-2">
                                         <div className="flex justify-between text-sm">
                                             <span>{gamificationProfile?.xp || 0} XP</span>
-                                            <span>{achievements[gamificationProfile?.level - 1]?.xpReward || 0} XP</span>
+                                            <span>{currentLevel?.xpRequired || 0} XP</span>
                                         </div>
-                                        <Progress value={(gamificationProfile?.xp / achievements[gamificationProfile?.level - 1]?.xpReward) * 100 || 0} className="h-2" />
+                                        <Progress value={(gamificationProfile?.xp / currentLevel?.xpRequired) * 100 || 0} className="h-2" />
                                         <p className="text-xs text-slate-400">
-                                            Còn {achievements[gamificationProfile?.level - 1]?.xpReward - gamificationProfile?.xp || 0} XP để lên cấp {gamificationProfile?.level + 1 || 0}
+                                            Còn {currentLevel?.xpRequired - gamificationProfile?.xp || 0} XP để lên cấp {gamificationProfile?.level + 1 || 0}
                                         </p>
                                     </div>
                                 </div>
@@ -114,10 +116,6 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
                                             <div className="text-yellow-400 font-bold">{gamificationProfile?.xp || 0}</div>
                                             <p className="text-xs text-slate-400">Tổng XP</p>
                                         </div>
-                                        {/* <div>
-                                            <div className="text-green-400 font-bold">156</div>
-                                            <p className="text-xs text-slate-400">Thẻ đã học</p>
-                                        </div> */}
                                     </div>
                                 </div>
                             </div>
@@ -142,7 +140,7 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
                         </div>
 
                         <TabsContent value="overview" className="space-y-6">
-                            {gamificationProfile && <OverViewProfile gamificationProfile={gamificationProfile} levels={levels} />}
+                            {gamificationProfile && <OverViewProfile gamificationProfile={gamificationProfile} levels={levels} activities={activities} />}
                         </TabsContent>
 
                         <TabsContent value="achievements" className="space-y-6">

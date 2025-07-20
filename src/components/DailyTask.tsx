@@ -143,14 +143,14 @@ export default function DailyTask({ gamificationProfile, setGamificationProfile,
                     <div className="grid grid-cols-1 gap-4">
                         {taskDaily.map((task) => {
                             return (
-                                <Card key={task.id} className={`bg-slate-800 border-slate-700 transition-all hover:bg-slate-750 ${!task.isUnlocked ? "opacity-60" : ""}`}>
+                                <Card key={task.id} className={`dark:bg-slate-800 dark:border-white/10 transition-all hover:bg-slate-750 ${!task.isUnlocked ? "opacity-60" : ""}`}>
                                     <CardContent className="px-4 !p-4">
                                         <div className="flex items-center justify-between ">
                                             <div className="flex items-center gap-3">
-                                                <div className={`hidden md:block p-2 rounded-lg ${task.isUnlocked ? "bg-blue-600" : "bg-slate-600"}`}>{task.isUnlocked ? task.icon : <Lock className="w-5 h-5" />}</div>
-                                                <div>
+                                                <div className={`hidden md:block p-2 rounded-lg ${task.isUnlocked ? "bg-blue-100 text-blue-700 dark:bg-blue-600 dark:text-blue-200" : "bg-slate-300 text-slate-600 dark:text-slate-200 dark:bg-slate-600 "}`}>{task.isUnlocked ? task.icon : <Lock className="w-5 h-5" />}</div>
+                                                <div className="text-slate-800 dark:text-slate-400">
                                                     <h3 className="font-semibold text-md md:text-lg">{task.name}</h3>
-                                                    <div className="flex flex-col  md:flex-row md:items-center gap-2 text-sm text-slate-400">
+                                                    <div className="flex flex-col  md:flex-row md:items-center gap-2 text-sm ">
                                                         <span>+{task.xpReward.toLocaleString()} XP/lần</span>
                                                         <span className="flex gap-1 items-center">
                                                             <LockOpen size={14} />
@@ -162,13 +162,13 @@ export default function DailyTask({ gamificationProfile, setGamificationProfile,
 
                                             {task.isUnlocked && (
                                                 <div className="text-right mt-4">
-                                                    <div className="text-xl font-bold text-green-400">+{task.currentProgress.toLocaleString()} XP</div>
-                                                    <div className="text-sm text-slate-400">{getCompletionCount(task.currentProgress, task.xpReward)} lần</div>
+                                                    <div className="text-xl font-bold text-green-600 dark:text-green-400">+{task.currentProgress.toLocaleString()} XP</div>
+                                                    <div className="text-sm text-slate-800 dark:text-slate-400">{getCompletionCount(task.currentProgress, task.xpReward)} lần</div>
                                                 </div>
                                             )}
 
                                             {!task.isUnlocked && (
-                                                <Badge variant="secondary" className="bg-slate-700 text-slate-300">
+                                                <Badge variant="secondary" className="bg-slate-300 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
                                                     Cần cấp {task.requiredLevel}
                                                 </Badge>
                                             )}
@@ -177,13 +177,13 @@ export default function DailyTask({ gamificationProfile, setGamificationProfile,
                                         {task.isUnlocked && (
                                             <div className="space-y-2">
                                                 <div className="flex justify-between text-xs">
-                                                    <span className="text-slate-400">Tiến độ hôm nay</span>
-                                                    <span className="text-slate-300">
+                                                    <span className="text-slate-600 dark:text-slate-400">Tiến độ hôm nay</span>
+                                                    <span className="text-slate-500 dark:text-slate-300">
                                                         {task.currentProgress.toLocaleString()} / {task.dailyLimit.toLocaleString()} XP
                                                     </span>
                                                 </div>
-                                                <Progress value={getProgressPercentage(task.currentProgress, task.dailyLimit)} className="h-2 bg-slate-700" />
-                                                {task.currentProgress >= task.dailyLimit && <Badge className="bg-green-600 hover:bg-green-700">Đã hoàn thành tối đa</Badge>}
+                                                <Progress value={getProgressPercentage(task.currentProgress, task.dailyLimit)} className="h-2 dark:bg-slate-700" />
+                                                {task.currentProgress >= task.dailyLimit && <Badge className="bg-green-600 hover:bg-green-700 text-white">Đã hoàn thành tối đa</Badge>}
                                             </div>
                                         )}
                                     </CardContent>
@@ -192,17 +192,17 @@ export default function DailyTask({ gamificationProfile, setGamificationProfile,
                         })}
                     </div>
                     {/* Summary */}
-                    <Card className="mt-8 bg-slate-800 border-slate-700">
+                    <Card className="mt-8 dark:bg-slate-800">
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
-                                <Trophy className="w-5 h-5 text-yellow-400" />
+                                <Trophy className="w-5 h-5 text-blue-400" />
                                 Tổng kết hôm nay
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div className="text-center">
-                                    <div className="text-2xl font-bold text-green-400">+{taskDaily.reduce((sum, task) => sum + (task.isUnlocked ? task.currentProgress : 0), 0).toLocaleString()}</div>
+                                    <div className="text-2xl font-bold text-green-600 dark:text-green-400">+{taskDaily.reduce((sum, task) => sum + (task.isUnlocked ? task.currentProgress : 0), 0).toLocaleString()}</div>
                                     <div className="text-sm text-slate-400">Tổng XP kiếm được</div>
                                 </div>
                                 <div className="text-center">
