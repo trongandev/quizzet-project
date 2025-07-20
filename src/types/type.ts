@@ -175,6 +175,7 @@ interface IMessage {
 }
 
 interface IChat {
+    _id: string
     participants: {
         userId: IUser
     }[]
@@ -317,6 +318,28 @@ export interface ILevel {
     name: string
     xpRequired: number
     levelIcon: string
+}
+
+export interface TASKS {
+    REVIEW_CARD: REVIEWCARD
+    ADD_WORD: REVIEWCARD
+    CREATE_QUIZ: REVIEWCARD
+    DO_QUIZ: REVIEWCARD
+    RATE_QUIZ: REVIEWCARD
+}
+
+export interface REVIEWCARD {
+    _id: string
+    taskId: string
+    name: string
+    description: string
+    xpPerAction: number
+    dailyLimitCount: number
+    unlockLevel: number
+    icon: string
+    isActive: boolean
+    createdAt: string
+    updatedAt: string
 }
 
 export type { IUser, INotify, IQuestion, IComment, IHistory, ISO, IQuiz, IDataQuiz, IListFlashcard, IProgress, Flashcard, Example, IMessage, IChat, IChatCommunity, IChatCommunityMessage }

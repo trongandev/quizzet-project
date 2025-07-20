@@ -95,7 +95,6 @@ export default function AddMoreVocaModal({ children, listFlashcard, setListFlash
                 token
             )
             const res = await req?.json()
-            console.log(res)
             if (res?.ok) {
                 toast.success("Gửi dữ liệu thành công", {
                     description: "Các từ vựng mới đã được thêm vào bộ flashcard của bạn.",

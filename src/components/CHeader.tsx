@@ -13,10 +13,16 @@ import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-export default function CHeader() {
+import DailyTask from "@/components/DailyTask"
+import { IChat, IGamification, TASKS } from "@/types/type"
+export default function CHeader({ tasks }: { tasks: TASKS }) {
     const [openNoti, setOpenNoti] = useState(false)
     const [notify, setNotify] = useState([])
+    const [gamificationProfile, setGamificationProfile] = useState<IGamification>()
+    const [chat, setChat] = useState<IChat[]>()
     const [unreadCountNotify, setUnreadCountNotify] = useState<number>(0)
+    const [unreadCountChat, setUnreadCountChat] = useState<number>(0)
+
     const pathname = usePathname()
     const router = useRouter()
     const { theme, setTheme } = useTheme()
@@ -27,17 +33,19 @@ export default function CHeader() {
         clearUser: () => {},
     }
 
-    const handleLogout = async () => {
-        const req = await GET_API("/auth/logout", token)
+    const handleLogout = () => {
         clearUser()
     }
 
     useEffect(() => {
         const fetchAPI = async () => {
-            const req = await GET_API("/notify", token)
+            const req = await GET_API("/profile/anything", token)
             if (req.ok) {
                 setNotify(req?.notifications)
                 setUnreadCountNotify(req?.unreadCount || 0)
+                setGamificationProfile(req?.gamificationProfile)
+                setChat(req?.chats)
+                setUnreadCountChat(req?.unreadCountChat || 0)
             }
         }
 
@@ -91,7 +99,7 @@ export default function CHeader() {
                     </li>
                 </ul>
                 <div className="flex items-center gap-3">
-                    <div className="flex items-center gap-2">
+                    <div className=" items-center gap-2 hidden md:flex">
                         {theme === "dark" ? (
                             <div className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-primary dark:text-white/60 hover:text-white" onClick={() => setTheme("light")}>
                                 <Sun size={18} className="" />
@@ -115,6 +123,8 @@ export default function CHeader() {
                     ) : (
                         <div className="flex gap-3 items-center">
                             <div className="flex gap-3 items-center">
+                                {gamificationProfile && tasks && <DailyTask gamificationProfile={gamificationProfile} setGamificationProfile={setGamificationProfile} tasks={tasks} />}
+
                                 <Popover>
                                     <PopoverTrigger asChild>
                                         <div className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-primary dark:text-white/60 hover:text-white relative">
@@ -126,7 +136,7 @@ export default function CHeader() {
                                         <CNotify notify={notify} handleRouter={handleRouterNotify} />
                                     </PopoverContent>
                                 </Popover>
-                                {user && <CChat token={token} user={user} router={router} />}
+                                {user && chat && <CChat chat={chat} setChat={setChat} unreadCountChat={unreadCountChat} setUnreadCountChat={setUnreadCountChat} token={token} user={user} />}
 
                                 <DropdownMenu>
                                     <DropdownMenuTrigger>
@@ -149,6 +159,17 @@ export default function CHeader() {
                                             <Mailbox />
                                             Góp ý
                                         </DropdownMenuItem>
+                                        {theme === "dark" ? (
+                                            <DropdownMenuItem onClick={() => setTheme("light")}>
+                                                <Sun className="" />
+                                                Bật chế độ sáng
+                                            </DropdownMenuItem>
+                                        ) : (
+                                            <DropdownMenuItem onClick={() => setTheme("dark")}>
+                                                <Moon className="" /> Bật chế độ tối
+                                            </DropdownMenuItem>
+                                        )}
+
                                         <DropdownMenuItem onClick={handleLogout} className="dark:text-red-300 text-red-500 hover:text-red-600">
                                             <LogOut /> Đăng xuất
                                         </DropdownMenuItem>

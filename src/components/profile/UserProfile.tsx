@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { IAchievement, IGamification, ILevel, IListFlashcard, IQuiz, IUser } from "@/types/type"
 import handleCompareDate from "@/lib/CompareDate"
 import { useUser } from "@/context/userContext"
-import { Flame, BookOpen, Calendar, Mail } from "lucide-react"
+import { Flame, Calendar, Mail } from "lucide-react"
 import { Progress } from "../ui/progress"
 import UserFC from "../flashcard/UserFC"
 import Achievement from "@/components/profile/Achievement"
@@ -16,7 +16,6 @@ import LevelProfile from "@/components/profile/LevelProfile"
 import OverViewProfile from "@/components/profile/OverViewProfile"
 import UpdateProfile from "@/components/profile/UpdateProfile"
 import QuizInProfile from "@/components/profile/QuizInProfile"
-import InstructionEarnLevel from "@/components/profile/InstructionEarnLevel"
 import Image from "next/image"
 
 // Level configuration with unique designs
@@ -36,10 +35,9 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
     }
     const [userProfile, setUserProfile] = useState<IUser | null>(null)
     const [isSettingsOpen, setIsSettingsOpen] = useState(false)
-    const [currentLevel] = useState(1)
 
     useEffect(() => {
-        const tempUser = user?._id === profile._id ? user : profile
+        const tempUser = user?._id === profile?._id ? user : profile
         setUserProfile(tempUser)
     }, [user, profile, refetchUser, setUserProfile])
     if (!profile) {
@@ -75,7 +73,7 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
                                         {levels && gamificationProfile && gamificationProfile.level && levels[gamificationProfile.level] && (
                                             <Badge variant="secondary" className="bg-blue-600 text-white flex items-center gap-1">
                                                 <Image src={levels[gamificationProfile.level].levelIcon} width={16} height={16} alt="" />
-                                                Cấp {currentLevel}
+                                                Cấp {gamificationProfile.level + 1}
                                             </Badge>
                                         )}
                                     </div>
@@ -140,11 +138,6 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
                                 <TabsTrigger value="levels" className="dark:data-[state=active]:bg-slate-700">
                                     Cấp độ
                                 </TabsTrigger>
-                                {userProfile?._id === userProfile?._id && (
-                                    <TabsTrigger value="guide" className="dark:data-[state=active]:bg-slate-700">
-                                        Hướng dẫn
-                                    </TabsTrigger>
-                                )}
                             </TabsList>
                         </div>
 
@@ -158,10 +151,6 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
 
                         <TabsContent value="levels" className="space-y-6">
                             {gamificationProfile && <LevelProfile gamificationProfile={gamificationProfile} levels={levels} />}
-                        </TabsContent>
-
-                        <TabsContent value="guide" className="space-y-6">
-                            <InstructionEarnLevel gamificationProfile={gamificationProfile} />
                         </TabsContent>
                     </Tabs>
                     <div className="">

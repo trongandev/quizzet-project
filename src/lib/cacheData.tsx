@@ -1,5 +1,5 @@
 import { unstable_cache } from "next/cache"
-import { GET_API, GET_API_WITHOUT_COOKIE } from "./fetchAPI"
+import { GET_API_WITHOUT_COOKIE } from "./fetchAPI"
 
 export const getCachedQuizzet = unstable_cache(
     async () => {
@@ -70,6 +70,19 @@ export const getCachedFlashcardDetail = (id: string) =>
             tags: [`flashcard_${id}`, "flashcards-detail"], // ✅ Thêm tags
         }
     )
+
+// lấy nhiệm vụ hàng ngày từ cache
+export const getCachedDailyTasks = unstable_cache(
+    async () => {
+        const response = await GET_API_WITHOUT_COOKIE("/task")
+        return response
+    },
+    ["daily_tasks"],
+    {
+        revalidate: 60 * 60 * 24, // TTL = 1 ngày
+        tags: ["daily_tasks"],
+    }
+)
 
 export const getEmoji = unstable_cache(
     async () => {

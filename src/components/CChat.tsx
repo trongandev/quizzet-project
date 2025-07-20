@@ -3,16 +3,14 @@ import handleCompareDate from "@/lib/CompareDate"
 import { GET_API, POST_API } from "@/lib/fetchAPI"
 import Image from "next/image"
 import React, { useEffect, useState } from "react"
-import { BiSearch } from "react-icons/bi"
 import CShowMessage from "./CShowMessage"
 import { FaArrowLeft } from "react-icons/fa"
 import { useSocket } from "@/context/socketContext"
 import { IChat, IUser } from "@/types/type"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import Loading from "./ui/loading"
-import { Mail, MessageCircle, Search } from "lucide-react"
+import { MessageCircle, Search } from "lucide-react"
 import { Input } from "./ui/input"
-import { Badge } from "@/components/ui/badge"
 function useDebounce(value: any, duration = 300) {
     const [debounceValue, setDebounceValue] = useState(value)
     useEffect(() => {
@@ -22,41 +20,28 @@ function useDebounce(value: any, duration = 300) {
         return () => {
             clearTimeout(timer)
         }
-    }, [value])
+    }, [value, duration])
     return debounceValue
 }
-
-export default function CChat({ token, user, router }: { token: string; user: IUser; router: any }) {
+interface Props {
+    chat: IChat[]
+    setChat: any
+    unreadCountChat: number
+    setUnreadCountChat: any
+    token: string
+    user: IUser | null
+}
+export default function CChat({ chat, setChat, unreadCountChat, setUnreadCountChat, token, user }: Props) {
     const [input, setInput] = useState("")
 
     const debouncedSearchTerm = useDebounce(input, 300)
-    const [unreadCountChat, setUnreadCountChat] = useState(0)
     const [openChat, setOpenChat] = useState(false)
-    const [chat, setChat] = useState<IChat[]>([])
     const [chatMessId, setChatMessId] = useState(null)
     const [loading, setLoading] = useState(false)
     const [loadingChat, setLoadingChat] = useState(null)
     const [search, setSearch] = useState<IUser[]>([])
     const [isSearch, setIsSearch] = useState(false)
     const { socket, onlineUsers } = useSocket()
-
-    const handleOpenChat = (newOpen: any) => {
-        setOpenChat(newOpen)
-    }
-
-    useEffect(() => {
-        const fetchAPI = async () => {
-            const req = await GET_API("/chat", token)
-            if (req.ok) {
-                setChat(req?.chats)
-                setUnreadCountChat(req.unreadCount || 0)
-            }
-        }
-
-        if (user) {
-            fetchAPI()
-        }
-    }, [user, token, chatMessId])
 
     useEffect(() => {
         const fetchAPI = async () => {
@@ -73,7 +58,7 @@ export default function CChat({ token, user, router }: { token: string; user: IU
         if (debouncedSearchTerm && input !== "") {
             fetchAPI()
         }
-    }, [debouncedSearchTerm])
+    }, [debouncedSearchTerm, input, token])
 
     // const handleRouterChat = async (item) => {
     //     const req = await GET_API(`/notify/${item?._id}`, token);
@@ -105,6 +90,8 @@ export default function CChat({ token, user, router }: { token: string; user: IU
             if (req.ok) {
                 setChatMessId(res?.chatId)
                 setOpenChat(false)
+                setUnreadCountChat(res?.countRead)
+                setChat((prev: any) => prev.map((msg: IChat) => (msg._id === res.chatId ? { ...msg, is_read: true } : msg)))
             }
         }
         setLoadingChat(null)
@@ -124,10 +111,10 @@ export default function CChat({ token, user, router }: { token: string; user: IU
                     <div className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-primary dark:text-white/60 hover:text-white relative">
                         {unreadCountChat > 0 && <div className="absolute -top-1 -right-1 h-[14px] w-[14px] text-[8px] rounded-full bg-red-500 text-white flex items-center justify-center font-mono tabular-nums">{unreadCountChat}</div>}
 
-                        <Mail size={18} />
+                        <MessageCircle size={18} />
                     </div>
                 </PopoverTrigger>
-                <PopoverContent className="md:w-[500px] max-h-[600px] overflow-y-scroll ">
+                <PopoverContent className="md:w-[500px] max-h-[400px] md:max-h-[600px] overflow-y-scroll ">
                     <div className="max-h-[600px]">
                         <div className="flex gap-2 items-center h-9  mb-3 w-full">
                             {isSearch && (
@@ -182,7 +169,7 @@ export default function CChat({ token, user, router }: { token: string; user: IU
                                         </div>
                                         {loadingChat === index && <Loading />}
 
-                                        {loadingChat !== index && item?.is_read && <div className="w-3 h-3 rounded-full bg-primary"></div>}
+                                        {loadingChat !== index && !item?.is_read && <div className="w-3 h-3 rounded-full bg-primary"></div>}
                                     </div>
                                 )
                             })}
