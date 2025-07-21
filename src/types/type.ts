@@ -13,6 +13,12 @@ interface IUser {
     otp: number
     provider: string
     refresh_token: string
+    gamification: {
+        _id: string
+        xp: number
+        level: number
+        dailyStreak: { current: number }
+    }
 }
 
 interface INotify {
@@ -340,6 +346,20 @@ export interface REVIEWCARD {
     isActive: boolean
     createdAt: string
     updatedAt: string
+}
+
+export interface IPodiumUser {
+    dailyStreak: DailyStreak
+    _id: string
+    user_id: IUser
+    xp: number
+    level: number
+    rank: number
+}
+
+interface DailyStreak {
+    current: number
+    lastActivityDate?: string
 }
 
 export type { IUser, INotify, IQuestion, IComment, IHistory, ISO, IQuiz, IDataQuiz, IListFlashcard, IProgress, Flashcard, Example, IMessage, IChat, IChatCommunity, IChatCommunityMessage }

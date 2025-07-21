@@ -154,7 +154,7 @@ export default function AddMoreVocaModal({ children, listFlashcard, setListFlash
                                     {isGenerating ? "Đang tạo..." : "Tạo bằng AI"}
                                 </Button>
                                 <div className="flex justify-between items-center bg-gray-100 text-slate-500  dark:bg-slate-600/50 p-3 rounded-lg">
-                                    <p className="text-xs ">Các từ vựng cách nhau bằng dấu phẩn</p>
+                                    <p className="text-xs ">Các từ vựng cách nhau bằng dấu phẩy</p>
                                     <span className="text-xs">
                                         {vocabulary.split(",").length}/24 từ {" | Mất khoảng:" + Math.floor(vocabulary.split(" ").length * 1.4 + vocabulary.split(" ").length) + "s"}
                                     </span>

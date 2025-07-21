@@ -1,14 +1,14 @@
-import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, BookUser, CheckCircle, Clock, LocateFixed, MegaphoneOff, MoreHorizontal, Pencil, X } from "lucide-react";
+import { ColumnDef } from "@tanstack/react-table"
+import { ArrowUpDown, BookUser, CheckCircle, Clock, LocateFixed, MegaphoneOff, MoreHorizontal, Pencil, X } from "lucide-react"
 
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { IReport } from "@/types/type";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import handleCompareDate from "@/lib/CompareDate";
-import { Badge } from "../ui/badge";
-import Link from "next/link";
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { IReport } from "@/types/type"
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import handleCompareDate from "@/lib/CompareDate"
+import { Badge } from "../ui/badge"
+import Link from "next/link"
 
 const getStatusBadge = (status: string) => {
     switch (status) {
@@ -18,14 +18,14 @@ const getStatusBadge = (status: string) => {
                     <CheckCircle className="w-3 h-3 mr-1" />
                     Đã giải quyết
                 </Badge>
-            );
+            )
         case "pending":
             return (
                 <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-300">
                     <Clock className="w-3 h-3 mr-1" />
                     Đang chờ
                 </Badge>
-            );
+            )
 
         case "rejected":
             return (
@@ -33,9 +33,9 @@ const getStatusBadge = (status: string) => {
                     <Clock className="w-3 h-3 mr-1" />
                     Đã hủy
                 </Badge>
-            );
+            )
     }
-};
+}
 
 const getTypeOfViolationBadge = (status: string) => {
     switch (status) {
@@ -45,55 +45,44 @@ const getTypeOfViolationBadge = (status: string) => {
                     <MegaphoneOff className="w-3 h-3 mr-1" />
                     Spam
                 </Badge>
-            );
+            )
         case "inappropriate":
             return (
                 <Badge className="bg-orange-100 text-orange-800 hover:bg-orange-100 dark:bg-orange-900/30 dark:text-orange-300">
                     <X className="w-3 h-3 mr-1" />
                     Không phù hợp
                 </Badge>
-            );
+            )
         case "other":
             return (
                 <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-100 dark:bg-gray-900/30 dark:text-gray-300">
                     <MoreHorizontal className="w-3 h-3 mr-1" />
                     Khác
                 </Badge>
-            );
+            )
         case "copyright":
             return (
                 <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100 dark:bg-purple-900/30 dark:text-purple-300">
                     <BookUser className="w-3 h-3 mr-1" />
                     Vi phạm bản quyền
                 </Badge>
-            );
+            )
         case "misinformation":
             return (
                 <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300">
                     <LocateFixed className="w-3 h-3 mr-1" />
                     Thông tin sai lệch
                 </Badge>
-            );
+            )
         default:
-            return <Badge variant="secondary">{status}</Badge>;
+            return <Badge variant="secondary">{status}</Badge>
     }
-};
-interface Props {
-    selectedReport?: any;
-    setSelectedReport: any;
-    setIsResolveModalOpen: any;
 }
 
 export const ColumnReport = (): ColumnDef<IReport>[] => [
     {
         id: "select",
-        header: ({ table }) => (
-            <Checkbox
-                checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                aria-label="Select all"
-            />
-        ),
+        header: ({ table }) => <Checkbox checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")} onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)} aria-label="Select all" />,
         cell: ({ row }) => <Checkbox className="mr-3" checked={row.getIsSelected()} onCheckedChange={(value) => row.toggleSelected(!!value)} aria-label="Select row" />,
         enableSorting: false,
         enableHiding: false,
@@ -106,7 +95,7 @@ export const ColumnReport = (): ColumnDef<IReport>[] => [
                     Người gửi
                     <ArrowUpDown />
                 </Button>
-            );
+            )
         },
         cell: ({ row }) => (
             <Link href={`/profile/${row.original.user_report._id}`} className="capitalize flex items-center gap-2">
@@ -133,7 +122,7 @@ export const ColumnReport = (): ColumnDef<IReport>[] => [
                     Nội dung
                     <ArrowUpDown />
                 </Button>
-            );
+            )
         },
         cell: ({ row }) => <p className="text-white/80">{row.original.content}</p>,
     },
@@ -145,7 +134,7 @@ export const ColumnReport = (): ColumnDef<IReport>[] => [
                     Loại vi phạm
                     <ArrowUpDown />
                 </Button>
-            );
+            )
         },
         cell: ({ row }) => <div className="">{getTypeOfViolationBadge(row.original.type_of_violation)}</div>,
     },
@@ -158,7 +147,7 @@ export const ColumnReport = (): ColumnDef<IReport>[] => [
                     Trạng thái
                     <ArrowUpDown />
                 </Button>
-            );
+            )
         },
         cell: ({ row }) => <div className="">{getStatusBadge(row.original.status)}</div>,
     },
@@ -170,7 +159,7 @@ export const ColumnReport = (): ColumnDef<IReport>[] => [
                     Ngày tạo
                     <ArrowUpDown />
                 </Button>
-            );
+            )
         },
         cell: ({ row }) => <div className="text-xs">{handleCompareDate(row.original.created_at)}</div>,
     },
@@ -178,7 +167,7 @@ export const ColumnReport = (): ColumnDef<IReport>[] => [
         id: "actions",
         enableHiding: false,
         cell: ({ row }) => {
-            const payment = row.original;
+            const payment = row.original
 
             return (
                 <DropdownMenu>
@@ -203,7 +192,7 @@ export const ColumnReport = (): ColumnDef<IReport>[] => [
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
-            );
+            )
         },
     },
-];
+]
