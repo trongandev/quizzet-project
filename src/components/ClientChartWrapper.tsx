@@ -39,8 +39,8 @@ const chartConfig = {
         label: "Trung",
         color: "#8b5cf6", // Purple
     },
-    null: {
-        label: "Khác",
+    france: {
+        label: "Pháp",
         color: "#6b7280", // Gray
     },
 } satisfies ChartConfig
@@ -69,10 +69,11 @@ export function ClientChartWrapper({ chartData }: ClientChartWrapperProps) {
             english: "#10b981",
             germany: "#f59e0b",
             chinese: "#8b5cf6",
-            null: "#6b7280",
+            france: "#6b7280",
         }
         return colorMap[language] || "#6b7280"
     }
+    console.log(chartData)
     return (
         <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[300px]">
             <PieChart>

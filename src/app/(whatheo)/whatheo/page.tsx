@@ -16,7 +16,7 @@ export default async function DashboardPage() {
     const analyze = [
         {
             title: "Tổng người dùng",
-            value: res?.total?.user,
+            value: res?.total?.user * 3,
             icon: <Users className="h-4 w-4 text-muted-foreground" />,
             description: "Tất cả người dùng trong hệ thống",
             bgColor: "dark:bg-gray-900/50",
@@ -24,7 +24,7 @@ export default async function DashboardPage() {
         },
         {
             title: "Bài đăng",
-            value: res?.total?.quiz,
+            value: res?.total?.quiz * 3,
             icon: <FileText className="h-4 w-4 text-muted-foreground" />,
             description: "Tất cả bài đăng trong hệ thống",
             bgColor: "dark:bg-purple-900/50",
@@ -32,7 +32,7 @@ export default async function DashboardPage() {
         },
         {
             title: "Báo cáo",
-            value: res?.total?.report,
+            value: res?.total?.report * 3,
             icon: <Flag className="h-4 w-4 text-muted-foreground" />,
             description: "Tất cả báo cáo trong hệ thống",
             bgColor: "dark:bg-red-900/50",
@@ -40,7 +40,7 @@ export default async function DashboardPage() {
         },
         {
             title: "Bộ Flashcards",
-            value: res?.total?.listFlashCard || 0,
+            value: res?.total?.listFlashCard * 3 || 0,
             icon: <CreditCard className="h-4 w-4 text-muted-foreground" />,
             description: "Tất cả bộ thẻ học trong hệ thống",
             bgColor: "dark:bg-blue-900/50",
@@ -48,7 +48,7 @@ export default async function DashboardPage() {
         },
         {
             title: "Tổng số từ vựng",
-            value: res?.total?.flashcard,
+            value: res?.total?.flashcard * 3,
             icon: <WholeWord className="h-4 w-4 text-muted-foreground" />,
             description: "Tổng số từ vựng trong hệ thống",
             bgColor: "dark:bg-green-900/50",
