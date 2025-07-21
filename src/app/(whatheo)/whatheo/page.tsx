@@ -9,17 +9,6 @@ import { IActivity } from "@/types/type"
 import handleCompareDate from "@/lib/CompareDate"
 import Link from "next/link"
 
-const chartConfig = {
-    count: {
-        label: "Số lượng người dùng ",
-        color: "#2563eb",
-    },
-    month: {
-        label: "Tháng",
-        color: "#60a5fa",
-    },
-} satisfies ChartConfig
-
 export default async function DashboardPage() {
     const cookieStore = cookies()
     const token = cookieStore.get("token")?.value || ""
@@ -103,10 +92,10 @@ export default async function DashboardPage() {
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <TrendingUp className="w-5 h-5" />
-                            Thống kê hoạt động
+                            Thống kê ngôn ngữ sử dụng
                         </CardTitle>
                     </CardHeader>
-                    <CardContent className="pl-2">{res?.chartData && <ClientChartWrapper chartData={res?.chartData} chartConfig={chartConfig} />}</CardContent>
+                    <CardContent className="pl-2">{res?.chartData && <ClientChartWrapper chartData={res?.chartData} />}</CardContent>
                 </Card>
                 <Card className="col-span-3">
                     <CardHeader>

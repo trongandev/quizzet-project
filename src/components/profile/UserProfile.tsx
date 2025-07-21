@@ -49,6 +49,15 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
             </div>
         )
     }
+
+    const getBorderColor = (level: number) => {
+        if (level < 3) return "border-lv1"
+        if (level < 6) return "border-lv2"
+        if (level < 9) return "border-lv3"
+        if (level < 12) return "border-lv4"
+        if (level < 15) return "border-lv5"
+        if (level > 16) return "border-lv6"
+    }
     const currentLevel = levels[gamificationProfile?.level]
     return (
         <div className="flex items-center justify-center dark:text-white/80 text-gray-400">
@@ -57,17 +66,19 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
                     <Card className="mb-8 dark:border-white/10 dark:bg-slate-800/50">
                         <CardContent className="pt-6">
                             <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-                                <Avatar className="w-32 h-32 border-4 border-white shadow-lg dark:border-white/10">
-                                    <AvatarImage src={userProfile?.profilePicture} alt={userProfile?.displayName} className="object-cover" />
-                                    <AvatarFallback className="text-2xl font-semibold bg-gradient-to-br from-blue-500 to-purple-600 text-white">
-                                        {userProfile?.displayName
-                                            ? userProfile?.displayName
-                                                  .split(" ")
-                                                  .map((n) => n[0])
-                                                  .join("")
-                                            : "N/A"}
-                                    </AvatarFallback>
-                                </Avatar>
+                                <div className={`w-32 h-32 ${getBorderColor(gamificationProfile.level)} rounded-full flex items-center justify-center`}>
+                                    <Avatar className="w-28 h-28  shadow-md   ">
+                                        <AvatarImage src={userProfile?.profilePicture} alt={userProfile?.displayName} className="object-cover" />
+                                        <AvatarFallback className="text-2xl font-semibold bg-gradient-to-br from-blue-500 to-purple-600 text-white">
+                                            {userProfile?.displayName
+                                                ? userProfile?.displayName
+                                                      .split(" ")
+                                                      .map((n) => n[0])
+                                                      .join("")
+                                                : "N/A"}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                </div>
 
                                 <div className="flex-1 text-center md:text-left">
                                     <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
@@ -75,11 +86,11 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
                                         {levels && gamificationProfile && gamificationProfile.level && levels[gamificationProfile.level] && (
                                             <Badge variant="secondary" className="bg-blue-600 text-white flex items-center gap-1">
                                                 <Image src={levels[gamificationProfile.level].levelIcon} width={16} height={16} alt="" />
-                                                Cấp {gamificationProfile.level + 1}
+                                                Cấp {gamificationProfile.level}
                                             </Badge>
                                         )}
                                     </div>
-                                    <p className="text-slate-400 mb-1">Học viên tập sự</p>
+                                    <p className="text-slate-400 mb-1">{levels[gamificationProfile?.level - 1]?.name}</p>
 
                                     <div className="flex items-center justify-center md:justify-start gap-2 light:text-gray-600 dark:text-white/60">
                                         <Mail className="w-4 h-4" />

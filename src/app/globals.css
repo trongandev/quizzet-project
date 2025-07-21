@@ -330,3 +330,27 @@ mark {
         translate: 220%;
     }
 }
+
+.border-lv1 {
+    background: linear-gradient(#caced7, #4a4f58);
+}
+
+.border-lv2 {
+    background: linear-gradient(#b0b9d2, #324b74);
+}
+
+.border-lv3 {
+    background: linear-gradient(#5788c8, #304871);
+}
+
+.border-lv4 {
+    background: linear-gradient(#2e74d0, #304c7c);
+}
+
+.border-lv5 {
+    background: linear-gradient(#005acf, #1b3e79);
+}
+
+.border-lv6 {
+    background: linear-gradient(#005bd3, #002563);
+}
