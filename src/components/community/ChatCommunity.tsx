@@ -5,7 +5,7 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from "react"
 import Cookies from "js-cookie"
 import { GET_API_WITHOUT_COOKIE } from "@/lib/fetchAPI"
 
-import { Bell, ChevronRight, Crown, EllipsisVertical, Flame, Hash, ImagePlus, Minus, Search, Send, Smile, Users, X } from "lucide-react"
+import { Bell, ChevronRight, CodeXml, Crown, EllipsisVertical, Flame, Hash, ImagePlus, Minus, Search, Send, Smile, TowerControl, Users, X } from "lucide-react"
 import Image from "next/image"
 import ChatCard from "@/components/community/ChatCard"
 import { Input } from "@/components/ui/input"
@@ -19,6 +19,7 @@ import axios from "axios"
 import { PhotoProvider, PhotoView } from "react-photo-view"
 import "react-photo-view/dist/react-photo-view.css"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 const debounce = (func: any, wait: any) => {
     let timeout: NodeJS.Timeout
     return function executedFunction(...args: any) {
@@ -272,6 +273,24 @@ export default function ChatCommunity() {
         }
     }
 
+    const getIconLevel = (level: number) => {
+        if (level < 3) {
+            return "/icon-level/crystal_lv1_1-3.svg" // Default icon for invalid levels
+        }
+        if (level < 6) {
+            return `/icon-level/crystal_lv2_4-6.svg` // Assuming icons are named as crystal_lv1.svg, crystal_lv2.svg, etc.
+        }
+        if (level < 9) {
+            return `/icon-level/crystal_lv3_7-9.svg`
+        }
+        if (level < 12) {
+            return `/icon-level/crystal_lv4_10-12.svg`
+        }
+        if (level < 15) {
+            return `/icon-level/crystal_lv5_13-15.svg`
+        }
+        return `/icon-level/crystal_lv6_16-18.svg`
+    }
     return (
         <PhotoProvider>
             <div className="flex items-center justify-center">
@@ -451,19 +470,38 @@ export default function ChatCommunity() {
                                             return (
                                                 <Link href={`/profile/${user?._id}` || ""} className="flex items-center justify-between group hover:bg-white/20 p-3 rounded-lg transition-all duration-300 cursor-pointer" key={index}>
                                                     <div className="flex items-center gap-3">
-                                                        <div className="relative w-10 h-10">
+                                                        <div className={`relative w-10 h-10 ${user.role === "admin" && "ring-2 ring-blue-500"} rounded-full `}>
                                                             <Image src={user?.profilePicture || "/avatar.jpg"} alt="" fill className="absolute object-cover rounded-full"></Image>
-                                                            <div className="absolute w-3 h-3 bg-green-500 rounded-full bottom-0 right-0"></div>
+                                                            {user?.role === "admin" ? (
+                                                                <div className="absolute -bottom-1 -right-1 z-10 bg-blue-500 rounded-full w-4 h-4 flex items-center justify-center">
+                                                                    <CodeXml size={12} />
+                                                                </div>
+                                                            ) : (
+                                                                <div className="absolute w-3 h-3 bg-green-500 rounded-full bottom-0 right-0 z-10"></div>
+                                                            )}
                                                         </div>
                                                         <div className="flex-1 w-full">
-                                                            <h1 className="text-md font-semibold line-clamp-1 break-words group-hover:text-primary transition-all duration-300">{user?.displayName || "Khách vãng lai"}</h1>
-                                                            <p className="flex gap-1 items-center text-gray-500 dark:text-gray-400 text-sm ">
-                                                                Level: {user?.gamification?.level || 0} - {user?.gamification?.xp.toLocaleString() || 0}XP -{" "}
-                                                                <span className="flex gap-1 items-center">
-                                                                    <Flame size={14} className="stroke-yellow-500" />
-                                                                    {user?.gamification?.dailyStreak?.current || 0}
-                                                                </span>
-                                                            </p>
+                                                            <div className="flex items-center gap-2">
+                                                                {/* <h1 className="text-md font-semibold line-clamp-1 break-words group-hover:text-primary transition-all duration-300">{user?.displayName || "Khách vãng lai"}</h1> */}
+                                                                <h1 className={`line-clamp-1 animate-text-gradient bg-gradient-to-r font-semibold ${user.role === "admin" ? "from-blue-500 via-blue-400 to-blue-600 bg-[200%_auto] bg-clip-text text-transparent" : ""}`}>{user?.displayName || "Khách vãng lai"}</h1>
+                                                                {token && (
+                                                                    <Badge variant="secondary" className="bg-blue-600 text-white flex items-center gap-1 text-xs">
+                                                                        <Image src={getIconLevel(user?.gamification?.level || 0)} width={14} height={14} alt="" />
+                                                                        Cấp {user?.gamification?.level || 0}
+                                                                    </Badge>
+                                                                )}
+                                                            </div>
+                                                            {token ? (
+                                                                <p className="flex gap-1 items-center text-gray-500 dark:text-gray-400 text-sm ">
+                                                                    {user?.gamification?.xp.toLocaleString() || 0}XP -{" "}
+                                                                    <span className="flex gap-1 items-center">
+                                                                        <Flame size={14} className="stroke-yellow-500" />
+                                                                        {user?.gamification?.dailyStreak?.current || 0}
+                                                                    </span>
+                                                                </p>
+                                                            ) : (
+                                                                <p className="text-gray-500 dark:text-gray-400 text-sm ">Đang hoạt động</p>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </Link>

@@ -62,7 +62,7 @@ export default function LoginForm() {
                     position: "top-center",
                 })
                 fetchProfileAndSaveCookie(data)
-                router.push("/")
+                router.back()
             } else {
                 toast.warning(data.message, { position: "top-center" })
             }
