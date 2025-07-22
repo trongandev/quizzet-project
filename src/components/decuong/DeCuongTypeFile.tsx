@@ -197,7 +197,7 @@ export default function DeCuongTypeFile({ findFile }: { findFile: ISO[] }) {
                 </div>
             </div>
             <div className={`grid grid-cols-1 md:grid-cols-2   gap-4 ${viewMode === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"} max-h-[416px] overflow-y-scroll`}>
-                {findFile.map((item, index) => (
+                {data.map((item, index) => (
                     <DeCuongItem key={index} item={item} />
                 ))}
             </div>

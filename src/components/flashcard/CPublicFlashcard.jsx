@@ -34,7 +34,7 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
     const currentItems = data?.slice(startIndex, endIndex)
     const displayFC = currentItems
     const [isOpen, setIsOpen] = useState(false)
-
+    const [open, setOpen] = useState(false)
     const handleClose = () => {
         setIsOpen(false)
         localStorage.setItem("tutorialFC", "true") // Lưu trạng thái đã xem
@@ -151,6 +151,7 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
 
         return pages
     }
+    console.log(listFlashCard, "listFlashCard")
     return (
         <div className=" py-5 pt-20 flex justify-center items-center">
             <div className="text-third dark:text-white px-3 md:px-0 min-h-screen w-full md:w-[1000px] xl:w-[1200px]">
@@ -201,7 +202,7 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
                         </AlertDialog>
                     </div>
                     {/* Statistics Cards with Dynamic Layout */}
-                    {token && <CDataWordsFC summary={summary} />}
+                    {token && listFlashCard && listFlashCard.length > 0 && <CDataWordsFC summary={summary} />}
                 </div>
                 <Tabs defaultValue="my-sets" className="mt-8" value={tabFlashcard} onValueChange={setTabFlashcard}>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -219,7 +220,7 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
                                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                                 <Input placeholder="Tìm kiếm flashcard..." className="pl-10 w-full md:w-64 " value={searchFC} onChange={(e) => handleSearchFC(e.target.value)} />
                             </div>
-                            <CreateFlashcardModal listFlashCard={listFlashCard} setListFlashCard={setListFlashCard} filterFlashcard={filterFlashcard} setFilterFlashcard={setFilterFlashcard} setTabFlashcard={setTabFlashcard}>
+                            <CreateFlashcardModal open={open} setOpen={setOpen} listFlashCard={listFlashCard} setListFlashCard={setListFlashCard} filterFlashcard={filterFlashcard} setFilterFlashcard={setFilterFlashcard} setTabFlashcard={setTabFlashcard}>
                                 <Button className="text-white w-full md:w-auto" disabled={token === undefined}>
                                     <Plus className="w-4 h-4 mr-2" />
                                     Tạo bộ flashcard mới
@@ -238,11 +239,19 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
                                                 <Loading className="h-12 w-12" />{" "}
                                             </div>
                                         )}
-                                        {filterFlashcard?.length === 0 && <div className="h-[350px] col-span-12 flex items-center justify-center text-gray-700">Không có dữ liệu...</div>}
+                                        {token && !loading && listFlashCard?.length === 0 && (
+                                            <div className="h-[350px] col-span-12 flex items-center justify-center flex-col gap-3">
+                                                <p className="dark:text-gray-400">Bạn chưa tạo bộ flashcard nào :(</p>
+                                                <Button className="text-white" onClick={() => setOpen(true)}>
+                                                    <Plus />
+                                                    Tạo bộ flashcard mới thôi!
+                                                </Button>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             ) : (
-                                <div className=" text-gray-700 mt-10 dark:text-gray-300 h-20 flex flex-col gap-3 items-center justify-center">
+                                <div className=" text-gray-700 mt-10 dark:text-gray-300 h-[350px] flex flex-col gap-3 items-center justify-center">
                                     <p>Bạn cần đăng nhập để có thể thêm flashcard hoặc</p>
                                     <Button className="dark:text-white" onClick={() => setTabFlashcard("community")} variant="secondary">
                                         <Users className="h-4 w-4" /> Xem tab cộng đồng của chúng tôi

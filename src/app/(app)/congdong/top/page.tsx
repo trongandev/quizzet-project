@@ -3,7 +3,7 @@
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Crown, Medal, Award, Trophy, Flame, Eye } from "lucide-react"
+import { Crown, Medal, Award, Trophy, Flame, Eye, ChevronLeft } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { IPodiumUser } from "@/types/type"
 import { useSocket } from "@/context/socketContext"
@@ -14,6 +14,7 @@ import { GET_API_WITHOUT_COOKIE } from "@/lib/fetchAPI"
 import React, { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import Loading from "@/components/ui/loading"
+import { useRouter } from "next/navigation"
 
 export default function TopUserPage() {
     const [podiumUsers, setPodiumUsers] = useState<IPodiumUser[]>([])
@@ -35,7 +36,7 @@ export default function TopUserPage() {
                 setPodiumUsers(res?.topUsers || [])
                 setCurrentUser(res?.currentUser || null)
                 setHasMore(res?.hasMore)
-                setSkip(skip + limit)
+                // setSkip(skip + limit)
             }
             setLoading(false)
         }
@@ -96,19 +97,16 @@ export default function TopUserPage() {
     const checkOnline = (userId: string) => {
         return onlineUsers?.find((item: any) => item?._id === userId)
     }
+    const router = useRouter()
     return (
         <div className="flex items-center justify-center">
-            <div className="w-full md:w-[1000px] xl:w-[1200px] py-5 pt-16 mx-3 md:mx-0">
-                <div className="text-center space-y-2">
-                    <h1 className="text-3xl font-bold dark:text-white flex items-center justify-center gap-2">
-                        <Trophy className="h-8 w-8 text-yellow-500" />
-                        Bảng Xếp Hạng Quizzet
-                    </h1>
-                    <p className="dark:text-slate-400">Thành tích của các thành viên xuất sắc nhất</p>
-                </div>
+            <div className="w-full md:w-[1000px] xl:w-[1200px] py-5 pt-16 px-2 md:px-0 mx-3 md:mx-0">
                 <div className="lg:col-span-2 mt-5">
-                    <Card className="dark:bg-slate-700 ">
-                        <CardHeader>
+                    <Button onClick={() => router.back()} variant="secondary">
+                        <ChevronLeft /> Quay về
+                    </Button>
+                    <Card className="dark:bg-slate-700 mt-2 ">
+                        <CardHeader className="p-3 md:p-6">
                             <CardTitle className="dark:text-white flex items-center gap-2">
                                 <div className="w-10 h-10 flex items-center justify-center rounded-md bg-yellow-100 dark:bg-yellow-800/50">
                                     <Trophy size={20} className=" text-yellow-500" />
@@ -119,10 +117,10 @@ export default function TopUserPage() {
                                 </div>
                             </CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-3">
+                        <CardContent className=" p-3 md:p-6">
                             <div className="space-y-3 max-h-[500px] overflow-y-auto">
                                 {podiumUsers.map((us, index) => (
-                                    <Link href={`/profile/${us.user_id._id}`} key={index} className={cn("flex items-center gap-4 p-4 rounded-lg transition-all dark:hover:bg-slate-600/50", index <= 2 ? "dark:bg-slate-600/30 border dark:border-slate-500" : "dark:bg-slate-600/20", us?.user_id?._id == user?._id && "bg-green-500/20 dark:bg-green-800/20")}>
+                                    <Link href={`/profile/${us.user_id._id}`} key={index} className={cn("flex items-center gap-2 md:gap-4 p-2 md:p-4 rounded-lg transition-all dark:hover:bg-slate-600/50", index <= 2 ? "dark:bg-slate-600/30 border dark:border-slate-500" : "dark:bg-slate-600/20", us?.user_id?._id == user?._id && "bg-green-500/20 dark:bg-green-800/20")}>
                                         {/* Rank */}
                                         <div className="flex items-center justify-center w-8">{getRankIcon(index + 1)}</div>
 
@@ -143,16 +141,16 @@ export default function TopUserPage() {
                                         {/* User Info */}
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-2 mb-1">
-                                                <h3 className="font-semibold dark:text-white truncate">{us.user_id.displayName}</h3>
+                                                <h3 className="font-semibold  dark:text-white truncate">{us.user_id.displayName}</h3>
                                                 {checkOnline(us.user_id._id) && (
                                                     <Badge variant="secondary" className="bg-green-500/20 text-green-400 text-xs">
                                                         Đang online
                                                     </Badge>
                                                 )}
                                             </div>
-                                            <div className="flex items-center gap-2 text-sm text-slate-400">
+                                            <div className="flex flex-col md:flex-row md:items-center gap-2 text-sm text-slate-400">
                                                 <span>Level {us.level}</span>
-                                                <span>•</span>
+                                                <span className="hidden md:block">•</span>
                                                 <span className="flex items-center gap-1">
                                                     <Flame size={14} className=" stroke-yellow-500" />
                                                     {us.dailyStreak.current} ngày
@@ -189,7 +187,7 @@ export default function TopUserPage() {
                                 </div>
                             </div>
                             {currentUser && currentUser.rank > skip && (
-                                <Link href={`/profile/${currentUser.user_id._id}`} key={currentUser.user_id._id} className={cn("flex items-center gap-4 p-4 rounded-lg transition-all dark:hover:bg-slate-600/50 bg-green-500/20 dark:bg-green-800/50")}>
+                                <Link href={`/profile/${currentUser.user_id._id}`} key={currentUser.user_id._id} className={cn("flex items-center gap-2 p-2 md:gap-4 md:p-4 mt-3 rounded-lg transition-all dark:hover:bg-slate-600/50 bg-green-500/20 dark:bg-green-800/50")}>
                                     {/* Rank */}
                                     <div className="flex items-center justify-center w-8">{getRankIcon(currentUser.rank)}</div>
 
@@ -217,9 +215,9 @@ export default function TopUserPage() {
                                                 </Badge>
                                             )}
                                         </div>
-                                        <div className="flex items-center gap-2 text-sm text-slate-400">
+                                        <div className="flex flex-col md:flex-row md:items-center gap-2 text-sm text-slate-400">
                                             <span>Level {currentUser.level}</span>
-                                            <span>•</span>
+                                            <span className="hidden md:block">•</span>
                                             <span className="flex items-center gap-1">
                                                 <Flame size={14} className=" stroke-yellow-500" />
                                                 {currentUser.dailyStreak.current} ngày

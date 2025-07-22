@@ -160,12 +160,12 @@ export default function CHeader({ tasks }: { tasks: TASKS }) {
                                             Góp ý
                                         </DropdownMenuItem>
                                         {theme === "dark" ? (
-                                            <DropdownMenuItem onClick={() => setTheme("light")}>
+                                            <DropdownMenuItem className="flex md:hidden" onClick={() => setTheme("light")}>
                                                 <Sun className="" />
                                                 Bật chế độ sáng
                                             </DropdownMenuItem>
                                         ) : (
-                                            <DropdownMenuItem onClick={() => setTheme("dark")}>
+                                            <DropdownMenuItem className="flex md:hidden" onClick={() => setTheme("dark")}>
                                                 <Moon className="" /> Bật chế độ tối
                                             </DropdownMenuItem>
                                         )}

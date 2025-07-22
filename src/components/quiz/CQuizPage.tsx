@@ -14,6 +14,7 @@ import { GET_API } from "@/lib/fetchAPI"
 import QuizItem from "./QuizItem"
 import Loading from "../ui/loading"
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogFooter, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import Link from "next/link"
 
 export default function CQuizPage({ publicQuizData }: { publicQuizData: IQuiz[] }) {
     const [isOpen, setIsOpen] = useState(false)
@@ -214,11 +215,21 @@ export default function CQuizPage({ publicQuizData }: { publicQuizData: IQuiz[] 
                                                     <Loading className="h-12 w-12" />{" "}
                                                 </div>
                                             )}
-                                            {!loading && filterQuiz?.length <= 0 && <div className="h-[350px] col-span-12 flex items-center justify-center text-gray-700">Không có dữ liệu...</div>}
+                                            {token && !loading && filterQuiz?.length <= 0 && (
+                                                <div className="h-[350px] col-span-12 flex items-center flex-col gap-3 justify-center ">
+                                                    <p className="dark:text-gray-400">Bạn chưa tạo bài quiz nào :(</p>
+                                                    <Link href="/quiz/themcauhoi">
+                                                        <Button className="text-white">
+                                                            <Plus />
+                                                            Tạo quiz mới thôi!
+                                                        </Button>
+                                                    </Link>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className=" text-gray-700 mt-10 dark:text-gray-300 h-20 flex flex-col gap-3 items-center justify-center">
+                                    <div className=" text-gray-700 mt-10 dark:text-gray-300 h-[350px] flex flex-col gap-3 items-center justify-center">
                                         <p>Bạn cần đăng nhập để có thể thêm quiz hoặc</p>
                                         <Button className="dark:text-white" onClick={() => setTab("community")} variant="secondary">
                                             <Users className="h-4 w-4" /> Xem tab cộng đồng của chúng tôi

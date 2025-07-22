@@ -430,7 +430,7 @@ export function AIResultPreview({ open, onOpenChange, quiz, setOpenAddMoreInfo, 
                                     <p className="text-center text-sm">Không có từ nào...</p>
                                 </div>
                             )}
-                            {quizData.questions.length > 0 && totalErrors === 0 && activeFilter !== "all" && (
+                            {quizData.questions.length > 0 && totalErrors === 0 && activeFilter === "invalid" && (
                                 <div className=" h-[500px]  flex items-center justify-center">
                                     <p className="text-center text-sm">Đã sửa hết lỗi...</p>
                                 </div>
@@ -448,7 +448,7 @@ export function AIResultPreview({ open, onOpenChange, quiz, setOpenAddMoreInfo, 
                                 disabled={totalErrors > 0}
                                 onClick={() => {
                                     setOpenAddMoreInfo(true)
-                                    setGeneratedQuiz(filterQuizData)
+                                    setGeneratedQuiz(quizData)
                                 }}
                             >
                                 <Save className="mr-2 h-4 w-4" />

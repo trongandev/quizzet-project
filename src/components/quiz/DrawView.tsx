@@ -1,141 +1,142 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { FileText, Search, Edit, Trash2, Eye, Calendar, Clock, Bot, Upload, Plus, AlertCircle, Aperture } from "lucide-react";
-import handleCompareDate from "@/lib/CompareDate";
-import { AIResultPreview } from "./AIResuiltPreview";
-import DialogAddMoreInfoQuiz from "./DialogAddMoreInfoQuiz";
-import { SidebarTrigger } from "../ui/sidebar";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { FileText, Search, Edit, Trash2, Eye, Calendar, Clock, Bot, Upload, Plus, AlertCircle, Aperture } from "lucide-react"
+import handleCompareDate from "@/lib/CompareDate"
+import { AIResultPreview } from "./AIResuiltPreview"
+import DialogAddMoreInfoQuiz from "./DialogAddMoreInfoQuiz"
+import { SidebarTrigger } from "../ui/sidebar"
+import { useRouter } from "next/navigation"
 
 interface DraftQuiz {
-    id: string;
-    title: string;
-    content: string;
-    subject: string;
-    createdAt: Date;
-    updatedAt: Date;
-    questionCount: number;
-    questions: Question[];
-    createdBy: "ai" | "manual" | "file";
-    status: "draft" | "in-progress";
-    difficulty: "easy" | "medium" | "hard";
+    id: string
+    title: string
+    content: string
+    subject: string
+    createdAt: Date
+    updatedAt: Date
+    questionCount: number
+    questions: Question[]
+    createdBy: "ai" | "manual" | "file"
+    status: "draft" | "in-progress"
+    difficulty: "easy" | "medium" | "hard"
 }
 
 interface QuizQuestion {
-    title: string;
-    subject: string;
-    content: string;
-    questions: Question[];
+    title: string
+    subject: string
+    content: string
+    questions: Question[]
 }
 interface Question {
-    id: string;
-    type: "multiple-choice" | "true-false" | "short-answer";
-    question: string;
-    answers?: string[];
-    correct: string;
-    points: number;
+    id: string
+    type: "multiple-choice" | "true-false" | "short-answer"
+    question: string
+    answers?: string[]
+    correct: string
+    points: number
 }
 
 export function DraftsView() {
-    const [searchTerm, setSearchTerm] = useState("");
-    const [openAddMoreInfo, setOpenAddMoreInfo] = useState(false);
-    const [generatedQuiz, setGeneratedQuiz] = useState<QuizQuestion | undefined>(undefined);
-    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
-    const [draftToDelete, setDraftToDelete] = useState<DraftQuiz | null>(null);
-    const [showPreview, setShowPreview] = useState(false);
-    const router = useRouter();
-    const [drafts, setDrafts] = useState<DraftQuiz[]>([]);
+    const [searchTerm, setSearchTerm] = useState("")
+    const [openAddMoreInfo, setOpenAddMoreInfo] = useState(false)
+    const [generatedQuiz, setGeneratedQuiz] = useState<QuizQuestion | undefined>(undefined)
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+    const [draftToDelete, setDraftToDelete] = useState<DraftQuiz | null>(null)
+    const [showPreview, setShowPreview] = useState(false)
+    const router = useRouter()
+    const [drafts, setDrafts] = useState<DraftQuiz[]>([])
     useEffect(() => {
-        const getDrawQuiz = localStorage.getItem("draftQuiz") || "";
+        const getDrawQuiz = localStorage.getItem("draftQuiz") || ""
         if (!getDrawQuiz) {
-            localStorage.setItem("draftQuiz", JSON.stringify([]));
+            localStorage.setItem("draftQuiz", JSON.stringify([]))
         }
-        const draftQuiz = JSON.parse(localStorage.getItem("draftQuiz") || "") as DraftQuiz[];
-        setDrafts(draftQuiz || []);
-    }, []);
+        const draftQuiz = JSON.parse(localStorage.getItem("draftQuiz") || "") as DraftQuiz[]
+        const sortedDrafts = draftQuiz.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+        setDrafts(sortedDrafts || [])
+    }, [])
 
-    const filteredDrafts = drafts.filter((draft) => draft.title.toLowerCase().includes(searchTerm.toLowerCase()) || draft.content.toLowerCase().includes(searchTerm.toLowerCase()));
+    const filteredDrafts = drafts.filter((draft) => draft.title.toLowerCase().includes(searchTerm.toLowerCase()) || draft.content.toLowerCase().includes(searchTerm.toLowerCase()))
 
     const updateLocalStorage = (newDrafts: DraftQuiz[]) => {
         try {
-            localStorage.setItem("draftQuiz", JSON.stringify(newDrafts));
+            localStorage.setItem("draftQuiz", JSON.stringify(newDrafts))
         } catch (error) {
-            console.error("Error saving drafts:", error);
+            console.error("Error saving drafts:", error)
         }
-    };
+    }
     const getCreatedByIcon = (createdBy: string) => {
         switch (createdBy) {
             case "ai":
-                return <Bot className="h-4 w-4 text-purple-500" />;
+                return <Bot className="h-4 w-4 text-purple-500" />
             case "manual":
-                return <Edit className="h-4 w-4 text-blue-500" />;
+                return <Edit className="h-4 w-4 text-blue-500" />
             case "file":
-                return <Upload className="h-4 w-4 text-green-500" />;
+                return <Upload className="h-4 w-4 text-green-500" />
             default:
-                return <FileText className="h-4 w-4" />;
+                return <FileText className="h-4 w-4" />
         }
-    };
+    }
 
     const getCreatedByLabel = (createdBy: string) => {
         switch (createdBy) {
             case "ai":
-                return "Tạo bằng AI";
+                return "Tạo bằng AI"
             case "manual":
-                return "Tạo thủ công";
+                return "Tạo thủ công"
             case "file":
-                return "Nhập từ file";
+                return "Nhập từ file"
             default:
-                return "Không xác định";
+                return "Không xác định"
         }
-    };
+    }
 
     const getDifficultyColor = (difficulty: string) => {
         switch (difficulty) {
             case "easy":
-                return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
+                return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
             case "medium":
-                return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
+                return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
             case "hard":
-                return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
+                return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
             default:
-                return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200";
+                return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
         }
-    };
+    }
 
     const getDifficultyLabel = (difficulty: string) => {
         switch (difficulty) {
             case "easy":
-                return "Dễ";
+                return "Dễ"
             case "medium":
-                return "Trung bình";
+                return "Trung bình"
             case "hard":
-                return "Khó";
+                return "Khó"
             default:
-                return "Không xác định";
+                return "Không xác định"
         }
-    };
+    }
 
     const handleDeleteDraft = (draft: DraftQuiz) => {
-        setDraftToDelete(draft);
-        setShowDeleteDialog(true);
-    };
+        setDraftToDelete(draft)
+        setShowDeleteDialog(true)
+    }
 
     const confirmDelete = () => {
         if (draftToDelete) {
-            const newDrafts = drafts.filter((d) => d.id !== draftToDelete.id);
-            setDrafts(newDrafts);
-            updateLocalStorage(newDrafts); // ✅ Update localStorage
-            setShowDeleteDialog(false);
-            setDraftToDelete(null);
+            const newDrafts = drafts.filter((d) => d.id !== draftToDelete.id)
+            setDrafts(newDrafts)
+            updateLocalStorage(newDrafts) // ✅ Update localStorage
+            setShowDeleteDialog(false)
+            setDraftToDelete(null)
         }
-    };
+    }
 
     const handlePreviewDraft = (draft: DraftQuiz) => {
         setGeneratedQuiz({
@@ -143,9 +144,9 @@ export function DraftsView() {
             subject: draft.subject,
             content: draft.content,
             questions: draft.questions,
-        });
-        setShowPreview(true);
-    };
+        })
+        setShowPreview(true)
+    }
 
     const handleSetValueGeneratedQuiz = (draft: DraftQuiz) => {
         setGeneratedQuiz({
@@ -153,12 +154,12 @@ export function DraftsView() {
             subject: draft.subject,
             content: draft.content,
             questions: draft.questions,
-        });
-    };
+        })
+    }
 
     const handleQuizUpdate = (updatedQuiz: typeof generatedQuiz) => {
-        setGeneratedQuiz(updatedQuiz);
-    };
+        setGeneratedQuiz(updatedQuiz)
+    }
 
     return (
         <div className="p-6 max-w-6xl mx-auto space-y-6">
@@ -238,7 +239,7 @@ export function DraftsView() {
                                     </div>
                                     <div className="flex items-center space-x-1">
                                         <Clock className="h-4 w-4" />
-                                        <span>{Math.ceil(draft.questions.length * 1.5)} phút</span>
+                                        <span>~{Math.ceil(draft.questions.length * 1.5)} phút làm bài</span>
                                     </div>
                                 </div>
 
@@ -274,52 +275,6 @@ export function DraftsView() {
                 </div>
             )}
             {generatedQuiz && <AIResultPreview open={showPreview} onOpenChange={setShowPreview} quiz={generatedQuiz} setGeneratedQuiz={setGeneratedQuiz} setOpenAddMoreInfo={setOpenAddMoreInfo} />}
-            {/* Preview Dialog */}
-            {/* <Dialog open={!!selectedDraft} onOpenChange={() => setSelectedDraft(null)}>
-                <DialogContent className="max-w-2xl">
-                    <DialogHeader>
-                        <DialogTitle>Xem trước Quiz</DialogTitle>
-                    </DialogHeader>
-                    {selectedDraft && (
-                        <div className="space-y-4">
-                            <div>
-                                <h3 className="font-semibold text-lg">{selectedDraft.title}</h3>
-                                <p className="text-muted-foreground">{selectedDraft.description}</p>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <div className="flex items-center space-x-2">
-                                        {getCreatedByIcon(selectedDraft.createdBy)}
-                                        <span className="text-sm">{getCreatedByLabel(selectedDraft.createdBy)}</span>
-                                    </div>
-                                    <div className="flex items-center space-x-2">
-                                        <FileText className="h-4 w-4" />
-                                        <span className="text-sm">{selectedDraft.questionCount} câu hỏi</span>
-                                    </div>
-                                </div>
-                                <div className="space-y-2">
-                                    <Badge className={getDifficultyColor(selectedDraft.difficulty)}>{getDifficultyLabel(selectedDraft.difficulty)}</Badge>
-                                    <div className="flex items-center space-x-2">
-                                        <Clock className="h-4 w-4" />
-                                        <span className="text-sm">{Math.ceil(selectedDraft.questionCount * 1.5)} phút</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="flex justify-end space-x-2 pt-4">
-                                <Button variant="outline" onClick={() => setSelectedDraft(null)}>
-                                    Đóng
-                                </Button>
-                                <Button onClick={() => handleEditDraft(selectedDraft)}>
-                                    <Edit className="mr-2 h-4 w-4" />
-                                    Chỉnh sửa
-                                </Button>
-                            </div>
-                        </div>
-                    )}
-                </DialogContent>
-            </Dialog> */}
 
             {/* Delete Confirmation Dialog */}
             <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
@@ -329,9 +284,7 @@ export function DraftsView() {
                     </DialogHeader>
                     <Alert className="border-red-200 bg-red-50 dark:bg-red-900/50 dark:border-red-700">
                         <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-200" />
-                        <AlertDescription className="text-red-800 dark:text-red-300">
-                            Bạn có chắc chắn muốn xóa quiz &quot;{draftToDelete?.title}&quot;? Hành động này không thể hoàn tác.
-                        </AlertDescription>
+                        <AlertDescription className="text-red-800 dark:text-red-300">Bạn có chắc chắn muốn xóa quiz &quot;{draftToDelete?.title}&quot;? Hành động này không thể hoàn tác.</AlertDescription>
                     </Alert>
                     <div className="flex justify-end space-x-2 pt-4">
                         <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
@@ -345,5 +298,5 @@ export function DraftsView() {
                 </DialogContent>
             </Dialog>
         </div>
-    );
+    )
 }

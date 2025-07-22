@@ -1,50 +1,51 @@
-"use client";
-import { ISO } from "@/types/type";
-import React, { useEffect, useState } from "react";
-import { Plus, Search, Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import DeCuongTypeFile from "./DeCuongTypeFile";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
-import CDeCuongTypeText from "./CDeCuongTypeText";
-import { GET_API } from "@/lib/fetchAPI";
-import DeCuongItem from "./DeCuongItem";
-import Loading from "../ui/loading";
+"use client"
+import { ISO } from "@/types/type"
+import React, { useEffect, useState } from "react"
+import { Plus, Search, Users } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import DeCuongTypeFile from "./DeCuongTypeFile"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import Cookies from "js-cookie"
+import { useRouter } from "next/navigation"
+import CDeCuongTypeText from "./CDeCuongTypeText"
+import { GET_API } from "@/lib/fetchAPI"
+import DeCuongItem from "./DeCuongItem"
+import Loading from "../ui/loading"
+import Link from "next/link"
 export default function CDeCuong({ findText, findFile }: any) {
-    const [tab, setTab] = useState("my");
-    const [loading, setLoading] = useState(false);
-    const [SOUser, setSOUser] = useState<ISO[]>([]);
-    const [filterSOUser, setFilterSOUser] = useState<ISO[]>([]);
-    const [searchQuiz, setSearchQuiz] = useState("");
+    const [tab, setTab] = useState("my")
+    const [loading, setLoading] = useState(false)
+    const [SOUser, setSOUser] = useState<ISO[]>([])
+    const [filterSOUser, setFilterSOUser] = useState<ISO[]>([])
+    const [searchQuiz, setSearchQuiz] = useState("")
 
-    const router = useRouter();
-    const token = Cookies.get("token") || "";
+    const router = useRouter()
+    const token = Cookies.get("token") || ""
 
     useEffect(() => {
         const fetchSOUser = async () => {
-            setLoading(true);
-            const res = await GET_API("/so/user", token);
-            setSOUser(res);
-            setFilterSOUser(res);
-            setLoading(false);
-        };
+            setLoading(true)
+            const res = await GET_API("/so/user", token)
+            setSOUser(res)
+            setFilterSOUser(res)
+            setLoading(false)
+        }
 
         if (token) {
-            fetchSOUser();
+            fetchSOUser()
         }
-    }, []);
+    }, [])
 
     const handleSearchQuiz = (value: string) => {
-        setSearchQuiz(value);
+        setSearchQuiz(value)
         if (value.trim() === "") {
-            setFilterSOUser(SOUser); // Reset to original data if search is empty
-            return;
+            setFilterSOUser(SOUser) // Reset to original data if search is empty
+            return
         }
-        const filteredData = SOUser.filter((item) => item.title.toLowerCase().includes(value.toLowerCase()));
-        setFilterSOUser(filteredData);
-    };
+        const filteredData = SOUser.filter((item) => item.title.toLowerCase().includes(value.toLowerCase()))
+        setFilterSOUser(filteredData)
+    }
     return (
         <div className="flex items-center justify-center">
             <div className="w-full md:w-[1000px] xl:w-[1200px]  min-h-screen">
@@ -73,13 +74,11 @@ export default function CDeCuong({ findText, findFile }: any) {
                                 {tab === "my" && (
                                     <div className="relative w-full ">
                                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                                        <Input placeholder="Tìm kiếm đề cương..." className="pl-10 w-full md:w-64 " value={searchQuiz} onChange={(e) => handleSearchQuiz(e.target.value)} />
+                                        <Input placeholder="Tìm kiếm đề cương..." className="pl-10 h-11 w-full md:w-64 " value={searchQuiz} onChange={(e) => handleSearchQuiz(e.target.value)} />
                                     </div>
                                 )}
 
-                                <Button
-                                    onClick={() => router.push("/decuong/taodecuong")}
-                                    className="h-11 w-full md:w-auto px-10 relative group overflow-hidden  bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+                                <Button onClick={() => router.push("/decuong/taodecuong")} className="h-11 w-full md:w-auto px-10 relative group overflow-hidden  bg-gradient-to-r from-blue-500 to-purple-500 text-white">
                                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50  dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
                                     <Plus className="h-4 w-4" />
                                     Tạo đề cương
@@ -97,11 +96,21 @@ export default function CDeCuong({ findText, findFile }: any) {
                                                     <Loading className="h-12 w-12" />{" "}
                                                 </div>
                                             )}
-                                            {filterSOUser?.length <= 0 && <div className="h-[350px] col-span-12 flex items-center justify-center text-gray-700">Không có dữ liệu...</div>}
+                                            {token && !loading && filterSOUser?.length <= 0 && (
+                                                <div className="h-[350px] col-span-12 flex flex-col gap-3 items-center justify-center ">
+                                                    <p className="dark:text-gray-400">Bạn chưa có đề cương nào chia sẻ cho cộng đồng :(</p>
+                                                    <Link href="/decuong/taodecuong">
+                                                        <Button className="text-white">
+                                                            <Plus />
+                                                            Đẩy đề cương lên thôi
+                                                        </Button>
+                                                    </Link>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className=" text-gray-700 mt-10 dark:text-gray-300 h-20 flex flex-col gap-3 items-center justify-center">
+                                    <div className=" text-gray-700 mt-10 dark:text-gray-300 h-[350px] flex flex-col gap-3 items-center justify-center">
                                         <p>Bạn cần đăng nhập để có thể tạo đề cương</p>
                                         <Button className="dark:text-white" onClick={() => setTab("community")} variant="secondary">
                                             <Users className="h-4 w-4" /> Xem tab cộng đồng của chúng tôi
@@ -120,5 +129,5 @@ export default function CDeCuong({ findText, findFile }: any) {
                 </div>
             </div>
         </div>
-    );
+    )
 }

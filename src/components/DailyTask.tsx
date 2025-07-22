@@ -98,6 +98,7 @@ export default function DailyTask({ gamificationProfile, setGamificationProfile,
 
     const handleReloadDailyTasks = async () => {
         try {
+            setLoading(true)
             const token = Cookies.get("token") || ""
             const res = await GET_API("/gamification", token)
             if (res.ok) {

@@ -1,6 +1,7 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo, useState, useRef, useEffect } from "react"
+import { useRouter, usePathname } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -18,7 +19,7 @@ import { optimizedPromptQuiz } from "@/lib/optimizedPrompt"
 import DialogAddMoreInfoQuiz from "./DialogAddMoreInfoQuiz"
 import { Game2048Smooth } from "./Game2048Smooth"
 import { SidebarTrigger } from "../ui/sidebar"
-import { useRouter } from "next/navigation"
+
 interface QuizQuestion {
     title: string
     subject: string
@@ -41,54 +42,117 @@ export function AICreateView() {
     const [description, setDescription] = useState("")
     const [difficulty, setDifficulty] = useState("medium")
     const [questionCount, setQuestionCount] = useState([10])
-    // const [questionTypes, setQuestionTypes] = useState<string[]>(["multiple-choice"]);
     const [isGenerating, setIsGenerating] = useState(false)
     const [generatedQuiz, setGeneratedQuiz] = useState<QuizQuestion | null>(null)
     const [showPreview, setShowPreview] = useState(false)
     const [openGame, setOpenGame] = useState(false)
+
     const router = useRouter()
-    const difficultyOptions = [
-        { value: "easy", label: "Cơ bản", badge: "Cơ bản", desc: "Phù hợp cho người mới bắt đầu", color: "bg-green-100 text-green-800 dark:bg-green-800/40 dark:text-green-200" },
-        {
-            value: "medium",
-            label: "Trung bình",
-            badge: "Vừa",
-            desc: "Cần hiểu biết nhất định về chủ đề",
-            color: "bg-yellow-100 text-yellow-800 dark:bg-yellow-800/40 dark:text-yellow-200",
-        },
-        { value: "hard", label: "Nâng cao", badge: "Khó", desc: "Đòi hỏi kiến thức chuyên sâu", color: "bg-red-100 text-red-800 dark:bg-red-800/40 dark:text-red-200" },
-    ]
+    const pathname = usePathname()
 
-    // const questionTypeOptions = [
-    //     { value: "multiple-choice", label: "Trắc nghiệm" },
-    //     { value: "true-false", label: "Đúng/Sai" },
-    //     { value: "short-answer", label: "Câu trả lời ngắn" },
-    //     { value: "essay", label: "Tự luận" },
-    // ];
+    // ✅ Refs để track trạng thái
+    const isPageActiveRef = useRef(true)
+    const isGeneratingRef = useRef(false)
+    const currentTopicRef = useRef("")
+    const currentDifficultyRef = useRef("")
 
-    const topicSuggestions = ["Toán học cơ bản", "Lịch sử Việt Nam", "Tiếng Anh giao tiếp", "Khoa học tự nhiên", "Công nghệ thông tin", "Kinh tế học", "Văn học Việt Nam", "Địa lý thế giới"]
-
-    // const handleQuestionTypeToggle = (type: string) => {
-    //     setQuestionTypes((prev) => (prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]));
-    // };
     const genAI = useMemo(() => new GoogleGenerativeAI(process.env.API_KEY_AI || ""), [])
+
+    // ✅ Cập nhật refs khi state thay đổi
+    useEffect(() => {
+        isGeneratingRef.current = isGenerating
+    }, [isGenerating])
+
+    useEffect(() => {
+        currentTopicRef.current = topic
+        currentDifficultyRef.current = difficulty
+    }, [topic, difficulty])
+
+    // ✅ Cleanup khi component unmount hoặc user rời trang
+    useEffect(() => {
+        isPageActiveRef.current = true
+
+        // Cleanup function khi component unmount
+        return () => {
+            isPageActiveRef.current = false
+        }
+    }, [])
+
+    // ✅ Detect khi user navigate ra khỏi trang
+    useEffect(() => {
+        const handleRouteChange = () => {
+            isPageActiveRef.current = false
+        }
+
+        // Listen cho route changes
+        window.addEventListener("beforeunload", handleRouteChange)
+
+        return () => {
+            window.removeEventListener("beforeunload", handleRouteChange)
+            handleRouteChange()
+        }
+    }, [])
+
+    // ✅ Function để auto-save vào draft
+    const autoSaveToDraft = (quiz: QuizQuestion, topic: string, difficulty: string) => {
+        const draftStorage = localStorage.getItem("draftQuiz")
+        const draft = {
+            ...quiz,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            createdBy: "ai",
+            status: "draft",
+            difficulty: difficulty,
+            // autoSaved: true, // ✅ Flag để biết là auto-saved
+        }
+
+        if (draftStorage) {
+            const existingDrafts = JSON.parse(draftStorage)
+            localStorage.setItem("draftQuiz", JSON.stringify([...existingDrafts, draft]))
+        } else {
+            localStorage.setItem("draftQuiz", JSON.stringify([draft]))
+        }
+
+        // ✅ Toast thông báo auto-save
+        toast.info("Quiz đã được tự động lưu vào nháp", {
+            description: `Do bạn đã rời khỏi trang tạo quiz với chủ đề "${topic}"`,
+            position: "top-center",
+            duration: 15000,
+            action: {
+                label: "Xem nháp",
+                onClick: () => router.push("/quiz/themcauhoi/drafts"),
+            },
+        })
+    }
+
     const handleGenerate = async () => {
         try {
             setGeneratedQuiz(null)
             setIsGenerating(true)
             setOpenGame(true)
+
             const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" })
             const prompt = optimizedPromptQuiz(topic, description, questionCount[0], difficulty)
             const result = await model.generateContent(prompt)
 
             const responseText = result?.response
                 .text()
-                // ✅ Chỉ xóa wrapper markdown, giữ lại code blocks bên trong content
-                .replace(/^```json\s*/, "") // Xóa ```json ở đầu
-                .replace(/^```html\s*/, "") // Xóa ```html ở đầu
-                .replace(/```\s*$/, "") // Xóa ``` ở cuối
+                .replace(/^```json\s*/, "")
+                .replace(/^```html\s*/, "")
+                .replace(/```\s*$/, "")
+
             const jsonOutput = JSON.parse(responseText || "")
+
             setIsGenerating(false)
+
+            // ✅ Kiểm tra xem user còn ở trang này không
+            if (!isPageActiveRef.current) {
+                // User đã rời trang -> auto-save vào draft
+                autoSaveToDraft(jsonOutput, currentTopicRef.current, currentDifficultyRef.current)
+                return
+            }
+
+            // ✅ User vẫn ở trang -> hiển thị như bình thường
             setGeneratedQuiz(jsonOutput)
             toast.success("Quiz đã được tạo thành công!", {
                 description: `Với chủ đề "${topic}" và độ khó "${difficulty}".`,
@@ -101,26 +165,31 @@ export function AICreateView() {
             })
         } catch (error) {
             console.error("Error generating quiz:", error)
-            toast.error("Đã xảy ra lỗi khi tạo quiz.", { description: error instanceof Error ? error.message : "Lỗi không xác định", position: "top-center", duration: 5000 })
-            return
+
+            // ✅ Chỉ hiển thị error toast nếu user vẫn ở trang
+            if (isPageActiveRef.current) {
+                toast.error("Đã xảy ra lỗi khi tạo quiz.", {
+                    description: error instanceof Error ? error.message : "Lỗi không xác định",
+                    position: "top-center",
+                    duration: 5000,
+                })
+            }
         } finally {
             setIsGenerating(false)
         }
     }
-    // const handleQuizUpdate = (updatedQuiz: typeof generatedQuiz) => {
-    //     setGeneratedQuiz(updatedQuiz);
-    // };
 
+    // ✅ Function lưu thủ công vào draft (giữ nguyên)
     const handleAddToDraft = () => {
         const draftStorage = localStorage.getItem("draftQuiz")
         const draft = {
             ...generatedQuiz,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-
             createdBy: "ai",
             status: "draft",
             difficulty: difficulty,
+            autoSaved: false, // ✅ User save thủ công
         }
 
         if (draftStorage) {
@@ -130,8 +199,41 @@ export function AICreateView() {
             localStorage.setItem("draftQuiz", JSON.stringify([draft]))
         }
 
-        toast.success("Quiz đã được lưu vào nháp", { description: "Bạn có thể xem lại trong phần Draft", duration: 5000, action: { label: "Xem nháp", onClick: () => router.push("drafts") } })
+        toast.success("Quiz đã được lưu vào nháp", {
+            description: "Bạn có thể xem lại trong phần Draft",
+            duration: 5000,
+            action: {
+                label: "Xem nháp",
+                onClick: () => router.push("/quiz/themcauhoi/drafts"),
+            },
+        })
     }
+
+    // ✅ Thêm effect để detect route change (alternative approach)
+    useEffect(() => {
+        const currentPath = pathname
+
+        return () => {
+            // Khi component unmount và đang generate
+            if (isGeneratingRef.current) {
+                isPageActiveRef.current = false
+            }
+        }
+    }, [pathname])
+
+    const difficultyOptions = [
+        { value: "easy", label: "Cơ bản", badge: "Cơ bản", desc: "Phù hợp cho người mới bắt đầu", color: "bg-green-100 text-green-800 dark:bg-green-800/40 dark:text-green-200" },
+        {
+            value: "medium",
+            label: "Trung bình",
+            badge: "Vừa",
+            desc: "Cần hiểu biết nhất định về chủ đề",
+            color: "bg-yellow-100 text-yellow-800 dark:bg-yellow-800/40 dark:text-yellow-200",
+        },
+        { value: "hard", label: "Nâng cao", badge: "Khó", desc: "Đòi hỏi kiến thức chuyên sâu", color: "bg-red-100 text-red-800 dark:bg-red-800/40 dark:text-red-200" },
+    ]
+
+    const topicSuggestions = ["Toán học cơ bản", "Lịch sử Việt Nam", "Tiếng Anh giao tiếp", "Khoa học tự nhiên", "Công nghệ thông tin", "Kinh tế học", "Văn học Việt Nam", "Địa lý thế giới"]
 
     return (
         <div className="p-6 max-w-4xl mx-auto space-y-6">
@@ -209,24 +311,6 @@ export function AICreateView() {
                                     ))}
                                 </div>
                             </div>
-
-                            {/* <div >
-                                <Label>
-                                    Loại câu hỏi <span className="text-xs ml-3 text-gray-400">(*Mặc định trắc nghiệm)</span>
-                                </Label>
-                                <div className="grid grid-cols-2 gap-2 mt-2">
-                                    {questionTypeOptions.map((type) => (
-                                        <Button
-                                            key={type.value}
-                                            variant={questionTypes.includes(type.value) ? "default" : "outline"}
-                                            className="dark:text-white"
-                                            onClick={() => handleQuestionTypeToggle(type.value)}
-                                            disabled>
-                                            {type.label}
-                                        </Button>
-                                    ))}
-                                </div>
-                            </div> */}
                         </CardContent>
                     </Card>
                 </div>
@@ -274,9 +358,9 @@ export function AICreateView() {
                             <div className="space-y-2">
                                 <div className="flex items-center space-x-2">
                                     <Clock className="h-4 w-4 text-muted-foreground" />
-                                    <span className="text-sm">Thời gian ước tính:</span>
+                                    <span className="text-sm">Thời gian tạo ước tính:</span>
                                 </div>
-                                <p className="text-sm font-medium">{Math.ceil(questionCount[0] * 1.5)} phút</p>
+                                <p className="text-sm font-medium">{30 + Math.ceil(questionCount[0] / 0.4)}s</p>
                             </div>
 
                             <div className="space-y-2">
@@ -328,13 +412,13 @@ export function AICreateView() {
                     {generatedQuiz && (
                         <div className="space-y-4">
                             <div className="flex justify-center gap-3 flex-col md:flex-row">
-                                <Button size="lg" variant="outline" onClick={() => setShowPreview(true)}>
-                                    <Eye className="mr-2 h-4 w-4" />
-                                    Xem trước kết quả
-                                </Button>
                                 <Button size="lg" variant="outline" onClick={() => handleAddToDraft()}>
                                     <File className="mr-2 h-4 w-4" />
                                     Lưu vào nháp
+                                </Button>
+                                <Button size="lg" variant="outline" onClick={() => setShowPreview(true)}>
+                                    <Eye className="mr-2 h-4 w-4" />
+                                    Xem trước kết quả
                                 </Button>
                                 <DialogAddMoreInfoQuiz generatedQuiz={generatedQuiz} openAddMoreInfo={openAddMoreInfo} setOpenAddMoreInfo={setOpenAddMoreInfo}>
                                     <Button size="lg" className="w-full md:w-auto text-white bg-gradient-to-r from-blue-500 to-cyan-500">
