@@ -369,27 +369,26 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
                 </div>
             </div>
             <div className="flex items-center px-2 md:px-5 gap-2 md:gap-5 flex-wrap">
-                <Link href={`/flashcard/practice/${id_flashcard}`} className="flex-1">
-                    <Button variant="outline" className=" w-full h-16 dark:text-white text-md md:text-xl uppercase">
-                        <Target /> Luyện tập
+                <Link href={`/flashcard/practice-science/${id_flashcard}`} className="flex-1">
+                    <Button variant="outline" className="w-full h-16 dark:text-white text-md  uppercase">
+                        <Gift></Gift>
+                        Luyện tập cổ điển
                     </Button>
                 </Link>
-
                 {user?._id === String(listFlashcard?.userId?._id) && (
                     <>
                         <AddVocaModal token={token} filteredFlashcards={filteredFlashcards} setFilteredFlashcards={setFilteredFlashcards} listFlashcard={listFlashcard} setListFlashcard={setListFlashcard}>
-                            <Button className="dark:text-white h-16 text-md md:text-xl uppercase bg-gradient-to-r from-indigo-500 to-purple-500 text-white md:px-10">
+                            <Button className="dark:text-white h-16 text-md  uppercase bg-gradient-to-r from-indigo-500 to-purple-500 text-white md:px-10">
                                 <Plus size={24} /> Thêm từ vựng
                             </Button>
                         </AddVocaModal>
-                        <Link href={`/flashcard/practice-science/${id_flashcard}`} className="flex-1">
-                            <Button variant="outline" className="w-full h-16 dark:text-white text-md md:text-xl uppercase">
-                                <Gift></Gift>
-                                Ôn từ vựng
-                            </Button>
-                        </Link>
                     </>
                 )}
+                <Link href={`/flashcard/practice/${id_flashcard}`} className="flex-1">
+                    <Button variant="outline" className=" w-full h-16 dark:text-white text-md  uppercase">
+                        <Target /> Luyện tập hiện đại
+                    </Button>
+                </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:p-5 w-full px-2">
                 {filteredFlashcards && filteredFlashcards?.length > 0 ? (

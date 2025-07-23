@@ -173,7 +173,7 @@ export default function CFlashcardPractice({ fc }: { fc: Flashcard[] }) {
     }
 
     const handleChangeIndex = useCallback(async () => {
-        const newIndex = currentIndex + 1
+        const newIndex = currentIndex < flashcards.length - 1 ? currentIndex + 1 : 0
         setCurrentIndex(newIndex)
         setDefaultValue() // Reset các giá trị về mặc định
         if (feature === FEATURES.FLASHCARD || feature === FEATURES.LISTENING) {
@@ -274,6 +274,12 @@ export default function CFlashcardPractice({ fc }: { fc: Flashcard[] }) {
         // ✅ Sử dụng parameter hoặc fallback về state
         if (sessionRatings.length === 0) {
             toast.error("Không có đánh giá nào để gửi")
+            return
+        }
+        if (!user) {
+            toast.error("Bạn cần đăng nhập để lưu đánh giá ôn tập.", {
+                duration: 10000,
+            })
             return
         }
 
@@ -446,7 +452,7 @@ export default function CFlashcardPractice({ fc }: { fc: Flashcard[] }) {
                                             {isFlipped && <p className="text-lg ">{currentCard?.define}</p>}
 
                                             {currentCard?.example && (
-                                                <div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-800/50 dark:text-yellow-200 rounded-lg w-full">
+                                                <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-800/50 dark:text-slate-200 rounded-lg w-full">
                                                     {isFlipped && (
                                                         <>
                                                             {" "}
@@ -454,7 +460,7 @@ export default function CFlashcardPractice({ fc }: { fc: Flashcard[] }) {
                                                                 <Lightbulb />
                                                                 Ví dụ:
                                                             </p>
-                                                            <div className="text-yellow-800 dark:text-yellow-400/80">
+                                                            <div className="text-slate-800 dark:text-slate-400">
                                                                 <div className="mb-2">
                                                                     <p className="font-bold italic">{currentCard.example[0]?.en}</p>
                                                                     <p className="italic">{currentCard.example[0]?.vi}</p>
@@ -470,7 +476,7 @@ export default function CFlashcardPractice({ fc }: { fc: Flashcard[] }) {
                                             )}
                                             <div className="flex items-center justify-center mt-3">
                                                 <Button
-                                                    className="text-white"
+                                                    variant="secondary"
                                                     disabled={flashcards.length < currentIndex}
                                                     onClick={(e) => {
                                                         e.stopPropagation()

@@ -2,7 +2,6 @@ import handleCompareDate from "@/lib/CompareDate"
 import Image from "next/image"
 import Link from "next/link"
 import React from "react"
-import { Badge } from "../ui/badge"
 import { Dot, Play, Settings, Trash2 } from "lucide-react"
 import { IListFlashcard } from "@/types/type"
 import { Progress } from "@/components/ui/progress"
@@ -71,7 +70,7 @@ export default function UserFC({ item }: { item: IListFlashcard }) {
                 <Progress value={percent}></Progress>
             </div>
             <div className="flex gap-2">
-                <Link href={`/flashcard/practice-science/${item?._id}`} className="block w-full ">
+                <Link href={`/flashcard/practice/${item?._id}`} className="block w-full ">
                     <Button variant="outline" className="w-full">
                         {item.flashcards?.length > 0 ? (
                             <>
