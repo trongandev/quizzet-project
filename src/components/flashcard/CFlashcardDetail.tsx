@@ -383,7 +383,7 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
                                 <Plus size={24} /> Thêm từ vựng
                             </Button>
                         </AddVocaModal>
-                        <Link href={`/flashcard/practice-science`} className="flex-1">
+                        <Link href={`/flashcard/practice-science/${id_flashcard}`} className="flex-1">
                             <Button variant="outline" className="w-full h-16 dark:text-white text-md md:text-xl uppercase">
                                 <Gift></Gift>
                                 Ôn từ vựng

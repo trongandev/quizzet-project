@@ -151,7 +151,7 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
 
         return pages
     }
-    console.log(listFlashCard, "listFlashCard")
+    console.log(filterFlashcard, "filterFlashcard")
     return (
         <div className=" py-5 pt-20 flex justify-center items-center">
             <div className="text-third dark:text-white px-3 md:px-0 min-h-screen w-full md:w-[1000px] xl:w-[1200px]">
@@ -231,8 +231,8 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
                     <TabsContent value="my-sets">
                         <div>
                             {token !== undefined ? (
-                                <div className="mt-10">
-                                    <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-3 ">
+                                <div className="mt-5">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 ">
                                         {filterFlashcard && filterFlashcard.map((item) => <UserFC item={item} key={item._id} />)}
                                         {loading && (
                                             <div className="flex items-center justify-center col-span-4 h-[500px]">

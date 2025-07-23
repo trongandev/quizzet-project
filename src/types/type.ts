@@ -123,6 +123,7 @@ interface IListFlashcard {
     public: boolean
     flashcards: Flashcard[]
     created_at: Date
+    last_practice_date: Date
     progress: IProgress
 }
 
