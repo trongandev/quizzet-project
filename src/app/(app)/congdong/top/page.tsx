@@ -26,13 +26,11 @@ export default function TopUserPage() {
     const [hasMore, setHasMore] = useState(true)
     const { onlineUsers } = useSocket()
     const { user } = useUser() || {}
-    console.log(user)
     useEffect(() => {
         const fetchAPI = async () => {
             setLoading(true)
             const res = await GET_API_WITHOUT_COOKIE(`/gamification/top?limit=${limit}&skip=${skip}&user_id=${user?._id}`)
             if (res?.ok) {
-                console.log(res)
                 setPodiumUsers(res?.topUsers || [])
                 setCurrentUser(res?.currentUser || null)
                 setHasMore(res?.hasMore)

@@ -73,7 +73,6 @@ export function ClientChartWrapper({ chartData }: ClientChartWrapperProps) {
         }
         return colorMap[language] || "#6b7280"
     }
-    console.log(chartData)
     return (
         <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[300px]">
             <PieChart>

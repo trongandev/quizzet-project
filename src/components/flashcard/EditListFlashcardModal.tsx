@@ -28,7 +28,6 @@ export function EditListFlashcardModal({ children, editListFlashcard, handleEdit
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
     const [formData, setFormData] = useState<IEditFlashcard>()
-    console.log(editListFlashcard)
     useEffect(() => {
         setFormData({
             _id: editListFlashcard?._id || "",

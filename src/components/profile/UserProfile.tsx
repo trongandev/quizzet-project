@@ -17,6 +17,7 @@ import OverViewProfile from "@/components/profile/OverViewProfile"
 import UpdateProfile from "@/components/profile/UpdateProfile"
 import QuizInProfile from "@/components/profile/QuizInProfile"
 import Image from "next/image"
+import PublicFC from "@/components/flashcard/PublicFC"
 
 // Level configuration with unique designs
 
@@ -29,8 +30,9 @@ interface PropsProfile {
     levels: ILevel[]
     activities: IActivity[]
     countFlashcard: number
+    isAnotherUser: boolean
 }
-export default function UserProfile({ profile, quiz, flashcard, gamificationProfile, achievements, levels, activities, countFlashcard }: PropsProfile) {
+export default function UserProfile({ profile, quiz, flashcard, gamificationProfile, achievements, levels, activities, countFlashcard, isAnotherUser = false }: PropsProfile) {
     const { user, refetchUser } = useUser() || {
         user: null,
         refetchUser: () => {},
@@ -156,7 +158,11 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 max-h-[500px] overflow-y-auto">
-                            {flashcard && flashcard.map((item) => <UserFC item={item} key={item._id} />)}
+                            {flashcard &&
+                                flashcard.map((item) => {
+                                    if (isAnotherUser) return <PublicFC key={item._id} item={item} />
+                                    return <UserFC item={item} key={item._id} />
+                                })}
 
                             {flashcard && flashcard?.length === 0 && <div className="h-[350px] col-span-12 flex items-center justify-center text-gray-700">Không có dữ liệu...</div>}
                         </div>

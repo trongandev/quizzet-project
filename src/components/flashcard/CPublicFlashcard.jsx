@@ -151,7 +151,6 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
 
         return pages
     }
-    console.log(filterFlashcard, "filterFlashcard")
     return (
         <div className=" py-5 pt-20 flex justify-center items-center">
             <div className="text-third dark:text-white px-3 md:px-0 min-h-screen w-full md:w-[1000px] xl:w-[1200px]">

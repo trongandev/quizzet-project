@@ -73,7 +73,6 @@ export default function CFlashcardPracticeScience({ flashcards }: { flashcards: 
     }, [flashcards])
 
     useEffect(() => {
-        console.log("SessionRatings đã được cập nhật (trong useEffect):", sessionRatings)
         if (sessionRatings.length > 0 && sessionRatings.length % 5 === 0) {
             handleCompleteSession() // Gửi các đánh giá hiện có
         }
@@ -193,7 +192,6 @@ export default function CFlashcardPracticeScience({ flashcards }: { flashcards: 
 
     const handleCompleteSession = async () => {
         // ✅ Sử dụng parameter hoặc fallback về state
-        console.log("Sending ratings:", sessionRatings)
         if (sessionRatings.length === 0) {
             toast.error("Không có đánh giá nào để gửi")
             return

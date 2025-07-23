@@ -75,7 +75,6 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
         const fetchAPI = async () => {
             const req = await GET_API_WITHOUT_COOKIE(`/flashcards/${id_flashcard}`)
             if (req?.ok) {
-                console.log(req)
                 setListFlashcard(req?.listFlashCards)
                 setFilteredFlashcards(sortFlashcards(req?.listFlashCards?.flashcards))
                 setEditListFlashcard(req?.listFlashCards)
