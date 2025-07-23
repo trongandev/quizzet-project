@@ -79,8 +79,8 @@ export function GenericAdminPage({ config, data, dataTableComponent, createFormC
                 <div className="flex items-center gap-4">
                     <SidebarTrigger />
                     <div>
-                        <h2 className="text-3xl font-bold tracking-tight">{config.title}</h2>
-                        <p className="text-muted-foreground">{config.description}</p>
+                        <h2 className="text-3xl font-bold tracking-tight">{config?.title}</h2>
+                        <p className="text-muted-foreground">{config?.description}</p>
                     </div>
                 </div>
                 {config.showCreateButton && createFormComponent && (

@@ -147,6 +147,20 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
                             {gamificationProfile && <LevelProfile gamificationProfile={gamificationProfile} levels={levels} />}
                         </TabsContent>
                     </Tabs>
+                    <div className="mt-5">
+                        <div className="flex justify-between items-center mb-3">
+                            <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200">Bộ Flashcard của {userProfile?._id === userProfile?._id ? "bạn" : userProfile?.displayName}</h2>
+                            <Badge variant="secondary" className="dark:bg-slate-700">
+                                {(flashcard && flashcard?.length) || 0} flashcard
+                            </Badge>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 max-h-[500px] overflow-y-auto">
+                            {flashcard && flashcard.map((item) => <UserFC item={item} key={item._id} />)}
+
+                            {flashcard && flashcard?.length === 0 && <div className="h-[350px] col-span-12 flex items-center justify-center text-gray-700">Không có dữ liệu...</div>}
+                        </div>
+                    </div>
                     <div className="">
                         <div className="flex justify-between items-center mb-3">
                             <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200">Bộ Quiz của {userProfile?._id === userProfile?._id ? "bạn" : userProfile?.displayName}</h2>
@@ -156,20 +170,6 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-h-[500px] overflow-y-auto">{quiz && quiz.map((post, index) => <QuizInProfile key={index} post={post} />)}</div>
-                    </div>
-                    <div className="mt-5">
-                        <div className="flex justify-between items-center mb-3">
-                            <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200">Bộ Flashcard của {userProfile?._id === userProfile?._id ? "bạn" : userProfile?.displayName}</h2>
-                            <Badge variant="secondary" className="dark:bg-slate-700">
-                                {(flashcard && flashcard?.length) || 0} flashcard
-                            </Badge>
-                        </div>
-
-                        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 max-h-[500px] overflow-y-auto">
-                            {flashcard && flashcard.map((item) => <UserFC item={item} key={item._id} />)}
-
-                            {flashcard && flashcard?.length === 0 && <div className="h-[350px] col-span-12 flex items-center justify-center text-gray-700">Không có dữ liệu...</div>}
-                        </div>
                     </div>
                 </div>
             </div>

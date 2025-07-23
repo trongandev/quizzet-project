@@ -83,7 +83,7 @@ export default function UserFC({ item }: { item: IListFlashcard }) {
                         )}
                     </Button>
                 </Link>
-                <DropdownMenu>
+                {/* <DropdownMenu>
                     <DropdownMenuTrigger>
                         <Button variant="outline" className="">
                             <Settings />
@@ -98,7 +98,7 @@ export default function UserFC({ item }: { item: IListFlashcard }) {
                             <Trash2 /> Xóa bộ thẻ này
                         </DropdownMenuItem>
                     </DropdownMenuContent>
-                </DropdownMenu>
+                </DropdownMenu> */}
             </div>
         </Link>
     )

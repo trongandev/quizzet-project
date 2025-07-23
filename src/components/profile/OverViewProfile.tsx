@@ -56,7 +56,7 @@ export default function OverViewProfile({ gamificationProfile, levels, activitie
                     </div>
                     <div className="flex justify-between">
                         <span>Tổng từ vựng</span>
-                        <span className="font-bold text-green-400">{countFlashcard.toLocaleString()} từ</span>
+                        <span className="font-bold text-green-400">{countFlashcard?.toLocaleString() || 0} từ</span>
                     </div>
                     <div className="flex justify-between">
                         <span>XP kiếm được</span>

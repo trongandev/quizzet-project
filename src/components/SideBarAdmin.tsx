@@ -1,10 +1,10 @@
-"use client";
+"use client"
 
-import { BarChart3, Users, FileText, History, Wrench, Flag, CreditCard, UserCheck, Clock, Bell, LayoutDashboard, Sun, Moon } from "lucide-react";
+import { BarChart3, Users, FileText, History, Wrench, Flag, CreditCard, LayoutDashboard, Sun, Moon, Target, ClipboardList, Gem } from "lucide-react"
 
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter } from "@/components/ui/sidebar";
-import Link from "next/link";
-import { useTheme } from "next-themes";
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarHeader, SidebarFooter } from "@/components/ui/sidebar"
+import Link from "next/link"
+import { useTheme } from "next-themes"
 
 const menuItems = [
     {
@@ -44,15 +44,27 @@ const menuItems = [
         icon: Flag,
     },
 
-    // {
-    //     title: "Thông báo trang chủ",
-    //     url: "/whatheo/notifications",
-    //     icon: Bell,
-    // },
-];
+    {
+        title: "Achievements",
+        url: "/whatheo/achievements",
+        icon: Target,
+    },
+
+    {
+        title: "Level",
+        url: "/whatheo/levels",
+        icon: Gem,
+    },
+
+    {
+        title: "Daily Task",
+        url: "/whatheo/daily-tasks",
+        icon: ClipboardList,
+    },
+]
 
 export function SideBarAdmin() {
-    const { theme, setTheme } = useTheme();
+    const { theme, setTheme } = useTheme()
 
     return (
         <Sidebar>
@@ -98,5 +110,5 @@ export function SideBarAdmin() {
                 <div className="text-xs text-muted-foreground">Admin Dashboard v2.0</div>
             </SidebarFooter>
         </Sidebar>
-    );
+    )
 }

@@ -3,18 +3,13 @@
 import { useState } from "react"
 import { ISO } from "@/types/type"
 import { GenericAdminPage } from "./GenericAdminPage"
-import { subjectOutlineAdminConfig } from "./configs"
 import SubjectOutlineCreateForm from "./SubjectOutlineCreateForm"
 import Cookies from "js-cookie"
 import { POST_API } from "@/lib/fetchAPI"
 import { toast } from "sonner"
 import { GenericDataTable } from "./GenericDataTable"
 import { subjectOutlineColumns } from "./columnConfigs"
-
-// Wrapper component để chuẩn hóa props
-const SubjectOutlineDataTable = ({ data }: { data: ISO[] }) => {
-    return <GenericDataTable data={data} columns={subjectOutlineColumns} searchKey="title" searchPlaceholder="Tìm kiếm theo tiêu đề..." modalType="subjectOutline" />
-}
+import { useAdminConfigs } from "@/components/admin/enhancedConfigs"
 
 export default function CSubjectOutline({ subject_outline }: { subject_outline: ISO[] }) {
     const [SO, setSO] = useState<ISO[]>(subject_outline)
@@ -42,6 +37,12 @@ export default function CSubjectOutline({ subject_outline }: { subject_outline: 
             })
             throw error
         }
+    }
+
+    const { subjectOutlineAdminConfig } = useAdminConfigs()
+
+    const SubjectOutlineDataTable = ({ data, modalType }: { data: ISO[]; modalType?: string }) => {
+        return <GenericDataTable data={data} columns={subjectOutlineColumns} searchKey="title" searchPlaceholder="Tìm kiếm theo tiêu đề quiz..." modalType={modalType as any} />
     }
 
     return <GenericAdminPage config={subjectOutlineAdminConfig} data={SO} dataTableComponent={SubjectOutlineDataTable} createFormComponent={SubjectOutlineCreateForm} onCreateItem={handleCreateSubjectOutline} />
