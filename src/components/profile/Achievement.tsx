@@ -38,7 +38,7 @@ export default function Achievement({ gamificationProfile, achievements }: { gam
                     return (
                         <Card key={acv._id} className={`dark:border-slate-700 border-2 ${isUnlocked ? "bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 border-purple-600/30 dark:border-purple-500/50" : "dark:bg-slate-800"}`}>
                             <CardContent className="p-6 text-center relative">
-                                <Badge className="absolute top-2 right-2  text-blue-800 bg-blue-200 dark:text-blue-200 dark:bg-blue-800/50 dark:hover:bg-blue-800 hover:bg-blue-300">{new Intl.NumberFormat("en-US").format(acv.xpReward)}XP</Badge>
+                                <Badge className="absolute top-2 right-2  text-blue-800 bg-blue-200 dark:text-blue-200 dark:bg-blue-800/50 dark:hover:bg-blue-800 hover:bg-blue-300">{acv.xpReward.toLocaleString()}XP</Badge>
                                 <div className={`w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center bg-gray-200 ${isUnlocked ? "bg-gradient-to-br from-purple-500 to-blue-600 dark:from-purple-800 dark:to-blue-900 text-blue-100" : "text-slate-400 dark:bg-slate-700"}`}>{IconComponent ? <IconComponent size={32} /> : null}</div>
                                 <h3 className={`font-bold mb-2 ${isUnlocked ? "text-blue-400" : "text-slate-700 dark:text-slate-500"}`}>{acv.name}</h3>
                                 <p className="text-sm text-slate-500 dark:text-slate-400 ">{acv.description}</p>

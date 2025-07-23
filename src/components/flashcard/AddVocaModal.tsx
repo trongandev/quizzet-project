@@ -163,13 +163,9 @@ export default function AddVocaModal({ children, listFlashcard, setListFlashcard
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>{children}</DialogTrigger>
             <DialogContent className="sm:max-w-[700px] max-h-[92vh] overflow-hidden">
-                <DialogHeader className="pb-4">
-                    <DialogTitle className="text-xl font-semibold flex items-center gap-2">
-                        <Plus className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                        Thêm từ vựng mới
-                    </DialogTitle>
+                <DialogHeader className="pb-2 md:pb-4">
+                    <DialogTitle className="text-xl font-semibold flex items-center gap-2">Thêm từ vựng mới</DialogTitle>
                     <DialogDescription>
-                        <p>Điền thông tin để thêm từ vựng mới vào bộ flashcard của bạn</p>
                         <p>Bạn có thể ghi tiếng việt vào và bấm tạo bằng AI, AI sẽ tự động chuyển từ thành tiếng bạn muốn</p>
                     </DialogDescription>
                 </DialogHeader>
@@ -360,13 +356,11 @@ export default function AddVocaModal({ children, listFlashcard, setListFlashcard
                     </div>
                 </div>
 
-                <Separator className="my-4" />
-
-                <DialogFooter className="gap-2">
-                    <Button variant="outline" onClick={() => setOpen(false)} className="gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-slate-700 dark:hover:bg-slate-600">
+                <DialogFooter className="gap-2 flex flex-row ">
+                    <Button variant="outline" onClick={() => setOpen(false)} className="flex-1 gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-slate-700 dark:hover:bg-slate-600">
                         Hủy
                     </Button>
-                    <Button onClick={handleSubmit} disabled={!isFormValid || loading} className="gap-2 bg-primary hover:bg-primary/80 text-white">
+                    <Button onClick={handleSubmit} disabled={!isFormValid || loading} className="gap-2 flex-1 text-white">
                         {loading ? <Loading /> : <Plus className="w-4 h-4" />}
                         Thêm từ vựng
                     </Button>

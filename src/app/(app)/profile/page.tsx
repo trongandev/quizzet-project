@@ -24,7 +24,7 @@ export default async function CProfile() {
             </div>
         )
     }
-    if (req?.ok) return <UserProfile profile={req?.user} quiz={req?.quiz} flashcard={req?.flashcards} gamificationProfile={req?.gamificationProfile} achievements={req.achievements} levels={req.levels} activities={req?.activities} />
+    if (req?.ok) return <UserProfile profile={req?.user} quiz={req?.quiz} flashcard={req?.flashcards} gamificationProfile={req?.gamificationProfile} achievements={req.achievements} levels={req.levels} activities={req?.activities} countFlashcard={req?.countFlashcard} />
     else {
         return (
             <div className="h-screen flex items-center justify-center flex-col gap-3 px-5 md:px-0">

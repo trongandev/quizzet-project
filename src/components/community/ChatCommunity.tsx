@@ -274,19 +274,19 @@ export default function ChatCommunity() {
     }
 
     const getIconLevel = (level: number) => {
-        if (level < 3) {
+        if (level <= 3) {
             return "/icon-level/crystal_lv1_1-3.svg" // Default icon for invalid levels
         }
-        if (level < 6) {
+        if (level <= 6) {
             return `/icon-level/crystal_lv2_4-6.svg` // Assuming icons are named as crystal_lv1.svg, crystal_lv2.svg, etc.
         }
-        if (level < 9) {
+        if (level <= 9) {
             return `/icon-level/crystal_lv3_7-9.svg`
         }
-        if (level < 12) {
+        if (level <= 12) {
             return `/icon-level/crystal_lv4_10-12.svg`
         }
-        if (level < 15) {
+        if (level <= 15) {
             return `/icon-level/crystal_lv5_13-15.svg`
         }
         return `/icon-level/crystal_lv6_16-18.svg`
@@ -482,8 +482,7 @@ export default function ChatCommunity() {
                                                         </div>
                                                         <div className="flex-1 w-full">
                                                             <div className="flex items-center gap-2">
-                                                                {/* <h1 className="text-md font-semibold line-clamp-1 break-words group-hover:text-primary transition-all duration-300">{user?.displayName || "Khách vãng lai"}</h1> */}
-                                                                <h1 className={`line-clamp-1 animate-text-gradient bg-gradient-to-r font-semibold ${user.role === "admin" ? "from-blue-500 via-blue-400 to-blue-600 bg-[200%_auto] bg-clip-text text-transparent" : ""}`}>{user?.displayName || "Khách vãng lai"}</h1>
+                                                                <h1 className={`line-clamp-1 w-[110px] animate-text-gradient bg-gradient-to-r font-semibold ${user.role === "admin" ? "from-blue-500 via-blue-400 to-blue-600 bg-[200%_auto] bg-clip-text text-transparent" : ""}`}>{user?.displayName || "Khách vãng lai"}</h1>
                                                                 {token && (
                                                                     <Badge variant="secondary" className="bg-blue-600 text-white flex items-center gap-1 text-xs">
                                                                         <Image src={getIconLevel(user?.gamification?.level || 0)} width={14} height={14} alt="" />

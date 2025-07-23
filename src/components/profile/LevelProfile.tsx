@@ -34,7 +34,7 @@ export default function LevelProfile({ gamificationProfile, levels }: { gamifica
                                 {isCurrentLevel ? (
                                     <Badge className="bg-indigo-600 text-white text-xs">Hiện tại</Badge>
                                 ) : (
-                                    <div className="text-xs text-slate-400">{isUnlocked ? level.level < gamificationProfile.xp ? <span className="text-green-400">✓ Đã mở khóa</span> : level.level === gamificationProfile.xp ? <span className="text-indigo-400">Cấp độ hiện tại</span> : null : <span>Cần {level.xpRequired - gamificationProfile.xp} XP</span>}</div>
+                                    <div className="text-xs text-slate-400">{isUnlocked ? level.level < gamificationProfile.xp ? <span className="text-green-400">✓ Đã mở khóa</span> : level.level === gamificationProfile.xp ? <span className="text-indigo-400">Cấp độ hiện tại</span> : null : <span>Cần {(level.xpRequired - gamificationProfile.xp).toLocaleString()} XP</span>}</div>
                                 )}
                             </CardContent>
                         </Card>

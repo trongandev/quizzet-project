@@ -1,60 +1,49 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Sparkles, Volume2, BookOpen, MessageCircle, Lightbulb, Plus, Trash2, Type, Languages } from "lucide-react";
-import { optimizedPromptFCSingle } from "@/lib/optimizedPrompt";
-import { POST_API } from "@/lib/fetchAPI";
-import { toast } from "sonner";
-import Loading from "../ui/loading";
-import { Flashcard } from "@/types/type";
+import { useEffect, useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { Badge } from "@/components/ui/badge"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Sparkles, BookOpen, MessageCircle, Lightbulb, Plus, Trash2, Type, Languages, Pencil } from "lucide-react"
+import { optimizedPromptFCSingle } from "@/lib/optimizedPrompt"
+import { POST_API } from "@/lib/fetchAPI"
+import { toast } from "sonner"
+import Loading from "../ui/loading"
+import { Flashcard } from "@/types/type"
 
 interface AddVocabularyModalProps {
-    isEditOpen: boolean;
-    setIsEditOpen: (value: boolean) => void;
-    editFlashcard?: Flashcard; // Replace with actual type if available
-    setEditFlashcard: (data: any) => void; // Replace with actual type if available
-    token: string; // Optional token for API requests
-    listFlashcard: any; // Optional language for the vocabulary
-    filteredFlashcards: Flashcard[]; // List of flashcards to filter
-    setFilteredFlashcards: (flashcards: Flashcard[]) => void; // Function to update the filtered flashcards
-    setListFlashcard: any;
+    isEditOpen: boolean
+    setIsEditOpen: (value: boolean) => void
+    editFlashcard?: Flashcard // Replace with actual type if available
+    setEditFlashcard: (data: any) => void // Replace with actual type if available
+    token: string // Optional token for API requests
+    listFlashcard: any // Optional language for the vocabulary
+    filteredFlashcards: Flashcard[] // List of flashcards to filter
+    setFilteredFlashcards: (flashcards: Flashcard[]) => void // Function to update the filtered flashcards
+    setListFlashcard: any
 }
 
 interface VocabularyData {
-    title: string;
-    transcription: string;
-    define: string;
-    language: string;
-    type_of_word: string;
+    title: string
+    transcription: string
+    define: string
+    language: string
+    type_of_word: string
     example: Array<{
-        en: string;
-        trans: string;
-        vi: string;
-    }>;
-    note: string;
+        en: string
+        trans: string
+        vi: string
+    }>
+    note: string
 }
 
-export default function EditVocaModal({
-    isEditOpen,
-    setIsEditOpen,
-    editFlashcard,
-    setEditFlashcard,
-    token,
-    listFlashcard,
-    setListFlashcard,
-    filteredFlashcards,
-    setFilteredFlashcards,
-}: AddVocabularyModalProps) {
-    const [loading, setLoading] = useState(false);
+export default function EditVocaModal({ isEditOpen, setIsEditOpen, editFlashcard, setEditFlashcard, token, listFlashcard, setListFlashcard, filteredFlashcards, setFilteredFlashcards }: AddVocabularyModalProps) {
+    const [loading, setLoading] = useState(false)
     const defaultData: VocabularyData = {
         title: "",
         transcription: "",
@@ -69,9 +58,9 @@ export default function EditVocaModal({
             },
         ],
         note: "",
-    };
+    }
 
-    const [formData, setFormData] = useState<VocabularyData>(defaultData);
+    const [formData, setFormData] = useState<VocabularyData>(defaultData)
 
     // Update formData when editFlashcard changes
     useEffect(() => {
@@ -89,105 +78,108 @@ export default function EditVocaModal({
                         vi: ex.vi || "",
                     })) || [],
                 note: editFlashcard?.note || "",
-            });
+            })
         }
-    }, [editFlashcard, listFlashcard?.language]);
+    }, [editFlashcard, listFlashcard?.language])
 
-    const [isGenerating, setIsGenerating] = useState(false);
+    const [isGenerating, setIsGenerating] = useState(false)
 
     const handleAddExample = () => {
         setFormData((prev) => ({
             ...prev,
             example: [...prev.example, { en: "", trans: "", vi: "" }],
-        }));
-    };
+        }))
+    }
 
     const handleRemoveExample = (index: number) => {
         setFormData((prev) => ({
             ...prev,
             example: prev.example.filter((_, i) => i !== index),
-        }));
-    };
+        }))
+    }
 
     const handleExampleChange = (index: number, field: string, value: string) => {
         setFormData((prev) => ({
             ...prev,
             example: prev.example.map((ex, i) => (i === index ? { ...ex, [field]: value } : ex)),
-        }));
-    };
+        }))
+    }
 
     const handleAIGenerate = async (e: any) => {
-        e.preventDefault();
+        e.preventDefault()
         try {
-            const optimizedPrompt = optimizedPromptFCSingle(formData.title, listFlashcard?.language);
-            setIsGenerating(true);
+            const optimizedPrompt = optimizedPromptFCSingle(formData.title, listFlashcard?.language)
+            setIsGenerating(true)
 
-            const req = await POST_API("/flashcards/create-ai", { prompt: optimizedPrompt, list_flashcard_id: listFlashcard._id, language: listFlashcard?.language || "" }, "POST", token);
+            const req = await POST_API("/flashcards/create-ai", { prompt: optimizedPrompt, list_flashcard_id: listFlashcard._id, language: listFlashcard?.language || "" }, "POST", token)
             if (req) {
-                const res = await req.json();
+                const res = await req.json()
                 if (res.ok) {
-                    toast.success("Tạo flashcard thành công từ AI");
+                    toast.success("Tạo flashcard thành công từ AI")
 
-                    setFilteredFlashcards([res?.flashcard, ...filteredFlashcards]);
-                    setListFlashcard((prev: any) => ({ ...prev, flashcards: [res?.flashcard, ...prev.flashcards] }));
-                    setEditFlashcard(null);
-                    setIsEditOpen(false);
+                    setFilteredFlashcards([res?.flashcard, ...filteredFlashcards])
+                    setListFlashcard((prev: any) => ({ ...prev, flashcards: [res?.flashcard, ...prev.flashcards] }))
+                    setEditFlashcard(null)
+                    setIsEditOpen(false)
                     // Reset form data with AI generated content
-                    setFormData(defaultData);
+                    setFormData(defaultData)
                 }
             }
         } catch (error: any) {
-            toast.error("Đã có lỗi xảy ra, vui lòng thử lại sau", { description: error.message, duration: 10000 });
+            toast.error("Đã có lỗi xảy ra, vui lòng thử lại sau", { description: error.message, duration: 10000 })
         } finally {
-            setIsGenerating(false);
+            setIsGenerating(false)
         }
-    };
+    }
 
     const handleSubmit = async () => {
         try {
-            setLoading(true);
-            const req = await POST_API("/flashcards", { ...formData, list_flashcard_id: listFlashcard._id }, "POST", token);
-            const res = await req?.json();
+            setLoading(true)
+            const req = await POST_API(`/flashcards/${editFlashcard?._id}`, { formData }, "PUT", token)
+            const res = await req?.json()
             if (res.ok) {
-                toast.success("Chỉnh sửa flashcard thành công");
-                setIsEditOpen(false);
-                setFilteredFlashcards([res?.flashcard, ...filteredFlashcards]);
-                setFormData(defaultData);
+                toast.success("Chỉnh sửa flashcard thành công")
+                setIsEditOpen(false)
+                setFilteredFlashcards([res?.flashcard, ...filteredFlashcards])
+                setFormData(defaultData)
+            } else {
+                toast.error("Đã có lỗi xảy ra", {
+                    description: res.message,
+                    duration: 10000,
+                    position: "top-center",
+                })
             }
         } catch (error: any) {
-            console.error("Error adding vocabulary:", error);
+            console.error("Error adding vocabulary:", error)
             toast.error("Đã có lỗi xảy ra khi thêm từ vựng", {
                 description: error.message,
                 duration: 10000,
-            });
+                position: "top-center",
+            })
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    };
+    }
 
     const handleEnterKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter" && !e.shiftKey) {
-            handleAIGenerate(e);
+            handleAIGenerate(e)
         }
-    };
+    }
 
-    const isFormValid = formData.title.trim() && formData.define.trim();
+    const isFormValid = formData.title.trim() && formData.define.trim()
 
     return (
         <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-            <DialogContent className="sm:max-w-[700px] max-h-[92vh] overflow-hidden">
-                <DialogHeader className="pb-4">
-                    <DialogTitle className="text-xl font-semibold flex items-center gap-2">
-                        <Plus className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                        Cập nhật từ vựng
-                    </DialogTitle>
+            <DialogContent className="sm:max-w-[700px] max-h-[92vh]">
+                <DialogHeader className="pb-2 md:pb-4">
+                    <DialogTitle className="text-xl font-semibold flex items-center gap-2">Cập nhật từ vựng</DialogTitle>
                     <DialogDescription>
-                        <p>Điền thông tin để thêm từ vựng mới vào bộ flashcard của bạn</p>
                         <p>Bạn có thể ghi tiếng việt vào và bấm tạo bằng AI, AI sẽ tự động chuyển từ thành tiếng bạn muốn</p>
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="overflow-y-auto max-h-[60vh] pr-2">
+                <div className="overflow-y-auto max-h-[50vh] md:max-h-[60vh]">
                     <div className="space-y-6">
                         {/* Main Word Section */}
                         <Card className="border-blue-100 bg-blue-50/30 dark:bg-slate-800/50 dark:border-white/10">
@@ -206,21 +198,8 @@ export default function EditVocaModal({
                                         Từ
                                     </Label>
                                     <div className="flex gap-2">
-                                        <Input
-                                            id="title"
-                                            value={formData.title}
-                                            onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
-                                            autoFocus
-                                            autoComplete="off"
-                                            onKeyDown={handleEnterKey}
-                                            placeholder="Nhập từ hoặc câu bằng tiếng việt..."
-                                            className="flex-1"
-                                        />
-                                        <Button
-                                            type="button"
-                                            onClick={handleAIGenerate}
-                                            disabled={isGenerating}
-                                            className="dark:text-white gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
+                                        <Input id="title" value={formData.title} onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))} autoFocus autoComplete="off" onKeyDown={handleEnterKey} placeholder="Nhập từ hoặc câu bằng tiếng việt..." className="flex-1" />
+                                        <Button type="button" onClick={handleAIGenerate} disabled={isGenerating} className="dark:text-white gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
                                             {isGenerating ? <Loading /> : <Sparkles className="w-4 h-4" />}
 
                                             {isGenerating ? "Đang tạo..." : "Tạo lại bằng AI"}
@@ -234,18 +213,7 @@ export default function EditVocaModal({
                                             <Languages className="w-3 h-3" />
                                             Phiên âm (transcription)
                                         </Label>
-                                        <div className="flex gap-2">
-                                            <Input
-                                                id="transcription"
-                                                value={formData.transcription}
-                                                onChange={(e) => setFormData((prev) => ({ ...prev, transcription: e.target.value }))}
-                                                placeholder="Nhập phiên âm..."
-                                                className="flex-1 font-mono"
-                                            />
-                                            <Button variant="ghost" size="sm" className="px-2">
-                                                <Volume2 className="w-4 h-4" />
-                                            </Button>
-                                        </div>
+                                        <Input id="transcription" value={formData.transcription} onChange={(e) => setFormData((prev) => ({ ...prev, transcription: e.target.value }))} placeholder="Nhập phiên âm..." className="flex-1 font-mono" />
                                     </div>
 
                                     <div className="space-y-2">
@@ -275,14 +243,7 @@ export default function EditVocaModal({
                                             Bắt buộc
                                         </Badge>
                                     </Label>
-                                    <Textarea
-                                        id="define"
-                                        value={formData.define}
-                                        onChange={(e) => setFormData((prev) => ({ ...prev, define: e.target.value }))}
-                                        placeholder="Nhập nghĩa tiếng Việt..."
-                                        rows={2}
-                                        className="resize-none"
-                                    />
+                                    <Textarea id="define" value={formData.define} onChange={(e) => setFormData((prev) => ({ ...prev, define: e.target.value }))} placeholder="Nhập nghĩa tiếng Việt..." rows={2} className="resize-none" />
                                 </div>
                             </CardContent>
                         </Card>
@@ -318,11 +279,7 @@ export default function EditVocaModal({
                                     </div>
                                 ))}
 
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    onClick={handleAddExample}
-                                    className="w-full gap-2 border-dashed border-green-300 text-green-700 dark:text-green-300 hover:bg-green-50 dark:bg-green-800/50 hover:opacity-85">
+                                <Button type="button" variant="outline" onClick={handleAddExample} className="w-full gap-2 border-dashed border-green-300 text-green-700 dark:text-green-300 hover:bg-green-50 dark:bg-green-800/50 hover:opacity-85">
                                     <Plus className="w-4 h-4" />
                                     Thêm ví dụ
                                 </Button>
@@ -341,30 +298,22 @@ export default function EditVocaModal({
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <Textarea
-                                    value={formData.note}
-                                    onChange={(e) => setFormData((prev) => ({ ...prev, note: e.target.value }))}
-                                    placeholder="Thêm ghi chú, mẹo nhớ, hoặc thông tin bổ sung..."
-                                    rows={3}
-                                    className="resize-none"
-                                />
+                                <Textarea value={formData.note} onChange={(e) => setFormData((prev) => ({ ...prev, note: e.target.value }))} placeholder="Thêm ghi chú, mẹo nhớ, hoặc thông tin bổ sung..." rows={3} className="resize-none" />
                             </CardContent>
                         </Card>
                     </div>
                 </div>
 
-                <Separator className="my-4" />
-
-                <DialogFooter className="gap-2">
-                    <Button variant="outline" onClick={() => setIsEditOpen(false)} className="gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-slate-700 dark:hover:bg-slate-600">
+                <DialogFooter className="gap-2 flex flex-row">
+                    <Button variant="outline" onClick={() => setIsEditOpen(false)} className="flex-1 gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-slate-700 dark:hover:bg-slate-600">
                         Hủy
                     </Button>
-                    <Button onClick={handleSubmit} disabled={!isFormValid || loading} className="gap-2 bg-primary hover:bg-primary/80 text-white">
-                        {loading ? <Loading /> : <Plus className="w-4 h-4" />}
+                    <Button onClick={handleSubmit} disabled={!isFormValid || loading} className="flex-1 gap-2 bg-primary hover:bg-primary/80 text-white">
+                        {loading ? <Loading /> : <Pencil className="w-4 h-4" />}
                         Cập nhật từ vựng
                     </Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
-    );
+    )
 }

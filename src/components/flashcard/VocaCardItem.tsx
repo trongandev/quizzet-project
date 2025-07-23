@@ -1,74 +1,112 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Volume2, BookOpen, MessageCircle, Lightbulb, MoreVertical, Edit3, ChevronUp, ChevronDown, Trash2, History } from "lucide-react";
-import { Flashcard, IUser } from "@/types/type";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import Loading from "../ui/loading";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import HistoryViewModal from "./HistoryViewModal";
-import { formatDistanceToNowStrict } from "date-fns";
-import { vi } from "date-fns/locale";
+import { useCallback, useState } from "react"
+import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
+import { Volume2, BookOpen, MessageCircle, Lightbulb, MoreVertical, Edit3, ChevronUp, ChevronDown, Trash2, History } from "lucide-react"
+import { Flashcard, IUser } from "@/types/type"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import Loading from "../ui/loading"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import HistoryViewModal from "./HistoryViewModal"
+import { formatDistanceToNowStrict } from "date-fns"
+import { vi } from "date-fns/locale"
+import { POST_API } from "@/lib/fetchAPI"
+import { toast } from "sonner"
 interface Props {
-    data: Flashcard;
-    speakWord: (word: string, id?: string) => void;
-    loadingAudio: any;
-    handleDelete: (id: string) => void;
-    setIsEditOpen: (value: boolean) => void;
-    setEditFlashcard: (data: Flashcard) => void;
-    user?: IUser | null;
+    data: Flashcard
+    speakWord: (word: string, id?: string) => void
+    loadingAudio: any
+    setIsEditOpen: (value: boolean) => void
+    setEditFlashcard: (data: Flashcard) => void
+    user?: IUser | null
+    token: string
+    listFlashcard: any
+    setListFlashcard: any
+    setFilteredFlashcards: any
 }
-export default function VocaCardItem({ data, speakWord, loadingAudio, handleDelete, setIsEditOpen, setEditFlashcard, user }: Props) {
-    const [showExamples, setShowExamples] = useState(false);
-    const [openDelete, setOpenDelete] = useState(false);
-    const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+export default function VocaCardItem({ data, speakWord, loadingAudio, setIsEditOpen, setEditFlashcard, user, token, listFlashcard, setListFlashcard, setFilteredFlashcards }: Props) {
+    const [showExamples, setShowExamples] = useState(false)
+    const [openDelete, setOpenDelete] = useState(false)
+    const [isHistoryOpen, setIsHistoryOpen] = useState(false)
+    const [loadingConfirm, setLoadingConfirm] = useState(false)
     const getStatusColor = (status: string) => {
         switch (status) {
             case "learned":
-                return " bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800";
+                return " bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800"
             case "reviewing":
-                return "bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/20 dark:text-orange-300 dark:border-orange-800";
+                return "bg-orange-100 text-orange-800 border-orange-200 dark:bg-orange-900/20 dark:text-orange-300 dark:border-orange-800"
             case "remembered":
-                return "bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800";
+                return "bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800"
             default:
-                return "bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700";
+                return "bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700"
         }
-    };
+    }
 
     const getBorderColor = (status: string) => {
         switch (status) {
             case "learned":
-                return " border-l-green-500 dark:border-l-green-400";
+                return " border-l-green-500 dark:border-l-green-400"
             case "reviewing":
-                return "border-l-orange-500 dark:border-l-orange-400";
+                return "border-l-orange-500 dark:border-l-orange-400"
             case "remembered":
-                return "border-l-blue-500 dark:border-l-blue-400";
+                return "border-l-blue-500 dark:border-l-blue-400"
             default:
-                return "border-l-gray-500 dark:border-l-gray-400";
+                return "border-l-gray-500 dark:border-l-gray-400"
         }
-    };
+    }
 
     const getStatusText = (status: string) => {
         switch (status) {
             case "learned":
-                return "Đã học";
+                return "Đã học"
             case "reviewing":
-                return "Cần ôn tập";
+                return "Cần ôn tập"
             case "remembered":
-                return "Đang ghi nhớ";
+                return "Đang ghi nhớ"
             default:
-                return "Chưa học";
+                return "Chưa học"
         }
-    };
+    }
 
     const handleEdit = () => {
-        setIsEditOpen(true);
-        setEditFlashcard(data);
-    };
+        setIsEditOpen(true)
+        setEditFlashcard(data)
+    }
+
+    const handleDelete = useCallback(async (id: string) => {
+        try {
+            setLoadingConfirm(true)
+            const req = await POST_API(`/flashcards/${id}`, { list_flashcard_id: listFlashcard?._id }, "DELETE", token)
+            const res = await req?.json()
+
+            if (res.ok) {
+                setFilteredFlashcards((prev: any) => prev.filter((item: any) => item._id !== id))
+
+                setListFlashcard((prev: any) => {
+                    if (!prev) return prev
+                    return {
+                        ...prev,
+                        flashcards: prev.flashcards?.filter((item: any) => item._id !== id) || [],
+                    }
+                })
+                setOpenDelete(false)
+                toast.success("Xóa flashcard thành công")
+            } else {
+                toast.error("Xóa flashcard không thành công", {
+                    description: res.message,
+                    position: "top-center",
+                })
+            }
+        } catch (error) {
+            console.error("Error deleting flashcard:", error)
+            toast.error("Xóa flashcard không thành công")
+        } finally {
+            setLoadingConfirm(false)
+        }
+    }, [])
 
     return (
         <Card className={`w-full max-w-2xl md:max-w-full mx-auto shadow-sm hover:shadow-md transition-shadow duration-200 border-l-4 overflow-hidden h-full ${getBorderColor(data.status)}`}>
@@ -79,15 +117,7 @@ export default function VocaCardItem({ data, speakWord, loadingAudio, handleDele
                         {getStatusText(data.status)}
                         {": " + data.progress?.percentage}%
                     </Badge>
-                    <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-white/70">
-                        {data && (
-                            <span>
-                                {new Date(data.nextReviewDate) > new Date()
-                                    ? `Còn ${formatDistanceToNowStrict(new Date(data.nextReviewDate), { locale: vi, addSuffix: true })} để ôn tập lại`
-                                    : `Quá hạn ${formatDistanceToNowStrict(new Date(data.nextReviewDate), { locale: vi, addSuffix: true })}`}
-                            </span>
-                        )}
-                    </div>
+                    <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-white/70">{data && <span>{new Date(data.nextReviewDate) > new Date() ? `Còn ${formatDistanceToNowStrict(new Date(data.nextReviewDate), { locale: vi, addSuffix: true })} để ôn tập lại` : `Quá hạn ${formatDistanceToNowStrict(new Date(data.nextReviewDate), { locale: vi, addSuffix: true })}`}</span>}</div>
                     {/* Action Menu */}
                     {user?._id === data?.userId && (
                         <DropdownMenu>
@@ -123,8 +153,8 @@ export default function VocaCardItem({ data, speakWord, loadingAudio, handleDele
                             <DialogClose asChild>
                                 <Button variant="outline">Hủy</Button>
                             </DialogClose>
-                            <Button variant="destructive" onClick={() => handleDelete(data._id)}>
-                                <Trash2 /> Xóa
+                            <Button variant="destructive" onClick={() => handleDelete(data._id)} disabled={loadingConfirm}>
+                                {loadingConfirm ? <Loading /> : <Trash2 />} Xóa
                             </Button>
                         </DialogFooter>
                     </DialogContent>
@@ -174,10 +204,7 @@ export default function VocaCardItem({ data, speakWord, loadingAudio, handleDele
                         {showExamples && (
                             <div className="">
                                 {data.example.map((exa, index: any) => (
-                                    <div
-                                        key={index}
-                                        className="dark:hover:border-gray-400 duration-300 cursor-pointer py-3  border-l-2 border-gray-200 dark:border-gray-600 dark:hover:text-white text-gray-400 pl-4 rounded-md group "
-                                        onClick={() => speakWord(exa.en, index)}>
+                                    <div key={index} className="dark:hover:border-gray-400 duration-300 cursor-pointer py-3  border-l-2 border-gray-200 dark:border-gray-600 dark:hover:text-white text-gray-400 pl-4 rounded-md group " onClick={() => speakWord(exa.en, index)}>
                                         <div className="space-y-2">
                                             {/* Chinese exa */}
                                             <div className="flex items-center gap-2">
@@ -218,5 +245,5 @@ export default function VocaCardItem({ data, speakWord, loadingAudio, handleDele
                 </div>
             </CardContent>
         </Card>
-    );
+    )
 }

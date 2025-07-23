@@ -291,7 +291,7 @@ export function AIResultPreview({ open, onOpenChange, quiz, setOpenAddMoreInfo, 
     return (
         <>
             <Dialog open={open} onOpenChange={onOpenChange}>
-                <DialogContent className="max-w-6xl min-h-[90vh]">
+                <DialogContent className="p-3 md:p-6 h-[90vh]">
                     <DialogHeader className="border-b pb-4">
                         <DialogTitle className="flex items-center justify-between">
                             <div className="flex items-center space-x-2">
@@ -302,8 +302,8 @@ export function AIResultPreview({ open, onOpenChange, quiz, setOpenAddMoreInfo, 
                     </DialogHeader>
 
                     <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-2">
+                        <div className="flex items-center justify-between w-[350px] gap-2 overflow-x-scroll">
+                            <div className="flex items-center  gap-2 ">
                                 <Button variant={activeFilter === "all" ? "outline" : "secondary"} size="sm" onClick={() => handleFilterChange("all")} className="flex items-center space-x-2 h-11">
                                     <span>Tất cả</span>
                                     <Badge variant="secondary" className="ml-1">
@@ -324,6 +324,10 @@ export function AIResultPreview({ open, onOpenChange, quiz, setOpenAddMoreInfo, 
                                         {totalErrors}
                                     </Badge>
                                 </Button>
+                                <Button onClick={handleAddQuestion} className="h-11 flex md:hidden items-center space-x-2 text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600">
+                                    <Plus className="h-4 w-4" />
+                                    <span>Thêm câu hỏi</span>
+                                </Button>
                                 {activeFilter === "invalid" && totalErrors > 0 && (
                                     <>
                                         <Button className="text-red-700 border-red-200 hover:bg-red-50 h-11 dark:text-red-200 dark:border-red-700 dark:hover:bg-red-700/50 dark:bg-red-800/50" onClick={handleRemoveAllErrors}>
@@ -338,7 +342,7 @@ export function AIResultPreview({ open, onOpenChange, quiz, setOpenAddMoreInfo, 
                                     </>
                                 )}
                             </div>
-                            <Button onClick={handleAddQuestion} className="flex items-center space-x-2 text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600">
+                            <Button onClick={handleAddQuestion} className="hidden md:flex items-center space-x-2 text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600">
                                 <Plus className="h-4 w-4" />
                                 <span>Thêm câu hỏi</span>
                             </Button>
@@ -354,7 +358,7 @@ export function AIResultPreview({ open, onOpenChange, quiz, setOpenAddMoreInfo, 
                                 </div>
                             </p>
                         )}
-                        <div className="space-y-4 max-h-[500px] overflow-y-auto">
+                        <div className={`space-y-4 ${totalErrors > 0 && activeFilter !== "invalid" ? "max-h-[300px]" : "max-h-[350px]"} md:max-h-[500px]  overflow-auto`}>
                             {filterQuizData &&
                                 filterQuizData.questions.map((question, index) => (
                                     <Card key={question.id} className={`p-2 md:p-6 border-l-4 ${Number(question.correct) == -1 ? "border-l-red-700 dark:border-l-red-400 bg-red-500/10" : "border-l-green-700 dark:border-l-green-400 bg-green-500/10"}  hover:shadow-lg transition-shadow duration-200`}>
@@ -426,12 +430,12 @@ export function AIResultPreview({ open, onOpenChange, quiz, setOpenAddMoreInfo, 
                                     </Card>
                                 ))}
                             {quizData.questions.length === 0 && (
-                                <div className=" h-[500px]  flex items-center justify-center">
+                                <div className=" h-[340px] md:h-[500px]  flex items-center justify-center">
                                     <p className="text-center text-sm">Không có từ nào...</p>
                                 </div>
                             )}
                             {quizData.questions.length > 0 && totalErrors === 0 && activeFilter === "invalid" && (
-                                <div className=" h-[500px]  flex items-center justify-center">
+                                <div className=" h-[340px] md:h-[500px]  flex items-center justify-center">
                                     <p className="text-center text-sm">Đã sửa hết lỗi...</p>
                                 </div>
                             )}
@@ -461,7 +465,7 @@ export function AIResultPreview({ open, onOpenChange, quiz, setOpenAddMoreInfo, 
 
             {/* Edit Question Dialog */}
             <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-                <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                <DialogContent className="max-w-2xl max-h-[80vh]">
                     <DialogHeader>
                         <DialogTitle>{editingQuestion ? "Chỉnh sửa câu hỏi" : "Thêm câu hỏi mới"}</DialogTitle>
                     </DialogHeader>
@@ -488,7 +492,7 @@ export function AIResultPreview({ open, onOpenChange, quiz, setOpenAddMoreInfo, 
 
                         <div>
                             <Label>Các lựa chọn</Label>
-                            <div className="space-y-2 mt-2">
+                            <div className="space-y-2 mt-2 h-[150px] overflow-y-auto">
                                 <RadioGroup defaultValue={newQuestion.correct} value={newQuestion.correct} onValueChange={(value) => handleChangeAnswers(value)}>
                                     {newQuestion &&
                                         newQuestion.answers?.map((option, index) => (
@@ -511,9 +515,6 @@ export function AIResultPreview({ open, onOpenChange, quiz, setOpenAddMoreInfo, 
                                 </RadioGroup>
                             </div>
                         </div>
-                        {/* {newQuestion.type === "multiple-choice" && (
-            )} */}
-
                         {newQuestion.type === "true-false" && (
                             <div>
                                 <Label>Đáp án đúng</Label>
@@ -536,18 +537,6 @@ export function AIResultPreview({ open, onOpenChange, quiz, setOpenAddMoreInfo, 
                                 <Textarea id="text-answer" placeholder="Nhập đáp án mẫu..." value={newQuestion.correct} onChange={(e) => setNewQuestion((prev) => ({ ...prev, correct: e.target.value }))} className="mt-1" />
                             </div>
                         )}
-
-                        {/* <div>
-                <Label htmlFor="explanation">Giải thích (tùy chọn)</Label>
-                <Textarea
-                    id="explanation"
-                    placeholder="Giải thích đáp án..."
-                    value={newQuestion.explanation || ""}
-                    onChange={(e) => setNewQuestion((prev) => ({ ...prev, explanation: e.target.value }))}
-                    className="mt-1"
-                    rows={2}
-                />
-            </div> */}
 
                         <div className="hidden">
                             <Label htmlFor="points">Điểm số</Label>

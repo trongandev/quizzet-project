@@ -232,7 +232,7 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
                         <div>
                             {token !== undefined ? (
                                 <div className="mt-10">
-                                    <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 ">
+                                    <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-3 ">
                                         {filterFlashcard && filterFlashcard.map((item) => <UserFC item={item} key={item._id} />)}
                                         {loading && (
                                             <div className="flex items-center justify-center col-span-4 h-[500px]">
@@ -280,7 +280,7 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
                         </div>
 
                         <div className="mt-5">
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5 mb-5">
+                            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5 mb-5">
                                 {displayFC && displayFC.map((item) => <PublicFC item={item} key={item?._id} />)}
 
                                 {publicFlashcards?.length <= 0 && <div className="h-[350px] col-span-full flex items-center justify-center text-gray-700 dark:text-gray-300">Không có dữ liệu...</div>}

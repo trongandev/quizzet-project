@@ -1,44 +1,44 @@
-"use client";
+"use client"
 
-import type React from "react";
+import type React from "react"
 
-import { useState, useRef } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Upload, FileText, Download, X, Bot, Sparkles, CheckCircle, Eye, Save, File } from "lucide-react";
-import { BsFiletypeDocx, BsFiletypePdf, BsFiletypeTxt, BsFiletypeXlsx } from "react-icons/bs";
-import axios from "axios";
-import { toast } from "sonner";
-import { AIResultPreview } from "./AIResuiltPreview";
-import DialogAddMoreInfoQuiz from "./DialogAddMoreInfoQuiz";
-import { useRouter } from "next/navigation";
-import { SidebarTrigger } from "../ui/sidebar";
+import { useState, useRef } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Upload, FileText, Download, X, Bot, Sparkles, CheckCircle, Eye, Save, File } from "lucide-react"
+import { BsFiletypeDocx, BsFiletypePdf, BsFiletypeTxt, BsFiletypeXlsx } from "react-icons/bs"
+import axios from "axios"
+import { toast } from "sonner"
+import { AIResultPreview } from "./AIResuiltPreview"
+import DialogAddMoreInfoQuiz from "./DialogAddMoreInfoQuiz"
+import { useRouter } from "next/navigation"
+import { SidebarTrigger } from "../ui/sidebar"
 interface QuizQuestion {
-    title: string;
-    subject: string;
-    content: string;
-    questions: Quiz[];
+    title: string
+    subject: string
+    content: string
+    questions: Quiz[]
 }
 
 interface Quiz {
-    id: string;
-    type: "multiple-choice" | "true-false" | "short-answer";
-    question: string;
-    answers?: string[];
-    correct: string;
-    points: number;
+    id: string
+    type: "multiple-choice" | "true-false" | "short-answer"
+    question: string
+    answers?: string[]
+    correct: string
+    points: number
 }
 
 export function FileImportView() {
-    const [isDragOver, setIsDragOver] = useState(false);
-    const [openAddMoreInfo, setOpenAddMoreInfo] = useState(false);
-    const fileInputRef = useRef<HTMLInputElement>(null);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [generatedQuiz, setGeneratedQuiz] = useState<QuizQuestion | null>(null);
-    const [showPreview, setShowPreview] = useState(false);
-    const [isGenerating, setIsGenerating] = useState(false);
-    const router = useRouter();
+    const [isDragOver, setIsDragOver] = useState(false)
+    const [openAddMoreInfo, setOpenAddMoreInfo] = useState(false)
+    const fileInputRef = useRef<HTMLInputElement>(null)
+    const [selectedFile, setSelectedFile] = useState<File | null>(null)
+    const [generatedQuiz, setGeneratedQuiz] = useState<QuizQuestion | null>(null)
+    const [showPreview, setShowPreview] = useState(false)
+    const [isGenerating, setIsGenerating] = useState(false)
+    const router = useRouter()
     const supportedFormats = [
         {
             ext: ".docx",
@@ -50,7 +50,7 @@ export function FileImportView() {
         // { ext: ".xlsx", disable: true, desc: "Microsoft Excel", icon: <BsFiletypeXlsx size={20} /> },
         // { ext: ".pdf", disable: true, desc: "PDF Document", icon: <BsFiletypePdf size={20} /> },
         // { ext: ".txt", disable: true, desc: "Text File", icon: <BsFiletypeTxt size={20} /> },
-    ];
+    ]
 
     const handleFileSelect = (file: File) => {
         // Validate file type
@@ -59,85 +59,85 @@ export function FileImportView() {
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
             "application/pdf", // .pdf
             "text/plain", // .txt
-        ];
+        ]
         if (!allowedTypes.includes(file.type)) {
             // alert("Please select a docx, xlsx, pdf, txt file.");
-            alert("Please select a docx file.");
-            return;
+            alert("Please select a docx file.")
+            return
         }
 
         // Validate file size (3MB)
-        const maxSize = 3 * 1024 * 1024; // 10MB in bytes
+        const maxSize = 3 * 1024 * 1024 // 10MB in bytes
         if (file.size > maxSize) {
-            alert("Kích thước tập tin phải nhỏ hơn 3MB.");
-            return;
+            alert("Kích thước tập tin phải nhỏ hơn 3MB.")
+            return
         }
 
-        setSelectedFile(file);
-    };
+        setSelectedFile(file)
+    }
 
     const handleButtonClick = () => {
-        fileInputRef.current?.click();
-    };
+        fileInputRef.current?.click()
+    }
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
+        const file = event.target.files?.[0]
         if (file) {
-            handleFileSelect(file);
-            const reader = new FileReader();
+            handleFileSelect(file)
+            const reader = new FileReader()
             reader.onload = () => {
-                setIsDragOver(false); // Reset drag over state
-            };
-            reader.readAsDataURL(file);
+                setIsDragOver(false) // Reset drag over state
+            }
+            reader.readAsDataURL(file)
         }
-    };
+    }
 
     const handleDragOver = (event: React.DragEvent) => {
-        event.preventDefault();
-        setIsDragOver(true);
-    };
+        event.preventDefault()
+        setIsDragOver(true)
+    }
 
     const handleDragLeave = (event: React.DragEvent) => {
-        event.preventDefault();
-        setIsDragOver(false);
-    };
+        event.preventDefault()
+        setIsDragOver(false)
+    }
 
     const handleDrop = (event: React.DragEvent) => {
-        event.preventDefault();
-        setIsDragOver(false);
+        event.preventDefault()
+        setIsDragOver(false)
 
-        const file = event.dataTransfer.files?.[0];
+        const file = event.dataTransfer.files?.[0]
         if (file) {
-            handleFileSelect(file);
+            handleFileSelect(file)
         }
-    };
+    }
 
     const removeFile = () => {
-        setSelectedFile(null);
+        setSelectedFile(null)
         if (fileInputRef.current) {
-            fileInputRef.current.value = "";
+            fileInputRef.current.value = ""
         }
-    };
+    }
 
     const formatFileSize = (bytes: number) => {
-        if (bytes === 0) return "0 Bytes";
-        const k = 1024;
-        const sizes = ["Bytes", "KB", "MB", "GB"];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-    };
+        if (bytes === 0) return "0 Bytes"
+        const k = 1024
+        const sizes = ["Bytes", "KB", "MB", "GB"]
+        const i = Math.floor(Math.log(bytes) / Math.log(k))
+        return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
+    }
 
     const downloadTemplate = (link: string) => {
         // In a real app, this would download actual template files
         if (link) {
-            window.open(link, "_blank");
+            window.open(link, "_blank")
         }
-    };
+    }
 
     const handleGenerate = async () => {
         try {
-            setGeneratedQuiz(null);
-            setIsGenerating(true);
+            setGeneratedQuiz(null)
+            setIsGenerating(true)
             const res = await axios.post(
                 `${process.env.NEXT_PUBLIC_API_PYTHON}/quiz`,
                 {
@@ -148,7 +148,7 @@ export function FileImportView() {
                         "Content-Type": "multipart/form-data",
                     },
                 }
-            );
+            )
             toast.success("Quiz đã được tạo thành công!", {
                 description: "Bạn có thể xem trước và chỉnh sửa quiz trước khi lưu.",
                 duration: 10000,
@@ -157,23 +157,23 @@ export function FileImportView() {
                     label: "Xem trước",
                     onClick: () => setShowPreview(true),
                 },
-            });
+            })
             setGeneratedQuiz({
                 title: "",
                 subject: "",
                 content: "",
                 questions: res.data,
-            });
+            })
         } catch (error: any) {
-            console.error("Error generating quiz:", error.message);
-            toast.error(error.message || "Đã xảy ra lỗi khi tạo quiz. Vui lòng thử lại sau.");
+            console.error("Error generating quiz:", error.message)
+            toast.error(error.message || "Đã xảy ra lỗi khi tạo quiz. Vui lòng thử lại sau.")
         } finally {
-            setIsGenerating(false);
+            setIsGenerating(false)
         }
-    };
+    }
 
     const handleAddToDraft = () => {
-        const draftStorage = localStorage.getItem("draftQuiz");
+        const draftStorage = localStorage.getItem("draftQuiz")
         const draft = {
             ...generatedQuiz,
             createdAt: new Date().toISOString(),
@@ -182,21 +182,21 @@ export function FileImportView() {
             createdBy: "file",
             status: "draft",
             difficulty: "easy",
-        };
+        }
 
         if (draftStorage) {
-            const existingDrafts = JSON.parse(draftStorage);
-            localStorage.setItem("draftQuiz", JSON.stringify([...existingDrafts, draft]));
+            const existingDrafts = JSON.parse(draftStorage)
+            localStorage.setItem("draftQuiz", JSON.stringify([...existingDrafts, draft]))
         } else {
-            localStorage.setItem("draftQuiz", JSON.stringify([draft]));
+            localStorage.setItem("draftQuiz", JSON.stringify([draft]))
         }
 
         toast.success("Quiz đã được lưu vào nháp", {
             description: "Bạn có thể xem lại trong phần Draft",
             duration: 5000,
             action: { label: "Xem nháp", onClick: () => router.push("/quiz/themcauhoi/drafts") },
-        });
-    };
+        })
+    }
 
     return (
         <div className="p-6 max-w-4xl mx-auto space-y-6">
@@ -218,15 +218,7 @@ export function FileImportView() {
                         </CardHeader>
                         <CardContent>
                             <div className="">
-                                <div
-                                    autoFocus
-                                    className={`cursor-pointer hover:border-primary/50 hover:bg-primary/5 border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-                                        isDragOver ? "border-primary bg-primary/5" : "border-muted-foreground/25"
-                                    }`}
-                                    onDragOver={handleDragOver}
-                                    onDragLeave={handleDragLeave}
-                                    onClick={handleButtonClick}
-                                    onDrop={handleDrop}>
+                                <div autoFocus className={`cursor-pointer hover:border-primary/50 hover:bg-primary/5 border-2 border-dashed rounded-lg p-8 text-center transition-colors ${isDragOver ? "border-primary bg-primary/5" : "border-muted-foreground/25"}`} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onClick={handleButtonClick} onDrop={handleDrop}>
                                     <div className="flex flex-col items-center space-y-2">
                                         <div className="p-3 bg-muted rounded-full">
                                             <Upload className="h-6 w-6 text-muted-foreground" />
@@ -266,7 +258,7 @@ export function FileImportView() {
                             <CardDescription>Tải xuống mẫu file để tạo quiz theo đúng định dạng</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid md:grid-cols-2 gap-3">
                                 {supportedFormats.map((format) => (
                                     <Button key={format.ext} variant="outline" disabled={format.disable} className="justify-start h-auto p-3" onClick={() => downloadTemplate(format.link || "")}>
                                         <div className="flex items-center space-x-3">
@@ -321,9 +313,7 @@ export function FileImportView() {
                             </div>
                         </div>
                     )}
-                    {generatedQuiz && (
-                        <AIResultPreview open={showPreview} onOpenChange={setShowPreview} quiz={generatedQuiz} setOpenAddMoreInfo={setOpenAddMoreInfo} setGeneratedQuiz={setGeneratedQuiz} />
-                    )}
+                    {generatedQuiz && <AIResultPreview open={showPreview} onOpenChange={setShowPreview} quiz={generatedQuiz} setOpenAddMoreInfo={setOpenAddMoreInfo} setGeneratedQuiz={setGeneratedQuiz} />}
                 </div>
 
                 {/* Info Panel */}
@@ -374,5 +364,5 @@ export function FileImportView() {
                 </div>
             </div>
         </div>
-    );
+    )
 }

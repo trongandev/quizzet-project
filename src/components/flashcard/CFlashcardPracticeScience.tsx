@@ -8,7 +8,7 @@ import { TbConfetti } from "react-icons/tb"
 import { BsEmojiDizzy, BsEmojiExpressionless, BsEmojiFrown, BsEmojiLaughing, BsEmojiNeutral, BsEmojiSunglasses } from "react-icons/bs"
 import { Button } from "@/components/ui/button"
 import { EdgeSpeechTTS } from "@lobehub/tts"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, ChevronLeft } from "lucide-react"
 import { Flashcard } from "@/types/type"
 import { toast } from "sonner"
 import Loading from "@/components/ui/loading"
@@ -174,11 +174,6 @@ export default function CFlashcardPracticeScience({ flashcards }: { flashcards: 
         const newRating = { id: flashcard[currentIndex]._id, quality: quality, userId: userId }
         setSessionRatings([...sessionRatings, newRating]) // Cập nhật mảng đánh giá
 
-        toast.success(`Đã đánh giá thẻ với chất lượng ${quality + 1}`, {
-            duration: 3000,
-            position: "top-center",
-        })
-
         // // Chuyển sang thẻ tiếp theo
         setIsFlipped(false)
         speakWord((flashcard && flashcard[currentIndex + 1]?.title) || "", (flashcard && flashcard[currentIndex + 1]?.language) || "english")
@@ -205,10 +200,10 @@ export default function CFlashcardPracticeScience({ flashcards }: { flashcards: 
         }
 
         setSessionRatings([]) // Clear state
-        setCurrentIndex(1) // Reset current index
+        setCurrentIndex(0) // Reset current index
+        setFlashcard((prev) => (prev ? prev.slice(sessionRatings.length) : []))
 
         toast.loading("Đang gửi dữ liệu ôn tập...", {
-            duration: 5000,
             position: "top-center",
             id: "send-session",
         })
@@ -219,13 +214,10 @@ export default function CFlashcardPracticeScience({ flashcards }: { flashcards: 
 
             if (res?.ok) {
                 toast.success("Đã gửi dữ liệu ôn tập thành công!", {
-                    duration: 10000,
+                    duration: 3000,
                     position: "top-center",
                     id: "send-session",
                 })
-
-                setCurrentIndex(0)
-                setFlashcard((prev) => (prev ? prev.slice(sessionRatings.length) : []))
             } else {
                 toast.error(`Lỗi khi gửi dữ liệu ôn tập: ${result?.message || "Lỗi không xác định."}`, {
                     duration: 5000,
@@ -282,6 +274,9 @@ export default function CFlashcardPracticeScience({ flashcards }: { flashcards: 
                 <div className="w-full flex items-center justify-center h-[90%] flex-col gap-5">
                     <div className="w-full flex flex-col md:flex-row gap-5 items-start">
                         <div className="w-full flex flex-col gap-5">
+                            <Button variant="secondary" onClick={() => router.back()}>
+                                <ChevronLeft /> Quay về
+                            </Button>
                             {/* Main Flashcard Container */}
                             <div className="relative w-full h-[500px] border border-white/10  shadow-md bg-white text-white dark:bg-slate-800/50 rounded-md" style={{ perspective: "1000px" }} onClick={() => setIsFlipped(!isFlipped)}>
                                 {/* Flashcard Feature */}

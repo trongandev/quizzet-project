@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { IAchievement, IActivity, IGamification, ILevel, IListFlashcard, IQuiz, IUser } from "@/types/type"
 import handleCompareDate from "@/lib/CompareDate"
 import { useUser } from "@/context/userContext"
-import { Flame, Calendar, Mail } from "lucide-react"
+import { Calendar, Mail } from "lucide-react"
 import { Progress } from "../ui/progress"
 import UserFC from "../flashcard/UserFC"
 import Achievement from "@/components/profile/Achievement"
@@ -28,8 +28,9 @@ interface PropsProfile {
     gamificationProfile: IGamification
     levels: ILevel[]
     activities: IActivity[]
+    countFlashcard: number
 }
-export default function UserProfile({ profile, quiz, flashcard, gamificationProfile, achievements, levels, activities }: PropsProfile) {
+export default function UserProfile({ profile, quiz, flashcard, gamificationProfile, achievements, levels, activities, countFlashcard }: PropsProfile) {
     const { user, refetchUser } = useUser() || {
         user: null,
         refetchUser: () => {},
@@ -85,7 +86,7 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
                                         <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-300 ">{userProfile?.displayName || "N/A"}</h1>
                                         {levels && gamificationProfile && gamificationProfile.level && levels[gamificationProfile.level] && (
                                             <Badge variant="secondary" className="bg-blue-600 text-white flex items-center gap-1">
-                                                <Image src={levels[gamificationProfile.level].levelIcon} width={16} height={16} alt="" />
+                                                <Image src={levels[gamificationProfile.level - 1].levelIcon} width={16} height={16} alt="" />
                                                 Cấp {gamificationProfile.level}
                                             </Badge>
                                         )}
@@ -103,32 +104,16 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
                                     </div>
                                     <div className="space-y-2">
                                         <div className="flex justify-between text-sm">
-                                            <span>{gamificationProfile?.xp || 0} XP</span>
-                                            <span>{currentLevel?.xpRequired || 0} XP</span>
+                                            <span>{gamificationProfile?.xp.toLocaleString() || 0} XP</span>
+                                            <span>{currentLevel?.xpRequired.toLocaleString() || 0} XP</span>
                                         </div>
                                         <Progress value={(gamificationProfile?.xp / currentLevel?.xpRequired) * 100 || 0} className="h-2" />
                                         <p className="text-xs text-slate-400">
-                                            Còn {currentLevel?.xpRequired - gamificationProfile?.xp || 0} XP để lên cấp {gamificationProfile?.level + 1 || 0}
+                                            Còn {(currentLevel?.xpRequired - gamificationProfile?.xp).toLocaleString() || 0} XP để lên cấp {gamificationProfile?.level + 1 || 0}
                                         </p>
                                     </div>
                                 </div>
-                                <div className="flex flex-col gap-5">
-                                    {user?._id == userProfile?._id && <UpdateProfile isSettingsOpen={isSettingsOpen} setIsSettingsOpen={setIsSettingsOpen} user={userProfile} refetchUser={refetchUser} />}
-                                    {/* Stats */}
-                                    <div className="flex justify-center md:justify-end  gap-6 text-center">
-                                        <div>
-                                            <div className="flex items-center gap-1 text-orange-400">
-                                                <Flame className="w-4 h-4" />
-                                                <span className="font-bold">{gamificationProfile?.dailyStreak?.current || 0}</span>
-                                            </div>
-                                            <p className="text-xs text-slate-400">Ngày liên tiếp</p>
-                                        </div>
-                                        <div>
-                                            <div className="text-yellow-400 font-bold">{gamificationProfile?.xp || 0}</div>
-                                            <p className="text-xs text-slate-400">Tổng XP</p>
-                                        </div>
-                                    </div>
-                                </div>
+                                <div className="flex flex-col gap-5">{user?._id == userProfile?._id && <UpdateProfile isSettingsOpen={isSettingsOpen} setIsSettingsOpen={setIsSettingsOpen} user={userProfile} refetchUser={refetchUser} />}</div>
                             </div>
                         </CardContent>
                     </Card>
@@ -151,7 +136,7 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
                         </div>
 
                         <TabsContent value="overview" className="space-y-6">
-                            {gamificationProfile && <OverViewProfile gamificationProfile={gamificationProfile} levels={levels} activities={activities} />}
+                            {gamificationProfile && <OverViewProfile gamificationProfile={gamificationProfile} levels={levels} activities={activities} countFlashcard={countFlashcard} countListFC={flashcard.length || 0} />}
                         </TabsContent>
 
                         <TabsContent value="achievements" className="space-y-6">

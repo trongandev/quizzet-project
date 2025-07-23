@@ -3,12 +3,11 @@
 import { useMemo, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { Sparkles, Plus, Type, Send, Eye, Volume2, X } from "lucide-react"
+import { Sparkles, Type, Send, Eye, Volume2, X } from "lucide-react"
 import { DialogTrigger } from "@radix-ui/react-dialog"
 import { optimizedPromptFCMore } from "@/lib/optimizedPrompt"
 import { POST_API } from "@/lib/fetchAPI"
@@ -46,6 +45,7 @@ export default function AddMoreVocaModal({ children, listFlashcard, setListFlash
         toast.loading("Đang tạo flashcard bằng AI", {
             description: "Quá trình này có thể mất vài giây đến vài phút tùy vào độ phức tạp của từ vựng.",
             id: "ai-generate",
+            position: "top-center",
         })
         try {
             const optimizedPrompt = optimizedPromptFCMore(vocabulary, listFlashcard?.language)
@@ -64,12 +64,14 @@ export default function AddMoreVocaModal({ children, listFlashcard, setListFlash
                 description: "Các từ vựng mới đã được thêm vào bộ flashcard của bạn.",
                 id: "ai-generate",
                 duration: 5000,
+                position: "top-center",
             })
         } catch (error: any) {
             console.error("Error generating flashcards with AI:", error)
             toast.error("Đã có lỗi xảy ra, vui lòng thử lại sau", {
                 description: error.message,
                 id: "ai-generate",
+                position: "top-center",
             })
         } finally {
             setIsGenerating(false)
@@ -83,6 +85,7 @@ export default function AddMoreVocaModal({ children, listFlashcard, setListFlash
             toast.loading("Đang gửi dữ liệu lên server", {
                 description: "Vui lòng đợi trong giây lát...",
                 id: "ai-generate",
+                position: "top-center",
             })
             const req = await POST_API(
                 "/flashcards/create-ai-list",
@@ -100,6 +103,7 @@ export default function AddMoreVocaModal({ children, listFlashcard, setListFlash
                     description: "Các từ vựng mới đã được thêm vào bộ flashcard của bạn.",
                     id: "ai-generate",
                     duration: 5000,
+                    position: "top-center",
                 })
                 setFilteredFlashcards([...res?.flashcards, ...filteredFlashcards])
                 setListFlashcard((prev: any) => ({
@@ -119,7 +123,7 @@ export default function AddMoreVocaModal({ children, listFlashcard, setListFlash
             }
         } catch (error: any) {
             console.error("Error sending data:", error)
-            toast.error("Đã có lỗi xảy ra khi gửi dữ liệu", { description: error.message, id: "ai-generate" })
+            toast.error("Đã có lỗi xảy ra khi gửi dữ liệu", { description: error.message, id: "ai-generate", position: "top-center" })
         } finally {
             setLoading(false)
         }
@@ -128,14 +132,10 @@ export default function AddMoreVocaModal({ children, listFlashcard, setListFlash
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>{children}</DialogTrigger>
-            <DialogContent className="sm:max-w-[700px] max-h-[92vh] overflow-hidden">
-                <DialogHeader className="pb-4">
-                    <DialogTitle className="text-xl font-semibold flex items-center gap-2">
-                        <Plus className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                        Thêm nhiều từ vựng mới
-                    </DialogTitle>
+            <DialogContent className="sm:max-w-[700px] max-h-[92vh]">
+                <DialogHeader className="pb-2 md:pb-4">
+                    <DialogTitle className="text-xl font-semibold flex items-center gap-2">Thêm nhiều từ vựng mới</DialogTitle>
                     <DialogDescription>
-                        <p>Điền thông tin để thêm từ vựng mới vào bộ flashcard của bạn</p>
                         <p>Bạn có thể ghi tiếng việt vào và bấm tạo bằng AI, AI sẽ tự động chuyển từ thành tiếng bạn muốn</p>
                     </DialogDescription>
                 </DialogHeader>
@@ -143,8 +143,8 @@ export default function AddMoreVocaModal({ children, listFlashcard, setListFlash
                 <div className="">
                     <div className="space-y-6">
                         {/* Main Word Section */}
-                        <Card className="border-blue-100 bg-blue-50/30 dark:bg-slate-800/50 dark:border-white/10">
-                            <CardContent className="space-y-4 mt-6">
+                        <Card className="border-blue-100 bg-blue-50/30 dark:bg-slate-800/50 dark:border-white/10 h-[350px]  overflow-y-scroll">
+                            <CardContent className="space-y-4 mt-3 md:mt-6">
                                 <div className="flex gap-2">
                                     <Textarea id="title" value={vocabulary} onChange={(e) => setVocabulary(e.target.value)} autoFocus autoComplete="off" maxLength={200} placeholder="VD: extraordinary, beautiful, huge, etc." className="flex-1 h-32" />
                                 </div>
@@ -171,12 +171,12 @@ export default function AddMoreVocaModal({ children, listFlashcard, setListFlash
                     </div>
                 </div>
 
-                <Separator className="my-4" />
+                <Separator className="my-4 hidden md:block" />
 
-                <DialogFooter className="gap-2">
-                    <Button variant="outline" onClick={() => setOpen(false)} className="gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-slate-700 dark:hover:bg-slate-600">
+                <DialogFooter className="gap-2 flex flex-row">
+                    {/* <Button variant="outline" onClick={() => setOpen(false)} className="hidden md:block gap-2 bg-gray-200 hover:bg-gray-300 dark:bg-slate-700 dark:hover:bg-slate-600">
                         Hủy
-                    </Button>
+                    </Button> */}
                     <Dialog open={openDetail} onOpenChange={setOpenDetail}>
                         <DialogTrigger>
                             {flashcards.length > 0 && (

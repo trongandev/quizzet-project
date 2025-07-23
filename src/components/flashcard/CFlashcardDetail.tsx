@@ -75,6 +75,7 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
         const fetchAPI = async () => {
             const req = await GET_API_WITHOUT_COOKIE(`/flashcards/${id_flashcard}`)
             if (req?.ok) {
+                console.log(req)
                 setListFlashcard(req?.listFlashCards)
                 setFilteredFlashcards(sortFlashcards(req?.listFlashCards?.flashcards))
                 setEditListFlashcard(req?.listFlashCards)
@@ -119,6 +120,41 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
         setSelectedVoice(currentVoice)
     }, [listFlashcard?.language])
 
+    const getStatCard = [
+        {
+            type: "all",
+            borderColor: "border-l-gray-500 dark:border-l-gray-400",
+            textColor: "text-gray-500 dark:text-gray-400",
+            count: listFlashcard?.flashcards?.length || 0,
+            title: "Tất cả thẻ",
+            icon: GalleryVerticalEnd,
+        },
+        {
+            type: "learned",
+            borderColor: "border-l-green-500 dark:border-l-green-400",
+            textColor: "text-green-500 dark:text-green-400",
+            count: statusCounts?.learned || 0,
+            title: "Đã nhớ",
+            icon: BookOpen,
+        },
+        {
+            type: "remembered",
+            borderColor: "border-l-blue-500 dark:border-l-blue-400",
+            textColor: "text-blue-500 dark:text-blue-400",
+            count: statusCounts?.remembered || 0,
+            title: "Đang ghi nhớ",
+            icon: Brain,
+        },
+        {
+            type: "reviewing",
+            borderColor: "border-l-orange-500 dark:border-l-orange-400",
+            textColor: "text-orange-500 dark:text-orange-400",
+            count: statusCounts?.reviewing || 0,
+            title: "Cần ôn tập",
+            icon: RotateCcw,
+        },
+    ]
+
     const handleDeleteListFlashcard = async () => {
         try {
             setLoadingConfirm(true)
@@ -139,42 +175,6 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
         }
     }
 
-    const handleEditListFlashcard = async (values: any) => {
-        try {
-            setLoading(true)
-
-            const req = await POST_API(`/list-flashcards/${values._id}`, values, "PATCH", token)
-            const res = await req?.json()
-
-            if (res.ok) {
-                setListFlashcard(res.listFlashCard || values)
-
-                // ✅ Revalidate multiple caches
-
-                await revalidateCache({
-                    tag: [`flashcard_${id_flashcard}`, "flashcards-detail"],
-                    path: `/flashcard/${id_flashcard}`,
-                })
-
-                // ✅ Revalidate public cache if needed
-                if (values.public) {
-                    await revalidateCache({
-                        tag: "flashcard_public",
-                    })
-                }
-
-                toast.success("Cập nhật thành công!")
-            }
-        } catch (error) {
-            toast.error("Có lỗi xảy ra", {
-                description: error instanceof Error ? error.message : "Lỗi không xác định",
-                duration: 3000,
-                position: "top-center",
-            })
-        } finally {
-            setLoading(false)
-        }
-    }
     const [tts] = useState(() => new EdgeSpeechTTS({ locale: "en-US" }))
 
     const speakWord = useCallback(
@@ -219,36 +219,6 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
             }
         },
         [disableAudio, listFlashcard?.language, tts, selectedVoice]
-    )
-
-    const handleDelete = useCallback(
-        async (id: string) => {
-            try {
-                setLoadingConfirm(true)
-                const req = await POST_API(`/flashcards/${id}`, { list_flashcard_id: listFlashcard?._id }, "DELETE", token)
-                const res = await req?.json()
-
-                if (res.ok) {
-                    setFilteredFlashcards((prev) => prev.filter((item) => item._id !== id))
-
-                    setListFlashcard((prev) => {
-                        if (!prev) return prev
-                        return {
-                            ...prev,
-                            flashcards: prev.flashcards?.filter((item) => item._id !== id) || [],
-                        }
-                    })
-
-                    toast.success("Xóa flashcard thành công")
-                }
-            } catch (error) {
-                console.error("Error deleting flashcard:", error)
-                toast.error("Xóa flashcard không thành công")
-            } finally {
-                setLoadingConfirm(false)
-            }
-        },
-        [listFlashcard?._id, token]
     )
 
     const handleFilter = (filter: string) => {
@@ -306,7 +276,7 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
 
     return (
         <div className="w-full space-y-5 relative z-[10] dark:bg-slate-700 bg-gray-200">
-            <div className="bg-white dark:bg-slate-800 p-5 border-b border-gray-200 dark:border-white/10 space-y-3">
+            <div className="bg-white dark:bg-slate-800 p-2 md:p-5 border-b border-gray-200 dark:border-white/10 space-y-3">
                 <div className="flex justify-between  items-start md:items-center flex-col md:flex-row gap-5 md:gap-0">
                     <div className="flex w-full md:items-center flex-col md:flex-row gap-5 justify-between md:justify-start flex-1">
                         <Button className="w-full md:w-auto" variant="outline" onClick={() => router.back()}>
@@ -329,7 +299,7 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
                         </VoiceSelectionModal>
 
                         <div className={` items-center gap-2 md:gap-3 flex-wrap ${user?._id === String(listFlashcard?.userId._id) ? "flex" : "hidden"}`}>
-                            <EditListFlashcardModal handleEditListFlashcard={handleEditListFlashcard} editListFlashcard={editListFlashcard} setEditListFlashcard={setEditListFlashcard} token={token}>
+                            <EditListFlashcardModal listFlashcard={listFlashcard} setListFlashcard={setListFlashcard} editListFlashcard={editListFlashcard} token={token}>
                                 <Button className="dark:text-white" variant="outline" onClick={() => listFlashcard && setEditListFlashcard(listFlashcard as IEditFlashcard)}>
                                     <PencilLine /> Chỉnh Sửa
                                 </Button>
@@ -380,54 +350,29 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
                 </div>
             </div>
 
-            <div className="px-5">
+            <div className="px-2 md:x-5">
                 <div className="">
                     {user?._id === String(listFlashcard?.userId?._id) && (
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
-                            <div onClick={() => handleFilter("all")} className={`w-full h-24 px-5 bg-indigo-300/60 dark:bg-indigo-800/50 rounded-xl flex items-center justify-between border border-indigo-500/50 dark:border-white/10 shadow-sm shadow-indigo-500/50 hover:scale-105 transition-transform cursor-pointer duration-500  dark:hover:bg-indigo-700`}>
-                                <div className="">
-                                    <p className="text-gray-600 dark:text-white/60">Tất cả thẻ</p>
-                                    <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">{listFlashcard?.flashcards?.length || 0}</h3>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-5">
+                            {getStatCard.map((card) => (
+                                <div key={card.type} onClick={() => handleFilter(card.type)} className={`w-full h-24 px-5 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-between border-l-4 ${card.borderColor} ${card.textColor} shadow-sm hover:scale-105 transition-transform cursor-pointer duration-500`}>
+                                    <div className="">
+                                        <p className=" line-clamp-1">{card.title}</p>
+                                        <h3 className="text-3xl font-bold ">{card.count}</h3>
+                                    </div>
+                                    <div className={`w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-700 rounded-full`}>
+                                        <card.icon />
+                                    </div>
                                 </div>
-                                <div className={`w-10 h-10 flex items-center justify-center bg-indigo-500 text-white rounded-full`}>
-                                    <GalleryVerticalEnd />
-                                </div>
-                            </div>
-                            <div onClick={() => handleFilter("learned")} className={`w-full h-24 px-5 bg-green-300/60 dark:bg-green-800/50 rounded-xl flex items-center justify-between border border-green-500/50 dark:border-white/10 shadow-sm shadow-green-500/50 hover:scale-105 transition-transform cursor-pointer duration-500  dark:hover:bg-green-700`}>
-                                <div className="">
-                                    <p className="text-gray-600 dark:text-white/60">Đã nhớ</p>
-                                    <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">{statusCounts?.learned || 0}</h3>
-                                </div>
-                                <div className={`w-10 h-10 flex items-center justify-center bg-green-500 text-white rounded-full`}>
-                                    <BookOpen />
-                                </div>
-                            </div>
-                            <div onClick={() => handleFilter("remembered")} className={`w-full h-24 px-5 bg-blue-300/60 dark:bg-blue-800/50 rounded-xl flex items-center justify-between border border-blue-500/50 dark:border-white/10 shadow-sm shadow-blue-500/50 hover:scale-105 transition-transform cursor-pointer duration-500  dark:hover:bg-blue-700`}>
-                                <div className="">
-                                    <p className="text-gray-600 dark:text-white/60">Đang ghi nhớ</p>
-                                    <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">{statusCounts?.remembered || 0}</h3>
-                                </div>
-                                <div className={`w-10 h-10 flex items-center justify-center bg-blue-500 text-white rounded-full`}>
-                                    <Brain />
-                                </div>
-                            </div>
-                            <div onClick={() => handleFilter("reviewing")} className={`w-full h-24 px-5 bg-red-300/60 dark:bg-red-800/50 rounded-xl flex items-center justify-between border border-red-500/50 dark:border-white/10 shadow-sm shadow-red-500/50 hover:scale-105 transition-transform cursor-pointer duration-500  dark:hover:bg-red-700`}>
-                                <div className="">
-                                    <p className="text-gray-600 dark:text-white/60">Cần ôn tập</p>
-                                    <h3 className="text-3xl font-bold text-slate-700 dark:text-white/80">{statusCounts?.reviewing || 0}</h3>
-                                </div>
-                                <div className={`w-10 h-10 flex items-center justify-center bg-red-500 text-white rounded-full`}>
-                                    <RotateCcw />
-                                </div>
-                            </div>
+                            ))}
                         </div>
                     )}
                 </div>
             </div>
-            <div className="flex items-center px-5 gap-2 md:gap-5 flex-wrap">
+            <div className="flex items-center px-2 md:px-5 gap-2 md:gap-5 flex-wrap">
                 <Link href={`/flashcard/practice/${id_flashcard}`} className="flex-1">
                     <Button variant="outline" className=" w-full h-16 dark:text-white text-md md:text-xl uppercase">
-                        <Target /> ôn từ vựng
+                        <Target /> Luyện tập
                     </Button>
                 </Link>
 
@@ -441,15 +386,15 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
                         <Link href={`/flashcard/practice-science`} className="flex-1">
                             <Button variant="outline" className="w-full h-16 dark:text-white text-md md:text-xl uppercase">
                                 <Gift></Gift>
-                                Luyện tập
+                                Ôn từ vựng
                             </Button>
                         </Link>
                     </>
                 )}
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:p-5 w-full px-3">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:p-5 w-full px-2">
                 {filteredFlashcards && filteredFlashcards?.length > 0 ? (
-                    filteredFlashcards.map((item: Flashcard) => <VocaCardItem key={item._id} data={item} speakWord={speakWord} loadingAudio={loadingAudio} handleDelete={handleDelete} setEditFlashcard={setEditFlashcard} setIsEditOpen={setIsEditOpen} user={user} />)
+                    filteredFlashcards.map((item: Flashcard) => <VocaCardItem key={item._id} data={item} speakWord={speakWord} loadingAudio={loadingAudio} setEditFlashcard={setEditFlashcard} setIsEditOpen={setIsEditOpen} user={user} token={token} setFilteredFlashcards={setFilteredFlashcards} listFlashcard={listFlashcard} setListFlashcard={setListFlashcard} />)
                 ) : (
                     <div className="col-span-3 text-center h-[80vh] flex flex-col gap-2 items-center justify-center">
                         <h1 className="text-xl">Không có từ vựng nào trong flashcard này</h1>

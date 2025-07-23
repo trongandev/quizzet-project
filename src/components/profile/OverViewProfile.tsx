@@ -1,11 +1,11 @@
 import React from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Brain, Calendar, Crown } from "lucide-react"
+import { Brain, Calendar, Crown, Flame } from "lucide-react"
 import Image from "next/image"
 import { IActivity, IGamification, ILevel } from "@/types/type"
 import handleCompareDate from "@/lib/CompareDate"
 
-export default function OverViewProfile({ gamificationProfile, levels, activities }: { gamificationProfile: IGamification; levels: ILevel[]; activities: IActivity[] }) {
+export default function OverViewProfile({ gamificationProfile, levels, activities, countFlashcard, countListFC }: { gamificationProfile: IGamification; levels: ILevel[]; activities: IActivity[]; countFlashcard: number; countListFC: number }) {
     const currentLevel = levels[gamificationProfile.level]
     if (!levels) {
         return <div className="text-center text-red-500">Cấp độ không hợp lệ</div>
@@ -44,16 +44,23 @@ export default function OverViewProfile({ gamificationProfile, levels, activitie
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="flex justify-between">
+                        <span>Ngày liên tiếp</span>
+                        <div className="flex items-center gap-1 text-orange-400">
+                            <Flame className="w-4 h-4" />
+                            <span className="font-bold">{gamificationProfile?.dailyStreak?.current || 0}</span>
+                        </div>
+                    </div>
+                    <div className="flex justify-between">
                         <span>Tổng bộ thẻ</span>
-                        <span className="font-bold text-green-400">5 bộ</span>
+                        <span className="font-bold text-green-400">{countListFC.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between">
                         <span>Tổng từ vựng</span>
-                        <span className="font-bold text-green-400">5 từ</span>
+                        <span className="font-bold text-green-400">{countFlashcard.toLocaleString()} từ</span>
                     </div>
                     <div className="flex justify-between">
                         <span>XP kiếm được</span>
-                        <span className="font-bold text-yellow-400">{gamificationProfile.xp}XP</span>
+                        <span className="font-bold text-yellow-400">{gamificationProfile.xp.toLocaleString()}XP</span>
                     </div>
                 </CardContent>
             </Card>
@@ -76,7 +83,7 @@ export default function OverViewProfile({ gamificationProfile, levels, activitie
                         <p className="text-sm text-slate-400">{currentLevel.name}</p>
                     </div>
                     <div className="text-center">
-                        <p className="text-xs text-slate-400">Cần {currentLevel.xpRequired - gamificationProfile.xp} XP</p>
+                        <p className="text-xs text-slate-400">Cần {(currentLevel.xpRequired - gamificationProfile.xp).toLocaleString()} XP</p>
                     </div>
                 </CardContent>
             </Card>
