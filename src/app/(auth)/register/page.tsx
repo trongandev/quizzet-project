@@ -1,25 +1,27 @@
-"use client";
-import React, { useEffect } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import Cookies from "js-cookie";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { GET_API, POST_API } from "@/lib/fetchAPI";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ArrowLeft } from "lucide-react";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import Loading from "@/components/ui/loading";
-import { toast } from "sonner";
-import { Checkbox } from "@/components/ui/checkbox";
+"use client"
+import React, { useEffect } from "react"
+import { useFormik } from "formik"
+import * as Yup from "yup"
+import Cookies from "js-cookie"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { GET_API, POST_API } from "@/lib/fetchAPI"
+import Image from "next/image"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { ArrowLeft } from "lucide-react"
+import { Label } from "@/components/ui/label"
+import { Separator } from "@/components/ui/separator"
+import Loading from "@/components/ui/loading"
+import { toast } from "sonner"
+import { Checkbox } from "@/components/ui/checkbox"
+import { useUser } from "@/context/userContext"
 
 export default function RegisterForm() {
-    const router = useRouter();
-    const token = Cookies.get("token") || "";
-    const [loading, setLoading] = React.useState(false);
+    const router = useRouter()
+    const token = Cookies.get("token") || ""
+    const [loading, setLoading] = React.useState(false)
+    const { refetchUser } = useUser() || {}
 
     const formik = useFormik({
         initialValues: {
@@ -44,85 +46,96 @@ export default function RegisterForm() {
                 displayName: values.displayName,
                 email: values.email,
                 password: values.password,
-            };
-            fetchRegister(profile);
+            }
+            fetchRegister(profile)
         },
-    });
+    })
+
+    const fetchProfileAndSaveCookie = async (data: any) => {
+        Cookies.set("token", data.token, {
+            expires: 30,
+            secure: true,
+            sameSite: "none",
+        })
+        // Fetch user profile sau khi đăng nhập thành công
+        refetchUser?.()
+    }
 
     const fetchRegister = async (profile: any) => {
         try {
-            setLoading(true);
-            const res = await POST_API("/auth/register", profile, "POST", token);
-            const data = await res?.json();
+            setLoading(true)
+            const res = await POST_API("/auth/register", profile, "POST", token)
+            const data = await res?.json()
             if (data?.ok) {
                 toast.success("Đăng ký thành công!", {
                     description: "Đang chuyển hướng đến trang đăng nhập...",
                     position: "top-center",
-                });
-                router.push("/login");
+                })
+                await fetchProfileAndSaveCookie(data)
+                router.push("/")
             } else {
                 toast.error("Đăng ký thất bại", {
                     description: data?.message || "Đã xảy ra lỗi không xác định",
                     position: "top-center",
-                });
+                })
             }
         } catch (error) {
-            console.error("Error during registration:", error);
+            console.error("Error during registration:", error)
             toast.error("Đăng ký thất bại", {
                 description: error instanceof Error ? error.message : "Đã xảy ra lỗi không xác định",
                 position: "top-center",
-            });
-            return;
+            })
+            return
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    };
+    }
 
     const fetchProfile = async () => {
         try {
-            const res = await GET_API("/profile", token);
+            const res = await GET_API("/profile", token)
             if (!res.user) {
-                Cookies.remove("token");
+                Cookies.remove("token")
             }
         } catch (error) {
-            console.error("Error fetching profile:", error);
-            Cookies.remove("token");
+            console.error("Error fetching profile:", error)
+            Cookies.remove("token")
         }
-    };
+    }
     useEffect(() => {
         if (token) {
-            fetchProfile();
+            fetchProfile()
         }
-    });
+    })
 
     const handleBackRouter = (e: any) => {
-        e.preventDefault();
-        router.back();
-    };
+        e.preventDefault()
+        router.back()
+    }
 
     const handleLoginGoogle = async (e: any) => {
-        e.preventDefault();
-        if (loading) return; // Prevent multiple clicks
-        window.location.href = process.env.API_ENDPOINT + "/auth/google";
-    };
+        e.preventDefault()
+        if (loading) return // Prevent multiple clicks
+        window.location.href = process.env.API_ENDPOINT + "/auth/google"
+    }
 
     useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const token = urlParams.get("token");
+        const urlParams = new URLSearchParams(window.location.search)
+        const token = urlParams.get("token")
 
         if (token) {
-            Cookies.set("token", token, { expires: 30 });
+            Cookies.set("token", token, { expires: 30 })
             const fetchAPI = async () => {
-                await GET_API("/profile", token);
-            };
-            fetchAPI();
+                await GET_API("/profile", token)
+            }
+            fetchAPI()
             toast.success("Đăng nhập thành công!", {
                 description: "Đang chuyển hướng đến trang chính...",
                 position: "top-center",
-            });
-            router.push("/");
+            })
+            router.push("/")
         }
-    }, [token, router]);
+    }, [token, router])
 
     return (
         <div className="min-h-screen flex items-center justify-center p-4 my-10">
@@ -145,10 +158,7 @@ export default function RegisterForm() {
 
                 {/* Google Login - Highlighted */}
                 <div className="space-y-4">
-                    <Button
-                        variant="outline"
-                        onClick={handleLoginGoogle}
-                        className="relative group overflow-hidden w-full h-12 bg-gradient-to-r from-red-800/90 via-yellow-800/90 to-blue-800/90 text-white border-0 shadow-md transform hover:scale-105 transition-all duration-200 ">
+                    <Button variant="outline" onClick={handleLoginGoogle} className="relative group overflow-hidden w-full h-12 bg-gradient-to-r from-red-800/90 via-yellow-800/90 to-blue-800/90 text-white border-0 shadow-md transform hover:scale-105 transition-all duration-200 ">
                         <Image src="https://www.svgrepo.com/show/303108/google-icon-logo.svg" alt="" width={30} height={30} className="mr-3"></Image>
                         Đăng ký bằng Google
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/80  dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
@@ -173,15 +183,7 @@ export default function RegisterForm() {
                             <Label htmlFor="displayName" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Họ và tên
                             </Label>
-                            <Input
-                                id="displayName"
-                                type="displayName"
-                                placeholder="Nguyễn Văn A."
-                                className="h-11"
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                value={formik.values.displayName}
-                            />
+                            <Input id="displayName" type="displayName" placeholder="Nguyễn Văn A." className="h-11" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.displayName} />
                             {formik.touched.displayName && formik.errors.displayName ? <div className="text-red-500  mt-1 mb-3 mx-5 text-sm dark:text-red-400">{formik.errors.displayName}</div> : null}
                         </div>
                         <div className="space-y-2">
@@ -196,30 +198,14 @@ export default function RegisterForm() {
                             <Label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Mật khẩu
                             </Label>
-                            <Input
-                                id="password"
-                                type="password"
-                                placeholder="Nhập mật khẩu của bạn"
-                                className="h-11"
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                value={formik.values.password}
-                            />
+                            <Input id="password" type="password" placeholder="Nhập mật khẩu của bạn" className="h-11" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.password} />
                             {formik.touched.password && formik.errors.password ? <div className="text-red-500 dark:text-red-400 mt-1 mb-3 mx-5 text-sm">{formik.errors.password}</div> : null}{" "}
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="rePassword" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                 Nhập lại mật khẩu
                             </Label>
-                            <Input
-                                id="rePassword"
-                                type="password"
-                                placeholder="Nhập lại mật khẩu của bạn"
-                                className="h-11"
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                value={formik.values.rePassword}
-                            />
+                            <Input id="rePassword" type="password" placeholder="Nhập lại mật khẩu của bạn" className="h-11" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.rePassword} />
                             {formik.touched.rePassword && formik.errors.rePassword ? <div className="text-red-500 dark:text-red-400 mt-1 mb-3 mx-5 text-sm">{formik.errors.rePassword}</div> : null}
                         </div>
                         <div className="flex items-start space-x-2">
@@ -261,5 +247,5 @@ export default function RegisterForm() {
                 </div>
             </div>
         </div>
-    );
+    )
 }

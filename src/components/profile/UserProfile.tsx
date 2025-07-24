@@ -18,7 +18,7 @@ import UpdateProfile from "@/components/profile/UpdateProfile"
 import QuizInProfile from "@/components/profile/QuizInProfile"
 import Image from "next/image"
 import PublicFC from "@/components/flashcard/PublicFC"
-
+import Cookies from "js-cookie"
 // Level configuration with unique designs
 
 interface PropsProfile {
@@ -39,7 +39,7 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
     }
     const [userProfile, setUserProfile] = useState<IUser | null>(null)
     const [isSettingsOpen, setIsSettingsOpen] = useState(false)
-
+    const token = Cookies.get("token") || ""
     useEffect(() => {
         const tempUser = user?._id === profile?._id ? user : profile
         setUserProfile(tempUser)
@@ -161,7 +161,7 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
                             {flashcard &&
                                 flashcard.map((item) => {
                                     if (isAnotherUser) return <PublicFC key={item._id} item={item} />
-                                    return <UserFC item={item} key={item._id} />
+                                    return <UserFC item={item} key={item._id} token={token} />
                                 })}
 
                             {flashcard && flashcard?.length === 0 && <div className="h-[350px] col-span-12 flex items-center justify-center text-gray-700">Không có dữ liệu...</div>}

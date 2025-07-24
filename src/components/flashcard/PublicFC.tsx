@@ -1,14 +1,23 @@
-import handleCompareDate from "@/lib/CompareDate";
-import { Users } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
-
+import handleCompareDate from "@/lib/CompareDate"
+import { Users } from "lucide-react"
+import Image from "next/image"
+import Link from "next/link"
+import React from "react"
+const getLanguageFlag = (lang: string) => {
+    const flags: { [key: string]: string } = {
+        english: "🇺🇸",
+        chinese: "🇨🇳",
+        japan: "🇯🇵",
+        korea: "🇰🇷",
+        vietnamese: "🇻🇳",
+        germany: "🇩🇪",
+        france: "🇫🇷",
+    }
+    return flags[lang] || "🌐"
+}
 export default function PublicFC({ item }: any) {
     return (
-        <Link
-            href={`/flashcard/${item?._id}`}
-            className="relative group overflow-hidden w-full   bg-white/80  dark:bg-slate-800/50   border border-white/10 rounded-xl shadow-sm px-2 md:px-5 hover:shadow-md transition-all duration-300 flex justify-center flex-col gap-3 h-40">
+        <Link href={`/flashcard/${item?._id}`} className="relative group overflow-hidden w-full   bg-white/80  dark:bg-slate-800/50   border border-white/10 rounded-xl shadow-sm px-2 md:px-5 hover:shadow-md transition-all duration-300 flex justify-center flex-col gap-3 h-40">
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
             <div className="flex items-start justify-between mt-0">
                 <div className="">
@@ -20,7 +29,7 @@ export default function PublicFC({ item }: any) {
                         {item.desc || "Không có mô tả"}
                     </p>
                 </div>
-                <Image src={`/flag/${item.language}.svg`} alt="" width={25} height={25} className="rounded-sm brightness-90 group-hover:brightness-100 duration-300"></Image>
+                <div className="">{getLanguageFlag(item.language)}</div>
             </div>
             <div className="flex items-center justify-between">
                 <span className="px-3 py-[0.4px] rounded-lg bg-purple-200/80 text-purple-700 font-medium text-sm">{item?.flashcards?.length} từ</span>
@@ -47,5 +56,5 @@ export default function PublicFC({ item }: any) {
                 </div>
             </div>
         </Link>
-    );
+    )
 }

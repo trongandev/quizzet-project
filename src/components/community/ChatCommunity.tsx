@@ -50,6 +50,7 @@ export default function ChatCommunity() {
         setLoading(true)
         const req = await GET_API_WITHOUT_COOKIE(`/chatcommu?skip=${skip}&limit=50`)
         if (req.ok) {
+            console.log(req)
             const sortedMessages = req.messages.sort((a: any, b: any) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
             setMessages(sortedMessages)
             const podium = req?.podiumUsers || []

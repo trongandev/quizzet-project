@@ -18,6 +18,7 @@ interface IUser {
         xp: number
         level: number
         dailyStreak: { current: number }
+        achievements: IUnlockedAchievement[]
     }
 }
 
@@ -121,6 +122,8 @@ interface IListFlashcard {
     language: "chinese" | "english" | "french" | "germany" | "japan" | "korea" | "vietnamese"
     desc: string
     public: boolean
+    isSuccess: boolean
+    isHiddenTranscription: boolean
     flashcards: Flashcard[]
     created_at: Date
     last_practice_date: Date

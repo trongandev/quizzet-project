@@ -15,6 +15,7 @@ import React, { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import Loading from "@/components/ui/loading"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 
 export default function TopUserPage() {
     const [podiumUsers, setPodiumUsers] = useState<IPodiumUser[]>([])
@@ -31,9 +32,9 @@ export default function TopUserPage() {
             setLoading(true)
             const res = await GET_API_WITHOUT_COOKIE(`/gamification/top?limit=${limit}&skip=${skip}&user_id=${user?._id}`)
             if (res?.ok) {
-                setPodiumUsers(res?.topUsers || [])
+                setPodiumUsers(res?.topUsers)
                 setCurrentUser(res?.currentUser || null)
-                setHasMore(res?.hasMore)
+
                 setSkip(skip + limit)
             }
             setLoading(false)
@@ -47,11 +48,12 @@ export default function TopUserPage() {
         const res = await GET_API_WITHOUT_COOKIE(`/gamification/top?limit=${limit}&skip=${skip}&user_id=${user?._id}`)
         if (res?.ok) {
             setPodiumUsers((prev) => [...prev, ...(res?.topUsers || [])])
-            setCurrentUser(res?.currentUser || null)
+            setHasMore(res?.hasMore)
             setSkip(skip + limit)
         }
         setLoadingMore(false)
     }
+    console.log(hasMore)
     const getRankIcon = (rank: number) => {
         switch (rank) {
             case 1:
@@ -90,6 +92,25 @@ export default function TopUserPage() {
             default:
                 return null
         }
+    }
+
+    const getIconLevel = (level: number) => {
+        if (level <= 3) {
+            return "/icon-level/crystal_lv1_1-3.svg" // Default icon for invalid levels
+        }
+        if (level <= 6) {
+            return `/icon-level/crystal_lv2_4-6.svg` // Assuming icons are named as crystal_lv1.svg, crystal_lv2.svg, etc.
+        }
+        if (level <= 9) {
+            return `/icon-level/crystal_lv3_7-9.svg`
+        }
+        if (level <= 12) {
+            return `/icon-level/crystal_lv4_10-12.svg`
+        }
+        if (level <= 15) {
+            return `/icon-level/crystal_lv5_13-15.svg`
+        }
+        return `/icon-level/crystal_lv6_16-18.svg`
     }
 
     const checkOnline = (userId: string) => {
@@ -140,16 +161,13 @@ export default function TopUserPage() {
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center gap-2 mb-1">
                                                 <h3 className="font-semibold  dark:text-white truncate">{us.user_id.displayName}</h3>
-                                                {checkOnline(us.user_id._id) && (
-                                                    <Badge variant="secondary" className="hidden md:block bg-green-500/20 text-green-400 text-xs">
-                                                        Đang online
-                                                    </Badge>
-                                                )}
+                                                <Badge variant="secondary" className="bg-blue-600 text-white flex items-center gap-1 text-xs">
+                                                    <Image src={getIconLevel(us?.level || 0)} width={14} height={14} alt="" />
+                                                    Cấp {us?.level || 0}
+                                                </Badge>
                                             </div>
-                                            <div className="flex flex-col md:flex-row md:items-center gap-2 text-sm text-slate-400">
-                                                <span>Level {us.level}</span>
-                                                <span className="hidden md:block">•</span>
-                                                <span className="flex items-center gap-1">
+                                            <div className="flex flex-col md:flex-row md:items-center gap-2 text-sm ">
+                                                <span className="flex items-center gap-1 text-slate-400">
                                                     <Flame size={14} className=" stroke-yellow-500" />
                                                     {us.dailyStreak.current} ngày
                                                 </span>
@@ -177,7 +195,7 @@ export default function TopUserPage() {
                                 ))}
                                 <div className="w-full text-center">
                                     {!loading && (
-                                        <Button variant="secondary" onClick={handleLoadMore} disabled={loadingMore && hasMore} className="w-full">
+                                        <Button variant="secondary" onClick={() => handleLoadMore()} disabled={loadingMore || !hasMore} className="w-full">
                                             {loadingMore ? <Loading /> : <Eye />}
                                             Xem thêm
                                         </Button>
@@ -207,11 +225,10 @@ export default function TopUserPage() {
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 mb-1">
                                             <h3 className="font-semibold dark:text-white truncate">{currentUser.user_id.displayName}</h3>
-                                            {checkOnline(currentUser.user_id._id) && (
-                                                <Badge variant="secondary" className="hidden md:block bg-green-500/20 text-green-400 text-xs">
-                                                    Đang online
-                                                </Badge>
-                                            )}
+                                            <Badge variant="secondary" className="bg-blue-600 text-white flex items-center gap-1 text-xs">
+                                                <Image src={getIconLevel(currentUser.level || 0)} width={14} height={14} alt="" />
+                                                Cấp {currentUser.level || 0}
+                                            </Badge>
                                         </div>
                                         <div className="flex flex-col md:flex-row md:items-center gap-2 text-sm text-slate-400">
                                             <span>Level {currentUser.level}</span>

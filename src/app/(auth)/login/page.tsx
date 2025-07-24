@@ -1,10 +1,10 @@
 "use client"
-import React, { useEffect } from "react"
+import React from "react"
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import Cookies from "js-cookie"
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { POST_API } from "@/lib/fetchAPI"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -19,10 +19,10 @@ import ChangePassword from "@/components/ChangePassword"
 
 export default function LoginForm() {
     const router = useRouter()
-    const pathname = usePathname()
     const [loading, setLoading] = React.useState(false)
     const { refetchUser } = useUser() || {}
     const [isOpen, setIsOpen] = React.useState(false)
+
     const formik = useFormik({
         initialValues: {
             email: "",

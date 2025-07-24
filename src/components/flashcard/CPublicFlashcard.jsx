@@ -4,13 +4,12 @@ import React, { useEffect, useState } from "react"
 import { languages } from "@/lib/languageOption"
 import Cookies from "js-cookie"
 import PublicFC from "./PublicFC"
-import { ChevronLeft, ChevronRight, Globe, Info, Plus, Search, Users, X } from "lucide-react"
+import { ChevronLeft, ChevronRight, Eye, Globe, Info, Plus, Search, Users, X } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "../ui/input"
 import { CreateFlashcardModal } from "@/components/flashcard/CreateFlashcardModal"
 import { Button, buttonVariants } from "@/components/ui/button"
 import UserFC from "@/components/flashcard/UserFC"
-import Image from "next/image"
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem } from "../ui/pagination"
 import { cn } from "@/lib/utils"
 import Loading from "../ui/loading"
@@ -22,6 +21,7 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
     const [searchFC, setSearchFC] = useState("")
     const [filterFlashcard, setFilterFlashcard] = useState([])
     const [listFlashCard, setListFlashCard] = useState([])
+    const [successFC, setSuccessFC] = useState([])
     const [tabFlashcard, setTabFlashcard] = useState("my-sets") // my-sets | community
     const [data, setData] = useState(publicFlashcards)
     // Pagination states
@@ -57,8 +57,10 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
         }
         const fetchListFlashCard = async () => {
             const res = await GET_API("/list-flashcards", token)
-            setListFlashCard(res?.listFlashCards)
             setFilterFlashcard(res?.listFlashCards)
+            setListFlashCard(res?.listFlashCards)
+            const filterIsSuccess = res?.listFlashCards?.filter((item) => item.isSuccess === true)
+            setSuccessFC(filterIsSuccess)
             setLoading(false)
         }
         fetchListFlashCard()
@@ -205,12 +207,15 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
                 </div>
                 <Tabs defaultValue="my-sets" className="mt-8" value={tabFlashcard} onValueChange={setTabFlashcard}>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                        <TabsList className="grid w-full sm:w-auto grid-cols-2 bg-gray-100 dark:bg-slate-600">
+                        <TabsList className="grid w-full sm:w-auto grid-cols-3 bg-gray-100 dark:bg-slate-600">
                             <TabsTrigger value="my-sets" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-primary">
                                 Bộ flashcard của tôi
                             </TabsTrigger>
                             <TabsTrigger value="community" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-primary">
                                 Khám phá cộng đồng
+                            </TabsTrigger>
+                            <TabsTrigger value="success-fc" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-primary">
+                                Bộ thẻ đã học xong
                             </TabsTrigger>
                         </TabsList>
 
@@ -231,8 +236,8 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
                         <div>
                             {token !== undefined ? (
                                 <div className="mt-5">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 ">
-                                        {filterFlashcard && filterFlashcard.map((item) => <UserFC item={item} key={item._id} />)}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 ">
+                                        {filterFlashcard && filterFlashcard.map((item) => <UserFC item={item} key={item._id} token={token} />)}
                                         {loading && (
                                             <div className="flex items-center justify-center col-span-4 h-[500px]">
                                                 <Loading className="h-12 w-12" />{" "}
@@ -271,7 +276,6 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
                                 </Button>
                                 {languages.map((lang) => (
                                     <Button key={lang.value} variant={language === lang.value ? "default" : "outline"} size="sm" className="h-8 dark:text-white" onClick={() => handleLanguageFilter(lang.value)}>
-                                        <Image src={`/flag/${lang.value}.svg`} alt="" width={16} height={16} className="mr-1" />
                                         {lang.label}
                                     </Button>
                                 ))}
@@ -352,6 +356,25 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
                                     <p className="text-sm text-gray-500 dark:text-gray-400">
                                         Hiển thị {startIndex + 1}-{Math.min(endIndex, totalItems)} trên tổng {totalItems} Flashcard | Trang {currentPage} / {totalPages}
                                     </p>
+                                </div>
+                            )}
+                        </div>
+                    </TabsContent>
+                    <TabsContent value="success-fc">
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 ">
+                            {successFC && successFC.map((item) => <UserFC item={item} key={item._id} token={token} />)}
+                            {loading && (
+                                <div className="flex items-center justify-center col-span-4 h-[500px]">
+                                    <Loading className="h-12 w-12" />{" "}
+                                </div>
+                            )}
+                            {token && !loading && successFC?.length === 0 && (
+                                <div className="h-[350px] col-span-12 flex items-center justify-center flex-col gap-3">
+                                    <p className="dark:text-gray-400">Bạn chưa hoàn thành bộ flashcard nào :(</p>
+                                    <Button className="text-white" onClick={() => setTabFlashcard("my-sets")}>
+                                        <Eye />
+                                        Hãy học xong 1 bộ thẻ nhé, cố gắng lên nào!
+                                    </Button>
                                 </div>
                             )}
                         </div>
