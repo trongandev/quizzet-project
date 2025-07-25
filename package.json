@@ -39,6 +39,8 @@
         "clsx": "^2.1.1",
         "date-fns": "^4.1.0",
         "formik": "^2.4.6",
+        "framer-motion": "^12.23.9",
+        "gsap": "^3.13.0",
         "js-cookie": "^3.0.5",
         "lucide-react": "^0.518.0",
         "ms": "^2.1.3",

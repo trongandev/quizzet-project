@@ -514,14 +514,14 @@ export function GenericModal({ isOpen, onClose, data, type, onSave }: GenericMod
                             <DialogDescription>Xem chi tiết thông tin {isEditing ? "và chỉnh sửa" : ""}</DialogDescription>
                         </div>
                         {canEdit && (
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 mr-5">
                                 {isEditing ? (
                                     <>
                                         <Button variant="outline" size="sm" onClick={handleCancel}>
                                             <X className="h-4 w-4" />
                                             Hủy
                                         </Button>
-                                        <Button size="sm" onClick={handleSave} disabled={saving}>
+                                        <Button size="sm" onClick={handleSave} disabled={saving} className="text-white">
                                             <Save className="h-4 w-4" />
                                             {saving ? "Đang lưu..." : "Lưu"}
                                         </Button>

@@ -52,17 +52,37 @@ export default function CHome({ quizData, publicFlashcards }: { quizData: IQuiz[
     }, [router])
     return (
         <div className="">
-            <div className="px-2  dark:text-white">
+            <div className="px-2  dark:text-white space-y-40">
                 <div className="text-gray-700 dark:text-white text-center space-y-7 px-5 md:p-0 w-full md:w-[700px] lg:w-[900px] mx-auto">
                     <h1 className="font-bold text-3xl md:text-5xl ">
                         Chào mừng bạn đến với <span className="bg-gradient-to-r from-blue-800 to-purple-800 dark:from-blue-500 dark:to-purple-500 text-transparent bg-clip-text">Quizzet</span>
                     </h1>
                     <p className="max-w-2xl mx-auto text-[14px] md:text-lg">Nền tảng học tập thông minh giúp bạn nâng cao kiến thức thông qua flashcard, quiz và đề cương chất lượng cao. Học tập hiệu quả, tiến bộ mỗi ngày.</p>
                 </div>
+                {/* <div className="flex gap-10">
+                    <div className="flex-1 w-full h-[500px] flex justify-center flex-col gap-3">
+                        <div className="">Được hỗ trợ bởi AI</div>
+                        <div className="">
+                            <h1 className="font-semibold text-4xl">Nền tảng học tập dựa trên sức mạnh AI</h1>
+                            <p className="text-gray-400 dark:text-white/60 ">Tạo nhanh thẻ lật, bài trắc nghiệm cực đơn giản chỉ vài cú click</p>
+                        </div>
+                    </div>
+                    <div className="flex-1">
+                        <Image src="https://placehold.co/500" width={500} height={500} alt="" />
+                    </div>
+                </div>
+                <div className="text-center flex gap-10">
+                    <div className="flex-1">
+                        <Image src="" alt=""/>
+                    </div>
+                    <div className="flex-1">
+                        <h1 className="font-semibold text-4xl">Tạo từ vựng flashcard bằng AI</h1>
+                        <p className="text-gray-400 dark:text-white/60 ">Chỉ với cú click là AI sẽ tự điền hết các thông tin cần thiết trong bộ flashcard</p>
+                    </div>
+                </div> */}
 
                 {/* Feature Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-8 mt-10">
-                    {/* Flashcard */}
                     <Card
                         onClick={() => router.push("/flashcard")}
                         className="cursor-pointer dark:border-white/10 group hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-blue-50 to-purple-50 hover:from-blue-100 hover:to-purple-100 border-0 dark:border  dark:from-blue-900/50 dark:to-purple-900/50 dark:hover:from-blue-900 dark:hover:to-purple-900 overflow-hidden relative hover:scale-105 "
@@ -84,7 +104,6 @@ export default function CHome({ quizData, publicFlashcards }: { quizData: IQuiz[
                         </CardContent>
                     </Card>
 
-                    {/* Quiz */}
                     <Card
                         onClick={() => router.push("/quiz/themcauhoi")}
                         className="cursor-pointer dark:border-white/10 group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-cyan-50 to-blue-50 hover:from-cyan-100 hover:to-blue-100 dark:border  dark:from-cyan-900/50 dark:to-blue-900/50 dark:hover:from-cyan-900 dark:hover:to-blue-900 overflow-hidden relative hover:scale-105 "
@@ -107,7 +126,6 @@ export default function CHome({ quizData, publicFlashcards }: { quizData: IQuiz[
                         </CardContent>
                     </Card>
 
-                    {/* Đề cương */}
                     <Card
                         onClick={() => router.push("/decuong")}
                         className="cursor-pointer dark:border-white/10 group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 dark:border  dark:from-purple-900/50 dark:to-pink-900/50 dark:hover:from-purple-900 dark:hover:to-pink-900 overflow-hidden relative hover:scale-105 "

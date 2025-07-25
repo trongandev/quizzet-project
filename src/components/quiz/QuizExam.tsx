@@ -1,103 +1,104 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Badge } from "@/components/ui/badge";
-import { Clock, User, Calendar, CheckCircle, Circle, AlertCircle, RefreshCcw, ReceiptText } from "lucide-react";
-import { IQuiz, IDataQuiz } from "@/types/type";
-import { POST_API } from "@/lib/fetchAPI";
-import Cookies from "js-cookie";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import handleCompareDate from "@/lib/CompareDate";
+import { useState, useEffect } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Progress } from "@/components/ui/progress"
+import { Badge } from "@/components/ui/badge"
+import { Clock, User, Calendar, CheckCircle, Circle, AlertCircle, RefreshCcw, ReceiptText } from "lucide-react"
+import { IQuiz, IDataQuiz } from "@/types/type"
+import { POST_API } from "@/lib/fetchAPI"
+import Cookies from "js-cookie"
+import { toast } from "sonner"
+import { useRouter } from "next/navigation"
+import handleCompareDate from "@/lib/CompareDate"
 
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
-import Loading from "../ui/loading";
-import { renderContentWithLaTeX, renderHightlightedContent } from "../renderCode";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
+import Loading from "../ui/loading"
+import { renderContentWithLaTeX, renderHightlightedContent } from "../renderCode"
+import Link from "next/link"
 export default function QuizExam(QuizData: IQuiz) {
-    const [currentQuestion, setCurrentQuestion] = useState(0);
-    const [answers, setAnswers] = useState<Record<number, string>>({});
-    const [timeLimit, setTimeLimit] = useState(30); // Convert to seconds default 30 minutes
-    const [timeLeft, setTimeLeft] = useState(timeLimit * 60); // Convert to seconds default 30 minutes
-    const [isQuizStarted, setIsQuizStarted] = useState(false);
-    const [isQuizCompleted, setIsQuizCompleted] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [linkHistory, setLinkHistory] = useState("");
-    const token = Cookies.get("token") || "";
-    const router = useRouter();
+    const [currentQuestion, setCurrentQuestion] = useState(0)
+    const [answers, setAnswers] = useState<Record<number, string>>({})
+    const [timeLimit, setTimeLimit] = useState(30) // Convert to seconds default 30 minutes
+    const [timeLeft, setTimeLeft] = useState(timeLimit * 60) // Convert to seconds default 30 minutes
+    const [isQuizStarted, setIsQuizStarted] = useState(false)
+    const [isQuizCompleted, setIsQuizCompleted] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [linkHistory, setLinkHistory] = useState("")
+    const token = Cookies.get("token") || ""
+    const router = useRouter()
     // Timer effect
     useEffect(() => {
         if (isQuizStarted && !isQuizCompleted && timeLeft > 0) {
             const timer = setInterval(() => {
                 setTimeLeft((prev) => {
                     if (prev <= 1) {
-                        setIsQuizCompleted(true);
-                        return 0;
+                        setIsQuizCompleted(true)
+                        return 0
                     }
-                    return prev - 1;
-                });
-            }, 1000);
-            return () => clearInterval(timer);
+                    return prev - 1
+                })
+            }, 1000)
+            return () => clearInterval(timer)
         }
-    }, [isQuizStarted, isQuizCompleted, timeLeft]);
+    }, [isQuizStarted, isQuizCompleted, timeLeft])
 
     const formatTime = (seconds: number) => {
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-    };
+        const mins = Math.floor(seconds / 60)
+        const secs = seconds % 60
+        return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
+    }
 
     const handleAnswerSelect = (questionId: string, answerId: string) => {
         setAnswers((prev) => ({
             ...prev,
             [Number(questionId)]: answerId,
-        }));
-    };
+        }))
+    }
 
     const getQuestionStatus = (questionIndex: number) => {
-        const questionId = Number(QuizData.questions.data_quiz[questionIndex].id);
-        if (answers[questionId]) return "answered";
-        if (questionIndex === currentQuestion) return "current";
-        return "unanswered";
-    };
+        const questionId = Number(QuizData.questions.data_quiz[questionIndex].id)
+        if (answers[questionId]) return "answered"
+        if (questionIndex === currentQuestion) return "current"
+        return "unanswered"
+    }
 
     const getStatusColor = (status: string) => {
         switch (status) {
             case "answered":
-                return "bg-green-500 dark:bg-green-600 hover:bg-green-600 text-white";
+                return "bg-green-500 dark:bg-green-600 hover:bg-green-600 text-white"
             case "current":
-                return "bg-blue-500 dark:bg-blue-600 hover:bg-blue-600 text-white";
+                return "bg-blue-500 dark:bg-blue-600 hover:bg-blue-600 text-white"
             default:
-                return "bg-gray-200 dark:bg-gray-300 hover:bg-gray-300 text-gray-700";
+                return "bg-gray-200 dark:bg-gray-300 hover:bg-gray-300 text-gray-700"
         }
-    };
+    }
 
     const getStatusIcon = (status: string) => {
         switch (status) {
             case "answered":
-                return <CheckCircle className="w-4 h-4" />;
+                return <CheckCircle className="w-4 h-4" />
             case "current":
-                return <AlertCircle className="w-4 h-4" />;
+                return <AlertCircle className="w-4 h-4" />
             default:
-                return <Circle className="w-4 h-4" />;
+                return <Circle className="w-4 h-4" />
         }
-    };
+    }
 
     const calculateScore = () => {
-        let correct = 0;
+        let correct = 0
         QuizData.questions.data_quiz.forEach((question: IDataQuiz) => {
             if (answers[Number(question.id)] == question.correct) {
-                correct++;
+                correct++
             }
-        });
-        return correct;
-    };
+        })
+        return correct
+    }
 
     const handleSubmitQuiz = async () => {
-        setIsQuizCompleted(true);
-        setLoading(true);
+        setIsQuizCompleted(true)
+        setLoading(true)
 
         const historyData = {
             quiz_id: QuizData._id,
@@ -105,27 +106,27 @@ export default function QuizExam(QuizData: IQuiz) {
             total_questions: QuizData.questions.data_quiz.length,
             time: timeLimit * 60 - timeLeft,
             userAnswers: answers,
-        };
+        }
         try {
-            const req = await POST_API("/history", historyData, "POST", token);
+            const req = await POST_API("/history", historyData, "POST", token)
             if (req) {
-                const data = await req.json();
+                const data = await req.json()
                 if (req.ok) {
-                    toast.success(data?.message);
-                    setLinkHistory(data?.id_history);
+                    toast.success(data?.message)
+                    setLinkHistory(data?.id_history)
                 }
             }
         } catch (error) {
             toast.error("Đã có lỗi xảy ra khi nộp bài quiz", {
                 description: error instanceof Error ? error.message : "Lỗi không xác định",
                 duration: 10000,
-            });
+            })
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    };
+    }
 
-    const progress = ((currentQuestion + 1) / QuizData?.questions?.data_quiz?.length) * 100;
+    const progress = ((currentQuestion + 1) / QuizData?.questions?.data_quiz?.length) * 100
 
     if (!isQuizStarted) {
         return (
@@ -181,84 +182,181 @@ export default function QuizExam(QuizData: IQuiz) {
                             </Select>
                             <Button
                                 onClick={() => {
-                                    setIsQuizStarted(true);
-                                    setTimeLeft(timeLimit * 60);
+                                    setIsQuizStarted(true)
+                                    setTimeLeft(timeLimit * 60)
                                 }}
                                 size="lg"
-                                className="h-12 text-lg font-semibold text-white w-full">
+                                className="h-12 text-lg font-semibold text-white w-full"
+                            >
                                 Bắt đầu làm bài
                             </Button>
                         </CardContent>
                     </Card>
                 </div>
             </div>
-        );
+        )
     }
 
     if (isQuizCompleted) {
-        const score = calculateScore();
-        const percentage = Math.round((score / QuizData.questions?.data_quiz?.length) * 100);
+        const score = calculateScore()
+        const percentage = Math.round((score / QuizData.questions?.data_quiz?.length) * 100)
 
         return (
             <div className="min-h-screen  p-4">
-                <div className="max-w-2xl mx-auto pt-20">
+                <div className="max-w-2xl md:max-w-5xl xl:max-w-7xl mx-auto flex gap-3 ">
                     <Card className="shadow-xl dark:border-white/10 dark:bg-slate-900/50">
                         <CardHeader className="text-center pb-8">
-                            <CardTitle className="text-3xl font-bold text-gray-800 mb-4 dark:text-white/80">Kết quả bài quiz</CardTitle>
-                            <div className="text-6xl font-bold text-blue-600 mb-4">{percentage}%</div>
-                            <p className="text-xl text-gray-600 dark:text-gray-400 mb-6">
-                                Bạn đã trả lời đúng {score}/{QuizData.questions?.data_quiz?.length} câu
-                            </p>
                             <div className="bg-gray-50 p-4 rounded-lg dark:bg-gray-600/50 dark:border-white/10">
-                                <h3 className="font-semibold text-gray-800 mb-2 dark:text-white/60">Chi tiết:</h3>
+                                <h3 className="text-3xl font-bold text-gray-800 mb-4 dark:text-white/80">Kết quả bài quiz</h3>
                                 <div className="grid grid-cols-2 gap-3 text-sm">
                                     <div>
-                                        Câu đúng: <span className="font-semibold text-green-600 text-xl">{score}</span>
+                                        Câu đúng: <span className="font-semibold text-green-600 dark:text-green-400 text-xl">{score}</span>
                                     </div>
                                     <div>
-                                        Câu sai: <span className="font-semibold text-red-600 text-xl">{QuizData.questions?.data_quiz?.length - score}</span>
+                                        Câu sai: <span className="font-semibold text-red-600 dark:text-red-400 text-xl">{QuizData.questions?.data_quiz?.length - score}</span>
                                     </div>
                                     <div>
                                         Thời gian còn lại: <span className="font-semibold text-xl">{formatTime(timeLeft)}</span>
                                     </div>
                                     <div>
-                                        Tỷ lệ: <span className="font-semibold text-blue-600 text-xl">{percentage}%</span>
+                                        Tỷ lệ đúng: <span className="font-semibold text-blue-600 dark:text-blue-400 text-xl">{percentage}%</span>
                                     </div>
                                 </div>
                             </div>
                         </CardHeader>
-                        <CardContent className=" flex flex-col md:flex-row md:items-center gap-3 md:gap-10 justify-center">
-                            <Button
-                                onClick={() => {
-                                    setCurrentQuestion(0);
-                                    setAnswers({});
-                                    setTimeLeft(timeLimit * 60);
-                                    setIsQuizStarted(false);
-                                    setIsQuizCompleted(false);
-                                }}
-                                size="lg"
-                                variant="outline"
-                                className="h-12 text-lg font-semibold dark:text-white">
-                                <RefreshCcw />
-                                Làm lại
-                            </Button>
-                            <Button
-                                size="lg"
-                                variant="outline"
-                                className="h-12 text-lg font-semibold  dark:text-white"
-                                onClick={() => router.push("/dapan/" + linkHistory)}
-                                disabled={loading || !linkHistory}>
-                                {loading ? <Loading /> : <ReceiptText className="w-5 h-5 mr-2" />}
-                                {loading ? "Đang tải..." : linkHistory ? "Xem đáp án" : "Bạn chưa đăng nhập để xem đáp án"}
-                            </Button>
+                        <CardContent className="">
+                            <div className=" flex flex-col md:flex-row md:items-center gap-3 md:gap-10 justify-center">
+                                <Button
+                                    onClick={() => {
+                                        setCurrentQuestion(0)
+                                        setAnswers({})
+                                        setTimeLeft(timeLimit * 60)
+                                        setIsQuizStarted(false)
+                                        setIsQuizCompleted(false)
+                                    }}
+                                    size="lg"
+                                    variant="outline"
+                                    className="h-12 text-lg font-semibold dark:text-white"
+                                >
+                                    <RefreshCcw />
+                                    Làm lại
+                                </Button>
+                            </div>
+                            <div className="">
+                                <div className="space-y-6 mt-6">
+                                    {QuizData.questions.data_quiz.map((question: IDataQuiz, questionIndex: number) => (
+                                        <Card key={question.id} className="border border-transparent dark:border-white/10 shadow-md p-2">
+                                            <CardHeader className="p-2">
+                                                <div className="flex items-start justify-between">
+                                                    <CardTitle className="text-lg">
+                                                        Câu {questionIndex + 1}: {renderHightlightedContent(question.question)}
+                                                    </CardTitle>
+                                                    <Badge variant={answers[Number(question.id)] != null ? (answers[Number(question.id)] == question.correct ? "default" : "destructive") : "outline"} className="text-white ml-4">
+                                                        {answers[Number(question.id)] != null ? (answers[Number(question.id)] == question.correct ? "Đúng" : "Sai") : "Chưa trả lời"}
+                                                    </Badge>
+                                                </div>
+                                            </CardHeader>
+
+                                            <CardContent className="space-y-4 p-2" id={`question-${questionIndex + 1}`}>
+                                                <div className="grid grid-cols-1 gap-3">
+                                                    {question.answers.map((option: any, index: number) => (
+                                                        <div
+                                                            key={index}
+                                                            className={`p-3 rounded-lg border-2 transition-colors flex items-center ${
+                                                                index === Number(question.correct)
+                                                                    ? "border-green-500 bg-green-50 text-green-800 dark:bg-green-800/50 dark:text-green-200 dark:border-green-700"
+                                                                    : index === Number(answers[Number(question.id)]) && index !== Number(question.correct)
+                                                                    ? "border-red-500 bg-red-50 text-red-800 dark:bg-red-800/50 dark:text-red-200 dark:border-red-700"
+                                                                    : "border-gray-200 bg-gray-50 dark:border-white/10 dark:bg-gray-800/50"
+                                                            }`}
+                                                        >
+                                                            <div className="flex items-center space-x-2">
+                                                                <span className="font-semibold ml-2 mr-3">{String.fromCharCode(65 + Number(index))}</span>
+                                                                <span>{renderContentWithLaTeX(option)}</span>
+                                                                {Number(answers[Number(question.id)]) === index && index === Number(question.correct) && <CheckCircle className="h-4 w-4 text-green-600 ml-auto dark:text-green-200" />}
+                                                                {Number(answers[Number(question.id)]) === index && index !== Number(question.correct) && <AlertCircle className="h-4 w-4 text-red-600 ml-auto dark:text-red-200" />}
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    ))}
+                                </div>
+                            </div>
                         </CardContent>
                     </Card>
+                    {/* Question Navigation Sidebar */}
+                    <div className="lg:col-span-1 ">
+                        <Card className="shadow-lg sticky top-4 dark:bg-slate-800/50 dark:border-white/10">
+                            <CardHeader>
+                                <CardTitle className="text-lg font-semibold pt-5">Danh sách câu hỏi</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="grid md:grid-cols-12 lg:grid-cols-4 grid-cols-6  gap-2 max-h-[250px] w-[200px] overflow-scroll">
+                                    {QuizData?.questions &&
+                                        QuizData?.questions.data_quiz.map((question: IDataQuiz, index) => {
+                                            const isAnswered = answers[Number(question.id)] != null
+                                            const isCorrect = isAnswered && answers[Number(question.id)] == question.correct
+                                            const isIncorrect = isAnswered && answers[Number(question.id)] != question.correct
+
+                                            let buttonClass = "h-10 w-10 p-0 "
+                                            if (isCorrect) {
+                                                buttonClass += "bg-green-500 dark:bg-green-600 hover:bg-green-600 text-white"
+                                            } else if (isIncorrect) {
+                                                buttonClass += "bg-red-500 dark:bg-red-600 hover:bg-red-600 text-white"
+                                            } else {
+                                                buttonClass += "bg-gray-200 dark:bg-gray-300 hover:bg-gray-300 text-gray-700"
+                                            }
+
+                                            return (
+                                                <Link href={`#question-${index}`} key={index}>
+                                                    <Button variant="outline" size="sm" className={buttonClass}>
+                                                        {index + 1}
+                                                    </Button>
+                                                </Link>
+                                            )
+                                        })}
+                                </div>
+
+                                <div className="mt-6 space-y-2 text-sm">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-4 h-4 bg-green-500 dark:bg-green-600 rounded"></div>
+                                        <span>Câu đúng</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-4 h-4 bg-red-500 dark:bg-red-600 rounded"></div>
+                                        <span>Câu sai</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-4 h-4 bg-gray-200 dark:bg-gray-300 rounded"></div>
+                                        <span>Chưa trả lời</span>
+                                    </div>
+                                </div>
+                                <Button
+                                    onClick={() => {
+                                        setCurrentQuestion(0)
+                                        setAnswers({})
+                                        setTimeLeft(timeLimit * 60)
+                                        setIsQuizStarted(false)
+                                        setIsQuizCompleted(false)
+                                    }}
+                                    size="lg"
+                                    variant="outline"
+                                    className="font-semibold dark:text-white text-center mt-4 w-full"
+                                >
+                                    <RefreshCcw />
+                                    Làm lại
+                                </Button>
+                            </CardContent>
+                        </Card>
+                    </div>
                 </div>
             </div>
-        );
+        )
     }
 
-    const currentQ = QuizData.questions.data_quiz[currentQuestion];
+    const currentQ = QuizData.questions.data_quiz[currentQuestion]
     return (
         <div className="min-h-screen px-5 max-w-7xl mx-auto">
             {/* Header */}
@@ -301,20 +399,10 @@ export default function QuizExam(QuizData: IQuiz) {
                                         <div
                                             key={index}
                                             onClick={() => handleAnswerSelect(currentQ.id, index.toString())}
-                                            className={`p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 ${
-                                                answers[Number(currentQ.id)] === index.toString()
-                                                    ? "border-blue-500 bg-blue-50 dark:border-blue-300 dark:bg-blue-800"
-                                                    : "border-gray-200 hover:border-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700/50"
-                                            }`}>
+                                            className={`p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 ${answers[Number(currentQ.id)] === index.toString() ? "border-blue-500 bg-blue-50 dark:border-blue-300 dark:bg-blue-800" : "border-gray-200 hover:border-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700/50"}`}
+                                        >
                                             <div className="flex items-start gap-3">
-                                                <div
-                                                    className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm ${
-                                                        answers[Number(currentQ.id)] === index.toString()
-                                                            ? "bg-blue-500 dark:bg-blue-200 dark:text-blue-800 text-white"
-                                                            : "bg-gray-200 text-gray-700 dark:bg-gray-700/50 dark:text-gray-300"
-                                                    }`}>
-                                                    {index + 1}
-                                                </div>
+                                                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-semibold text-sm ${answers[Number(currentQ.id)] === index.toString() ? "bg-blue-500 dark:bg-blue-200 dark:text-blue-800 text-white" : "bg-gray-200 text-gray-700 dark:bg-gray-700/50 dark:text-gray-300"}`}>{index + 1}</div>
                                                 <p className="text-gray-800 leading-relaxed dark:text-gray-300">{renderContentWithLaTeX(option)}</p>
                                             </div>
                                         </div>
@@ -331,10 +419,7 @@ export default function QuizExam(QuizData: IQuiz) {
                                             Hoàn thành
                                         </Button>
                                     ) : (
-                                        <Button
-                                            onClick={() => setCurrentQuestion(Math.min(QuizData.questions.data_quiz.length - 1, currentQuestion + 1))}
-                                            className="dark:text-white"
-                                            disabled={currentQuestion === QuizData.questions.data_quiz.length - 1}>
+                                        <Button onClick={() => setCurrentQuestion(Math.min(QuizData.questions.data_quiz.length - 1, currentQuestion + 1))} className="dark:text-white" disabled={currentQuestion === QuizData.questions.data_quiz.length - 1}>
                                             Câu tiếp theo
                                         </Button>
                                     )}
@@ -354,13 +439,13 @@ export default function QuizExam(QuizData: IQuiz) {
                                 <div className="grid md:grid-cols-12 lg:grid-cols-4 xl:grid-cols-5 grid-cols-6  gap-2 max-h-[250px] overflow-scroll">
                                     {QuizData?.questions &&
                                         QuizData?.questions.data_quiz.map((_, index) => {
-                                            const status = getQuestionStatus(index);
+                                            const status = getQuestionStatus(index)
                                             return (
                                                 <Button key={index} variant="outline" size="sm" onClick={() => setCurrentQuestion(index)} className={`h-10 w-10 p-0 ${getStatusColor(status)}`}>
                                                     <span className="sr-only">{getStatusIcon(status)}</span>
                                                     {index + 1}
                                                 </Button>
-                                            );
+                                            )
                                         })}
                                 </div>
 
@@ -395,5 +480,5 @@ export default function QuizExam(QuizData: IQuiz) {
                 </div>
             </div>
         </div>
-    );
+    )
 }
