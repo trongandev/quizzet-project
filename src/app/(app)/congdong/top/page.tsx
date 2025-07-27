@@ -53,7 +53,6 @@ export default function TopUserPage() {
         }
         setLoadingMore(false)
     }
-    console.log(hasMore)
     const getRankIcon = (rank: number) => {
         switch (rank) {
             case 1:

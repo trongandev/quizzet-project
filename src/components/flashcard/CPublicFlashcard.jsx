@@ -57,7 +57,6 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
         }
         const fetchListFlashCard = async () => {
             const res = await GET_API("/list-flashcards", token)
-            console.log(res?.listFlashCards)
             setFilterFlashcard(res?.listFlashCards)
             setListFlashCard(res?.listFlashCards)
             const filterIsSuccess = res?.listFlashCards?.filter((item) => item.isSuccess === true)

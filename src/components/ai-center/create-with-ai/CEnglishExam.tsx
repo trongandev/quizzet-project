@@ -68,7 +68,6 @@ export default function CEnglishExam() {
 
     const handleGenerateQuestionsWithAI = async () => {
         try {
-            console.log("Generating questions with data:", quizData)
             setGeneratedQuestions(null)
             setIsGenerating(true)
 
@@ -83,7 +82,6 @@ export default function CEnglishExam() {
                 .replace(/```\s*$/, "")
 
             const jsonOutput = JSON.parse(responseText || "")
-            console.log("Generated JSON Output:", jsonOutput)
             setIsGenerating(false)
 
             const newExamData: IEnglishExam = {

@@ -15,7 +15,6 @@ export default function CQuizsPage({ quiz }: { quiz: IQuiz[] }) {
     const token = Cookies.get("token") || ""
     const onSave = async (data: IQuiz) => {
         // Implement save logic here if needed
-        console.log("Saving data:", data)
         try {
             const req = await POST_API(`/quiz/admin/${data._id}`, data, "PATCH", token || "")
             const res = await req?.json()
