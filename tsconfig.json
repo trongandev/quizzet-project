@@ -33,7 +33,7 @@
         "src/components/quiz/CQuiz.tsx",
         "src/app/(app)/page.tsx",
         "src/app/(whatheo)/whatheo/users/page.jsx",
-        "src/app/(app)/quiz/themcauhoi/gui/page.jsx",
+        "src/app/(app)/ai-center/gui/page.jsx",
         "src/app/(app)/edit-tool/[slug]/a.jsx",
         "src/components/CDeCuongDetail.tsx",
         "src/app/(app)/dapan/[slug]/page.jsx",

@@ -197,10 +197,10 @@ export default function CQuizPage({ publicQuizData }: { publicQuizData: IQuiz[] 
                                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                                     <Input placeholder="Tìm kiếm flashcard..." className="pl-10 w-full md:w-64 border border-gray-300 dark:border-white/10 " value={searchQuiz} onChange={(e) => handleSearchQuiz(e.target.value)} />
                                 </div>
-                                <Button onClick={() => router.push("/quiz/themcauhoi")} className="h-11 w-full md:w-auto px-10 relative group overflow-hidden  bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+                                <Button onClick={() => router.push("/ai-center/create-with-ai/quiz-ai")} className="h-11 w-full md:w-auto px-10 relative group overflow-hidden  bg-gradient-to-r from-blue-500 to-purple-500 text-white">
                                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50  dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
                                     <Plus className="h-4 w-4" />
-                                    Thêm câu hỏi
+                                    Tạo câu hỏi bằng AI
                                 </Button>
                             </div>
                         </div>

@@ -238,11 +238,11 @@ export default function CQuiz({ quizData }: { quizData: IQuiz[] }) {
                         </div>
                         <div className="w-[0.4px] h-10 bg-gray-500/50  hidden md:block"></div>
                         <div className="flex items-center gap-2">
-                            <Link href="/quiz/themcauhoi" className="">
+                            <Link href="/ai-center/create-with-ai/quiz-ai" className="">
                                 <Button className="h-11 relative group overflow-hidden  bg-gradient-to-r from-blue-500 to-purple-500 text-white">
                                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50  dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
                                     <Plus className="h-4 w-4" />
-                                    Thêm câu hỏi
+                                    Tạo câu hỏi bằng AI
                                 </Button>
                             </Link>
                         </div>

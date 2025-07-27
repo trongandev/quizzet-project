@@ -66,7 +66,7 @@ export default function CDataWordsFC({ summary }: { summary: ISummary }) {
                 break
             case "rememberedWords":
                 setSelectedWords({
-                    title: "Đã nhớ lâu",
+                    title: "Đang nhớ",
                     type: "rememberedWords",
                     define: "Thẻ này đã được bạn ôn tập và ghi nhớ thành công ít nhất một vài lần, nhưng chưa đạt đến mức độ thuộc một cách vững chắc để có thể yên tâm bỏ qua trong một thời gian rất dài.",
                     words: summary?.words?.rememberedWords || [],
@@ -108,7 +108,7 @@ export default function CDataWordsFC({ summary }: { summary: ISummary }) {
     }
     return (
         <div className="">
-            <div className={`grid gap-2 md:gap-4 grid-cols-2 lg:grid-cols-5`}>
+            <div className={`grid gap-2 md:gap-4 grid-cols-2 lg:grid-cols-4`}>
                 {/* Total Cards - Enhanced */}
                 <div className={`bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 border border-blue-200 dark:from-blue-800/50 dark:to-blue-900/50 dark:border-white/10 cursor-pointer hover:scale-105 transiton-all duration-300`} onClick={() => handleSelectWord("all")}>
                     <div className="flex items-center justify-between mb-3">
@@ -131,7 +131,7 @@ export default function CDataWordsFC({ summary }: { summary: ISummary }) {
                         <div className="p-2 bg-green-600 rounded-lg">
                             <CheckCircle className="w-5 h-5 text-white" />
                         </div>
-                        <Badge className="text-xs bg-green-100 text-green-800">Hoàn thành</Badge>
+                        <Badge className="text-[10px] bg-green-100 text-green-800">Hoàn thành</Badge>
                     </div>
                     <div className="text-3xl font-bold text-green-900 dark:text-green-400 mb-1">{learnedWords}</div>
                     <div className="text-sm text-green-700 dark:text-green-300">Đã học thuộc</div>
@@ -170,7 +170,7 @@ export default function CDataWordsFC({ summary }: { summary: ISummary }) {
                     </div>
                 </div>
                 {/* Accuracy Percentage */}
-                <Tooltip delayDuration={50}>
+                {/* <Tooltip delayDuration={50}>
                     <TooltipTrigger className="w-full cursor-default">
                         <div className={`h-full w-full col-span-2 md:col-span-1 bg-gradient-to-br from-indigo-50 to-indigo-100 rounded-xl p-6 border border-indigo-200 dark:from-indigo-800/50 dark:to-indigo-900/50 dark:border-white/10`}>
                             <div className="flex items-center justify-between mb-3">
@@ -201,7 +201,7 @@ export default function CDataWordsFC({ summary }: { summary: ISummary }) {
                             <p className="">Được tính dựa trên tổng số lần ôn tập/số lần ôn tập đúng của từng từ (trên mức 3: Bình thường, dễ nhớ, hoàn hảo)</p>
                         </div>
                     </TooltipContent>
-                </Tooltip>
+                </Tooltip> */}
             </div>
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogTrigger className="flex-1 w-full"></DialogTrigger>
@@ -241,7 +241,7 @@ export default function CDataWordsFC({ summary }: { summary: ISummary }) {
                     </div>
                     {selectedWords?.type === "reviewingWords" && (
                         <DialogFooter>
-                            <Button onClick={() => router.push("/flashcard/practice-science")} className="text-white bg-orange-600 hover:bg-orange-700">
+                            <Button onClick={() => router.push("/flashcard/practice")} className="text-white bg-orange-600 hover:bg-orange-700">
                                 Bấm vào để ôn tập ngay <ArrowRight />
                             </Button>
                         </DialogFooter>

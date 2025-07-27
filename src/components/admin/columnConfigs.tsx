@@ -7,7 +7,7 @@ import { ArrowUpDown, MoreHorizontal, FileText, User, CalendarMinus2, LocateFixe
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import Link from "next/link"
 import Image from "next/image"
-import { IQuiz, IHistory, ISO, IListFlashcard, IUser } from "@/types/type"
+import { IQuiz, IHistory, ISO, IListFlashcard, IUser, IDailyTask } from "@/types/type"
 import handleCompareDate from "@/lib/CompareDate"
 import { GoogleOutlined } from "@ant-design/icons"
 
@@ -144,7 +144,7 @@ export const quizColumns: ColumnDef<IQuiz>[] = [
             </Button>
         ),
         cell: ({ row }) => (
-            <Link href={`/quiz/${row.original._id}`} target="_blank" className="text-white/80">
+            <Link href={`/quiz/detail/${row.original.slug}`} target="_blank" className="text-white/80">
                 {row.original.title}
             </Link>
         ),
@@ -539,6 +539,62 @@ export const reportColumns: ColumnDef<any>[] = [
                 <span>{handleCompareDate(row.getValue("created_at"))}</span>
             </div>
         ),
+    },
+    actionsColumn,
+]
+
+// Subject Outline columns
+export const DailyTaskColumns: ColumnDef<IDailyTask>[] = [
+    selectColumn,
+    {
+        accessorKey: "taskId",
+        header: ({ column }) => (
+            <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                Task ID
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+        ),
+        cell: ({ row }) => <p className="text-white/80">{row.original.taskId}</p>,
+    },
+    {
+        accessorKey: "name",
+        header: ({ column }) => (
+            <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                Tên nhiệm vụ
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+        ),
+        cell: ({ row }) => <p>{row.original.name}</p>,
+    },
+    {
+        accessorKey: "description",
+        header: ({ column }) => (
+            <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                Mô tả
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+        ),
+        cell: ({ row }) => <p className="text-xs text-white/60 max-w-[200px] line-clamp-2">{row.original.description}</p>,
+    },
+    {
+        accessorKey: "status",
+        header: ({ column }) => (
+            <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                Trạng thái
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+        ),
+        cell: ({ row }) => getStatusBadge(row.original.isActive),
+    },
+    {
+        accessorKey: "date",
+        header: ({ column }) => (
+            <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+                Ngày tạo
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+        ),
+        cell: ({ row }) => <div className="text-xs">{handleCompareDate(row.original.createdAt)}</div>,
     },
     actionsColumn,
 ]

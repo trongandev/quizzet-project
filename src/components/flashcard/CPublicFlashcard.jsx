@@ -57,6 +57,7 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
         }
         const fetchListFlashCard = async () => {
             const res = await GET_API("/list-flashcards", token)
+            console.log(res?.listFlashCards)
             setFilterFlashcard(res?.listFlashCards)
             setListFlashCard(res?.listFlashCards)
             const filterIsSuccess = res?.listFlashCards?.filter((item) => item.isSuccess === true)
@@ -209,13 +210,16 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <TabsList className="grid w-full sm:w-auto grid-cols-3 bg-gray-100 dark:bg-slate-600">
                             <TabsTrigger value="my-sets" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-primary">
-                                Bộ flashcard của tôi
+                                <span className="hidden md:block"> Bộ flashcard của tôi</span>
+                                <span className="block md:hidden"> Của tôi</span>
                             </TabsTrigger>
                             <TabsTrigger value="community" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-primary">
-                                Khám phá cộng đồng
+                                <span className="hidden md:block">Khám phá cộng đồng</span>
+                                <span className="block md:hidden"> Cộng đồng</span>
                             </TabsTrigger>
                             <TabsTrigger value="success-fc" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-primary">
-                                Bộ thẻ đã học xong
+                                <span className="hidden md:block"> Bộ thẻ đã học xong</span>
+                                <span className="block md:hidden"> Đã học xong</span>
                             </TabsTrigger>
                         </TabsList>
 

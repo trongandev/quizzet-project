@@ -369,12 +369,6 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
                 </div>
             </div>
             <div className="flex items-center px-2 md:px-5 gap-2 md:gap-5 flex-wrap">
-                <Link href={`/flashcard/practice-science/${id_flashcard}`} className="flex-1">
-                    <Button variant="outline" className="w-full h-16 dark:text-white text-md  uppercase">
-                        <Gift></Gift>
-                        Luyện tập cổ điển
-                    </Button>
-                </Link>
                 {user?._id === String(listFlashcard?.userId?._id) && (
                     <>
                         <AddVocaModal token={token} filteredFlashcards={filteredFlashcards} setFilteredFlashcards={setFilteredFlashcards} listFlashcard={listFlashcard} setListFlashcard={setListFlashcard}>
@@ -386,7 +380,7 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
                 )}
                 <Link href={`/flashcard/practice/${id_flashcard}`} className="flex-1">
                     <Button variant="outline" className=" w-full h-16 dark:text-white text-md  uppercase">
-                        <Target /> Luyện tập hiện đại
+                        <Target /> Luyện tập
                     </Button>
                 </Link>
             </div>

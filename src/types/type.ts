@@ -125,6 +125,8 @@ interface IListFlashcard {
     isSuccess: boolean
     isHiddenTranscription: boolean
     flashcards: Flashcard[]
+    accuracyPercentage: number
+    countCardsDueToday: number
     created_at: Date
     last_practice_date: Date
     progress: IProgress
@@ -328,6 +330,20 @@ export interface ILevel {
     name: string
     xpRequired: number
     levelIcon: string
+}
+
+export interface IDailyTask {
+    _id: string
+    taskId: string
+    name: string
+    description: string
+    icon: string
+    xpPerAction: number
+    dailyLimitCount: number
+    unlockLevel: number
+    isActive: boolean
+    createdAt: Date
+    updatedAt: Date
 }
 
 export interface TASKS {

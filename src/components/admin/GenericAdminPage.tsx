@@ -23,7 +23,7 @@ export interface AdminPageConfig {
     createButtonText?: string
     showCreateButton?: boolean
     statCards: StatCard[]
-    modalType?: "user" | "quiz" | "history" | "flashcard" | "subjectOutline" | "report"
+    modalType?: "user" | "quiz" | "history" | "flashcard" | "subjectOutline" | "report" | "dailyTask"
     onSave?: (data: any) => Promise<void>
 }
 
@@ -69,7 +69,7 @@ export function GenericAdminPage({ config, data, dataTableComponent, createFormC
         if (statCard.filter) {
             return statCard.filter(data).length
         }
-        return typeof statCard.valueKey === "number" ? statCard.valueKey : data.length
+        return typeof statCard.valueKey === "number" ? statCard.valueKey : data?.length
     }
 
     return (
@@ -86,7 +86,7 @@ export function GenericAdminPage({ config, data, dataTableComponent, createFormC
                 {config.showCreateButton && createFormComponent && (
                     <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
                         <DialogTrigger asChild>
-                            <Button>
+                            <Button className="text-white">
                                 <Plus className="w-4 h-4 mr-2" />
                                 {config.createButtonText || "Tạo mới"}
                             </Button>

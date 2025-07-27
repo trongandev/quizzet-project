@@ -139,7 +139,7 @@ export default function TopUserPage() {
                         <CardContent className=" p-3 md:p-6">
                             <div className="space-y-3 max-h-[500px] overflow-y-auto">
                                 {podiumUsers.map((us, index) => (
-                                    <Link href={`/profile/${us.user_id._id}`} key={index} className={cn("flex items-center gap-2 md:gap-4 p-2 md:p-4 rounded-lg transition-all dark:hover:bg-slate-600/50", index <= 2 ? "dark:bg-slate-600/30 border dark:border-slate-500" : "dark:bg-slate-600/20", us?.user_id?._id == user?._id && "bg-green-500/20 dark:bg-green-700/20")}>
+                                    <Link href={`/profile/${us.user_id._id}`} key={index} className={cn("overflow-hidden flex items-center gap-2 md:gap-4 p-2 md:p-4 rounded-lg transition-all dark:hover:bg-slate-600/50", index <= 2 ? "dark:bg-slate-600/30 border dark:border-slate-500" : "dark:bg-slate-600/20", us?.user_id?._id == user?._id && "bg-green-500/20 dark:bg-green-700/20")}>
                                         {/* Rank */}
                                         <div className="flex items-center justify-center w-8">{getRankIcon(index + 1)}</div>
 
@@ -159,7 +159,7 @@ export default function TopUserPage() {
 
                                         {/* User Info */}
                                         <div className="flex-1 min-w-0">
-                                            <div className="flex items-center gap-2 mb-1">
+                                            <div className="flex md:items-center gap-1 md:gap-2 mb-1 flex-col md:flex-row items-start">
                                                 <h3 className="font-semibold  dark:text-white truncate">{us.user_id.displayName}</h3>
                                                 <Badge variant="secondary" className="bg-blue-600 text-white flex items-center gap-1 text-xs">
                                                     <Image src={getIconLevel(us?.level || 0)} width={14} height={14} alt="" />
@@ -185,7 +185,7 @@ export default function TopUserPage() {
 
                                         {/* Rank Badge */}
                                         <div className="flex flex-col items-end gap-1">
-                                            {getRankBadge(index + 1)}
+                                            <div className="hidden md:block">{getRankBadge(index + 1)}</div>
                                             <div className="text-right">
                                                 <div className="text-lg font-bold dark:text-white">{us.xp.toLocaleString()}</div>
                                                 <div className="text-xs text-slate-400">XP</div>
@@ -223,7 +223,7 @@ export default function TopUserPage() {
 
                                     {/* User Info */}
                                     <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-2 mb-1">
+                                        <div className="flex md:items-center gap-1 md:gap-2 mb-1 flex-col md:flex-row items-start">
                                             <h3 className="font-semibold dark:text-white truncate">{currentUser.user_id.displayName}</h3>
                                             <Badge variant="secondary" className="bg-blue-600 text-white flex items-center gap-1 text-xs">
                                                 <Image src={getIconLevel(currentUser.level || 0)} width={14} height={14} alt="" />
@@ -231,8 +231,6 @@ export default function TopUserPage() {
                                             </Badge>
                                         </div>
                                         <div className="flex flex-col md:flex-row md:items-center gap-2 text-sm text-slate-400">
-                                            <span>Level {currentUser.level}</span>
-                                            <span className="hidden md:block">•</span>
                                             <span className="flex items-center gap-1">
                                                 <Flame size={14} className=" stroke-yellow-500" />
                                                 {currentUser.dailyStreak.current} ngày

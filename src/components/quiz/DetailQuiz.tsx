@@ -1,52 +1,52 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { ArrowLeft, Share2, Flag, Star, Send, ThumbsUp, MessageCircle, Users, Clock, BookOpen, Eye, Play, Trophy, ArrowBigLeft } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import { IComment, IQuestion, IQuiz, IUser } from "@/types/type";
-import { useRouter } from "next/navigation";
-import handleCompareDate from "@/lib/CompareDate";
-import { POST_API } from "@/lib/fetchAPI";
-import Cookies from "js-cookie";
-import { toast } from "sonner";
-import { Progress } from "../ui/progress";
-import Loading from "../ui/loading";
-import { renderContentWithLaTeX, renderHightlightedContent } from "../renderCode";
-import Image from "next/image";
+import { useEffect, useState } from "react"
+import { ArrowLeft, Share2, Flag, Star, Send, ThumbsUp, MessageCircle, Users, Clock, BookOpen, Eye, Play, Trophy, ArrowBigLeft } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Textarea } from "@/components/ui/textarea"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Label } from "@/components/ui/label"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Separator } from "@/components/ui/separator"
+import { IComment, IQuestion, IQuiz, IUser } from "@/types/type"
+import { useRouter } from "next/navigation"
+import handleCompareDate from "@/lib/CompareDate"
+import { POST_API } from "@/lib/fetchAPI"
+import Cookies from "js-cookie"
+import { toast } from "sonner"
+import { Progress } from "../ui/progress"
+import Loading from "../ui/loading"
+import { renderContentWithLaTeX, renderHightlightedContent } from "../renderCode"
+import Image from "next/image"
 interface PropsDetailQuiz {
-    quiz?: IQuestion[];
-    data?: IQuiz;
-    comment: IComment[];
-    setComment: React.Dispatch<React.SetStateAction<IComment[]>>;
-    user?: IUser | null;
+    quiz?: IQuestion[]
+    data?: IQuiz
+    comment: IComment[]
+    setComment: React.Dispatch<React.SetStateAction<IComment[]>>
+    user?: IUser | null
 }
 
 export default function DetailQuiz({ quiz, data, comment, setComment, user }: PropsDetailQuiz) {
-    const [userRating, setUserRating] = useState(5);
-    const [isReportModalOpen, setIsReportModalOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [loadingReport, setLoadingReport] = useState(false);
-    const [review, setReview] = useState("");
-    const defaultReport = { type_of_violation: "spam", content: "" };
-    const [report, setReport] = useState(defaultReport);
-    const [quizSlice, setQuizSlice] = useState<IQuestion[]>();
-    const router = useRouter();
-    const token = Cookies.get("token") || "";
+    const [userRating, setUserRating] = useState(5)
+    const [isReportModalOpen, setIsReportModalOpen] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [loadingReport, setLoadingReport] = useState(false)
+    const [review, setReview] = useState("")
+    const defaultReport = { type_of_violation: "spam", content: "" }
+    const [report, setReport] = useState(defaultReport)
+    const [quizSlice, setQuizSlice] = useState<IQuestion[]>()
+    const router = useRouter()
+    const token = Cookies.get("token") || ""
     useEffect(() => {
         if (quiz && quiz.length > 5) {
-            setQuizSlice(quiz.slice(0, 5));
+            setQuizSlice(quiz.slice(0, 5))
         } else {
-            setQuizSlice(quiz);
+            setQuizSlice(quiz)
         }
-    }, [quiz]);
+    }, [quiz])
     const handleSubmitComment = async () => {
         const newComment: IComment = {
             _id: Math.random().toString(36).substr(2, 9), // Generate a temporary ID
@@ -56,32 +56,32 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
             rating: userRating,
             created_at: new Date(),
             user_id: user as IUser,
-        };
+        }
         try {
-            const req = await POST_API(`/quiz/comment`, newComment, "POST", token);
+            const req = await POST_API(`/quiz/comment`, newComment, "POST", token)
             if (req) {
-                const res = await req.json();
+                const res = await req.json()
                 if (res.ok) {
                     if (res?.exist) {
-                        setComment((item) => item.map((i) => (i._id == res?.id ? { ...i, review, created_at: new Date() } : i)));
+                        setComment((item) => item.map((i) => (i._id == res?.id ? { ...i, review, created_at: new Date() } : i)))
                     } else {
-                        setComment([...comment, newComment]);
+                        setComment([...comment, newComment])
                     }
-                    toast.success("Bình luận đã được gửi thành công!");
-                    setReview("");
+                    toast.success("Bình luận đã được gửi thành công!")
+                    setReview("")
                 } else {
-                    toast.error(res.message || "Đã có lỗi xảy ra khi gửi bình luận. Vui lòng thử lại sau.");
+                    toast.error(res.message || "Đã có lỗi xảy ra khi gửi bình luận. Vui lòng thử lại sau.")
                 }
             }
         } catch (error) {
-            console.error("Error submitting comment:", error);
-            toast.error("Đã có lỗi xảy ra khi gửi bình luận. Vui lòng thử lại sau.");
-            return;
+            console.error("Error submitting comment:", error)
+            toast.error("Đã có lỗi xảy ra khi gửi bình luận. Vui lòng thử lại sau.")
+            return
         } finally {
-            setUserRating(5);
-            setLoading(false);
+            setUserRating(5)
+            setLoading(false)
         }
-    };
+    }
 
     // function calAvg(arr: IComment[]) {
     //     let sum = 0;
@@ -98,36 +98,36 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
 
     const handleReport = async () => {
         try {
-            setLoadingReport(true);
+            setLoadingReport(true)
             const newReport = {
                 type_of_violation: report.type_of_violation,
                 content: report.content,
                 link: `/quiz/detail/${data?.slug}`,
-            };
-            const req = await POST_API(`/report`, newReport, "POST", token);
-            const res = await req?.json();
+            }
+            const req = await POST_API(`/report`, newReport, "POST", token)
+            const res = await req?.json()
             if (res.ok) {
-                toast.success("Gửi báo cáo thành công");
-                setIsReportModalOpen(false);
-                setReport(defaultReport);
+                toast.success("Gửi báo cáo thành công")
+                setIsReportModalOpen(false)
+                setReport(defaultReport)
             }
         } catch (error: any) {
-            console.error("Error sending report:", error);
+            console.error("Error sending report:", error)
             toast.error(error.message || "Đã có lỗi xảy ra khi gửi báo cáo. Vui lòng thử lại sau.", {
                 duration: 10000,
                 position: "top-right",
-            });
+            })
         } finally {
-            setLoadingReport(false);
+            setLoadingReport(false)
         }
-    };
+    }
 
     const handleSeeAllQuestion = () => {
-        setQuizSlice(quiz || []);
-    };
+        setQuizSlice(quiz || [])
+    }
 
-    const totalStar = comment.reduce((acc, curr) => acc + curr.rating, 0);
-    const avgRating = comment.length > 0 ? (totalStar / comment.length).toFixed(1) : 0;
+    const totalStar = comment.reduce((acc, curr) => acc + curr.rating, 0)
+    const avgRating = comment.length > 0 ? (totalStar / comment.length).toFixed(1) : 0
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-400">
@@ -182,11 +182,7 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                             </div>
                                         </RadioGroup>
                                         <div className="">
-                                            <Textarea
-                                                placeholder="Nhập nội dung báo cáo của bạn ở đây..."
-                                                className="h-32 dark:border-white/10"
-                                                value={report.content}
-                                                onChange={(e) => setReport({ ...report, content: e.target.value })}></Textarea>
+                                            <Textarea placeholder="Nhập nội dung báo cáo của bạn ở đây..." className="h-32 dark:border-white/10" value={report.content} onChange={(e) => setReport({ ...report, content: e.target.value })}></Textarea>
                                         </div>
                                         <div className="flex justify-end space-x-2">
                                             <Button variant="outline" onClick={() => setIsReportModalOpen(false)}>
@@ -254,10 +250,7 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                             </div>
                                         </div>
                                         <div className="flex flex-col gap-3">
-                                            <Button
-                                                onClick={() => router.push(`/quiz/${data?.slug}`)}
-                                                size="lg"
-                                                className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold px-8 dark:border-white/10">
+                                            <Button onClick={() => router.push(`/quiz/${data?.slug}`)} size="lg" className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold px-8 dark:border-white/10">
                                                 <Play className="h-5 w-5 mr-2" />
                                                 Bắt đầu làm quiz
                                             </Button>
@@ -290,16 +283,12 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                         quizSlice?.map((question: any, index: number) => (
                                             <div key={question.id} className="relative">
                                                 <div className="flex items-start space-x-4">
-                                                    <div className="hidden md:flex flex-shrink-0 w-8 h-8 bg-blue-50  dark:bg-blue-800/50  text-blue-800 dark:text-blue-200 rounded-full  items-center justify-center font-semibold text-sm">
-                                                        {index + 1}
-                                                    </div>
+                                                    <div className="hidden md:flex flex-shrink-0 w-8 h-8 bg-blue-50  dark:bg-blue-800/50  text-blue-800 dark:text-blue-200 rounded-full  items-center justify-center font-semibold text-sm">{index + 1}</div>
                                                     <div className="flex-1">
                                                         <h3 className=" dark:text-white/80 text-gray-800 mb-4 text-lg leading-relaxed">{renderHightlightedContent(question.question)}</h3>
                                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                                            {question.answers.map((option: any, index: number) => (
-                                                                <div
-                                                                    key={index}
-                                                                    className={`flex items-center space-x-3 p-4 border dark:border-white/10 rounded-md transition-all duration-200 cursor-pointer hover:shadow-md text-gray-600 dark:text-gray-300`}>
+                                                            {question?.answers?.map((option: any, index: number) => (
+                                                                <div key={index} className={`flex items-center space-x-3 p-4 border dark:border-white/10 rounded-md transition-all duration-200 cursor-pointer hover:shadow-md text-gray-600 dark:text-gray-300`}>
                                                                     <span className={`font-bold text-sm min-w-[24px] h-6 flex items-center justify-center`}>{String.fromCharCode(65 + index)}</span>
                                                                     <span className="">{renderContentWithLaTeX(option)}</span>
                                                                 </div>
@@ -310,12 +299,7 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                             </div>
                                         ))}
                                     <div className="text-center py-4">
-                                        <Button
-                                            disabled={quizSlice?.length === quiz.length}
-                                            onClick={handleSeeAllQuestion}
-                                            size="lg"
-                                            variant="secondary"
-                                            className=" text-white font-semibold px-8 dark:border-white/10">
+                                        <Button disabled={quizSlice?.length === quiz.length} onClick={handleSeeAllQuestion} size="lg" variant="secondary" className=" text-white font-semibold px-8 dark:border-white/10">
                                             <Play className="h-5 w-5 mr-2" />
                                             Xem hết {quiz?.length} câu hỏi
                                         </Button>
@@ -344,9 +328,7 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                                 <div className="flex space-x-2">
                                                     {[1, 2, 3, 4, 5].map((star) => (
                                                         <button key={star} onClick={() => setUserRating(star)} className="focus:outline-none transition-transform hover:scale-110">
-                                                            <Star
-                                                                className={`h-8 w-8 transition-colors ${star <= userRating ? "text-yellow-400 fill-current" : "text-gray-300 hover:text-yellow-300"}`}
-                                                            />
+                                                            <Star className={`h-8 w-8 transition-colors ${star <= userRating ? "text-yellow-400 fill-current" : "text-gray-300 hover:text-yellow-300"}`} />
                                                         </button>
                                                     ))}
                                                 </div>
@@ -355,13 +337,7 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                                 <Label htmlFor="comment" className="text-sm font-medium mb-3 block text-gray-700 dark:text-gray-300">
                                                     Bình luận của bạn
                                                 </Label>
-                                                <Textarea
-                                                    id="comment"
-                                                    placeholder="Hãy chia sẻ cảm nhận của bạn về bài quiz này..."
-                                                    value={review}
-                                                    onChange={(e) => setReview(e.target.value)}
-                                                    className="min-h-[120px]"
-                                                />
+                                                <Textarea id="comment" placeholder="Hãy chia sẻ cảm nhận của bạn về bài quiz này..." value={review} onChange={(e) => setReview(e.target.value)} className="min-h-[120px]" />
                                             </div>
                                             <Button onClick={handleSubmitComment} disabled={!review.trim() || userRating === 0 || loading} size="lg" className="dark:text-white font-semibold">
                                                 {loading ? <Loading /> : <Send className="h-4 w-4 mr-2" />}
@@ -376,9 +352,7 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                     <div className="space-y-6">
                                         {comment &&
                                             comment.map((comment) => (
-                                                <div
-                                                    key={comment._id}
-                                                    className="bg-white dark:bg-slate-700/50 dark:border-white/10 p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                                                <div key={comment._id} className="bg-white dark:bg-slate-700/50 dark:border-white/10 p-6 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
                                                     <div className="flex space-x-4">
                                                         <Avatar className="h-12 w-12">
                                                             <AvatarImage src={comment.user_id.profilePicture || "/placeholder.svg"} className="object-cover" />
@@ -546,5 +520,5 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                 )}
             </div>
         </div>
-    );
+    )
 }

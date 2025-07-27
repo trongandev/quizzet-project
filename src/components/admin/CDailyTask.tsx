@@ -1,18 +1,18 @@
 "use client"
 
 import { useState } from "react"
-import { ISO } from "@/types/type"
+import { IDailyTask } from "@/types/type"
 import { GenericAdminPage } from "./GenericAdminPage"
 import { SubjectOutlineCreateForm } from "./CreateForm"
 import Cookies from "js-cookie"
 import { POST_API } from "@/lib/fetchAPI"
 import { toast } from "sonner"
 import { GenericDataTable } from "./GenericDataTable"
-import { subjectOutlineColumns } from "./columnConfigs"
+import { DailyTaskColumns } from "./columnConfigs"
 import { useAdminConfigs } from "@/components/admin/enhancedConfigs"
 
-export default function CSubjectOutline({ subject_outline }: { subject_outline: ISO[] }) {
-    const [SO, setSO] = useState<ISO[]>(subject_outline)
+export default function CDailyTask({ tasks }: { tasks: IDailyTask[] }) {
+    const [task, setTask] = useState<IDailyTask[]>(tasks)
     const token = Cookies.get("token") || ""
 
     const handleCreateSubjectOutline = async (data: any) => {
@@ -20,7 +20,7 @@ export default function CSubjectOutline({ subject_outline }: { subject_outline: 
             const req = await POST_API("/so", data, "POST", token)
             const res = await req?.json()
             if (res?.ok) {
-                setSO((prev) => [...prev, res.data])
+                setTask((prev) => [...prev, res.data])
                 toast.success("Đề cương đã được gửi thành công!", {
                     description: "Bạn có thể kiểm tra trong danh sách đề cương.",
                 })
@@ -39,11 +39,11 @@ export default function CSubjectOutline({ subject_outline }: { subject_outline: 
         }
     }
 
-    const { subjectOutlineAdminConfig } = useAdminConfigs()
+    const { dailyTaskAdminConfig } = useAdminConfigs()
 
-    const SubjectOutlineDataTable = ({ data, modalType }: { data: ISO[]; modalType?: string }) => {
-        return <GenericDataTable data={data} columns={subjectOutlineColumns} searchKey="title" searchPlaceholder="Tìm kiếm theo tiêu đề quiz..." modalType={modalType as any} />
+    const DataTable = ({ data, modalType }: { data: IDailyTask[]; modalType?: string }) => {
+        return <GenericDataTable data={data} columns={DailyTaskColumns} searchKey="title" searchPlaceholder="Tìm kiếm theo tiêu đề quiz..." modalType={modalType as any} />
     }
 
-    return <GenericAdminPage config={subjectOutlineAdminConfig} data={SO} dataTableComponent={SubjectOutlineDataTable} createFormComponent={SubjectOutlineCreateForm} onCreateItem={handleCreateSubjectOutline} />
+    return <GenericAdminPage config={dailyTaskAdminConfig} data={tasks} dataTableComponent={DataTable} createFormComponent={SubjectOutlineCreateForm} onCreateItem={handleCreateSubjectOutline} />
 }

@@ -40,7 +40,7 @@ export function optimizedPromptFCSingle(word: string, language: string) {
         ],
         "note": "" // Tips ghi nhớ, cách dùng đặc biệt, hoặc các lưu ý quan trọng bằng tiếng Việt. Các dấu nháy đôi "" thay bằng dấu ngoặc () để tránh lỗi JSON
         }
-        `;
+        `
 }
 // optimiz prompt flascardcard more
 export function optimizedPromptFCMore(prompt: string, language: string) {
@@ -78,7 +78,7 @@ export function optimizedPromptFCMore(prompt: string, language: string) {
         ],
         "note": "" // Tips ghi nhớ, cách dùng đặc biệt, hoặc các lưu ý quan trọng bằng tiếng Việt. Các dấu nháy đôi "" thay bằng dấu ngoặc () để tránh lỗi JSON
         }]
-        `;
+        `
 }
 
 export function optimizedPromptQuiz(topic: string, description: string, questionCount: number, difficulty: string) {
@@ -118,7 +118,7 @@ export function optimizedPromptQuiz(topic: string, description: string, question
             * Ví dụ: "$\\\\frac{a}{b}$" sẽ render thành $\\frac{a}{b}$
 
             **Đầu ra:**
-            Chỉ trả về JSON thuần túy, không có markdown wrapper, không có giải thích gì thêm.`;
+            Chỉ trả về JSON thuần túy, không có markdown wrapper, không có giải thích gì thêm.`
 }
 
 export const optimizedPromptGenerateTitle = (data: any) => {
@@ -129,8 +129,8 @@ export const optimizedPromptGenerateTitle = (data: any) => {
         "subject": "" // Môn học ngắn gọn
     }
     Dưới đây là thông tin chi tiết, bạn hãy dự đoán tiêu đề, nội dung và môn học của bài quiz:
-${data.map((q: any) => `- Câu hỏi: ${q.question}\n  - Đáp án: ${q.answers.join(", ")}\n`).join("\n")}`;
-};
+${data.map((q: any) => `- Câu hỏi: ${q.question}\n  - Đáp án: ${q.answers.join(", ")}\n`).join("\n")}`
+}
 
 export const optimizedPromptEditQuestions = (questions: any[]) => {
     return `Bạn là một chuyên gia trong việc chỉnh sửa và tạo đáp án từ câu hỏi quiz. Dưới đây là danh sách các câu hỏi và đáp án của chúng. Hãy chỉnh sửa các câu hỏi này để chúng trở nên rõ ràng, chính xác và hấp dẫn hơn. Trả về định dạng JSON như cú pháp ở dưới, không có giải thích gì thêm.
@@ -147,5 +147,42 @@ export const optimizedPromptEditQuestions = (questions: any[]) => {
     }`
         )
         .join(",\n    ")}
-    ]`;
-};
+    ]`
+}
+
+export const optimizedPromptEnglishExam = (data: any) => {
+    return `You are an AI assistant specialized in generating English language test questions.
+Your task is to create a set of questions based on the provided content, difficulty level, and specific skills.
+The output MUST be a JSON object strictly following the provided schema, with no additional text or formatting outside of the JSON.
+
+--- JSON Schema ---
+
+    [{
+      \"question_id\": \"string\",
+      \"question_type\": \"string\", // e.g., \"multiple_choice\", \"fill_in_the_blank\", \"matching\", \"rearrange_sentences\", \"rewrite_sentence\", \"image_description\", \"listening_comprehension\", \"reading_comprehension\"
+      \"skill_focus\": \"string\", // e.g., \"vocabulary\", \"grammar\"
+      \"question_text\": \"string\",
+      \"options\": [{\"id\": \"string\", \"text\": \"string\"}], // For 4 multiple_choice, optional
+      \"correct_answer_id\": \"string\", // For multiple_choice, optional
+      \"correct_answer_text\": \"string\", // For fill_in_the_blank, rewrite_sentence, listening_comprehension (if open), optional
+      \"left_items\": [{\"id\": \"string\", \"text\": \"string\"}], // For matching, optional
+      \"right_items\": [{\"id\": \"string\", \"text\": \"string\"}], // For matching, optional
+      \"correct_matches\": [{\"left_id\": \"string\", \"right_id\": \"string\"}], // For matching, optional
+      \"scrambled_sentences\": [{\"id\": \"string\", \"text\": \"string\"}], // For rearrange_sentences, optional
+      \"correct_order_ids\": [\"string\"], // For rearrange_sentences, optional
+      \"passage\": \"string\", // For reading_comprehension, optional
+      \"audio_text\": \"string\", // For listening_comprehension, optional
+      \"correct_answer_keywords\": [\"string\"], // For image_description, optional
+}]
+
+
+--- Task Details ---
+Generate a test with the following specifications:
+Difficulty Level: ${data.difficulty}
+Target Skills: ${data.skills.join(", ")}
+Content/Topic: ${data.content}
+Number of Questions: ${data.questionCount}
+Question Types and Distribution: ${data.questionTypes.join(", ")}
+
+Ensure all generated questions are relevant to the content/topic and adhere to the specified difficulty and skill focus. For listening_comprehension, please generate a suitable audio_text that fits the topic and difficulty.`
+}

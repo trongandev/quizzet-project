@@ -112,10 +112,14 @@ export default function UserFC({ item, token }: { item: IListFlashcard; token: s
                     <p className="text-2xl font-semibold">{statusCounts.reviewing}</p>
                     <p className="">Từ mới</p>
                 </div>
+                <div className="flex-1 flex flex-col item-center text-center text-indigo-600 dark:text-indigo-400">
+                    <p className="text-2xl font-semibold">{item.accuracyPercentage || 0}%</p>
+                    <p className="">Chính xác</p>
+                </div>
             </div>
             <div className="">
                 <div className="flex justify-between items-center mb-[4px]">
-                    <p>Tiến trình học</p>
+                    <p className="text-gray-600 dark:text-white/60">Tiến trình học</p>
                     <p>{percent || 0}%</p>
                 </div>
                 <Progress value={percent}></Progress>
@@ -126,7 +130,7 @@ export default function UserFC({ item, token }: { item: IListFlashcard; token: s
                         {item.flashcards?.length > 0 ? (
                             <>
                                 <Play />
-                                Học ngay ({statusCounts.reviewing} từ vựng)
+                                Học ngay ({item.countCardsDueToday || 0} từ vựng)
                             </>
                         ) : (
                             "Chưa có từ vựng"

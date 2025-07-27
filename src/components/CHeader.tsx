@@ -82,13 +82,13 @@ export default function CHeader({ tasks }: { tasks: TASKS }) {
                         </Link>
                     </li>
                     <li className="">
-                        <Link href="/quiz" className={`block ${pathname.startsWith("/quiz") ? "active" : ""}`}>
-                            Quiz
+                        <Link href="/ai-center" className={`block ${pathname.startsWith("/ai-center") ? "active" : ""}`}>
+                            AI Center
                         </Link>
                     </li>
                     <li className="">
-                        <Link href="/decuong" className={`block ${pathname.startsWith("/decuong") ? "active" : ""}`}>
-                            Đề cương
+                        <Link href="/quiz" className={`block ${pathname.startsWith("/quiz") ? "active" : ""}`}>
+                            Quiz
                         </Link>
                     </li>
 

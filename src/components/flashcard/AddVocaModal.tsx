@@ -161,7 +161,7 @@ export default function AddVocaModal({ children, listFlashcard, setListFlashcard
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>{children}</DialogTrigger>
-            <DialogContent className="sm:max-w-[700px] max-h-[92vh] overflow-hidden">
+            <DialogContent className="sm:max-w-[700px] max-h-[92vh] overflow-hidden p-3 md:p-6">
                 <DialogHeader className="pb-2 md:pb-4">
                     <DialogTitle className="text-xl font-semibold flex items-center gap-2">Thêm từ vựng mới</DialogTitle>
                     <DialogDescription>
@@ -173,7 +173,7 @@ export default function AddVocaModal({ children, listFlashcard, setListFlashcard
                     <div className="space-y-6">
                         {/* AI create */}
                         <Card className="border-blue-100 bg-blue-50/30 dark:bg-slate-800/50 dark:border-white/10">
-                            <CardHeader className="pb-3">
+                            <CardHeader className="p-3 md:p-6">
                                 <CardTitle className="text-base flex items-center gap-2">
                                     <Type className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                                     Nhập từ bằng AI
@@ -182,9 +182,9 @@ export default function AddVocaModal({ children, listFlashcard, setListFlashcard
                                     </Badge>
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="space-y-2">
-                                    <div className="flex gap-2">
+                            <CardContent className="space-y-4 p-3 md:p-6">
+                                <div className="">
+                                    <div className="flex flex-col md:flex-row gap-2">
                                         <Input
                                             id="title"
                                             value={formData.title}
@@ -198,15 +198,15 @@ export default function AddVocaModal({ children, listFlashcard, setListFlashcard
                                             autoComplete="off"
                                             onKeyDown={handleEnterKey}
                                             placeholder="Nhập từ hoặc câu bằng tiếng việt..."
-                                            className="flex-1"
+                                            className="flex-1 h-12 py-3"
                                         />
-                                        <Button type="button" onClick={handleAIGenerate} disabled={isGenerating} className="dark:text-white gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
+                                        <Button type="button" onClick={handleAIGenerate} disabled={isGenerating} className="dark:text-white gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 h-12">
                                             {isGenerating ? <Loading /> : <Sparkles className="w-4 h-4" />}
 
                                             {isGenerating ? "Đang tạo..." : "Tạo bằng AI"}
                                         </Button>
                                     </div>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400">*Nhập xong bấm vào nút tạo bằng AI hoặc bấm Enter</p>
+                                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">*Nhập xong bấm vào nút tạo bằng AI hoặc bấm Enter</p>
                                 </div>
                             </CardContent>
                         </Card>

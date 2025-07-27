@@ -1,6 +1,6 @@
 import { AdminPageConfig } from "./GenericAdminPage"
 import { useAdminActions } from "@/hooks/useAdminActions"
-import { IUser, IQuiz, IListFlashcard, ISO, IReport } from "@/types/type"
+import { IUser, IQuiz, IListFlashcard, ISO, IReport, IDailyTask } from "@/types/type"
 import { FileText, Clock, Users, CreditCard, Unlock, Lock, UserCheck, UserX } from "lucide-react"
 
 export function useAdminConfigs() {
@@ -134,6 +134,7 @@ export function useAdminConfigs() {
         onSave: async (data: ISO) => {
             await updateSubjectOutline(data)
         },
+        showCreateButton: true,
         statCards: [
             {
                 title: "Tổng đề cương",
@@ -242,6 +243,25 @@ export function useAdminConfigs() {
             },
         ],
     }
+    const dailyTaskAdminConfig: AdminPageConfig = {
+        title: "Quản lý nhiệm vụ",
+        description: "Quản lý các nhiệm vụ hàng ngày",
+        createButtonText: "Tạo nhiệm vụ mới",
+        modalType: "dailyTask",
+        // onSave: async (data: IDailyTask) => {
+        //     await updateSubjectOutline(data)
+        // },
+        showCreateButton: true,
+        statCards: [
+            {
+                title: "Tổng nhiệm vụ",
+                valueKey: "length",
+                icon: FileText,
+                description: "Tất cả nhiệm vụ hàng ngày",
+                bgColor: "dark:bg-gray-900/50",
+            },
+        ],
+    }
 
     return {
         userAdminConfig,
@@ -250,5 +270,6 @@ export function useAdminConfigs() {
         subjectOutlineAdminConfig,
         historyAdminConfig,
         reportAdminConfig,
+        dailyTaskAdminConfig,
     }
 }
