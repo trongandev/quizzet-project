@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress"
 import { ArrowLeft, ArrowRight, Clock, Flag, CheckCircle, AlertCircle } from "lucide-react"
 import { MultipleChoiceQuestion } from "@/components/ai-center/question-type/multiple-choice"
 import { FillInBlankQuestion } from "@/components/ai-center/question-type/fill-in-blank"
-import { MatchingQuestion } from "@/components/ai-center/question-type/matching"
+// import { MatchingQuestion } from "@/components/ai-center/question-type/matching"
 import { RearrangeSentencesQuestion } from "@/components/ai-center/question-type/rearrange-sentences"
 import { RewriteSentenceQuestion } from "@/components/ai-center/question-type/rewrite-sentence"
 import { ReadingComprehensionQuestion } from "@/components/ai-center/question-type/reading-comprehension"
@@ -29,7 +29,8 @@ export function ExamInterface({ examData, open, setOpen }: ExamInterfaceProps) {
             case "fill_in_the_blank":
                 return <FillInBlankQuestion question={question} />
             case "matching":
-                return <MatchingQuestion question={question} />
+                // return <MatchingQuestion question={question} />
+                return <div className="text-slate-400">Matching questions are not supported yet</div>
             case "rearrange_sentences":
                 return <RearrangeSentencesQuestion question={question} />
             case "rewrite_sentence":

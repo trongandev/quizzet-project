@@ -1,4 +1,4 @@
-import { AICreateView } from "@/components/quiz/AICreateView"
+// import { AICreateView } from "@/components/quiz/AICreateView"
 import React from "react"
 
 export async function generateMetadata() {
@@ -21,5 +21,6 @@ export async function generateMetadata() {
 }
 
 export default function AICreatePage() {
-    return <AICreateView />
+    // return <AICreateView />
+    return <div>Chưa có</div>
 }
