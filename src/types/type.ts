@@ -382,4 +382,4 @@ interface DailyStreak {
     lastActivityDate?: string
 }
 
-export type { IUser, INotify, IQuestion, IComment, IHistory, ISO, IQuiz, IDataQuiz, IListFlashcard, IProgress, Flashcard, Example, IMessage, IChat, IChatCommunity, IChatCommunityMessage }
+export type { IUser, INotify, IQuestion, IComment, IHistory, ISO, IQuiz, IDataQuiz, IListFlashcard, IProgress, Flashcard, IMessage, IChat, IChatCommunity, IChatCommunityMessage }
