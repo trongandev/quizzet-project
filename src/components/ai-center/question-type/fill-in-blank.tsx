@@ -3,10 +3,12 @@
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { IFillInTheBlankQuestion } from "@/types/typeEnglishExam"
+import { PaintBucket } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
 
 export function FillInBlankQuestion({ question }: { question: IFillInTheBlankQuestion }) {
     const renderQuestionWithBlank = () => {
-        const parts = question.question_text.split("_____")
+        const parts = question.question_text.split("______")
 
         return (
             <div className="text-xl text-white leading-relaxed">
@@ -23,6 +25,13 @@ export function FillInBlankQuestion({ question }: { question: IFillInTheBlankQue
     return (
         <Card className="bg-slate-800 border-slate-700">
             <CardContent className="p-6">
+                <div className="flex items-center gap-2 mb-3">
+                    <PaintBucket className="w-5 h-5 text-blue-400" />
+                    <h3 className="text-lg font-semibold text-white">Điền vào chỗ trống</h3>
+                    <Badge variant="secondary" className="bg-slate-700">
+                        Từ vựng
+                    </Badge>
+                </div>
                 <div className="mb-6">{renderQuestionWithBlank()}</div>
 
                 <div className="bg-slate-700 rounded-lg p-4">

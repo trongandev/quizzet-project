@@ -166,7 +166,7 @@ interface Flashcard {
     created_at: Date
 }
 
-interface Example {
+export interface Example {
     en: string
     vi: string
     _id: string

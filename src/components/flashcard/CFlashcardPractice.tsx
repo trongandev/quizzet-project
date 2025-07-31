@@ -2,8 +2,7 @@
 import React, { useEffect, useState, useCallback } from "react"
 import { EdgeSpeechTTS } from "@lobehub/tts"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, ChevronRight, Eye, Lightbulb, Send, Volume2 } from "lucide-react"
-import { Input } from "@/components/ui/input"
+import { ArrowLeft, ChevronRight, Eye, Lightbulb, Volume2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import Loading from "@/components/ui/loading"
@@ -16,14 +15,15 @@ import { Switch } from "@/components/ui/switch"
 import FeatureQuiz from "@/components/flashcard/feature-practice/FeatureQuiz"
 import FeatureListening from "@/components/flashcard/feature-practice/FeatureListening"
 import FeatureFillBlank from "@/components/flashcard/feature-practice/FeatureFillBlank"
-import VoiceSelectionModal from "@/components/flashcard/VoiceSelectionModal"
+import FeatureChoose from "@/components/flashcard/feature-practice/FeatureChoose"
+// import FeatureReArrage from "@/components/flashcard/feature-practice/FeatureReArrange"
 const FEATURES = {
     FLASHCARD: 1,
     QUIZ: 2,
     LISTENING: 3,
     FILL_BLANK: 4,
     CHOOSE: 5,
-    REARRANGE: 6,
+    // REARRANGE: 6,
 }
 
 interface ISessionRating {
@@ -67,7 +67,7 @@ export default function CFlashcardPractice({ fc }: { fc: Flashcard[] }) {
     // Fetch flashcards data
 
     useEffect(() => {
-        setFlashcards(fc)
+        // setFlashcards(fc)
         setFlashcards(shuffle(fc))
         generateQuizOptions(fc[0])
 
@@ -562,7 +562,12 @@ export default function CFlashcardPractice({ fc }: { fc: Flashcard[] }) {
                                 {feature === FEATURES.LISTENING && <FeatureListening currentCard={currentCard} speakWord={speakWord} inputAnswer={inputAnswer} setInputAnswer={setInputAnswer} isCorrectAns={isCorrectAns} checkListeningAnswer={checkListeningAnswer} />}
 
                                 {/* Fill in the blank Feature */}
-                                {feature === FEATURES.FILL_BLANK && <FeatureFillBlank currentCard={currentCard} speakWord={speakWord} inputAnswer={inputAnswer} setInputAnswer={setInputAnswer} isCorrectAns={isCorrectAns} checkListeningAnswer={checkListeningAnswer} />}
+                                {feature === FEATURES.FILL_BLANK && <FeatureFillBlank currentCard={currentCard} speakWord={speakWord} inputAnswer={inputAnswer} setInputAnswer={setInputAnswer} isCorrectAns={isCorrectAns} checkListeningAnswer={checkListeningAnswer} showAns={showAns} setShowAns={setShowAns} />}
+                                {/* Choose Feature */}
+                                {feature === FEATURES.CHOOSE && <FeatureChoose flashcards={flashcards} handlePlayAudio={handlePlayAudio} userId={userId} speakWord={speakWord} sessionRatings={sessionRatings} setSessionRatings={setSessionRatings} />}
+
+                                {/* ReArrange Feature */}
+                                {/* {feature === FEATURES.REARRANGE && <FeatureReArrage flashcards={flashcards} />} */}
                             </div>
 
                             {/* Navigation Controls */}
@@ -570,7 +575,7 @@ export default function CFlashcardPractice({ fc }: { fc: Flashcard[] }) {
 
                         {/* Feature Selection Panel */}
                         <div className="w-full md:w-auto flex flex-col gap-4">
-                            <div className="space-y-2">
+                            {/* <div className="space-y-2">
                                 <h2 className="font-medium">Cài đặt</h2>
                                 <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg">
                                     <div className="">
@@ -578,10 +583,10 @@ export default function CFlashcardPractice({ fc }: { fc: Flashcard[] }) {
                                             <Switch checked={reverse} onCheckedChange={(checked) => setReverse(checked)} />
                                             <span>{reverse ? "Bật" : "Tắt"}</span>
                                         </div>
-                                        <p className="text-xs text-white/60">Giúp bạn đảo ngược ý nghĩa</p>
+                                        <p className="text-xs text-white/60">Giúp bạn đảo ngược ý nghĩa trong chế độ Fill Blank</p>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
                             <div className="space-y-2">
                                 <h2 className="font-medium">Chế độ học</h2>
                                 <div className="flex flex-wrap gap-2">
@@ -591,9 +596,17 @@ export default function CFlashcardPractice({ fc }: { fc: Flashcard[] }) {
                                         Listening: FEATURES.LISTENING,
                                         "Fill Blank": FEATURES.FILL_BLANK,
                                         Choose: FEATURES.CHOOSE,
-                                        ReArrange: FEATURES.REARRANGE,
+                                        // ReArrange: FEATURES.REARRANGE,
                                     }).map(([name, value]) => (
-                                        <Button className="dark:text-white" key={value} onClick={() => setFeature(value)} variant={feature === value ? "default" : "secondary"}>
+                                        <Button
+                                            className="dark:text-white"
+                                            key={value}
+                                            onClick={() => {
+                                                setFeature(value)
+                                                setSessionRatings([])
+                                            }}
+                                            variant={feature === value ? "default" : "secondary"}
+                                        >
                                             {name}
                                         </Button>
                                     ))}

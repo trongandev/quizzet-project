@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-import { ArrowLeft, Brain, FileText, ImageIcon, Volume2, Settings, Sparkles, Plus, Trash2, Edit3, Eye } from "lucide-react"
+import { ArrowLeft, Brain, FileText, ImageIcon, Volume2, Settings, Sparkles, Plus, Trash2, Edit3, Eye, CircleQuestionMark } from "lucide-react"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { MultiSelect } from "@/components/ui/multi-select"
 import Loading from "@/components/ui/loading"
@@ -19,6 +19,7 @@ import { optimizedPromptEnglishExam } from "@/lib/optimizedPrompt"
 import { toast } from "sonner"
 import { ExamInterface } from "@/components/ai-center/ExamInterface"
 import { IEnglishExam } from "@/types/typeEnglishExam"
+import { contentSuggestions, difficultyLevels, questionsTemplate, questionTypes, skillTypes } from "@/components/ai-center/create-with-ai/configEnglish"
 
 export default function CEnglishExam() {
     const [activeTab, setActiveTab] = useState("gui")
@@ -36,33 +37,6 @@ export default function CEnglishExam() {
 
     const [generatedQuestions, setGeneratedQuestions] = useState<IEnglishExam | null>(null)
     const [isGenerating, setIsGenerating] = useState(false)
-
-    const difficultyLevels = [
-        { value: "a1", label: "A1 - Beginner" },
-        { value: "a2", label: "A2 - Elementary" },
-        { value: "b1", label: "B1 - Intermediate" },
-        { value: "b2", label: "B2 - Upper Intermediate" },
-        { value: "c1", label: "C1 - Advanced" },
-        { value: "c2", label: "C2 - Proficiency" },
-    ]
-
-    const skillTypes = [
-        { value: "grammar", label: "Ngữ pháp" },
-        { value: "vocabulary", label: "Từ vựng" },
-        { value: "reading", label: "Đọc hiểu" },
-        { value: "listening", label: "Nghe hiểu" },
-        { value: "writing", label: "Viết" },
-        { value: "speaking", label: "Nói" },
-    ]
-
-    const questionTypes = [
-        { value: "multiple-choice", label: "Trắc nghiệm" },
-        { value: "fill-blank", label: "Điền từ" },
-        { value: "matching", label: "Nối câu" },
-        { value: "reorder", label: "Sắp xếp câu" },
-        { value: "rewrite", label: "Viết lại câu" },
-        { value: "true-false", label: "Đúng/Sai" },
-    ]
 
     const genAI = useMemo(() => new GoogleGenerativeAI(process.env.API_KEY_AI || ""), [])
 
@@ -96,10 +70,10 @@ export default function CEnglishExam() {
             toast.success("Tạo đề thi tiếng anh thành công!", {
                 position: "top-center",
                 duration: 5000,
-                // action: {
-                //     label: "Xem trước",
-                //     onClick: () => setShowPreview(true),
-                // },
+                action: {
+                    label: "Xem trước",
+                    onClick: () => setOpenResult(true),
+                },
             })
         } catch (error) {
             console.error("Error generating quiz:", error)
@@ -114,6 +88,11 @@ export default function CEnglishExam() {
         }
     }
 
+    const handleSeeTemplateQuestionType = () => {
+        setOpenResult(true)
+        setGeneratedQuestions(questionsTemplate as IEnglishExam)
+    }
+
     return (
         <div className="px-6">
             <div className="text-center space-y-2 relative mb-5">
@@ -124,7 +103,7 @@ export default function CEnglishExam() {
             <div className="flex-1  overflow-auto">
                 <div className="">
                     <Tabs value={activeTab} onValueChange={setActiveTab} className="">
-                        <TabsList className="grid grid-cols-3 bg-slate-800 h-12">
+                        <TabsList className="grid grid-cols-3  h-12">
                             <TabsTrigger value="gui" className="flex items-center gap-2 h-10">
                                 <FileText className="w-4 h-4" />
                                 Giao diện
@@ -140,45 +119,57 @@ export default function CEnglishExam() {
                         </TabsList>
 
                         <TabsContent value="gui" className="space-y-6">
-                            <Card className="bg-slate-800 border-slate-700">
+                            <Card className=" ">
                                 <CardHeader>
-                                    <CardTitle className="text-white flex items-center gap-2">
+                                    <CardTitle className=" dark:text-white text-slate-700 flex items-center gap-2">
                                         <FileText className="w-5 h-5" />
                                         Nhập nội dung
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
                                     <div>
-                                        <Label htmlFor="title" className="text-slate-300">
+                                        <Label htmlFor="title" className="dark:text-slate-300 text-slate-600">
                                             Tiêu đề
                                         </Label>
-                                        <Input id="title" placeholder="Nhập tiêu đề..." value={quizData.title} onChange={(e) => setQuizData({ ...quizData, title: e.target.value })} className="bg-slate-700 border-slate-600 text-white" />
+                                        <Input id="title" placeholder="Nhập tiêu đề..." value={quizData.title} onChange={(e) => setQuizData({ ...quizData, title: e.target.value })} className="dark:bg-slate-600/50 dark:border-slate-600 text-slate-600 dark:text-white" />
                                     </div>
 
                                     <div>
-                                        <Label htmlFor="description" className="text-slate-300">
+                                        <Label htmlFor="description" className="dark:text-slate-300 text-slate-600">
                                             Mô tả
                                         </Label>
-                                        <Input id="description" placeholder="Mô tả ngắn..." value={quizData.description} onChange={(e) => setQuizData({ ...quizData, description: e.target.value })} className="bg-slate-700 border-slate-600 text-white" />
+                                        <Input id="description" placeholder="Mô tả ngắn..." value={quizData.description} onChange={(e) => setQuizData({ ...quizData, description: e.target.value })} className="dark:bg-slate-600/50 dark:border-slate-600 text-slate-600 dark:text-white" />
                                     </div>
 
-                                    <div>
-                                        <Label htmlFor="content" className="text-slate-300">
-                                            Nội dung của bài thi
-                                        </Label>
-                                        <Textarea id="content" placeholder="Nhập đoạn văn bản hoặc chủ đề mà bạn muốn tạo câu hỏi, có thể thêm phạm vi, yêu cầu đặc biệt..." value={quizData.content} onChange={(e) => setQuizData({ ...quizData, content: e.target.value })} className="bg-slate-700 border-slate-600 text-white min-h-[200px]" />
+                                    <div className="flex gap-5 md:flex-row flex-col">
+                                        <div className="flex-1">
+                                            <Label htmlFor="content" className="dark:text-slate-300 text-slate-600">
+                                                Nội dung của bài thi
+                                            </Label>
+                                            <Textarea id="content" placeholder="Nhập đoạn văn bản hoặc chủ đề mà bạn muốn tạo câu hỏi, có thể thêm phạm vi, yêu cầu đặc biệt..." value={quizData.content} onChange={(e) => setQuizData({ ...quizData, content: e.target.value })} className="dark:bg-slate-600/50 dark:border-slate-600 text-slate-600 dark:text-white min-h-[200px]" />
+                                        </div>
+                                        <div className="mt-3 w-full md:w-[300px]">
+                                            <p className="text-sm ">Gợi ý nội dung</p>
+                                            <div className="flex flex-wrap gap-3 mt-1">
+                                                {contentSuggestions.map((suggest, index) => (
+                                                    <Badge key={index} variant="secondary" className="cursor-pointer hover:dark:bg-slate-600/50 hover:bg-slate-200 text-slate-500 dark:text-slate-300" onClick={() => setQuizData({ ...quizData, content: suggest.description })}>
+                                                        {suggest.title}
+                                                    </Badge>
+                                                ))}
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
-                                            <Label className="text-slate-300">Cấp độ khó</Label>
+                                            <Label className="dark:text-slate-300 text-slate-600">Cấp độ khó</Label>
                                             <Select value={quizData.difficulty} onValueChange={(value) => setQuizData({ ...quizData, difficulty: value })}>
-                                                <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                                                <SelectTrigger className="dark:bg-slate-600/50 dark:border-slate-600 text-slate-600 dark:text-white">
                                                     <SelectValue placeholder="Chọn cấp độ" />
                                                 </SelectTrigger>
-                                                <SelectContent className="bg-slate-800 border-slate-700">
+                                                <SelectContent className=" ">
                                                     {difficultyLevels.map((level) => (
-                                                        <SelectItem key={level.value} value={level.value} className="text-slate-300">
+                                                        <SelectItem key={level.value} value={level.value} className="dark:text-slate-300 text-slate-600">
                                                             {level.label}
                                                         </SelectItem>
                                                     ))}
@@ -187,41 +178,34 @@ export default function CEnglishExam() {
                                         </div>
 
                                         <div>
-                                            <Label className="text-slate-300">Kỹ năng tập trung</Label>
-                                            <MultiSelect options={skillTypes} onValueChange={(value) => setQuizData({ ...quizData, skills: value })} className="bg-slate-700 border-slate-600 text-white" />
-                                            {/* <Select value={quizData.skill} onValueChange={(value) => setQuizData({ ...quizData, skill: value })}>
-                                                <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
-                                                    <SelectValue placeholder="Chọn kỹ năng" />
-                                                </SelectTrigger>
-                                                <SelectContent className="bg-slate-800 border-slate-700">
-                                                    {skillTypes.map((skill) => (
-                                                        <SelectItem key={skill.value} value={skill.value} className="text-slate-300">
-                                                            {skill.label}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select> */}
+                                            <Label className="dark:text-slate-300 text-slate-600">Kỹ năng tập trung</Label>
+                                            <MultiSelect options={skillTypes} onValueChange={(value) => setQuizData({ ...quizData, skills: value })} className="dark:bg-slate-600/50 dark:border-slate-600 text-slate-600 dark:text-white" />
                                         </div>
                                     </div>
 
                                     <div>
-                                        <Label className="text-slate-300 mb-3 block">Loại câu hỏi</Label>
-                                        <MultiSelect options={questionTypes} onValueChange={(value) => setQuizData({ ...quizData, questionTypes: value })} className="bg-slate-700 border-slate-600 text-white" />
+                                        <Label className="dark:text-slate-300 text-slate-600 mb-3 block">Loại câu hỏi</Label>
+                                        <div className="flex gap-3">
+                                            <MultiSelect options={questionTypes} onValueChange={(value) => setQuizData({ ...quizData, questionTypes: value })} className="dark:bg-slate-600/50 dark:dark:border-slate-600 text-slate-600 dark:text-white" />
+                                            <Button variant="secondary" className="h-10" onClick={handleSeeTemplateQuestionType}>
+                                                <CircleQuestionMark /> Xem các câu hỏi được hỗ trợ
+                                            </Button>
+                                        </div>
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
-                                            <Label htmlFor="questionCount" className="text-slate-300">
+                                            <Label htmlFor="questionCount" className="dark:text-slate-300 text-slate-600 ">
                                                 Số câu hỏi
                                             </Label>
-                                            <Input id="questionCount" type="number" min="5" max="50" value={quizData.questionCount} onChange={(e) => setQuizData({ ...quizData, questionCount: Number.parseInt(e.target.value) })} className="bg-slate-700 border-slate-600 text-white" />
+                                            <Input id="questionCount" type="number" min="5" max="50" value={quizData.questionCount} onChange={(e) => setQuizData({ ...quizData, questionCount: Number.parseInt(e.target.value) })} className="dark:bg-slate-600/50 dark:border-slate-600 text-slate-600 dark:text-white" />
                                         </div>
 
                                         <div>
-                                            <Label htmlFor="timeLimit" className="text-slate-300">
+                                            <Label htmlFor="timeLimit" className="dark:text-slate-300 text-slate-600">
                                                 Thời gian làm bài (phút)
                                             </Label>
-                                            <Input id="timeLimit" type="number" min="5" max="180" value={quizData.timeLimit} onChange={(e) => setQuizData({ ...quizData, timeLimit: Number.parseInt(e.target.value) })} className="bg-slate-700 border-slate-600 text-white" />
+                                            <Input id="timeLimit" type="number" min="5" max="180" value={quizData.timeLimit} onChange={(e) => setQuizData({ ...quizData, timeLimit: Number.parseInt(e.target.value) })} className="dark:bg-slate-600/50 dark:border-slate-600 text-slate-600 dark:text-white" />
                                         </div>
                                     </div>
                                     <div className="flex gap-3">
@@ -252,18 +236,18 @@ export default function CEnglishExam() {
                         </TabsContent>
 
                         <TabsContent value="text" className="space-y-6">
-                            <Card className="bg-slate-800 border-slate-700">
+                            <Card className=" ">
                                 <CardHeader>
-                                    <CardTitle className="text-white flex items-center gap-2">
+                                    <CardTitle className="text-slate-600 dark:text-white flex items-center gap-2">
                                         <ImageIcon className="w-5 h-5" />
                                         Tạo câu hỏi từ hình ảnh
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center">
+                                    <div className="border-2 border-dashed dark:border-slate-600 rounded-lg p-8 text-center">
                                         <ImageIcon className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-                                        <p className="text-slate-300 mb-2">Kéo thả hình ảnh vào đây hoặc</p>
-                                        <Button variant="outline" className="border-slate-600 text-slate-300 bg-transparent">
+                                        <p className="dark:text-slate-300 text-slate-600 mb-2">Kéo thả hình ảnh vào đây hoặc</p>
+                                        <Button variant="outline" className="dark:border-slate-600 dark:text-slate-300 text-slate-600 bg-transparent">
                                             Chọn hình ảnh
                                         </Button>
                                         <p className="text-slate-500 text-sm mt-2">Hỗ trợ: JPG, PNG, GIF (tối đa 10MB)</p>
@@ -273,9 +257,9 @@ export default function CEnglishExam() {
                         </TabsContent>
 
                         <TabsContent value="settings" className="space-y-6">
-                            <Card className="bg-slate-800 border-slate-700">
+                            <Card className=" ">
                                 <CardHeader>
-                                    <CardTitle className="text-white flex items-center gap-2">
+                                    <CardTitle className="text-slate-600 dark:text-white flex items-center gap-2">
                                         <Settings className="w-5 h-5" />
                                         Cài đặt nâng cao
                                     </CardTitle>
@@ -284,7 +268,7 @@ export default function CEnglishExam() {
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <Label className="text-slate-300">Trộn câu hỏi</Label>
+                                                <Label className="dark:text-slate-300 text-slate-600">Trộn câu hỏi</Label>
                                                 <p className="text-slate-500 text-sm">Thay đổi thứ tự câu hỏi mỗi lần làm bài</p>
                                             </div>
                                             <Switch />
@@ -292,7 +276,7 @@ export default function CEnglishExam() {
 
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <Label className="text-slate-300">Trộn đáp án</Label>
+                                                <Label className="dark:text-slate-300 text-slate-600">Trộn đáp án</Label>
                                                 <p className="text-slate-500 text-sm">Thay đổi thứ tự các lựa chọn</p>
                                             </div>
                                             <Switch />
@@ -300,7 +284,7 @@ export default function CEnglishExam() {
 
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <Label className="text-slate-300">Hiển thị giải thích</Label>
+                                                <Label className="dark:text-slate-300 text-slate-600">Hiển thị giải thích</Label>
                                                 <p className="text-slate-500 text-sm">Hiển thị giải thích sau khi trả lời</p>
                                             </div>
                                             <Switch defaultChecked />
@@ -308,7 +292,7 @@ export default function CEnglishExam() {
 
                                         <div className="flex items-center justify-between">
                                             <div>
-                                                <Label className="text-slate-300">Cho phép quay lại</Label>
+                                                <Label className="dark:text-slate-300 text-slate-600">Cho phép quay lại</Label>
                                                 <p className="text-slate-500 text-sm">Học sinh có thể xem lại câu trước</p>
                                             </div>
                                             <Switch />

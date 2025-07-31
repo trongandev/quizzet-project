@@ -1,13 +1,22 @@
 "use client"
 
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { IMultipleChoiceQuestion } from "@/types/typeEnglishExam"
+import { CircleDot } from "lucide-react"
 
 export function MultipleChoiceQuestion({ question }: { question: IMultipleChoiceQuestion }) {
     return (
         <Card className="bg-slate-800 border-slate-700">
             <CardContent className="p-6">
+                <div className="flex items-center gap-2 mb-3">
+                    <CircleDot className="w-5 h-5 text-blue-400" />
+                    <h3 className="text-lg font-semibold text-white">Chọn nhiều đáp án</h3>
+                    <Badge variant="secondary" className="bg-slate-700">
+                        Từ vựng
+                    </Badge>
+                </div>
                 <h3 className="text-xl font-semibold text-white mb-6">{question.question_text}</h3>
 
                 <div className="space-y-3">

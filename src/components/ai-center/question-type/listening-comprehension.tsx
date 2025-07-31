@@ -5,65 +5,54 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Textarea } from "@/components/ui/textarea"
-import { Play, Pause, Volume2, RotateCcw } from "lucide-react"
+import { Play, Volume2, RotateCcw } from "lucide-react"
 import { IListeningComprehensionQuestion } from "@/types/typeEnglishExam"
 import { EdgeSpeechTTS } from "@lobehub/tts"
 import { toast } from "sonner"
 
 export function ListeningComprehensionQuestion({ question }: { question: IListeningComprehensionQuestion }) {
-    const [audioUrl, setAudioUrl] = useState<string>("")
-    const [isPlaying, setIsPlaying] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [currentTime, setCurrentTime] = useState(0)
     const [duration, setDuration] = useState(0)
     const [playCount, setPlayCount] = useState(0)
+    const [isSpeaking, setIsSpeaking] = useState(false) // ✅ Trạng thái đang phát TTS
     const audioRef = useRef<HTMLAudioElement>(null)
+    const audioUrlRef = useRef<string>("") // ✅ Ref để track audioUrl
     const [tts] = useState(() => new EdgeSpeechTTS({ locale: "en-US" }))
+
     useEffect(() => {
-        const getAudio = async () => {
-            try {
-                const response = await tts.create({
-                    input: question.audio_text,
-                    options: {
-                        voice: "en-US",
-                    },
+        // Khi component mount, tạo audioUrl từ question.audio_text
+        if (question.audio_text) {
+            setLoading(true)
+            tts.create({
+                input: question.audio_text,
+                options: {
+                    voice: "en-GB-SoniaNeural",
+                },
+            })
+                .then((response) => response.arrayBuffer())
+                .then((audioBuffer) => {
+                    const blob = new Blob([audioBuffer], { type: "audio/mpeg" })
+                    const url = URL.createObjectURL(blob)
+                    // setAudioUrl(url)
+                    audioUrlRef.current = url // Lưu vào ref để tránh tạo lại URL mỗi lần render
+                    if (audioRef.current) {
+                        audioRef.current.src = url
+                    }
                 })
-
-                const audioBuffer = await response.arrayBuffer()
-                const blob = new Blob([audioBuffer], { type: "audio/mpeg" })
-                const url = URL.createObjectURL(blob)
-                setAudioUrl(url)
-                if (audioRef.current) {
-                    audioRef.current.src = url
-                }
-            } catch (error: any) {
-                console.error("TTS Error:", error)
-                toast.error("Không có kết nối mạng", {
-                    description: error.message,
-                    duration: 3000,
-                    position: "top-center",
+                .catch((error) => {
+                    console.error("TTS Error:", error)
+                    toast.error("Lỗi khi tạo âm thanh:", {
+                        description: error instanceof Error ? error.message : "Lỗi không xác định",
+                        duration: 5000,
+                        position: "top-center",
+                    })
                 })
-            } finally {
-                setTimeout(() => {
-                    setIsPlaying(false)
-                }, 500)
-            }
+                .finally(() => {
+                    setLoading(false)
+                })
         }
-        getAudio()
-    }, [question.audio_text, tts])
-
-    const handlePlayPause = () => {
-        if (audioRef.current) {
-            if (isPlaying) {
-                audioRef.current.pause()
-            } else {
-                audioRef.current.play()
-                if (currentTime === 0) {
-                    setPlayCount((prev) => prev + 1)
-                }
-            }
-            setIsPlaying(!isPlaying)
-        }
-    }
+    }, [question, tts])
 
     const handleRestart = () => {
         if (audioRef.current) {
@@ -71,7 +60,6 @@ export function ListeningComprehensionQuestion({ question }: { question: IListen
             setCurrentTime(0)
             setPlayCount((prev) => prev + 1)
             audioRef.current.play()
-            setIsPlaying(true)
         }
     }
 
@@ -81,13 +69,26 @@ export function ListeningComprehensionQuestion({ question }: { question: IListen
         return `${minutes}:${seconds.toString().padStart(2, "0")}`
     }
 
-    // const wordCount = answer
-    //     ? answer
-    //           .trim()
-    //           .split(/\s+/)
-    //           .filter((word) => word.length > 0).length
-    //     : 0
+    useEffect(() => {
+        if (audioRef.current) {
+            audioRef.current.addEventListener("ended", (e) => {
+                const target = e.currentTarget as HTMLAudioElement
+                setCurrentTime(target.currentTime || 0)
+                setDuration(target.duration || 0)
+                setIsSpeaking(false)
+            })
+        }
+    }, [audioRef])
 
+    const handlePlayAudio = async () => {
+        if (isSpeaking) return // ✅ Ngăn spam click
+        setIsSpeaking(true) // ✅ Bắt đầu phát
+        if (audioRef.current) {
+            audioRef.current.src = audioUrlRef.current // Sử dụng ref để tránh tạo lại URL
+            await audioRef.current.play()
+            setPlayCount((prev) => prev + 1) // ✅ Tăng số lần đã nghe
+        }
+    }
     return (
         <div className="space-y-6">
             {/* Audio Player */}
@@ -100,15 +101,22 @@ export function ListeningComprehensionQuestion({ question }: { question: IListen
                             Đã nghe {playCount} lần
                         </Badge>
                     </div>
+                    <h3 className="text-xl font-semibold text-white mb-3">{question.question_text}</h3>
 
                     <div className="bg-slate-700 rounded-lg p-6">
                         {question.audio_text ? (
                             <>
-                                <audio ref={audioRef} src={audioUrl} onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)} onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)} onEnded={() => setIsPlaying(false)} onPlay={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)} />
-
+                                <audio ref={audioRef} onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)} onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)} />
                                 <div className="flex items-center gap-4 mb-4">
-                                    <Button onClick={handlePlayPause} className="bg-purple-600 hover:bg-purple-700">
-                                        {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+                                    <Button onClick={handlePlayAudio} disabled={isSpeaking || loading} className="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white">
+                                        {isSpeaking ? (
+                                            <>
+                                                <Volume2 className="w-5 h-5 animate-pulse" />
+                                                <span className="ml-2">Đang phát...</span>
+                                            </>
+                                        ) : (
+                                            <Play className="w-5 h-5" />
+                                        )}
                                     </Button>
 
                                     <Button variant="outline" onClick={handleRestart} className="border-slate-600 text-slate-300 bg-transparent">
@@ -133,15 +141,7 @@ export function ListeningComprehensionQuestion({ question }: { question: IListen
                             </div>
                         )}
                     </div>
-                </CardContent>
-            </Card>
-
-            {/* Question */}
-            <Card className="bg-slate-800 border-slate-700">
-                <CardContent className="p-6">
-                    <h3 className="text-xl font-semibold text-white mb-6">{question.question_text}</h3>
-
-                    <div className="space-y-4">
+                    <div className="space-y-2 mt-3">
                         <div className="flex items-center justify-between">
                             <h4 className="font-medium text-slate-300">Câu trả lời của bạn:</h4>
                             {/* <Badge variant="secondary" className="bg-slate-700">

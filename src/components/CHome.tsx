@@ -104,10 +104,7 @@ export default function CHome({ quizData, publicFlashcards }: { quizData: IQuiz[
                         </CardContent>
                     </Card>
 
-                    <Card
-                        onClick={() => router.push("/quiz/themcauhoi")}
-                        className="cursor-pointer dark:border-white/10 group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-cyan-50 to-blue-50 hover:from-cyan-100 hover:to-blue-100 dark:border  dark:from-cyan-900/50 dark:to-blue-900/50 dark:hover:from-cyan-900 dark:hover:to-blue-900 overflow-hidden relative hover:scale-105 "
-                    >
+                    <Card onClick={() => router.push("/ai-center")} className="cursor-pointer dark:border-white/10 group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-cyan-50 to-blue-50 hover:from-cyan-100 hover:to-blue-100 dark:border  dark:from-cyan-900/50 dark:to-blue-900/50 dark:hover:from-cyan-900 dark:hover:to-blue-900 overflow-hidden relative hover:scale-105 ">
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
 
                         <CardContent className="p-5 md:p-8">
@@ -262,6 +259,17 @@ export default function CHome({ quizData, publicFlashcards }: { quizData: IQuiz[
                                                         </Badge>
                                                     </div>
                                                     <p className="text-sm text-slate-300">Hệ thống flashcard tạo từ vựng siêu nhanh bằng AI, hỗ trợ thêm nhiều từ, luyện tập từ, kiểm tra độ ghi nhớ của từ, đa ngôn ngữ</p>
+                                                    <Button
+                                                        onClick={() => {
+                                                            router.push("/flashcard")
+                                                            handleClose()
+                                                        }}
+                                                        className="bg-blue-600 hover:bg-blue-700 flex items-center justify-center space-x-2 text-white w-full mt-3"
+                                                    >
+                                                        <BookOpen className="w-4 h-4" />
+                                                        <span>Tới Flashcard</span>
+                                                        <ArrowRight className="w-4 h-4" />
+                                                    </Button>
                                                 </div>
                                             </AccordionTrigger>
                                             <AccordionContent>
@@ -287,6 +295,17 @@ export default function CHome({ quizData, publicFlashcards }: { quizData: IQuiz[
                                                         </Badge>
                                                     </div>
                                                     <p className="text-sm text-slate-300">Tạo quiz tự động với AI, điều chỉnh độ khó thông minh dựa trên khả năng học tập của bạn</p>
+                                                    <Button
+                                                        onClick={() => {
+                                                            router.push("/ai-center")
+                                                            handleClose()
+                                                        }}
+                                                        className="bg-teal-600 hover:bg-teal-700 flex items-center justify-center space-x-2 text-white mt-3 w-full"
+                                                    >
+                                                        <Brain className="w-4 h-4" />
+                                                        <span>Tới Trang tạo Quiz bằng AI</span>
+                                                        <ArrowRight className="w-4 h-4" />
+                                                    </Button>
                                                 </div>
                                             </AccordionTrigger>
                                             <AccordionContent>
@@ -296,35 +315,6 @@ export default function CHome({ quizData, publicFlashcards }: { quizData: IQuiz[
                                             </AccordionContent>
                                         </AccordionItem>
                                     </Accordion>
-                                </div>
-                            </div>
-                            <div className="">
-                                <h4 className="font-medium text-center text-slate-300 mb-3">Bắt đầu học ngay hôm nay!</h4>
-
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                    <Button
-                                        onClick={() => {
-                                            router.push("/flashcard")
-                                            handleClose()
-                                        }}
-                                        className="bg-blue-600 hover:bg-blue-700 flex items-center justify-center space-x-2 text-white"
-                                    >
-                                        <BookOpen className="w-4 h-4" />
-                                        <span>Flashcard</span>
-                                        <ArrowRight className="w-4 h-4" />
-                                    </Button>
-
-                                    <Button
-                                        onClick={() => {
-                                            router.push("/quiz")
-                                            handleClose()
-                                        }}
-                                        className="bg-teal-600 hover:bg-teal-700 flex items-center justify-center space-x-2 text-white"
-                                    >
-                                        <Brain className="w-4 h-4" />
-                                        <span>Quiz AI</span>
-                                        <ArrowRight className="w-4 h-4" />
-                                    </Button>
                                 </div>
                             </div>
                             {/* Action Buttons */}

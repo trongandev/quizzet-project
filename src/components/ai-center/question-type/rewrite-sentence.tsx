@@ -4,11 +4,19 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { IRewriteSentenceQuestion } from "@/types/typeEnglishExam"
+import { PenLine } from "lucide-react"
 
 export function RewriteSentenceQuestion({ question }: { question: IRewriteSentenceQuestion }) {
     return (
         <Card className="bg-slate-800 border-slate-700">
             <CardContent className="p-6">
+                <div className="flex items-center gap-2 mb-4">
+                    <PenLine className="w-5 h-5 text-blue-400" />
+                    <h3 className="text-lg font-semibold text-white">Viết lại câu</h3>
+                    <Badge variant="secondary" className="bg-slate-700">
+                        Viết
+                    </Badge>
+                </div>
                 <h3 className="text-xl font-semibold text-white mb-6">{question.question_text}</h3>
 
                 <div className="space-y-6">

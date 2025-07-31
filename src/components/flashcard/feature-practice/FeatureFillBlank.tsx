@@ -14,7 +14,7 @@ export default function FeatureFillBlank({ currentCard, showAns, inputAnswer, se
                 <p className=" mb-4">{currentCard?.define}</p>
                 <div className="bg-gray-50 dark:bg-slate-800/50 p-4 rounded-lg mb-4">
                     <p className="text-gray-600 dark:text-white/70 font-medium mb-2">Ví dụ:</p>
-                    <p className="text-lg">{showAns ? currentCard?.example?.[0]?.en : currentCard?.example?.[0]?.en.replace(new RegExp(currentCard?.title, "gi"), "______")}</p>
+                    <p className="text-lg">{showAns ? currentCard?.example?.[0]?.en : currentCard?.example?.[0]?.en.replace(new RegExp(currentCard?.title, "gi"), "_".repeat(currentCard.title.length + 2))}</p>
                 </div>
                 <Input
                     type="text"

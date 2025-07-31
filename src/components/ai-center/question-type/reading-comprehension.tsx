@@ -23,13 +23,7 @@ export function ReadingComprehensionQuestion({ question }: { question: IReadingC
                     <div className="bg-slate-700 rounded-lg p-6">
                         <p className="text-white leading-relaxed text-lg">{question.passage}</p>
                     </div>
-                </CardContent>
-            </Card>
-
-            {/* Question */}
-            <Card className="bg-slate-800 border-slate-700">
-                <CardContent className="p-6">
-                    <h3 className="text-xl font-semibold text-white mb-6">{question.question_text}</h3>
+                    <h3 className="text-xl font-semibold text-white mb-3 mt-6">{question.question_text}</h3>
 
                     <div className="space-y-3">
                         {question.options.map((option: any, index: number) => (

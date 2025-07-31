@@ -4,12 +4,12 @@ interface IOption {
     text: string // Nội dung của lựa chọn
 }
 
-interface ILeftItem {
+export interface ILeftItem {
     id: string // ID duy nhất cho mục bên trái
     text: string // Nội dung của mục bên trái
 }
 
-interface IRightItem {
+export interface IRightItem {
     id: string // ID duy nhất cho mục bên phải
     text: string // Nội dung của mục bên phải
 }
@@ -19,7 +19,7 @@ interface ICorrectMatch {
     right_id: string // ID của mục bên phải đúng
 }
 
-interface IScrambledSentence {
+export interface IScrambledSentence {
     id: string // ID duy nhất cho câu bị xáo trộn
     text: string // Nội dung của câu bị xáo trộn
 }
