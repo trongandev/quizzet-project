@@ -109,7 +109,7 @@ export default function CHome({ quizData, publicFlashcards }: { quizData: IQuiz[
                 </div>
 
                 {introFeatures.map((feature, index) => (
-                    <div className={`text-center flex flex-1 ${index == 1 && "flex-row-reverse"} gap-10`} key={index}>
+                    <div className={`text-center flex flex-col-reverse md:flex-row flex-1 ${index == 1 && "flex-row-reverse"} gap-10`} key={index}>
                         <div
                             style={{
                                 position: "relative",
@@ -135,7 +135,7 @@ export default function CHome({ quizData, publicFlashcards }: { quizData: IQuiz[
                                 }}
                             />
                         </div>
-                        <div className="w-[400px] flex justify-center flex-col gap-3">
+                        <div className="w-full md:w-[400px] flex justify-center flex-col gap-3">
                             <div className={`w-16 h-16 bg-gradient-to-r ${feature.gradient}  rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform mx-auto`}>{feature.icon}</div>
                             <h1 className="font-semibold text-2xl">{feature.title}</h1>
                             <p className="text-gray-500 dark:text-white/60">{feature.description}</p>
