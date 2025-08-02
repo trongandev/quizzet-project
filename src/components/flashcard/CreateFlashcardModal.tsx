@@ -91,7 +91,7 @@ export function CreateFlashcardModal({ children, open, setOpen, listFlashCard, s
                     </DialogTitle>
                 </DialogHeader>
 
-                <form className="space-y-6 mt-4 h-[450px] md:h-[500px] overflow-scroll">
+                <div className="space-y-6 mt-4 h-[450px] md:h-[500px] overflow-scroll">
                     {/* Tên list từ */}
                     <div className="space-y-2">
                         <Label htmlFor="title" className="text-sm font-medium text-gray-700 dark:text-white/80">
@@ -162,13 +162,13 @@ export function CreateFlashcardModal({ children, open, setOpen, listFlashCard, s
                             </div>
                         </RadioGroup>
                     </div>
-                </form>
+                </div>
                 {/* Buttons */}
                 <div className="flex gap-3 pt-4 border-t">
                     <Button type="button" variant="outline" onClick={() => setOpen(false)} className="flex-1">
                         Hủy
                     </Button>{" "}
-                    <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700 dark:text-white" disabled={!formData.title || !formData.language || loading}>
+                    <Button type="submit" onClick={handleSubmit} className="flex-1 bg-blue-600 hover:bg-blue-700 dark:text-white" disabled={!formData.title || !formData.language || loading}>
                         {loading ? "Đang tạo..." : "Tạo flashcard"}
                     </Button>
                 </div>
