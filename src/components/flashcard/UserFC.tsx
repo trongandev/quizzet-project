@@ -82,7 +82,8 @@ export default function UserFC({ item, token }: { item: IListFlashcard; token: s
 
     const percent = Math.round(((statusCounts.learned + statusCounts.remembered) / item.flashcards.length) * 100)
     return (
-        <Link href={`/flashcard/${item?._id}`} className="relative group overflow-hidden w-full  bg-white/80  dark:bg-slate-800/50 border border-white/10 rounded-md shadow-sm px-5 py-3 hover:shadow-md transition-all duration-300  items-start space-y-3">
+        <Link href={`/flashcard/${item?._id}`} className="relative group overflow-hidden w-full  bg-white/80  dark:bg-slate-800/50 border border-white/10 rounded-md shadow-sm px-5 py-3 hover:shadow-md transition-all duration-300  items-start space-y-3 ">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
             <div className="flex items-start justify-between mt-0">
                 <div className="flex-1">
                     <h1 className=" font-bold line-clamp-1 text-gray-900 dark:text-white/80 text-xl duration-300" title={item.title}>
@@ -125,18 +126,19 @@ export default function UserFC({ item, token }: { item: IListFlashcard; token: s
                 <Progress value={percent}></Progress>
             </div>
             <div className="flex gap-2">
-                <Link href={item.flashcards?.length > 0 ? `/flashcard/practice/${item?._id}` : `/flashcard/${item?._id}`} className="block w-full ">
-                    <Button variant="outline" disabled={item?.flashcards?.length === 0} className="w-full">
-                        {item.flashcards?.length > 0 ? (
-                            <>
-                                <Play />
-                                Học ngay ({item.countCardsDueToday || 0} từ vựng)
-                            </>
-                        ) : (
-                            "Chưa có từ vựng"
-                        )}
-                    </Button>
-                </Link>
+                <Button variant="outline" className="w-full">
+                    {item.flashcards?.length > 0 && item.countCardsDueToday > 0 ? (
+                        <>
+                            <Play />
+                            Học ngay ({item.countCardsDueToday} từ vựng)
+                        </>
+                    ) : (
+                        <>
+                            <Eye />
+                            Xem chi tiết
+                        </>
+                    )}
+                </Button>
                 <DropdownMenu>
                     <DropdownMenuTrigger>
                         <Button variant="outline" className="">

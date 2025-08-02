@@ -117,7 +117,7 @@ export default function FeatureChoose({ flashcards, handlePlayAudio, userId, spe
                     key={`${piece._id}-${piece.type}-${index}`} // Key duy nhất hơn
                     onClick={() => handlePieceClick(piece)}
                     disabled={isProcessing || matchedPairs.includes(piece._id)} // ✅ Disable khi đang xử lý
-                    className={`text-white h-auto min-w-[100px] max-w-[250px] whitespace-normal ${isCorrectAns === "correct" && selectedPieces.some((p) => p._id === piece._id && p.type === piece.type) ? " tada " : ""} ${isCorrectAns === "incorrect" && selectedPieces.some((p) => p._id === piece._id && p.type === piece.type) ? " shake " : ""} transition-all duration-200 text-left`}
+                    className={`text-white h-auto min-w-[100px] max-w-[45%]  md:max-w-[250px] whitespace-normal ${isCorrectAns === "correct" && selectedPieces.some((p) => p._id === piece._id && p.type === piece.type) ? " tada " : ""} ${isCorrectAns === "incorrect" && selectedPieces.some((p) => p._id === piece._id && p.type === piece.type) ? " shake " : ""} transition-all duration-200 text-left`}
                 >
                     {piece.content}
                 </Button>

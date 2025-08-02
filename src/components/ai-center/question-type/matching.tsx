@@ -142,7 +142,7 @@ export function MatchingQuestion({ question }: { question: IMatchingQuestion }) 
     return (
         <Card className="bg-slate-800 border-slate-700">
             <CardContent className="p-3 md:p-6">
-                <div className="flex  gap-2 justify-between items-center mb-6">
+                <div className="flex flex-col md:flex-row gap-2 justify-between md:items-center mb-6">
                     <div className="flex items-center gap-2">
                         <Binoculars className="w-5 h-5 text-blue-400" />
                         <h3 className="text-lg font-semibold text-white">Nối câu</h3>

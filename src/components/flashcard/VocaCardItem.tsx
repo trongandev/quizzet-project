@@ -26,8 +26,9 @@ interface Props {
     listFlashcard: any
     setListFlashcard: any
     setFilteredFlashcards: any
+    viewMode: string // "full" or "simple"
 }
-export default function VocaCardItem({ data, speakWord, loadingAudio, setIsEditOpen, setEditFlashcard, user, token, listFlashcard, setListFlashcard, setFilteredFlashcards }: Props) {
+export default function VocaCardItem({ data, speakWord, loadingAudio, setIsEditOpen, setEditFlashcard, user, token, listFlashcard, setListFlashcard, setFilteredFlashcards, viewMode }: Props) {
     const [showExamples, setShowExamples] = useState(false)
     const [openDelete, setOpenDelete] = useState(false)
     const [isHistoryOpen, setIsHistoryOpen] = useState(false)
@@ -115,9 +116,11 @@ export default function VocaCardItem({ data, speakWord, loadingAudio, setIsEditO
                 <div className="flex items-center justify-between p-4 pb-2">
                     <Badge className={`${getStatusColor(data.status)} font-medium`}>
                         {getStatusText(data.status)}
-                        {": " + data.progress?.percentage}%
+                        {data.status === "reviewing" ? "" : ": " + data.progress?.percentage + "%"}
                     </Badge>
-                    <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-white/70">{data && <span>{new Date(data.nextReviewDate) > new Date() ? `Còn ${formatDistanceToNowStrict(new Date(data.nextReviewDate), { locale: vi, addSuffix: true })} để ôn tập lại` : `Quá hạn ${formatDistanceToNowStrict(new Date(data.nextReviewDate), { locale: vi, addSuffix: true })}`}</span>}</div>
+                    <div className={`flex items-center gap-2 text-xs text-gray-500 dark:text-white/70 ${viewMode === "simple" && "hidden"}`}>
+                        {data && data.status !== "reviewing" && <span>{new Date(data.nextReviewDate) > new Date() ? `Còn ${formatDistanceToNowStrict(new Date(data.nextReviewDate), { locale: vi, addSuffix: true })} để ôn tập lại` : `Quá hạn ${formatDistanceToNowStrict(new Date(data.nextReviewDate), { locale: vi, addSuffix: true })}`}</span>}
+                    </div>
                     {/* Action Menu */}
                     {user?._id === data?.userId && (
                         <DropdownMenu>
@@ -167,13 +170,18 @@ export default function VocaCardItem({ data, speakWord, loadingAudio, setIsEditO
                     <div className="mb-4">
                         <div className="flex items-start gap-3 mb-2">
                             <div className="flex-1">
-                                <h3 className="text-xl font-medium text-gray-900 dark:text-white/80 leading-relaxed mb-2">{data.title}</h3>
-                                <div className="flex items-center gap-2 mb-3">
-                                    <p className="text-base text-gray-400 font-mono">{listFlashcard.isHiddenTranscription ? "..." : data.transcription}</p>
+                                <div className="flex items-center gap-1">
+                                    <h3 className="text-xl font-medium text-gray-900 dark:text-white/80 leading-relaxed mb-2">{data.title}</h3>
+                                    <Button variant="ghost" size="sm" className={`h-6 w-6 p-0 text-gray-400 hover:text-gray-400 ${viewMode !== "simple" && "hidden"}`} disabled={loadingAudio} onClick={() => speakWord(data.title, data._id)}>
+                                        {loadingAudio ? <Loading /> : <Volume2 className="w-4 h-4" />}
+                                    </Button>
+                                </div>
+                                <div className={`flex items-center gap-2 mb-3 ${viewMode === "simple" ? "hidden" : ""}`}>
+                                    <p className={`text-base text-gray-400 font-mono`}>{listFlashcard.isHiddenTranscription ? "..." : data.transcription}</p>
                                     <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-gray-400 hover:text-gray-400" disabled={loadingAudio} onClick={() => speakWord(data.title, data._id)}>
                                         {loadingAudio ? <Loading /> : <Volume2 className="w-4 h-4" />}
                                     </Button>
-                                    <span className="text-sm text-gray-600 bg-gray-50 dark:bg-gray-800 dark:text-gray-300 px-2 py-1 rounded">{data.type_of_word || "N/A"}</span>
+                                    <span className={`text-sm text-gray-600 bg-gray-50 dark:bg-gray-800 dark:text-gray-300 px-2 py-1 rounded`}>{data.type_of_word || "N/A"}</span>
                                 </div>
                             </div>
                         </div>
@@ -190,7 +198,7 @@ export default function VocaCardItem({ data, speakWord, loadingAudio, setIsEditO
                     </div>
 
                     {/* Examples section */}
-                    <div className="space-y-3">
+                    <div className={`space-y-3 ${viewMode === "simple" && "hidden"}`}>
                         <div className="flex items-center justify-between">
                             <h4 className="font-medium text-gray-900 dark:text-white/80 flex items-center gap-2">
                                 <MessageCircle className="w-4 h-4 text-gray-600 dark:text-white/60" />
@@ -228,7 +236,7 @@ export default function VocaCardItem({ data, speakWord, loadingAudio, setIsEditO
                     </div>
 
                     {/* Notes section */}
-                    {data.note && (
+                    {data.note && viewMode === "full" && (
                         <>
                             <Separator className="my-4" />
                             <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-3">

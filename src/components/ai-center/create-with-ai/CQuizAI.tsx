@@ -368,7 +368,7 @@ export function CQuizAI() {
                             </div>
                             <Dialog open={openGame} onOpenChange={setOpenGame}>
                                 <DialogTrigger>
-                                    <Button size="lg" variant="outline" className={`flex`}>
+                                    <Button size="lg" variant="outline" className="w-full">
                                         <Gamepad2 className="mr-2 h-4 w-4" />
                                         Chơi game 2048
                                     </Button>

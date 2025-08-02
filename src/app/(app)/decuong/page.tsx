@@ -1,4 +1,4 @@
-import CTaiLieu from "@/components/decuong/CDeCuong"
+import CDeCuong from "@/components/decuong/CDeCuong"
 import { getCachedDeCuong } from "@/lib/cacheData"
 
 export async function generateMetadata() {
@@ -21,7 +21,7 @@ export default async function SubjectOutline() {
     const findFile = res?.findFile
     return (
         <div className="py-20 px-2 md:px-0">
-            <CTaiLieu findText={findText} findFile={findFile} />
+            <CDeCuong findText={findText} findFile={findFile} />
         </div>
     )
 }

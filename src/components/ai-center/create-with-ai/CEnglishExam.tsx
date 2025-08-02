@@ -185,7 +185,7 @@ export default function CEnglishExam() {
 
                                     <div>
                                         <Label className="dark:text-slate-300 text-slate-600 mb-3 block">Loại câu hỏi</Label>
-                                        <div className="flex gap-3">
+                                        <div className="flex flex-col md:flex-row gap-3">
                                             <MultiSelect options={questionTypes} onValueChange={(value) => setQuizData({ ...quizData, questionTypes: value })} className="dark:bg-slate-600/50 dark:dark:border-slate-600 text-slate-600 dark:text-white" />
                                             <Button variant="secondary" className="h-10" onClick={handleSeeTemplateQuestionType}>
                                                 <CircleQuestionMark /> Xem các câu hỏi được hỗ trợ
@@ -208,7 +208,7 @@ export default function CEnglishExam() {
                                             <Input id="timeLimit" type="number" min="5" max="180" value={quizData.timeLimit} onChange={(e) => setQuizData({ ...quizData, timeLimit: Number.parseInt(e.target.value) })} className="dark:bg-slate-600/50 dark:border-slate-600 text-slate-600 dark:text-white" />
                                         </div>
                                     </div>
-                                    <div className="flex gap-3">
+                                    <div className={`flex flex-col md:flex-row gap-3 ${generatedQuestions ? "md:flex-row-reverse" : ""}`}>
                                         {generatedQuestions && (
                                             <Button className="h-12 " variant="outline" onClick={() => setOpenResult(true)}>
                                                 <Eye />

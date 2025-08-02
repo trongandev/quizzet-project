@@ -81,7 +81,7 @@ export function CreateFlashcardModal({ children, open, setOpen, listFlashCard, s
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>{children}</DialogTrigger>
-            <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto">
+            <DialogContent className="w-full md:max-w-md">
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
                         <div className="p-2 bg-blue-100 dark:bg-slate-800/50 rounded-lg">
@@ -91,7 +91,7 @@ export function CreateFlashcardModal({ children, open, setOpen, listFlashCard, s
                     </DialogTitle>
                 </DialogHeader>
 
-                <form onSubmit={handleSubmit} className="space-y-6 mt-4">
+                <form className="space-y-6 mt-4 h-[450px] md:h-[500px] overflow-scroll">
                     {/* Tên list từ */}
                     <div className="space-y-2">
                         <Label htmlFor="title" className="text-sm font-medium text-gray-700 dark:text-white/80">
@@ -162,17 +162,16 @@ export function CreateFlashcardModal({ children, open, setOpen, listFlashCard, s
                             </div>
                         </RadioGroup>
                     </div>
-
-                    {/* Buttons */}
-                    <div className="flex gap-3 pt-4 border-t">
-                        <Button type="button" variant="outline" onClick={() => setOpen(false)} className="flex-1">
-                            Hủy
-                        </Button>{" "}
-                        <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700 dark:text-white" disabled={!formData.title || !formData.language || loading}>
-                            {loading ? "Đang tạo..." : "Tạo flashcard"}
-                        </Button>
-                    </div>
                 </form>
+                {/* Buttons */}
+                <div className="flex gap-3 pt-4 border-t">
+                    <Button type="button" variant="outline" onClick={() => setOpen(false)} className="flex-1">
+                        Hủy
+                    </Button>{" "}
+                    <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700 dark:text-white" disabled={!formData.title || !formData.language || loading}>
+                        {loading ? "Đang tạo..." : "Tạo flashcard"}
+                    </Button>
+                </div>
             </DialogContent>
         </Dialog>
     )

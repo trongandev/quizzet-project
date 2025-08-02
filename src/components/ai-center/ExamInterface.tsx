@@ -49,11 +49,11 @@ export function ExamInterface({ examData, open, setOpen }: ExamInterfaceProps) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent className="h-[90vh] p-3 md:p-6  max-w-4xl">
-                <div className="min-h-[600px] overflow-y-scroll space-y-3">
+                <div className="min-h-[500px]  md:min-h-[600px] overflow-y-scroll space-y-3">
                     <div className="">
-                        <h1 className="text-xl font-semibold">{examData.title}</h1>
+                        <h1 className="text-xl font-semibold">{examData.title || "Chưa có tiêu đề"}</h1>
                         <div className="dark:text-white/80 text-sm space-y-1">
-                            <p>{examData.description}</p>
+                            <p>{examData.description || "Chưa có mô tả"}</p>
                             {examData.skills.map((skill, index) => (
                                 <Badge variant="secondary" key={index} className="mr-2 mb-2">
                                     {skill.charAt(0).toUpperCase() + skill.slice(1)}

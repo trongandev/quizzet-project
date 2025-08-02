@@ -9,7 +9,7 @@ import { useUser } from "@/context/userContext"
 import { EdgeSpeechTTS } from "@lobehub/tts"
 import { Button } from "@/components/ui/button"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
-import { ArrowLeft, BookOpen, Brain, Flag, GalleryVerticalEnd, Gift, Grid3x3, PencilLine, Plus, RefreshCcw, RotateCcw, Target, Trash2, User, Volume2 } from "lucide-react"
+import { ArrowLeft, BookOpen, Brain, Flag, GalleryVerticalEnd, Gift, Grid3X3, Grid3x3, List, PencilLine, Plus, RefreshCcw, RotateCcw, Target, Trash2, User, Volume2 } from "lucide-react"
 import { EditListFlashcardModal } from "./EditListFlashcardModal"
 import AddVocaModal from "./AddVocaModal"
 import { Badge } from "../ui/badge"
@@ -22,7 +22,7 @@ import VoiceSelectionModal from "./VoiceSelectionModal"
 import { revalidateCache } from "@/lib/revalidate"
 import AddMoreVocaModal from "./AddMoreVocaModal"
 import EditVocaModal from "./EditVocaModal"
-
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 const getLanguageFlag = (lang: string) => {
     const flags: { [key: string]: string } = {
         english: "🇺🇸",
@@ -57,6 +57,7 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
     const [selectedVoice, setSelectedVoice] = useState("")
     const [editFlashcard, setEditFlashcard] = useState<Flashcard>()
     const [isEditOpen, setIsEditOpen] = useState(false)
+    const [viewMode, setViewMode] = useState("full") // full or simple
     const token = Cookies.get("token") || ""
     const router = useRouter()
     const { user } = useUser() || { user: null }
@@ -349,7 +350,7 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
                 </div>
             </div>
 
-            <div className="px-2 md:x-5">
+            <div className="px-3 md:px-5">
                 <div className="">
                     {user?._id === String(listFlashcard?.userId?._id) && (
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-5">
@@ -368,7 +369,29 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
                     )}
                 </div>
             </div>
-            <div className="flex items-center px-2 md:px-5 gap-2 md:gap-5 flex-wrap">
+            <div className="flex items-center px-3 md:px-5 gap-2 md:gap-5 flex-wrap">
+                <div className="flex bg-slate-800 rounded-lg p-1 ">
+                    <Tooltip delayDuration={100}>
+                        <TooltipTrigger>
+                            <Button variant={viewMode === "full" ? "secondary" : "ghost"} size="sm" onClick={() => setViewMode("full")} className="h-14 w-16 p-0 text-white">
+                                <Grid3X3 className="h-4 w-4" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p className="text-white">Hiển thị thông tin flashcard đầy đủ</p>
+                        </TooltipContent>
+                    </Tooltip>
+                    <Tooltip delayDuration={100}>
+                        <TooltipTrigger>
+                            <Button variant={viewMode === "simple" ? "secondary" : "ghost"} size="sm" onClick={() => setViewMode("simple")} className="h-14 w-16 p-0 text-white">
+                                <List className="h-4 w-4" />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p className="text-white">Hiển thị thông tin flashcard ngắn gọn</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </div>
                 {user?._id === String(listFlashcard?.userId?._id) && (
                     <>
                         <AddVocaModal token={token} filteredFlashcards={filteredFlashcards} setFilteredFlashcards={setFilteredFlashcards} listFlashcard={listFlashcard} setListFlashcard={setListFlashcard}>
@@ -384,9 +407,9 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
                     </Button>
                 </Link>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:p-5 w-full px-2">
+            <div className={`pb-5 grid grid-cols-1 ${viewMode === "simple" ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 " : " md:grid-cols-3 "} gap-3 md:gap-4 xl:gap-5 px-3 md:px-5 w-full `}>
                 {filteredFlashcards && filteredFlashcards?.length > 0 ? (
-                    filteredFlashcards.map((item: Flashcard) => <VocaCardItem key={item._id} data={item} speakWord={speakWord} loadingAudio={loadingAudio} setEditFlashcard={setEditFlashcard} setIsEditOpen={setIsEditOpen} user={user} token={token} setFilteredFlashcards={setFilteredFlashcards} listFlashcard={listFlashcard} setListFlashcard={setListFlashcard} />)
+                    filteredFlashcards.map((item: Flashcard) => <VocaCardItem key={item._id} data={item} speakWord={speakWord} loadingAudio={loadingAudio} setEditFlashcard={setEditFlashcard} setIsEditOpen={setIsEditOpen} user={user} token={token} setFilteredFlashcards={setFilteredFlashcards} listFlashcard={listFlashcard} setListFlashcard={setListFlashcard} viewMode={viewMode} />)
                 ) : (
                     <div className="col-span-3 text-center h-[80vh] flex flex-col gap-2 items-center justify-center">
                         <h1 className="text-xl">Không có từ vựng nào trong flashcard này</h1>

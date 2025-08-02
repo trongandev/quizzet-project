@@ -3,7 +3,6 @@ import Script from "next/script"
 
 import LayoutQuizzet from "@/components/LayoutQuizzet"
 import { GET_API_WITHOUT_COOKIE } from "@/lib/fetchAPI"
-
 export default async function RootLayout({ children }: any) {
     const tasks = await GET_API_WITHOUT_COOKIE("/task")
 

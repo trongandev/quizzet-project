@@ -12,7 +12,7 @@ import { GoogleAnalytics } from "@next/third-parties/google"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import React from "react"
-
+import { ProgressProvider } from "@bprogress/next/app"
 export default function LayoutQuizzet({ children, tasks }: { children: React.ReactNode; tasks: TASKS }) {
     return (
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
@@ -21,7 +21,9 @@ export default function LayoutQuizzet({ children, tasks }: { children: React.Rea
                     <CHeader tasks={tasks} />
                     <div className=" relative dark:bg-gray-700 dark:text-white">
                         <TooltipProvider>
-                            <div className="">{children}</div>
+                            <ProgressProvider height="4px" color="#2187d5" options={{ showSpinner: false }} shallowRouting>
+                                {children}
+                            </ProgressProvider>
                         </TooltipProvider>
                         <Toaster />
                         <FooterNavBar />

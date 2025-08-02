@@ -18,8 +18,8 @@ export default function FeatureQuiz({ currentCard, quizOptions, handleQuizAnswer
                 <span className="px-3 py-1 bg-blue-100 text-blue-600 rounded-full text-sm">Quiz</span>
             </div>
             <p className=" mb-4 text-gray-500"> (nếu không có đáp án đúng vui lòng bấm bỏ qua)</p>
-            <p className="text-lg mb-6">{currentCard?.define}</p>
-            <div className="grid grid-cols-2 gap-5 flex-1">
+            <p className="text-lg mb-3 md:mb-6">{currentCard?.define}</p>
+            <div className="grid grid-cols-2 gap-2 md:gap-5 flex-1">
                 {quizOptions.map((option, idx) => (
                     <Button
                         key={idx}
@@ -30,7 +30,7 @@ export default function FeatureQuiz({ currentCard, quizOptions, handleQuizAnswer
                             loadingAudio // ✅ Disable khi đang load audio
                         }
                         variant="secondary"
-                        className={`h-full relative text-gray-700 dark:text-white  transition-colors
+                        className={`h-full relative whitespace-normal text-gray-700 dark:text-white  transition-colors
                                                                 ${selectedAnswers[idx] === "correct" ? "!border-green-500 border-2 tada" : ""}
                                                                 ${selectedAnswers[idx] === "incorrect" ? "!border-red-500 border-2 shake" : ""}
                                             `}

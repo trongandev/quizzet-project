@@ -32,7 +32,7 @@ export function ReadingComprehensionQuestion({ question }: { question: IReadingC
                                     <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${question.correct_answer_id === option.id ? "border-blue-500 bg-blue-500" : "border-slate-500"}`}>{question.correct_answer_id === option.id && <div className="w-2 h-2 bg-white rounded-full" />}</div>
                                     <div className="flex-1">
                                         <span className="font-medium mr-2">{String.fromCharCode(65 + index)}.</span>
-                                        <span>{option.text}</span>
+                                        <span className="whitespace-normal">{option.text}</span>
                                     </div>
                                 </div>
                             </Button>

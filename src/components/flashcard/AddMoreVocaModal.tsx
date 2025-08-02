@@ -132,34 +132,32 @@ export default function AddMoreVocaModal({ children, listFlashcard, setListFlash
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>{children}</DialogTrigger>
-            <DialogContent className="sm:max-w-[700px] max-h-[92vh]">
+            <DialogContent className="max-w-4xl p-3 md:p:6">
                 <DialogHeader className="pb-2 md:pb-4">
                     <DialogTitle className="text-xl font-semibold flex items-center gap-2">Thêm nhiều từ vựng mới</DialogTitle>
-                    <DialogDescription>
-                        <p>Bạn có thể ghi tiếng việt vào và bấm tạo bằng AI, AI sẽ tự động chuyển từ thành tiếng bạn muốn</p>
-                    </DialogDescription>
+                    <DialogDescription className="text-left">Bạn có thể ghi tiếng việt vào và bấm tạo bằng AI, AI sẽ tự động chuyển từ thành tiếng bạn muốn</DialogDescription>
                 </DialogHeader>
 
                 <div className="">
                     <div className="space-y-6">
                         {/* Main Word Section */}
-                        <Card className="border-blue-100 bg-blue-50/30 dark:bg-slate-800/50 dark:border-white/10 h-[350px]  overflow-y-scroll">
-                            <CardContent className="space-y-4 mt-3 md:mt-6">
+                        <Card className="border-blue-100 bg-blue-50/30 dark:bg-slate-800/50 dark:border-white/10 ">
+                            <CardContent className="space-y-4 p-3 md:p-6">
                                 <div className="flex gap-2">
                                     <Textarea id="title" value={vocabulary} onChange={(e) => setVocabulary(e.target.value)} autoFocus autoComplete="off" maxLength={200} placeholder="VD: extraordinary, beautiful, huge, etc." className="flex-1 h-32" />
                                 </div>
-                                <Button type="button" onClick={handleAIGenerate} disabled={isGenerating} className="dark:text-white gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
+                                <Button type="button" onClick={handleAIGenerate} disabled={isGenerating} className="dark:text-white gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 w-full">
                                     {isGenerating ? <Loading /> : <Sparkles className="w-4 h-4" />}
 
                                     {isGenerating ? "Đang tạo..." : "Tạo bằng AI"}
                                 </Button>
-                                <div className="flex justify-between items-center bg-gray-100 text-slate-500  dark:bg-slate-600/50 p-3 rounded-lg">
+                                <div className="flex justify-between items-center bg-gray-100 text-slate-400  dark:bg-slate-600/50 p-3 rounded-lg">
                                     <p className="text-xs ">Các từ vựng cách nhau bằng dấu phẩy</p>
-                                    <span className="text-xs">
+                                    <span className="text-xs text-end">
                                         {vocabulary.split(",").length}/24 từ {" | Mất khoảng:" + Math.floor(vocabulary.split(" ").length * 1.4 + vocabulary.split(" ").length) + "s"}
                                     </span>
                                 </div>
-                                <div className="flex justify-between items-center bg-gray-100 text-slate-500 dark:bg-slate-600/50 p-3 rounded-lg">
+                                <div className="flex justify-between items-center bg-gray-100 text-slate-400 dark:bg-slate-600/50 p-3 rounded-lg">
                                     <p className="text-xs ">Các câu cách nhau bằng dấu chấm phẩy</p>
                                     <span className="text-xs text-right ">
                                         {vocabulary.split(";").length} câu {" | " + vocabulary.length}/200 chữ

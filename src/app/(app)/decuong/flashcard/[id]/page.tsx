@@ -38,7 +38,7 @@ export default function TaiLieuFlashcard({ params }: any) {
     useEffect(() => {
         const fetchFlashCards = async () => {
             // const req = await GET_API(`/flashcards/${params?.slug}`, token);
-            const req = await GET_API_WITHOUT_COOKIE(`/admin/suboutline/${params.id}`)
+            const req = await GET_API_WITHOUT_COOKIE(`/so/${params.id}`)
             const result = req?.quest?.data_so
 
             setFlashcards(shuffle(result))
@@ -287,7 +287,9 @@ export default function TaiLieuFlashcard({ params }: any) {
                                     <div className="bg-gray-100 dark:bg-slate-800/50 border border-white/10 p-4 rounded-lg">
                                         <div className="flex justify-between mb-2">
                                             <span>Đã học:</span>
-                                            <span>{progress.known.length}</span>
+                                            <span>
+                                                {progress.known.length}/{flashcards.length}
+                                            </span>
                                         </div>
 
                                         <div className="mt-2 h-2 bg-gray-200 dark:bg-gray-500/50 rounded-full overflow-hidden">

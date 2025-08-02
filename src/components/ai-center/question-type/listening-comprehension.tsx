@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Textarea } from "@/components/ui/textarea"
-import { Play, Volume2, RotateCcw } from "lucide-react"
+import { Play, Volume2, RotateCcw, Pause } from "lucide-react"
 import { IListeningComprehensionQuestion } from "@/types/typeEnglishExam"
 import { EdgeSpeechTTS } from "@lobehub/tts"
 import { toast } from "sonner"
@@ -81,7 +81,11 @@ export function ListeningComprehensionQuestion({ question }: { question: IListen
     }, [audioRef])
 
     const handlePlayAudio = async () => {
-        if (isSpeaking) return // ✅ Ngăn spam click
+        if (isSpeaking) {
+            audioRef.current?.pause() // Dừng phát nếu đang phát
+            setIsSpeaking(false) // Cập nhật trạng thái
+            return
+        }
         setIsSpeaking(true) // ✅ Bắt đầu phát
         if (audioRef.current) {
             audioRef.current.src = audioUrlRef.current // Sử dụng ref để tránh tạo lại URL
@@ -108,20 +112,21 @@ export function ListeningComprehensionQuestion({ question }: { question: IListen
                             <>
                                 <audio ref={audioRef} onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)} onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)} />
                                 <div className="flex items-center gap-4 mb-4">
-                                    <Button onClick={handlePlayAudio} disabled={isSpeaking || loading} className="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white">
+                                    <Button onClick={handlePlayAudio} disabled={loading} className="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white">
                                         {isSpeaking ? (
                                             <>
-                                                <Volume2 className="w-5 h-5 animate-pulse" />
-                                                <span className="ml-2">Đang phát...</span>
+                                                <Pause className="w-5 h-5 animate-pulse" />
                                             </>
                                         ) : (
-                                            <Play className="w-5 h-5" />
+                                            <>
+                                                {" "}
+                                                <Play className="w-5 h-5" />
+                                            </>
                                         )}
                                     </Button>
 
                                     <Button variant="outline" onClick={handleRestart} className="border-slate-600 text-slate-300 bg-transparent">
                                         <RotateCcw className="w-4 h-4 mr-2" />
-                                        Nghe lại
                                     </Button>
 
                                     <div className="flex-1 text-slate-300 text-sm">
