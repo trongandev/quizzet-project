@@ -33,7 +33,7 @@ export function CreateFlashcardModal({ children, open, setOpen, listFlashCard, s
         title: "",
         language: "english",
         desc: "",
-        public: false, // Already boolean
+        public: true, // Already boolean
     })
     const handleSubmit = async (e: React.FormEvent) => {
         try {

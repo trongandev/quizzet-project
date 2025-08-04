@@ -60,7 +60,7 @@ export default function UpdateProfile({ isSettingsOpen, setIsSettingsOpen, user,
         }
         try {
             setLoading(true)
-            let imageUrl = ""
+            let imageUrl = user?.profilePicture
             if (selectedFile) {
                 const formData = new FormData()
 

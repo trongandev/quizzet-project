@@ -102,3 +102,74 @@ export function SubjectOutlineCreateForm({ onSubmit, onCancel, loading }: Create
         </>
     )
 }
+
+export function DailyTaskCreateForm({ onSubmit, onCancel, loading }: CreateFormProps) {
+    const defaultValue = {
+        taskId: "",
+        name: "",
+        description: "",
+        icon: "",
+        xpPerAction: 0, //XP thưởng cho mỗi lần hoàn thành
+        dailyLimitCount: 1, //Số lần tối đa có thể hoàn thành trong ngày
+        unlockLevel: 1, //Cấp độ mở khóa nhiệm vụ
+    }
+
+    const [data, setData] = useState(defaultValue)
+
+    const handleSubmit = async () => {
+        await onSubmit(data)
+        setData(defaultValue)
+    }
+
+    return (
+        <>
+            <DialogHeader>
+                <DialogTitle>Tạo nhiệm vụ mới</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+                <div className="flex gap-5">
+                    <div className="flex-1">
+                        <label className="block text-sm mb-1">Task ID</label>
+                        <Input placeholder="Task ID" value={data.taskId} onChange={(e) => setData({ ...data, taskId: e.target.value.toUpperCase() })} />
+                    </div>
+                    <div className="flex-1">
+                        <label className="block text-sm mb-1">Tên nhiệm vụ</label>
+                        <Input placeholder="Tên nhiệm vụ" value={data.name} onChange={(e) => setData({ ...data, name: e.target.value })} />
+                    </div>
+                </div>
+                <div>
+                    <label className="block text-sm mb-1">Mô tả</label>
+                    <Input placeholder="Mô tả" value={data.description} onChange={(e) => setData({ ...data, description: e.target.value })} />
+                </div>
+                <div>
+                    <label className="block text-sm mb-1">Icon</label>
+                    <Input placeholder="Icon" value={data.icon} onChange={(e) => setData({ ...data, icon: e.target.value })} />
+                </div>
+                <div className="flex gap-5">
+                    <div>
+                        <label className="block text-sm mb-1">XP thưởng mỗi lần hoàn thành</label>
+                        <Input type="number" placeholder="XP thưởng mỗi lần hoàn thành" value={data.xpPerAction} onChange={(e) => setData({ ...data, xpPerAction: parseInt(e.target.value) })} />
+                    </div>
+                    <div>
+                        <label className="block text-sm mb-1">Số lần tối đa trong ngày</label>
+                        <Input type="number" placeholder="Số lần tối đa trong ngày" value={data.dailyLimitCount} onChange={(e) => setData({ ...data, dailyLimitCount: parseInt(e.target.value) })} />
+                    </div>
+                    <div>
+                        <label className="block text-sm mb-1">Cấp độ mở khóa</label>
+                        <Input type="number" placeholder="Cấp độ mở khóa" value={data.unlockLevel} onChange={(e) => setData({ ...data, unlockLevel: parseInt(e.target.value) })} />
+                    </div>
+                </div>
+            </div>
+            <DialogFooter>
+                <Button variant="outline" onClick={onCancel}>
+                    <X className="mr-2" />
+                    Hủy
+                </Button>
+                <Button onClick={handleSubmit} disabled={loading} className="text-white">
+                    {loading ? <Loading /> : <Save />}
+                    Lưu nhiệm vụ
+                </Button>
+            </DialogFooter>
+        </>
+    )
+}

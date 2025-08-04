@@ -4,7 +4,7 @@ import { GET_API_WITHOUT_COOKIE } from "./fetchAPI"
 export const getCachedQuizzet = unstable_cache(
     async () => {
         const response = await GET_API_WITHOUT_COOKIE("/quiz")
-        return response.quiz
+        return response?.quiz
     },
     ["quizzet"],
     {

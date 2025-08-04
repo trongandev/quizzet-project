@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { User, Calendar, Mail, Shield, Globe, Lock, Edit, Save, X } from "lucide-react"
-import { IUser, IQuiz, IHistory, IListFlashcard, ISO, IReport } from "@/types/type"
+import { IUser, IQuiz, IHistory, IListFlashcard, ISO, IReport, IDailyTask } from "@/types/type"
 import handleCompareDate from "@/lib/CompareDate"
 import Image from "next/image"
 import { useState, useEffect } from "react"
@@ -19,7 +19,7 @@ interface GenericModalProps {
     isOpen: boolean
     onClose: () => void
     data: any
-    type: "user" | "quiz" | "history" | "flashcard" | "subjectOutline" | "report"
+    type: "user" | "quiz" | "history" | "flashcard" | "subjectOutline" | "report" | "task"
     onSave?: (updatedData: any) => Promise<void>
 }
 
@@ -464,6 +464,62 @@ export function GenericModal({ isOpen, onClose, data, type, onSave }: GenericMod
         </div>
     )
 
+    const renderTaskDetails = (task: IDailyTask) => {
+        if (isEditing) {
+            return (
+                <div className="space-y-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="title">Tiêu đề</Label>
+                        <Input id="title" value={editData.title || ""} onChange={(e) => setEditData({ ...editData, title: e.target.value })} />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="description">Mô tả</Label>
+                        <Textarea id="description" value={editData.description || ""} onChange={(e) => setEditData({ ...editData, description: e.target.value })} rows={3} />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="status">Trạng thái</Label>
+                            <Select value={editData.status} onValueChange={(value) => setEditData({ ...editData, status: value })}>
+                                <SelectTrigger>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="pending">Chờ xử lý</SelectItem>
+                                    <SelectItem value="completed">Đã hoàn thành</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="dueDate">Hạn chót</Label>
+                            <Input type="date" id="dueDate" value={editData.dueDate || ""} onChange={(e) => setEditData({ ...editData, dueDate: e.target.value })} />
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+
+        return (
+            <div className="space-y-4">
+                <h3 className="text-lg font-semibold">{task.name}</h3>
+                <p className="text-muted-foreground text-sm">{task.description}</p>
+
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="flex items-center gap-2">
+                        <span className="text-sm">Trạng thái:</span>
+                        <Badge variant={task.isActive ? "secondary" : "default"}>{task.isActive ? "Thiển thị" : "Ẩn"}</Badge>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span className="text-sm">Ngày tạo:</span>
+                        <span className="text-sm">{handleCompareDate(task.createdAt)}</span>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     const renderContent = () => {
         switch (type) {
             case "user":
@@ -478,6 +534,8 @@ export function GenericModal({ isOpen, onClose, data, type, onSave }: GenericMod
                 return renderSubjectOutlineDetails(data as ISO)
             case "report":
                 return renderReportDetails(data as IReport)
+            case "task":
+                return renderTaskDetails(data as IDailyTask)
             default:
                 return <div>Không có dữ liệu để hiển thị</div>
         }
@@ -497,12 +555,14 @@ export function GenericModal({ isOpen, onClose, data, type, onSave }: GenericMod
                 return "Chi tiết đề cương"
             case "report":
                 return "Chi tiết báo cáo"
+            case "task":
+                return "Chi tiết nhiệm vụ"
             default:
                 return "Chi tiết"
         }
     }
 
-    const canEdit = ["user", "quiz", "flashcard", "subjectOutline"].includes(type)
+    const canEdit = ["user", "quiz", "flashcard", "subjectOutline", "task"].includes(type)
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>

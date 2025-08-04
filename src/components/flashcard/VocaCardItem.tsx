@@ -177,11 +177,12 @@ export default function VocaCardItem({ data, speakWord, loadingAudio, setIsEditO
                                     </Button>
                                 </div>
                                 <div className={`flex items-center gap-2 mb-3 ${viewMode === "simple" ? "hidden" : ""}`}>
-                                    <p className={`text-base text-gray-400 font-mono`}>{listFlashcard.isHiddenTranscription ? "..." : data.transcription}</p>
+                                    <p className={`text-base text-gray-400 font-mono ${listFlashcard.isHiddenTranscription && "hidden"}`}>{data.transcription}</p>
                                     <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-gray-400 hover:text-gray-400" disabled={loadingAudio} onClick={() => speakWord(data.title, data._id)}>
                                         {loadingAudio ? <Loading /> : <Volume2 className="w-4 h-4" />}
                                     </Button>
                                     <span className={`text-sm text-gray-600 bg-gray-50 dark:bg-gray-800 dark:text-gray-300 px-2 py-1 rounded`}>{data.type_of_word || "N/A"}</span>
+                                    <span className={`text-sm text-gray-600 bg-gray-50 dark:bg-gray-800 dark:text-gray-300 px-2 py-1 rounded`}>{data.level || "A1"}</span>
                                 </div>
                             </div>
                         </div>

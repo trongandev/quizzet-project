@@ -154,6 +154,7 @@ interface Flashcard {
     language: string
     type_of_word: string
     transcription: string
+    level: string
     example: Example[]
     note: string
     nextReviewDate: Date

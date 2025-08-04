@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { IDailyTask } from "@/types/type"
 import { GenericAdminPage } from "./GenericAdminPage"
-import { SubjectOutlineCreateForm } from "./CreateForm"
+import { DailyTaskCreateForm } from "./CreateForm"
 import Cookies from "js-cookie"
 import { POST_API } from "@/lib/fetchAPI"
 import { toast } from "sonner"
@@ -15,27 +15,21 @@ export default function CDailyTask({ tasks }: { tasks: IDailyTask[] }) {
     const [task, setTask] = useState<IDailyTask[]>(tasks)
     const token = Cookies.get("token") || ""
 
-    const handleCreateSubjectOutline = async (data: any) => {
+    const handleSubmit = async (data: any) => {
         try {
-            const req = await POST_API("/so", data, "POST", token)
+            const req = await POST_API("/task", data, "POST", token)
             const res = await req?.json()
             if (res?.ok) {
                 setTask((prev) => [...prev, res.data])
-                toast.success("Đề cương đã được gửi thành công!", {
-                    description: "Bạn có thể kiểm tra trong danh sách đề cương.",
-                })
+                toast.success(res.message)
             } else {
-                toast.error("Lỗi khi gửi đề cương: ", {
-                    description: res?.message || "Vui lòng thử lại sau.",
-                })
-                throw new Error(res?.message || "Failed to create subject outline")
+                toast.error(res?.message)
+                return
             }
         } catch (error: any) {
             console.error("Error sending SO JSON:", error.message)
-            toast.error("Lỗi khi gửi đề cương: ", {
-                description: error.message,
-            })
-            throw error
+            toast.error(error.message)
+            return
         }
     }
 
@@ -45,5 +39,5 @@ export default function CDailyTask({ tasks }: { tasks: IDailyTask[] }) {
         return <GenericDataTable data={data} columns={DailyTaskColumns} searchKey="title" searchPlaceholder="Tìm kiếm theo tiêu đề quiz..." modalType={modalType as any} />
     }
 
-    return <GenericAdminPage config={dailyTaskAdminConfig} data={tasks} dataTableComponent={DataTable} createFormComponent={SubjectOutlineCreateForm} onCreateItem={handleCreateSubjectOutline} />
+    return <GenericAdminPage config={dailyTaskAdminConfig} data={task} dataTableComponent={DataTable} createFormComponent={DailyTaskCreateForm} onCreateItem={handleSubmit} />
 }

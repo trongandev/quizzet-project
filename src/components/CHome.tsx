@@ -6,7 +6,7 @@ import "@/app/globals.css"
 import CQuiz from "./quiz/CQuiz"
 import { IListFlashcard, IQuiz } from "@/types/type"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, BookOpen, Brain, Chrome, Sparkles, FileText, Github, Save, Zap, X } from "lucide-react"
+import { ArrowRight, BookOpen, Brain, Chrome, Sparkles, FileText, Github, Save, Zap, X, Users, Star, TrendingUp } from "lucide-react"
 import { Badge } from "./ui/badge"
 import { Card, CardContent } from "./ui/card"
 import PublicFCHome from "./flashcard/PublicFCHome"
@@ -16,6 +16,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import Image from "next/image"
 import Cookies from "js-cookie"
 import { useUser } from "@/context/userContext"
+import RotatingText from "@/components/RotatingText"
 export default function CHome({ quizData, publicFlashcards }: { quizData: IQuiz[]; publicFlashcards: IListFlashcard[] }) {
     const router = useRouter()
     const [isOpen, setIsOpen] = useState(false)
@@ -78,6 +79,12 @@ export default function CHome({ quizData, publicFlashcards }: { quizData: IQuiz[
             cta: "Tạo Flashcard ngay",
             gradient: "from-blue-500 to-purple-600",
             embed: "https://demo.arcade.software/VEOX7fL248JaEgeFmRtK?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true",
+            badge: (
+                <>
+                    <TrendingUp className="w-3 h-3 mr-1" />
+                    Phổ biến
+                </>
+            ),
         },
         {
             title: "Quiz AI",
@@ -87,6 +94,12 @@ export default function CHome({ quizData, publicFlashcards }: { quizData: IQuiz[
             cta: "Tạo Quiz ngay",
             gradient: "from-cyan-500 to-blue-600",
             embed: "https://demo.arcade.software/zxjxwTDfQK8IAD91LsrX?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true",
+            badge: (
+                <>
+                    <Star className="w-3 h-3 mr-1" />
+                    Thú vị
+                </>
+            ),
         },
         {
             title: "Đề cương học tập",
@@ -96,57 +109,89 @@ export default function CHome({ quizData, publicFlashcards }: { quizData: IQuiz[
             cta: "Xem Đề cương",
             gradient: "from-purple-500 to-pink-600",
             embed: "https://demo.arcade.software/4cxqqq721iga7KmMpcGQ?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true",
+            badge: (
+                <>
+                    <Users className="w-3 h-3 mr-1" />
+                    Cộng đồng
+                </>
+            ),
         },
     ]
     return (
         <div className="text-gray-700">
             <div className="px-2  dark:text-white space-y-20">
-                <div className=" dark:text-white text-center space-y-7 px-5 md:p-0 w-full md:w-[700px] lg:w-[900px] mx-auto">
-                    <h1 className="font-bold text-3xl md:text-5xl ">
-                        Chào mừng bạn đến với <span className="bg-gradient-to-r from-blue-800 to-purple-800 dark:from-blue-500 dark:to-purple-500 text-transparent bg-clip-text">Quizzet</span>
-                    </h1>
-                    <p className="max-w-2xl mx-auto text-[14px] md:text-lg">Nền tảng học tập dựa trên sức mạnh AI, tạo nhanh thẻ lật, bài trắc nghiệm cực đơn giản chỉ vài cú click</p>
-                </div>
-
-                {introFeatures.map((feature, index) => (
-                    <div className={`text-center flex flex-col-reverse md:flex-row flex-1 ${index == 1 && "flex-row-reverse"} gap-10`} key={index}>
-                        <div
-                            style={{
-                                position: "relative",
-                                paddingBottom: "calc(50.520833333333336% + 41px)",
-                                height: 0,
-                                width: "100%",
-                            }}
-                        >
-                            <iframe
-                                src={feature.embed}
-                                title="Tạo bộ flashcard mới để học từ vựng"
-                                frameBorder="0"
-                                loading="lazy"
-                                allowFullScreen
-                                allow="clipboard-write"
-                                style={{
-                                    position: "absolute",
-                                    top: 0,
-                                    left: 0,
-                                    width: "100%",
-                                    height: "100%",
-                                    colorScheme: "light",
-                                }}
-                            />
-                        </div>
-                        <div className="w-full md:w-[400px] flex justify-center flex-col gap-3">
-                            <div className={`w-16 h-16 bg-gradient-to-r ${feature.gradient}  rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform mx-auto`}>{feature.icon}</div>
-                            <h1 className="font-semibold text-2xl">{feature.title}</h1>
-                            <p className="text-gray-500 dark:text-white/60">{feature.description}</p>
-                            <Link href={feature.link} className="block mt-3 w-full hover:scale-105">
-                                <Button variant="secondary" className={`bg-gradient-to-r ${feature.gradient} h-10 text-white`}>
-                                    {feature.cta} <ArrowRight />
-                                </Button>
-                            </Link>
+                <div className="">
+                    <div className=" dark:text-white text-center space-y-7 px-5 md:p-0 w-full md:w-[700px] lg:w-[900px] mx-auto">
+                        <div className="font-bold text-3xl md:text-5xl flex gap-2 items-center justify-center md:flex-row flex-col ">
+                            <span className="bg-gradient-to-r from-blue-800 to-purple-800 dark:from-blue-500 dark:to-purple-500 text-transparent bg-clip-text">Quizzet</span>{" "}
+                            <div className="flex gap-1 items-center md:flex-row flex-col ">
+                                nền tảng tạo
+                                <RotatingText
+                                    texts={["Dựa trên AI", "Flashcard", "Quiz"]}
+                                    mainClassName="px-2 sm:px-2 md:px-3 bg-cyan-300 text-black overflow-hidden py-0.5 sm:py-1 md:py-2 justify-center rounded-lg !bg-blue-500 text-white"
+                                    staggerFrom={"last"}
+                                    initial={{ y: "100%" }}
+                                    animate={{ y: 0 }}
+                                    exit={{ y: "-120%" }}
+                                    staggerDuration={0.025}
+                                    splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1 md:pb-1"
+                                    transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                                    rotationInterval={2000}
+                                />
+                            </div>
                         </div>
                     </div>
-                ))}
+                    <div
+                        style={{
+                            position: "relative",
+                            paddingBottom: "calc(50.520833333333336% + 41px)",
+                            height: 0,
+                            width: "100%",
+                        }}
+                    >
+                        <iframe
+                            src="https://demo.arcade.software/VEOX7fL248JaEgeFmRtK?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true"
+                            title="Tạo bộ flashcard mới để học từ vựng"
+                            frameBorder="0"
+                            loading="lazy"
+                            allowFullScreen
+                            allow="clipboard-write"
+                            style={{
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                width: "100%",
+                                height: "100%",
+                                colorScheme: "light",
+                            }}
+                        />
+                    </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-8">
+                    {introFeatures.map((feature, index) => (
+                        <Card
+                            key={index}
+                            onClick={() => router.push(feature.link)}
+                            className="cursor-pointer dark:border-white/10 group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 dark:border  dark:from-blue-900/50 dark:to-indigo-900/50 dark:hover:from-blue-900 dark:hover:to-indigo-900 overflow-hidden relative hover:scale-105 "
+                        >
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
+
+                            <CardContent className="p-5 md:p-8">
+                                <div className={`w-16 h-16 bg-gradient-to-r ${feature.gradient} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                                    <FileText className="w-8 h-8 text-white  rotate-0 group-hover:rotate-180 transition-all duration-500" />
+                                </div>
+                                <h3 className="text-2xl font-bold text-slate-900 mb-4 dark:text-slate-200">{feature.title}</h3>
+                                <p className="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">{feature.description}</p>
+                                <div className="flex items-center justify-between">
+                                    <Button className={`bg-gradient-to-r ${feature.gradient} text-white hover:opacity-80`}>Tìm hiểu thêm</Button>
+                                    <Badge variant="secondary" className="bg-indigo-100 text-indigo-700 dark:bg-indigo-800 dark:text-indigo-200">
+                                        {feature.badge}
+                                    </Badge>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
 
                 {/* Public Flashcards */}
                 <PublicFCHome publicFlashcards={publicFlashcards} />

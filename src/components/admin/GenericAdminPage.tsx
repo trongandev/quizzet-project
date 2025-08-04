@@ -23,7 +23,7 @@ export interface AdminPageConfig {
     createButtonText?: string
     showCreateButton?: boolean
     statCards: StatCard[]
-    modalType?: "user" | "quiz" | "history" | "flashcard" | "subjectOutline" | "report" | "dailyTask"
+    modalType?: "user" | "quiz" | "history" | "flashcard" | "subjectOutline" | "report" | "dailyTask" | "task"
     onSave?: (data: any) => Promise<void>
 }
 

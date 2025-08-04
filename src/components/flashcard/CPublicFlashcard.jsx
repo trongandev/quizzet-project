@@ -1,31 +1,33 @@
 "use client"
 import { GET_API } from "@/lib/fetchAPI"
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import { languages } from "@/lib/languageOption"
 import Cookies from "js-cookie"
 import PublicFC from "./PublicFC"
-import { ChevronLeft, ChevronRight, Eye, Globe, Info, Plus, Search, Users, X } from "lucide-react"
+import { Eye, Globe, Info, Plus, Search, Users, X } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "../ui/input"
 import { CreateFlashcardModal } from "@/components/flashcard/CreateFlashcardModal"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import UserFC from "@/components/flashcard/UserFC"
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem } from "../ui/pagination"
-import { cn } from "@/lib/utils"
 import Loading from "../ui/loading"
 import CDataWordsFC from "./CDataWordsFC"
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogFooter, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import PaginationUI from "@/components/PaginationUI"
+import { useRouter, useSearchParams } from "next/navigation"
 export default function CPublicFlashCard({ publicFlashcards, summary }) {
+    const router = useRouter()
+    const searchParams = useSearchParams()
     const [loading, setLoading] = useState(false)
     const [language, setLanguage] = useState("all")
     const [searchFC, setSearchFC] = useState("")
     const [filterFlashcard, setFilterFlashcard] = useState([])
     const [listFlashCard, setListFlashCard] = useState([])
     const [successFC, setSuccessFC] = useState([])
-    const [tabFlashcard, setTabFlashcard] = useState("my-sets") // my-sets | community
+    const [tabFlashcard, setTabFlashcard] = useState(searchParams.get("tab") || "my-sets") // my-sets | community | success-fc
     const [data, setData] = useState(publicFlashcards)
     // Pagination states
-    const [currentPage, setCurrentPage] = useState(1)
+    const [currentPage, setCurrentPage] = useState(searchParams.get("page") || 1)
     const [itemsPerPage, setItemsPerPage] = useState(8)
     const totalItems = data?.length
     const totalPages = Math.ceil(totalItems / itemsPerPage)
@@ -38,6 +40,121 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
     const handleClose = () => {
         setIsOpen(false)
         localStorage.setItem("tutorialFC", "true") // Lưu trạng thái đã xem
+    }
+
+    const filterData = useCallback(
+        (langCode, searchValue, flashcards = publicFlashcards) => {
+            let filtered = flashcards
+
+            // Apply language filter
+            if (langCode !== "all") {
+                filtered = filtered.filter((item) => item.language === langCode)
+            }
+
+            // Apply search filter
+            if (searchValue.trim()) {
+                filtered = filtered.filter((item) => item.title.toLowerCase().includes(searchValue.toLowerCase()))
+            }
+
+            return filtered
+        },
+        [publicFlashcards]
+    )
+    const updateURL = useCallback(
+        (tab, page, lang, search) => {
+            if (tab !== "community") {
+                // ✅ Nếu không phải community tab, chỉ set tab
+                const params = new URLSearchParams()
+                params.set("tab", tab)
+                router.replace(`/flashcard?${params.toString()}`, { scroll: false })
+                return
+            }
+            const params = new URLSearchParams()
+            params.set("tab", tab)
+            params.set("page", page.toString())
+
+            if (lang !== "all") {
+                params.set("language", lang)
+            }
+            if (search.trim()) {
+                params.set("search", search)
+            }
+
+            router.replace(`/flashcard?${params.toString()}`, { scroll: false })
+        },
+        [router]
+    )
+
+    const handleTabChange = (newTab) => {
+        setTabFlashcard(newTab)
+        setCurrentPage(1) // Reset về trang 1 khi đổi tab
+        updateURL(newTab, 1, language, searchFC)
+    }
+
+    // ✅ Handle page change với URL update
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage)
+        updateURL(tabFlashcard, newPage, language, searchFC)
+    }
+
+    // ✅ Sync với URL params khi component mount
+    useEffect(() => {
+        const urlTab = searchParams.get("tab")
+        const urlPage = searchParams.get("page")
+        const urlLanguage = searchParams.get("language")
+        const urlSearch = searchParams.get("search")
+
+        // ✅ Chỉ update state, không gọi filter functions
+        if (urlTab && urlTab !== tabFlashcard) {
+            setTabFlashcard(urlTab)
+        }
+        if (urlPage && parseInt(urlPage) !== currentPage) {
+            setCurrentPage(parseInt(urlPage))
+        }
+        if (urlLanguage && urlLanguage !== language) {
+            setLanguage(urlLanguage)
+        }
+        if (urlSearch && urlSearch !== searchFC) {
+            setSearchFC(urlSearch)
+        }
+    }, [searchParams])
+
+    useEffect(() => {
+        if (tabFlashcard === "community") {
+            const filtered = filterData(language, searchFC)
+            setData(filtered)
+        }
+    }, [language, searchFC, tabFlashcard, publicFlashcards, filterData])
+
+    // ✅ Handle language filter với URL update
+    const handleLanguageFilter = (langCode) => {
+        setLanguage(langCode)
+        setCurrentPage(1) // Reset về trang 1
+
+        if (langCode === "all") {
+            setData(publicFlashcards)
+        } else {
+            const filtered = publicFlashcards.filter((item) => item.language === langCode)
+            setData(filtered)
+        }
+
+        updateURL(tabFlashcard, 1, langCode, searchFC)
+    }
+
+    // ✅ Handle search với URL update
+    const handleSearchFC = (value) => {
+        setSearchFC(value)
+        setCurrentPage(1) // Reset về trang 1
+
+        if (tabFlashcard === "community") {
+            const search = publicFlashcards.filter((item) => item.title.toLowerCase().includes(value.toLowerCase()))
+            setData(search)
+        } else {
+            const search = listFlashCard.filter((item) => item.title.toLowerCase().includes(value.toLowerCase()))
+            setFilterFlashcard(search)
+        }
+
+        updateURL(tabFlashcard, 1, language, value)
     }
 
     useEffect(() => {
@@ -66,93 +183,6 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
         fetchListFlashCard()
     }, [token, publicFlashcards])
 
-    const handleSearchFC = (value) => {
-        setSearchFC(value)
-        if (tabFlashcard === "community") {
-            const search = publicFlashcards.filter((item) => item.title.toLowerCase().includes(value.toLowerCase()))
-            setData(search)
-            setCurrentPage(1) // Reset to first page after search
-        } else {
-            const search = listFlashCard.filter((item) => item.title.toLowerCase().includes(value.toLowerCase()))
-            setFilterFlashcard(search)
-        }
-    }
-
-    // Handle language filter for community tab
-    const handleLanguageFilter = (langCode) => {
-        setLanguage(langCode)
-        if (langCode === "all") {
-            setData(publicFlashcards)
-        } else {
-            const filtered = publicFlashcards.filter((item) => item.language === langCode)
-            setData(filtered)
-        }
-    }
-
-    // Handle page change
-    const handlePageChange = (page) => {
-        setCurrentPage(page)
-    }
-
-    const handlePrevious = () => {
-        if (currentPage > 1) {
-            handlePageChange(currentPage - 1)
-        }
-    }
-
-    const handleNext = () => {
-        if (currentPage < totalPages) {
-            handlePageChange(currentPage + 1)
-        }
-    }
-
-    // Generate page numbers for pagination
-    const getPageNumbers = () => {
-        const pages = []
-        const maxVisiblePages = itemsPerPage ? 3 : 5 // Ít hơn trên mobile
-
-        if (totalPages <= maxVisiblePages) {
-            for (let i = 1; i <= totalPages; i++) {
-                pages.push(i)
-            }
-        } else {
-            if (itemsPerPage) {
-                // ✅ Logic đơn giản hơn cho mobile
-                if (currentPage === 1) {
-                    pages.push(1, 2, "...", totalPages)
-                } else if (currentPage === totalPages) {
-                    pages.push(1, "...", totalPages - 1, totalPages)
-                } else {
-                    pages.push(1, "...", currentPage, "...", totalPages)
-                }
-            } else {
-                // Logic cũ cho desktop
-                if (currentPage <= 3) {
-                    for (let i = 1; i <= 4; i++) {
-                        pages.push(i)
-                    }
-                    pages.push("...")
-                    pages.push(totalPages)
-                } else if (currentPage >= totalPages - 2) {
-                    pages.push(1)
-                    pages.push("...")
-                    for (let i = totalPages - 3; i <= totalPages; i++) {
-                        pages.push(i)
-                    }
-                } else {
-                    pages.push(1)
-                    pages.push("...")
-                    for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-                        pages.push(i)
-                    }
-                    pages.push("...")
-                    pages.push(totalPages)
-                }
-            }
-        }
-
-        return pages
-    }
     return (
         <div className=" py-5 pt-20 flex justify-center items-center">
             <div className="text-third dark:text-white px-3 md:px-0 min-h-screen w-full md:w-[1000px] xl:w-[1200px]">
@@ -205,7 +235,7 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
                     {/* Statistics Cards with Dynamic Layout */}
                     {token && listFlashCard && listFlashCard.length > 0 && <CDataWordsFC summary={summary} />}
                 </div>
-                <Tabs defaultValue="my-sets" className="mt-8" value={tabFlashcard} onValueChange={setTabFlashcard}>
+                <Tabs defaultValue="my-sets" className="mt-8" value={tabFlashcard} onValueChange={handleTabChange}>
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <TabsList className="grid w-full sm:w-auto grid-cols-3 bg-gray-100 dark:bg-slate-600">
                             <TabsTrigger value="my-sets" className="data-[state=active]:bg-white dark:data-[state=active]:bg-slate-800 data-[state=active]:text-primary">
@@ -291,76 +321,8 @@ export default function CPublicFlashCard({ publicFlashcards, summary }) {
 
                                 {publicFlashcards?.length <= 0 && <div className="h-[350px] col-span-full flex items-center justify-center text-gray-700 dark:text-gray-300">Không có dữ liệu...</div>}
                             </div>
-                            {/* Pagination */}
-                            {totalPages > 1 && (
-                                <Pagination>
-                                    <PaginationContent>
-                                        <PaginationItem>
-                                            <button
-                                                onClick={handlePrevious}
-                                                disabled={currentPage === 1}
-                                                className={cn(
-                                                    "gap-1 pl-2.5",
-                                                    buttonVariants({
-                                                        variant: "ghost",
-                                                    }),
-                                                    currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"
-                                                )}
-                                            >
-                                                <ChevronLeft className="h-4 w-4" />
-                                                <span>Previous</span>
-                                            </button>
-                                        </PaginationItem>
 
-                                        {getPageNumbers().map((page, index) => (
-                                            <PaginationItem key={index}>
-                                                {page === "..." ? (
-                                                    <PaginationEllipsis />
-                                                ) : (
-                                                    <button
-                                                        onClick={() => handlePageChange(page)}
-                                                        className={cn(
-                                                            buttonVariants({
-                                                                variant: currentPage === page ? "outline" : "ghost",
-                                                                size: "sm",
-                                                            }),
-                                                            "cursor-pointer"
-                                                        )}
-                                                        aria-current={currentPage === page ? "page" : undefined}
-                                                    >
-                                                        {page}
-                                                    </button>
-                                                )}
-                                            </PaginationItem>
-                                        ))}
-
-                                        <PaginationItem>
-                                            <button
-                                                onClick={handleNext}
-                                                disabled={currentPage === totalPages}
-                                                className={cn(
-                                                    "gap-1 pr-2.5",
-                                                    buttonVariants({
-                                                        variant: "ghost",
-                                                    }),
-                                                    currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"
-                                                )}
-                                            >
-                                                <span>Next</span>
-                                                <ChevronRight className="h-4 w-4" />
-                                            </button>
-                                        </PaginationItem>
-                                    </PaginationContent>
-                                </Pagination>
-                            )}{" "}
-                            {/* Pagination Info */}
-                            {totalPages > 1 && (
-                                <div className="flex justify-center mt-2">
-                                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                                        Hiển thị {startIndex + 1}-{Math.min(endIndex, totalItems)} trên tổng {totalItems} Flashcard | Trang {currentPage} / {totalPages}
-                                    </p>
-                                </div>
-                            )}
+                            <PaginationUI data={publicFlashcards} itemsPerPage={itemsPerPage} currentPage={currentPage} setCurrentPage={handlePageChange} startIndex={startIndex} endIndex={endIndex} totalPages={totalPages} totalItems={totalItems} />
                         </div>
                     </TabsContent>
                     <TabsContent value="success-fc">

@@ -411,7 +411,7 @@ export default function CFlashcardDetail({ id_flashcard }: any) {
                 {filteredFlashcards && filteredFlashcards?.length > 0 ? (
                     filteredFlashcards.map((item: Flashcard) => <VocaCardItem key={item._id} data={item} speakWord={speakWord} loadingAudio={loadingAudio} setEditFlashcard={setEditFlashcard} setIsEditOpen={setIsEditOpen} user={user} token={token} setFilteredFlashcards={setFilteredFlashcards} listFlashcard={listFlashcard} setListFlashcard={setListFlashcard} viewMode={viewMode} />)
                 ) : (
-                    <div className="col-span-3 text-center h-[80vh] flex flex-col gap-2 items-center justify-center">
+                    <div className="col-span-full text-center h-[80vh] flex flex-col gap-2 items-center justify-center">
                         <h1 className="text-xl">Không có từ vựng nào trong flashcard này</h1>
                         <p className="text-gray-500 ">Bạn hãy bấm vào nút thêm từ vựng để học nhé</p>
                     </div>

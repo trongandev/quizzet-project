@@ -16,6 +16,7 @@ export function optimizedPromptFCSingle(word: string, language: string) {
         "define": "", // Định nghĩa bằng tiếng Việt, ngắn gọn và dễ hiểu
         "type_of_word": "", // Loại từ (danh từ, động từ, tính từ, etc.)
         "transcription": "", // Phiên âm chuẩn theo từng ngôn ngữ
+        "level: "", // Cấp độ từ vựng (ví dụ: A1, B2, C1)
         "example": [
             {
             "en": "", // Câu ví dụ bằng ${language}
@@ -59,6 +60,7 @@ export function optimizedPromptFCMore(prompt: string, language: string) {
         "define": "", // Định nghĩa bằng tiếng Việt, ngắn gọn và dễ hiểu
         "type_of_word": "", // Loại từ (danh từ, động từ, tính từ, etc.)
         "transcription": "", // Phiên âm chuẩn theo từng ngôn ngữ
+        "level: "", // Cấp độ từ vựng (ví dụ: A1, B2, C1)
         "example": [
             {
             "en": "", // Câu ví dụ bằng ${language}, thêm phiên âm 

@@ -4,23 +4,21 @@ import React, { useEffect, useState } from "react"
 import { SiQuizlet } from "react-icons/si"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "../ui/input"
-import { Button, buttonVariants } from "../ui/button"
+import { Button } from "../ui/button"
 import { useRouter } from "next/navigation"
-import { ChevronLeft, ChevronRight, Info, Plus, Search, Users, X } from "lucide-react"
+import { Info, Plus, Search, Users, X } from "lucide-react"
 import Cookies from "js-cookie"
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem } from "../ui/pagination"
-import { cn } from "@/lib/utils"
 import { GET_API } from "@/lib/fetchAPI"
 import QuizItem from "./QuizItem"
 import Loading from "../ui/loading"
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogFooter, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import Link from "next/link"
+import PaginationUI from "@/components/PaginationUI"
 
 export default function CQuizPage({ publicQuizData }: { publicQuizData: IQuiz[] }) {
     const [isOpen, setIsOpen] = useState(false)
     const [tab, setTab] = useState("my")
     const [searchQuiz, setSearchQuiz] = useState("")
-    const [viewMode, setViewMode] = useState(4) // "grid 4x2" or "grid3x2"
     const token = Cookies.get("token") || ""
     const [loading, setLoading] = useState(false)
     const [filterQuiz, setFilterQuiz] = useState<IQuiz[]>([])
@@ -72,59 +70,6 @@ export default function CQuizPage({ publicQuizData }: { publicQuizData: IQuiz[] 
             setIsOpen(true)
         }
     }, [])
-
-    // Handle page change
-    const handlePageChange = (page: any) => {
-        setCurrentPage(page)
-    }
-
-    const handlePrevious = () => {
-        if (currentPage > 1) {
-            handlePageChange(currentPage - 1)
-        }
-    }
-
-    const handleNext = () => {
-        if (currentPage < totalPages) {
-            handlePageChange(currentPage + 1)
-        }
-    }
-
-    // Generate page numbers for pagination
-    const getPageNumbers = () => {
-        const pages = []
-        const maxVisiblePages = 5
-
-        if (totalPages <= maxVisiblePages) {
-            for (let i = 1; i <= totalPages; i++) {
-                pages.push(i)
-            }
-        } else {
-            if (currentPage <= 3) {
-                for (let i = 1; i <= 4; i++) {
-                    pages.push(i)
-                }
-                pages.push("...")
-                pages.push(totalPages)
-            } else if (currentPage >= totalPages - 2) {
-                pages.push(1)
-                pages.push("...")
-                for (let i = totalPages - 3; i <= totalPages; i++) {
-                    pages.push(i)
-                }
-            } else {
-                pages.push(1)
-                pages.push("...")
-                for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-                    pages.push(i)
-                }
-                pages.push("...")
-                pages.push(totalPages)
-            }
-        }
-
-        return pages
-    }
 
     return (
         <div className="flex items-center justify-center">
@@ -245,56 +190,7 @@ export default function CQuizPage({ publicQuizData }: { publicQuizData: IQuiz[] 
 
                                     {publicQuizData?.length <= 0 && <div className="h-[350px] col-span-full flex items-center justify-center text-gray-700 dark:text-gray-300">Không có dữ liệu...</div>}
                                 </div>
-                                {/* Pagination */}
-                                {totalPages > 1 && (
-                                    <Pagination>
-                                        <PaginationContent>
-                                            <PaginationItem>
-                                                <button onClick={handlePrevious} disabled={currentPage === 1} className={cn("gap-1 pl-2.5", buttonVariants({ variant: "ghost" }), currentPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer")}>
-                                                    <ChevronLeft className="h-4 w-4" />
-                                                    <span>Previous</span>
-                                                </button>
-                                            </PaginationItem>
-
-                                            {getPageNumbers().map((page, index) => (
-                                                <PaginationItem key={index}>
-                                                    {page === "..." ? (
-                                                        <PaginationEllipsis />
-                                                    ) : (
-                                                        <button
-                                                            onClick={() => handlePageChange(page)}
-                                                            className={cn(
-                                                                buttonVariants({
-                                                                    variant: currentPage === page ? "outline" : "ghost",
-                                                                    size: "sm",
-                                                                }),
-                                                                "cursor-pointer"
-                                                            )}
-                                                            aria-current={currentPage === page ? "page" : undefined}
-                                                        >
-                                                            {page}
-                                                        </button>
-                                                    )}
-                                                </PaginationItem>
-                                            ))}
-
-                                            <PaginationItem>
-                                                <button onClick={handleNext} disabled={currentPage === totalPages} className={cn("gap-1 pr-2.5", buttonVariants({ variant: "ghost" }), currentPage === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer")}>
-                                                    <span>Next</span>
-                                                    <ChevronRight className="h-4 w-4" />
-                                                </button>
-                                            </PaginationItem>
-                                        </PaginationContent>
-                                    </Pagination>
-                                )}{" "}
-                                {/* Pagination Info */}
-                                {totalPages > 1 && (
-                                    <div className="flex justify-center mt-2">
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                                            Hiển thị {startIndex + 1}-{Math.min(endIndex, totalItems)} trên tổng {totalItems} Flashcard | Trang {currentPage} / {totalPages}
-                                        </p>
-                                    </div>
-                                )}
+                                <PaginationUI data={publicQuizData} itemsPerPage={itemsPerPage} currentPage={currentPage} setCurrentPage={setCurrentPage} startIndex={startIndex} endIndex={endIndex} totalPages={totalPages} totalItems={totalItems} />
                             </div>
                         </TabsContent>
                     </Tabs>
