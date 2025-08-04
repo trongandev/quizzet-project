@@ -202,11 +202,11 @@ export default function CDeCuongTypeText({ findText }: { findText: ISO[] }) {
                     </div>
                 </div>
             </div>
-            <div className={`grid grid-cols-1 md:grid-cols-3 gap-4 ${viewMode === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"} h-[416px] overflow-y-scroll`}>
+            <div className={`grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4 ${viewMode === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"} h-[416px] overflow-y-scroll`}>
                 {displaySO?.map((item: any, index: any) => (
                     <div className="bg-white dark:bg-slate-800/50 hover:shadow-md rounded-xl h-[350px] md:h-[250px] flex flex-col md:flex-row overflow-hidden shadow-sm border border-white/10 group " key={index}>
                         <div className="relative overflow-hidden flex-1  h-full">
-                            <Image src={item.image} alt={item.title} className="object-cover absolute  hover:scale-105 transition-all duration-300" priority fill />
+                            <Image src={item.image} alt={item.title} className="object-cover absolute w-full   hover:scale-105 transition-all duration-300" priority fill />
                             <div className="absolute z-1 bottom-0 bg-linear-item w-full text-white text-[10px] p-2 font-bold ">
                                 <p className="flex gap-1 items-center">
                                     <FaRegQuestionCircle />
@@ -218,7 +218,7 @@ export default function CDeCuongTypeText({ findText }: { findText: ISO[] }) {
                                 </p>
                             </div>
                         </div>
-                        <div className="flex justify-between flex-col p-3">
+                        <div className="flex justify-between flex-col p-3 flex-1">
                             <h1 className="font-bold line-clamp-2 h-[48px]">{item.title}</h1>
                             <p className="text-sm text-slate-600 dark:text-slate-300">{item.content || "Không có mô tả..."}</p>
                             <div className="">

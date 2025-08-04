@@ -123,6 +123,45 @@ export function optimizedPromptQuiz(topic: string, description: string, question
             Chỉ trả về JSON thuần túy, không có markdown wrapper, không có giải thích gì thêm.`
 }
 
+export function optimizedPromptQuizTextOption(content: string, questionCount: number) {
+    return `Tôi cần một đối tượng JSON chứa tối đa ${questionCount} câu hỏi từ văn bản "${content}".
+    
+            **Yêu cầu chi tiết:**
+            * **Số lượng câu hỏi tối đa khi tạo:** Chính xác ${questionCount} câu.
+            * **Loại câu hỏi:** Tất cả câu hỏi phải là trắc nghiệm (multiple-choice).
+                * Mỗi câu hỏi có **4 lựa chọn** ("answers").
+                * Chỉ **một lựa chọn duy nhất** là đáp án đúng ("correct").
+
+            **Cấu trúc JSON mong muốn:**
+            {
+                "title": "Tiêu đề bài quiz",
+                "content": "Mô tả nội dung chi tiết",
+                "subject": "Môn học",
+                "questions": [{
+                    "id": 1,
+                    "question": "Nội dung câu hỏi",
+                    "answers": ["Đáp án A", "Đáp án B", "Đáp án C", "Đáp án D"],
+                    "correct": "0"
+                }]
+            }
+            
+            **Định dạng công thức toán học/vật lý:**
+            * Đối với công thức, đơn vị, ký hiệu khoa học: sử dụng LaTeX chuẩn
+            * Ví dụ inline math: Năng lượng là $E = mc^2$ 
+            * Ví dụ đơn vị: $252 \\text{ kJ}$, $9.8 \\text{ m/s}^2$
+            * Ví dụ phân số: $\\frac{1}{2}mv^2$
+            * QUAN TRỌNG: Trong JSON, escape ký tự backslash bằng cách viết \\\\ thay vì \\
+
+            **Lưu ý về escape characters:**
+            * Trong JSON string, ký tự \\ phải được viết thành \\\\
+            * Ví dụ: "252 \\\\text{ kJ}" sẽ render thành 252 \\text{ kJ}
+            * Ví dụ: "$E = mc^2$" không cần escape
+            * Ví dụ: "$\\\\frac{a}{b}$" sẽ render thành $\\frac{a}{b}$
+
+            **Đầu ra:**
+            Chỉ trả về JSON thuần túy, không có markdown wrapper, không có giải thích gì thêm.`
+}
+
 export const optimizedPromptGenerateTitle = (data: any) => {
     return `Bạn là một chuyên gia trong việc tạo tiêu đề hấp dẫn cho các bài quiz. Hãy đọc và dự đoán tiêu đề, nội dung, và môn học của bài quiz. Trả về một object định dạng JSON như cú pháp ở dưới, không có giải thích gì thêm.
     {

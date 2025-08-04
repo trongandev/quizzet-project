@@ -140,7 +140,7 @@ export default function CQuizPage({ publicQuizData }: { publicQuizData: IQuiz[] 
                             <div className="flex items-center flex-col md:flex-row gap-3">
                                 <div className="relative w-full ">
                                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                                    <Input placeholder="Tìm kiếm flashcard..." className="pl-10 w-full md:w-64 border border-gray-300 dark:border-white/10 " value={searchQuiz} onChange={(e) => handleSearchQuiz(e.target.value)} />
+                                    <Input placeholder="Tìm kiếm flashcard..." className="pl-10 w-full h-11 border border-gray-300 dark:border-white/10 " value={searchQuiz} onChange={(e) => handleSearchQuiz(e.target.value)} />
                                 </div>
                                 <Button onClick={() => router.push("/ai-center/create-with-ai/quiz-ai")} className="h-11 w-full md:w-auto px-10 relative group overflow-hidden  bg-gradient-to-r from-blue-500 to-purple-500 text-white">
                                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50  dark:via-white/10 to-transparent transition-all duration-500 translate-x-[-100%] group-hover:translate-x-[100%]"></div>
@@ -152,7 +152,7 @@ export default function CQuizPage({ publicQuizData }: { publicQuizData: IQuiz[] 
                         <TabsContent value="my">
                             <div>
                                 {token ? (
-                                    <div className="mt-10">
+                                    <div className="mt-3">
                                         <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-3 ">
                                             {filterQuiz && filterQuiz.map((item) => <QuizItem item={item} key={item._id} />)}
                                             {loading && (

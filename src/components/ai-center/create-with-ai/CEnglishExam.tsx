@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-import { ArrowLeft, Brain, FileText, ImageIcon, Volume2, Settings, Sparkles, Plus, Trash2, Edit3, Eye, CircleQuestionMark } from "lucide-react"
+import { FileText, ImageIcon, Settings, Sparkles, Eye, CircleQuestionMark } from "lucide-react"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 import { MultiSelect } from "@/components/ui/multi-select"
 import Loading from "@/components/ui/loading"
@@ -19,7 +19,7 @@ import { optimizedPromptEnglishExam } from "@/lib/optimizedPrompt"
 import { toast } from "sonner"
 import { ExamInterface } from "@/components/ai-center/ExamInterface"
 import { IEnglishExam } from "@/types/typeEnglishExam"
-import { contentSuggestions, difficultyLevels, questionsTemplate, questionTypes, skillTypes } from "@/components/ai-center/create-with-ai/configEnglish"
+import { contentSuggestions, difficultyLevels, questionCounts, questionsTemplate, questionTimeLimits, questionTypes, skillTypes } from "@/components/ai-center/create-with-ai/configEnglish"
 
 export default function CEnglishExam() {
     const [activeTab, setActiveTab] = useState("gui")
@@ -31,7 +31,7 @@ export default function CEnglishExam() {
         difficulty: "",
         skills: [""],
         questionTypes: [""],
-        questionCount: 10,
+        questionCount: 20,
         timeLimit: 30,
     })
 
@@ -41,51 +41,52 @@ export default function CEnglishExam() {
     const genAI = useMemo(() => new GoogleGenerativeAI(process.env.API_KEY_AI || ""), [])
 
     const handleGenerateQuestionsWithAI = async () => {
-        try {
-            setGeneratedQuestions(null)
-            setIsGenerating(true)
+        // try {
+        //     setGeneratedQuestions(null)
+        //     setIsGenerating(true)
 
-            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" })
-            const prompt = optimizedPromptEnglishExam(quizData)
-            const result = await model.generateContent(prompt)
+        //     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" })
+        //     const prompt = optimizedPromptEnglishExam(quizData)
+        //     const result = await model.generateContent(prompt)
 
-            const responseText = result?.response
-                .text()
-                .replace(/^```json\s*/, "")
-                .replace(/^```html\s*/, "")
-                .replace(/```\s*$/, "")
+        //     const responseText = result?.response
+        //         .text()
+        //         .replace(/^```json\s*/, "")
+        //         .replace(/^```html\s*/, "")
+        //         .replace(/```\s*$/, "")
 
-            const jsonOutput = JSON.parse(responseText || "")
-            setIsGenerating(false)
+        //     const jsonOutput = JSON.parse(responseText || "")
+        //     setIsGenerating(false)
 
-            const newExamData: IEnglishExam = {
-                title: quizData.title,
-                description: quizData.description,
-                difficulty: quizData.difficulty as any,
-                skills: quizData.skills as any,
-                timeLimit: quizData.timeLimit,
-                questions: jsonOutput || [],
-            }
-            setGeneratedQuestions(newExamData)
-            toast.success("Tạo đề thi tiếng anh thành công!", {
-                position: "top-center",
-                duration: 5000,
-                action: {
-                    label: "Xem trước",
-                    onClick: () => setOpenResult(true),
-                },
-            })
-        } catch (error) {
-            console.error("Error generating quiz:", error)
+        //     const newExamData: IEnglishExam = {
+        //         title: quizData.title,
+        //         description: quizData.description,
+        //         difficulty: quizData.difficulty as any,
+        //         skills: quizData.skills as any,
+        //         timeLimit: quizData.timeLimit,
+        //         questions: jsonOutput || [],
+        //     }
+        //     setGeneratedQuestions(newExamData)
+        //     toast.success("Tạo đề thi tiếng anh thành công!", {
+        //         position: "top-center",
+        //         duration: 5000,
+        //         action: {
+        //             label: "Xem trước",
+        //             onClick: () => setOpenResult(true),
+        //         },
+        //     })
+        // } catch (error) {
+        //     console.error("Error generating quiz:", error)
 
-            toast.error("Đã xảy ra lỗi khi tạo quiz.", {
-                description: error instanceof Error ? error.message : "Lỗi không xác định",
-                position: "top-center",
-                duration: 5000,
-            })
-        } finally {
-            setIsGenerating(false)
-        }
+        //     toast.error("Đã xảy ra lỗi khi tạo quiz.", {
+        //         description: error instanceof Error ? error.message : "Lỗi không xác định",
+        //         position: "top-center",
+        //         duration: 5000,
+        //     })
+        // } finally {
+        //     setIsGenerating(false)
+        // }
+        console.log(quizData)
     }
 
     const handleSeeTemplateQuestionType = () => {
@@ -164,7 +165,7 @@ export default function CEnglishExam() {
                                         <div>
                                             <Label className="dark:text-slate-300 text-slate-600">Cấp độ khó</Label>
                                             <Select value={quizData.difficulty} onValueChange={(value) => setQuizData({ ...quizData, difficulty: value })}>
-                                                <SelectTrigger className="dark:bg-slate-600/50 dark:border-slate-600 text-slate-600 dark:text-white">
+                                                <SelectTrigger className="dark:bg-slate-600/50 dark:border-slate-600 text-slate-600 dark:text-white h-10">
                                                     <SelectValue placeholder="Chọn cấp độ" />
                                                 </SelectTrigger>
                                                 <SelectContent className=" ">
@@ -198,14 +199,36 @@ export default function CEnglishExam() {
                                             <Label htmlFor="questionCount" className="dark:text-slate-300 text-slate-600 ">
                                                 Số câu hỏi
                                             </Label>
-                                            <Input id="questionCount" type="number" min="5" max="50" value={quizData.questionCount} onChange={(e) => setQuizData({ ...quizData, questionCount: Number.parseInt(e.target.value) })} className="dark:bg-slate-600/50 dark:border-slate-600 text-slate-600 dark:text-white" />
+                                            <Select value={String(quizData.questionCount)} onValueChange={(value) => setQuizData({ ...quizData, questionCount: Number(value) })}>
+                                                <SelectTrigger className="dark:bg-slate-600/50 dark:border-slate-600 text-slate-600 dark:text-white h-10">
+                                                    <SelectValue placeholder="Chọn số câu hỏi" />
+                                                </SelectTrigger>
+                                                <SelectContent className=" ">
+                                                    {questionCounts.map((level) => (
+                                                        <SelectItem key={level.value} value={level.value} className="dark:text-slate-300 text-slate-600">
+                                                            {level.label}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
                                         </div>
 
                                         <div>
                                             <Label htmlFor="timeLimit" className="dark:text-slate-300 text-slate-600">
                                                 Thời gian làm bài (phút)
                                             </Label>
-                                            <Input id="timeLimit" type="number" min="5" max="180" value={quizData.timeLimit} onChange={(e) => setQuizData({ ...quizData, timeLimit: Number.parseInt(e.target.value) })} className="dark:bg-slate-600/50 dark:border-slate-600 text-slate-600 dark:text-white" />
+                                            <Select value={String(quizData.timeLimit)} onValueChange={(value) => setQuizData({ ...quizData, timeLimit: Number(value) })}>
+                                                <SelectTrigger className="dark:bg-slate-600/50 dark:border-slate-600 text-slate-600 dark:text-white h-10">
+                                                    <SelectValue placeholder="Chọn thời gian" />
+                                                </SelectTrigger>
+                                                <SelectContent className=" ">
+                                                    {questionTimeLimits.map((level) => (
+                                                        <SelectItem key={level.value} value={level.value} className="dark:text-slate-300 text-slate-600">
+                                                            {level.label}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
                                         </div>
                                     </div>
                                     <div className={`flex flex-col md:flex-row gap-3 ${generatedQuestions ? "md:flex-row-reverse" : ""}`}>

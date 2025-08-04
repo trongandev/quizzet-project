@@ -49,7 +49,7 @@ export default function CDeCuong({ findText, findFile }: any) {
     return (
         <div className="flex items-center justify-center">
             <div className="w-full md:w-[1000px] xl:w-[1200px]  min-h-screen">
-                <div className="">
+                <div className="px-2 md:px-0">
                     <div className="flex items-center gap-3 ">
                         <div className="w-1/6 h-14 md:w-14  flex items-center justify-center bg-gradient-to-r from-blue-500/80 to-purple-500/80 rounded-lg text-white">
                             <Users className="h-8 w-8" />
@@ -88,7 +88,7 @@ export default function CDeCuong({ findText, findFile }: any) {
                         <TabsContent value="my">
                             <div>
                                 {token ? (
-                                    <div className="mt-10">
+                                    <div className="mt-3">
                                         <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-3 ">
                                             {filterSOUser && filterSOUser.map((item) => <DeCuongItem item={item} key={item._id} />)}
                                             {loading && (

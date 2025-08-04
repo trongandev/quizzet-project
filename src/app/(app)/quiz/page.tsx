@@ -24,6 +24,7 @@ export default async function page() {
     return (
         <div className=" py-20">
             <CQuizPage publicQuizData={quizData} />
+            <div className="mt-20"></div>
             <CDeCuong findText={res?.findText} findFile={res?.findFile} />
         </div>
     )

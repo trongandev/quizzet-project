@@ -102,7 +102,6 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz, openAdd
             const data = await req?.json()
             if (data.ok) {
                 toast.success("Đã lưu và xuất bản bài quiz", {
-                    description: "Chúng tôi đang xem xét bài quiz của bạn, chờ cho đến khi được phê duyệt trước khi nó xuất hiện công khai.",
                     position: "top-center",
                     id: "upload-image",
                     duration: 3000,

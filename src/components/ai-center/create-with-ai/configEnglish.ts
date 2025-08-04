@@ -7,6 +7,22 @@ export const difficultyLevels = [
     { value: "c2", label: "C2 - Proficiency" },
 ]
 
+export const questionCounts = [
+    { value: "10", label: "10 Câu hỏi" },
+    { value: "20", label: "20 Câu hỏi" },
+    { value: "30", label: "30 Câu hỏi" },
+    { value: "40", label: "50 Câu hỏi" },
+    { value: "50", label: "50 Câu hỏi" },
+]
+
+export const questionTimeLimits = [
+    { value: "30", label: "30 Phút" },
+    { value: "45", label: "45 Phút" },
+    { value: "60", label: "60 Phút" },
+    { value: "90", label: "90 Phút" },
+    { value: "120", label: "120 Phút" },
+]
+
 export const skillTypes = [
     { value: "grammar", label: "Ngữ pháp" },
     { value: "vocabulary", label: "Từ vựng" },
@@ -25,6 +41,51 @@ export const questionTypes = [
     { value: "true-false", label: "Đúng/Sai" },
 ]
 
+export const difficultyOptions = [
+    { value: "easy", label: "Cơ bản", badge: "Cơ bản", desc: "Phù hợp cho người mới bắt đầu", color: "bg-green-100 text-green-800 dark:bg-green-800/40 dark:text-green-200" },
+    {
+        value: "medium",
+        label: "Trung bình",
+        badge: "Vừa",
+        desc: "Cần hiểu biết nhất định về chủ đề",
+        color: "bg-yellow-100 text-yellow-800 dark:bg-yellow-800/40 dark:text-yellow-200",
+    },
+    { value: "hard", label: "Nâng cao", badge: "Khó", desc: "Đòi hỏi kiến thức chuyên sâu", color: "bg-red-100 text-red-800 dark:bg-red-800/40 dark:text-red-200" },
+]
+
+export const topicSuggestions = ["Toán học cơ bản", "Lịch sử Việt Nam", "Tiếng Anh giao tiếp", "Khoa học tự nhiên", "Công nghệ thông tin", "Kinh tế học", "Văn học Việt Nam", "Địa lý thế giới"]
+
+export const topicOptionsTemplate = [
+    {
+        label: "Kiểu bình thường",
+        description: `
+Câu 1. Chi tiêu công thường xuyên không bao gồm khoản nào sau đây?
+A. Chi cho xây dựng cầu đường mới
+B. Chi lương công chức
+C. Chi hoạt động hành chính
+D. Chi chuyển giao
+Đáp án đúng: A
+
+Câu 2. Đặc điểm cốt lõi của chi tiêu công thường xuyên là gì?
+A. Tạo ra giá trị tích lũy lâu dài
+B. Có hiệu lực tác động lâu dài
+C. Tạo ra năng lực sản xuất mới
+D. Mang tính tiêu dùng, ngắn hạn, lặp lại
+Đáp án đúng: D
+
+Câu 3. Phương pháp phổ biến trong đánh giá chi thường xuyên là gì?
+A. Tối đa hóa lợi nhuận
+B. Tối thiểu hóa chi phí theo định mức
+C. Tối ưu hóa tài sản công
+D. Tối đa hóa đầu tư
+Đáp án đúng: B
+`,
+    },
+    {
+        label: "Kiểu đưa ra gợi ý",
+        description: `Tạo 20 câu hỏi về đại số tuyến tính, bao gồm các chủ đề như ma trận, định thức, không gian véc tơ, phương trình tuyến tính`,
+    },
+]
 export const contentSuggestions = [
     {
         title: "Gia đình",
