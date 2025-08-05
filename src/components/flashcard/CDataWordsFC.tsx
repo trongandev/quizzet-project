@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "../ui/button"
 import { formatDistanceToNowStrict } from "date-fns"
 import { vi } from "date-fns/locale"
+import Link from "next/link"
 
 interface ISummary {
     weeklyReviewedWordsCount: number
@@ -241,9 +242,11 @@ export default function CDataWordsFC({ summary }: { summary: ISummary }) {
                     </div>
                     {selectedWords?.type === "reviewingWords" && (
                         <DialogFooter>
-                            <Button onClick={() => router.push("/flashcard/practice")} className="text-white bg-orange-600 hover:bg-orange-700">
-                                Bấm vào để ôn tập ngay <ArrowRight />
-                            </Button>
+                            <Link href="/flashcard/practice">
+                                <Button className="text-white bg-orange-600 hover:bg-orange-700">
+                                    Bấm vào để ôn tập ngay <ArrowRight />
+                                </Button>
+                            </Link>
                         </DialogFooter>
                     )}
                 </DialogContent>

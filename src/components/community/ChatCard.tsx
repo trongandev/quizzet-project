@@ -1,37 +1,33 @@
-import handleCompareDate from "@/lib/CompareDate";
-import { IChatCommunityMessage, IUser } from "@/types/type";
-import { Heart, MessageCircle, Trash } from "lucide-react";
-import Image from "next/image";
-import React, { forwardRef, useState } from "react";
-import PopperEmoji from "./PopperEmoji";
-import Link from "next/link";
-import { Button } from "../ui/button";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import handleCompareDate from "@/lib/CompareDate"
+import { IChatCommunityMessage, IUser } from "@/types/type"
+import { Heart, MessageCircle, Trash } from "lucide-react"
+import Image from "next/image"
+import React, { forwardRef, useState } from "react"
+import PopperEmoji from "./PopperEmoji"
+import Link from "next/link"
+import { Button } from "../ui/button"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 interface MessageCardProps {
-    message: IChatCommunityMessage; // Define a more specific type if possible
-    ref?: any;
-    isLastMessage?: boolean;
-    handleReactIcon: (messageId: string, emoji: string) => void;
-    setReplyingTo: (reactingTo: IChatCommunityMessage) => void;
-    handleUnsend: (messageId: string) => void;
-    user: IUser | null;
-    PhotoView: any;
+    message: IChatCommunityMessage // Define a more specific type if possible
+    ref?: any
+    isLastMessage?: boolean
+    handleReactIcon: (messageId: string, emoji: string) => void
+    setReplyingTo: (reactingTo: IChatCommunityMessage) => void
+    handleUnsend: (messageId: string) => void
+    user: IUser | null
+    PhotoView: any
+    inputRef: any
 }
 
-const ChatCard = forwardRef<HTMLDivElement, MessageCardProps>(({ message, isLastMessage, handleReactIcon, setReplyingTo, handleUnsend, user, PhotoView }, ref) => {
-    const [emojiPopoverOpen, setEmojiPopoverOpen] = useState(false);
-    const [isHovered, setIsHovered] = useState(false);
-    const [open, setOpen] = useState(false);
+const ChatCard = forwardRef<HTMLDivElement, MessageCardProps>(({ message, isLastMessage, handleReactIcon, inputRef, setReplyingTo, handleUnsend, user, PhotoView }, ref) => {
+    const [emojiPopoverOpen, setEmojiPopoverOpen] = useState(false)
+    const [isHovered, setIsHovered] = useState(false)
+    const [open, setOpen] = useState(false)
     // ✅ Hiển thị actions khi hover HOẶC khi popover đang mở
-    const shouldShowActions = isHovered || emojiPopoverOpen;
+    const shouldShowActions = isHovered || emojiPopoverOpen
 
     return (
-        <div
-            className="flex items-start gap-3 py-5 px-3 hover:bg-gray-200/10 rounded-xl group"
-            id={message?._id}
-            ref={isLastMessage ? ref : null}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}>
+        <div className="flex items-start gap-3 py-5 px-3 hover:bg-gray-200/10 rounded-xl group" id={message?._id} ref={isLastMessage ? ref : null} onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
             <Link href={`/profile/${message.userId._id}`} className="block w-10 md:w-12 h-10 md:h-12 relative rounded-full overflow-hidden">
                 <Image src={message?.userId.profilePicture} alt="" fill className="absolute w-full h-full object-cover" />
             </Link>
@@ -63,7 +59,11 @@ const ChatCard = forwardRef<HTMLDivElement, MessageCardProps>(({ message, isLast
                         </PopperEmoji>
                         <div
                             className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-gray-800 dark:text-gray-400 dark:text-white/60 hover:text-white"
-                            onClick={() => setReplyingTo(message)}>
+                            onClick={() => {
+                                setReplyingTo(message)
+                                inputRef.current.focus()
+                            }}
+                        >
                             <MessageCircle size={14} />
                         </div>
                         <Dialog open={open} onOpenChange={setOpen}>
@@ -85,10 +85,11 @@ const ChatCard = forwardRef<HTMLDivElement, MessageCardProps>(({ message, isLast
                                     </DialogClose>
                                     <Button
                                         onClick={() => {
-                                            handleUnsend(message?._id);
-                                            setOpen(false);
+                                            handleUnsend(message?._id)
+                                            setOpen(false)
                                         }}
-                                        className="text-white">
+                                        className="text-white"
+                                    >
                                         Xóa
                                     </Button>
                                 </DialogFooter>
@@ -97,20 +98,10 @@ const ChatCard = forwardRef<HTMLDivElement, MessageCardProps>(({ message, isLast
                     </div>
                 </div>
 
-                <div className="w-full bg-gray-300/50 dark:bg-gray-500/50 px-3 py-2 md:py-3 md:px-5 rounded-md md:rounded-xl">
-                    {message?.unsend ? (
-                        <p className="break-words whitespace-normal text-xs text-gray-400">Tin nhắn đã bị gỡ...</p>
-                    ) : (
-                        <p className="break-words whitespace-normal">{message?.message}</p>
-                    )}
-                </div>
+                <div className="w-full bg-gray-300/50 dark:bg-gray-500/50 px-3 py-2 md:py-3 md:px-5 rounded-md md:rounded-xl">{message?.unsend ? <p className="break-words whitespace-normal text-xs text-gray-400">Tin nhắn đã bị gỡ...</p> : <p className="break-words whitespace-normal">{message?.message}</p>}</div>
                 <PhotoView src={message?.image}>
                     <div className="relative w-full h-full">
-                        <div className="">
-                            {message?.image && (
-                                <Image src={message?.image} alt="" width={200} height={200} className=" cursor-pointer hover:opacity-90 transition-all duration-200 object-contain rounded-lg" />
-                            )}
-                        </div>
+                        <div className="">{message?.image && <Image src={message?.image} alt="" width={200} height={200} className=" cursor-pointer hover:opacity-90 transition-all duration-200 object-contain rounded-lg" />}</div>
                     </div>
                 </PhotoView>
 
@@ -123,9 +114,9 @@ const ChatCard = forwardRef<HTMLDivElement, MessageCardProps>(({ message, isLast
                 </div>
             </div>
         </div>
-    );
-});
+    )
+})
 
-ChatCard.displayName = "ChatCard";
+ChatCard.displayName = "ChatCard"
 
-export default ChatCard;
+export default ChatCard

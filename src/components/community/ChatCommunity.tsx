@@ -5,7 +5,7 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from "react"
 import Cookies from "js-cookie"
 import { GET_API_WITHOUT_COOKIE } from "@/lib/fetchAPI"
 
-import { Bell, ChevronRight, CodeXml, Crown, EllipsisVertical, Flame, Hash, ImagePlus, Minus, Search, Send, Smile, TowerControl, Users, X } from "lucide-react"
+import { Bell, ChevronRight, CodeXml, Crown, EllipsisVertical, Flame, Hash, ImagePlus, Minus, Search, Send, Smile, Users, X } from "lucide-react"
 import Image from "next/image"
 import ChatCard from "@/components/community/ChatCard"
 import { Input } from "@/components/ui/input"
@@ -20,17 +20,6 @@ import { PhotoProvider, PhotoView } from "react-photo-view"
 import "react-photo-view/dist/react-photo-view.css"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-const debounce = (func: any, wait: any) => {
-    let timeout: NodeJS.Timeout
-    return function executedFunction(...args: any) {
-        const later = () => {
-            clearTimeout(timeout)
-            func(...args)
-        }
-        clearTimeout(timeout)
-        timeout = setTimeout(later, wait)
-    }
-}
 
 export default function ChatCommunity() {
     const userContext = useUser()
@@ -258,6 +247,9 @@ export default function ChatCommunity() {
         const file = e.target.files[0]
         setImage(file)
         setImageReview(file ? URL.createObjectURL(file) : null)
+        if (inputRef.current) {
+            inputRef.current.focus()
+        }
     }
 
     const getPodium = (index: number) => {
@@ -327,7 +319,7 @@ export default function ChatCommunity() {
                                         replyingTo && imageReview ? "max-h-[calc(80vh-249px)] min-h-[calc(80vh-249px)]" : imageReview ? "max-h-[calc(80vh-200px)] min-h-[calc(80vh-200px)]" : replyingTo ? "max-h-[calc(80vh-150px)] min-h-[calc(80vh-150px)]" : "max-h-[calc(80vh-100px)] min-h-[calc(80vh-100px)]"
                                     } overflow-y-auto  flex flex-col gap-2 overscroll-contain`}
                                 >
-                                    {messages && messages.map((message, index) => <ChatCard key={message._id || index} message={message} ref={lastMessageRef} isLastMessage={index === messages.length - 1} handleReactIcon={handleReactIcon} setReplyingTo={setReplyingTo} handleUnsend={handleUnsend} user={user} PhotoView={PhotoView} />)}
+                                    {messages && messages.map((message, index) => <ChatCard key={message._id || index} message={message} ref={lastMessageRef} isLastMessage={index === messages.length - 1} handleReactIcon={handleReactIcon} inputRef={inputRef} setReplyingTo={setReplyingTo} handleUnsend={handleUnsend} user={user} PhotoView={PhotoView} />)}
                                     {loading && (
                                         <div className="flex items-center justify-center col-span-4 h-[500px]">
                                             <Loading className="h-12 w-12" />{" "}

@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Binoculars, MoveDown, RotateCcw, Save, SquarePen, X } from "lucide-react"
+import { ArrowRight, Binoculars, MoveDown, RotateCcw, Save, SquarePen, Trash2, X } from "lucide-react"
 import { ILeftItem, IMatchingQuestion, IRightItem } from "@/types/typeEnglishExam"
 import { Input } from "@/components/ui/input"
 
@@ -131,6 +131,7 @@ export function MatchingQuestion({ question }: { question: IMatchingQuestion }) 
         })
         setEdit(false) // Tắt chế độ chỉnh sửa khi reset
     }
+    const handleRemove = () => {}
 
     const handleSaveEdit = () => {
         // Cập nhật dữ liệu câu hỏi với các thay đổi
@@ -150,8 +151,8 @@ export function MatchingQuestion({ question }: { question: IMatchingQuestion }) 
                             Đọc hiểu
                         </Badge>
                     </div>
-                    <div className="">
-                        <Button onClick={handleReset} variant="outline" size="sm" className="mr-2 ">
+                    <div className="space-x-2">
+                        <Button onClick={handleReset} variant="outline" size="sm" className="">
                             <RotateCcw className="w-4 h-4 mr-2" />
                             Reset
                         </Button>
@@ -164,6 +165,9 @@ export function MatchingQuestion({ question }: { question: IMatchingQuestion }) 
                                 <SquarePen /> Mở chỉnh sửa
                             </Button>
                         )}
+                        <Button onClick={handleRemove} variant="destructive" size="sm">
+                            <Trash2 /> Xóa
+                        </Button>
                     </div>
                 </div>
                 <h3 className="text-xl font-semibold text-white mb-3">{question.question_text}</h3>
