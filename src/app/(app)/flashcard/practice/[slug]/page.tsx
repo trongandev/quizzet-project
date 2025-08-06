@@ -3,7 +3,7 @@ import { LoadingScreen } from "@/components/LoadingScreen"
 import { GET_API_WITHOUT_COOKIE } from "@/lib/fetchAPI"
 import React, { Suspense } from "react"
 
-export async function generateMetadata(params: any) {
+export async function generateMetadata({ params }: { params: { slug: string } }) {
     const req = await GET_API_WITHOUT_COOKIE("/flashcards/" + params.slug)
     const fc = req?.listFlashCards
     return {
