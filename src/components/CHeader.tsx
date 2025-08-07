@@ -155,7 +155,7 @@ export default function CHeader({ tasks }: { tasks: TASKS }) {
                                             <History />
                                             Lịch sử
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => router.push("/gopy")}>
                                             <Mailbox />
                                             Góp ý
                                         </DropdownMenuItem>

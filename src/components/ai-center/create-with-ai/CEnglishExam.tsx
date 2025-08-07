@@ -41,52 +41,52 @@ export default function CEnglishExam() {
     const genAI = useMemo(() => new GoogleGenerativeAI(process.env.API_KEY_AI || ""), [])
 
     const handleGenerateQuestionsWithAI = async () => {
-        // try {
-        //     setGeneratedQuestions(null)
-        //     setIsGenerating(true)
+        try {
+            setGeneratedQuestions(null)
+            setIsGenerating(true)
 
-        //     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" })
-        //     const prompt = optimizedPromptEnglishExam(quizData)
-        //     const result = await model.generateContent(prompt)
+            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" })
+            const prompt = optimizedPromptEnglishExam(quizData)
+            const result = await model.generateContent(prompt)
 
-        //     const responseText = result?.response
-        //         .text()
-        //         .replace(/^```json\s*/, "")
-        //         .replace(/^```html\s*/, "")
-        //         .replace(/```\s*$/, "")
+            const responseText = result?.response
+                .text()
+                .replace(/^```json\s*/, "")
+                .replace(/^```html\s*/, "")
+                .replace(/```\s*$/, "")
 
-        //     const jsonOutput = JSON.parse(responseText || "")
-        //     setIsGenerating(false)
+            const jsonOutput = JSON.parse(responseText || "")
+            setIsGenerating(false)
 
-        //     const newExamData: IEnglishExam = {
-        //         title: quizData.title,
-        //         description: quizData.description,
-        //         difficulty: quizData.difficulty as any,
-        //         skills: quizData.skills as any,
-        //         timeLimit: quizData.timeLimit,
-        //         questions: jsonOutput || [],
-        //     }
-        //     setGeneratedQuestions(newExamData)
-        //     toast.success("Tạo đề thi tiếng anh thành công!", {
-        //         position: "top-center",
-        //         duration: 5000,
-        //         action: {
-        //             label: "Xem trước",
-        //             onClick: () => setOpenResult(true),
-        //         },
-        //     })
-        // } catch (error) {
-        //     console.error("Error generating quiz:", error)
+            const newExamData: IEnglishExam = {
+                title: quizData.title,
+                description: quizData.description,
+                difficulty: quizData.difficulty as any,
+                skills: quizData.skills as any,
+                timeLimit: quizData.timeLimit,
+                questions: jsonOutput || [],
+            }
+            setGeneratedQuestions(newExamData)
+            console.log("Generated Questions:", jsonOutput)
+            toast.success("Tạo đề thi tiếng anh thành công!", {
+                position: "top-center",
+                duration: 5000,
+                action: {
+                    label: "Xem trước",
+                    onClick: () => setOpenResult(true),
+                },
+            })
+        } catch (error) {
+            console.error("Error generating quiz:", error)
 
-        //     toast.error("Đã xảy ra lỗi khi tạo quiz.", {
-        //         description: error instanceof Error ? error.message : "Lỗi không xác định",
-        //         position: "top-center",
-        //         duration: 5000,
-        //     })
-        // } finally {
-        //     setIsGenerating(false)
-        // }
-        console.log(quizData)
+            toast.error("Đã xảy ra lỗi khi tạo quiz.", {
+                description: error instanceof Error ? error.message : "Lỗi không xác định",
+                position: "top-center",
+                duration: 5000,
+            })
+        } finally {
+            setIsGenerating(false)
+        }
     }
 
     const handleSeeTemplateQuestionType = () => {
@@ -233,13 +233,13 @@ export default function CEnglishExam() {
                                     </div>
                                     <div className={`flex flex-col md:flex-row gap-3 ${generatedQuestions ? "md:flex-row-reverse" : ""}`}>
                                         {generatedQuestions && (
-                                            <Button className="h-12 " variant="outline" onClick={() => setOpenResult(true)}>
+                                            <Button className={`h-12  ${generatedQuestions ? "w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700" : ""}`} variant="outline" onClick={() => setOpenResult(true)}>
                                                 <Eye />
                                                 Xem trước
                                             </Button>
                                         )}
 
-                                        <Button onClick={handleGenerateQuestionsWithAI} disabled={!quizData.content || !quizData.difficulty || quizData.questionTypes.length === 0 || isGenerating} className="w-full bg-gradient-to-r h-12 text-white from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                                        <Button onClick={handleGenerateQuestionsWithAI} disabled={!quizData.content || !quizData.difficulty || quizData.questionTypes.length === 0 || isGenerating} variant="outline" className={`  ${generatedQuestions ? "" : "w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"}  h-12 text-white `}>
                                             {isGenerating ? (
                                                 <>
                                                     <Loading />

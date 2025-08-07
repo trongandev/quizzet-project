@@ -236,6 +236,8 @@ interface UserId {
     _id: string
     displayName: string
     profilePicture: string
+    role: string
+    gamification: IGamification
 }
 
 export interface Voice {
@@ -381,6 +383,18 @@ export interface IPodiumUser {
 interface DailyStreak {
     current: number
     lastActivityDate?: string
+}
+
+export interface IFeedback {
+    _id: string
+    user_id: UserId
+    title: string
+    comment: string
+    category: string
+    rating: number
+    likes: number
+    createdAt: Date
+    updatedAt: Date
 }
 
 export type { IUser, INotify, IQuestion, IComment, IHistory, ISO, IQuiz, IDataQuiz, IListFlashcard, IProgress, Flashcard, IMessage, IChat, IChatCommunity, IChatCommunityMessage }

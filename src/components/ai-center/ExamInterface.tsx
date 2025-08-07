@@ -12,6 +12,9 @@ import { ListeningComprehensionQuestion } from "@/components/ai-center/question-
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { IEnglishExam } from "@/types/typeEnglishExam"
 import { Badge } from "@/components/ui/badge"
+import { POST_API } from "@/lib/fetchAPI"
+import Cookies from "js-cookie"
+import { toast } from "sonner"
 interface ExamInterfaceProps {
     examData: IEnglishExam
     open: boolean
@@ -19,6 +22,7 @@ interface ExamInterfaceProps {
 }
 
 export function ExamInterface({ examData, open, setOpen }: ExamInterfaceProps) {
+    const token = Cookies.get("token") || ""
     const renderQuestion = (question: any) => {
         switch (question.question_type) {
             case "multiple_choice":
@@ -40,10 +44,22 @@ export function ExamInterface({ examData, open, setOpen }: ExamInterfaceProps) {
         }
     }
 
-    const handlePublish = () => {
+    const handlePublish = async () => {
         // Logic to handle publishing the exam
-        console.log("Publishing exam...", examData)
-        // setOpen(false) // Close the dialog after publishing
+        try {
+            console.log("Publishing exam...", examData)
+            const req = await POST_API("/english-exam", examData, "POST", token)
+            const res = await req?.json()
+            if (res.ok) {
+                toast.success("Đã tạo bài thi thành công!")
+            } else {
+                toast.error("Có lỗi sảy ra", { description: res.message })
+            }
+        } catch (error: any) {
+            toast.error("Có lỗi sảy ra", { description: error.message, duration: 10000 })
+        } finally {
+            setOpen(false) // Close the dialog after publishing
+        }
     }
 
     return (

@@ -22,6 +22,7 @@ export function ReadingComprehensionQuestion({ question }: { question: IReadingC
         question.correct_answer_id = editData.correct_answer_id
         setEdit(false) // Tắt chế độ chỉnh sửa sau khi lưu
     }
+    console.log("ReadingComprehensionQuestion", question)
     return (
         <div className="space-y-6">
             {/* Reading Passage */}
@@ -62,7 +63,7 @@ export function ReadingComprehensionQuestion({ question }: { question: IReadingC
 
                     <div className="space-y-3">
                         {!edit &&
-                            question.options.map((option: any, index: number) => (
+                            question?.options?.map((option: any, index: number) => (
                                 <Button key={option.id} variant="outline" className={`w-full justify-start h-auto p-4 text-left transition-all ${question.correct_answer_id === option.id ? "border-blue-500 bg-blue-500/10 text-blue-400" : "border-slate-600 text-slate-300 hover:border-slate-500 hover:bg-slate-700"}`}>
                                     <div className="flex items-center gap-3 w-full">
                                         <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${question.correct_answer_id === option.id ? "border-blue-500 bg-blue-500" : "border-slate-500"}`}>{question.correct_answer_id === option.id && <div className="w-2 h-2 bg-white rounded-full" />}</div>
@@ -74,7 +75,7 @@ export function ReadingComprehensionQuestion({ question }: { question: IReadingC
                                 </Button>
                             ))}
                         {edit &&
-                            editData.options.map((option: any) => (
+                            editData?.options?.map((option: any) => (
                                 <Button key={option.id} variant="outline" className={`w-full justify-start h-auto p-4 text-left transition-all ${editData.correct_answer_id === option.id ? "border-blue-500 bg-blue-500/10 text-blue-400" : "border-slate-600 text-slate-300 hover:border-slate-500 hover:bg-slate-700/10"}`}>
                                     <div className="flex items-center gap-3 w-full">
                                         <div
