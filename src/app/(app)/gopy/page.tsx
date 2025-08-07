@@ -8,12 +8,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Star, MessageSquare, TrendingUp, Users, ThumbsUp, ThumbsDown, Filter, Send, BarChart3 } from "lucide-react"
+import { Star, MessageSquare, TrendingUp, Users, ThumbsUp, Filter, Send, BarChart3 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import Loading from "@/components/ui/loading"
 import { toast } from "sonner"
-import { GET_API, GET_API_WITHOUT_COOKIE, POST_API } from "@/lib/fetchAPI"
+import { GET_API_WITHOUT_COOKIE, POST_API } from "@/lib/fetchAPI"
 import Cookies from "js-cookie"
 import { IFeedback } from "@/types/type"
 import handleCompareDate from "@/lib/CompareDate"
@@ -69,7 +69,7 @@ export default function FeedbackPage() {
     const [loading, setLoading] = useState(false)
     const [loadingLikes, setLoadingLikes] = useState(false)
     const token = Cookies.get("token") || ""
-    const { user } = useUser()
+    const { user } = useUser() || { user: null }
     useEffect(() => {
         const fetchReviews = async () => {
             const res = await GET_API_WITHOUT_COOKIE("/feedback")
@@ -105,7 +105,7 @@ export default function FeedbackPage() {
             const res = await req?.json()
             if (res?.ok) {
                 toast.success("Đánh giá đã được gửi thành công!")
-                setReviewData((prev) => [{ _id: res?.updateData?._id, createdAt: res?.updateData.createAt, updatedAt: res?.updateData.updatedAt, likes: 0, user_id: user, ...newReview }, ...prev])
+                setReviewData([res?.getOneFeedback, , ...reviewData])
                 setNewReview({ rating: 0, title: "", comment: "", category: "Giao diện" })
             } else {
                 toast.error(`${res?.message}`, { duration: 10000 })
@@ -262,7 +262,7 @@ export default function FeedbackPage() {
                                             <div className="flex-1 space-y-3">
                                                 <div className="flex items-center justify-between flex-wrap">
                                                     <div className="flex items-center gap-2">
-                                                        <h1 className={`line-clamp-1 animate-text-gradient bg-gradient-to-r font-semibold ${review.user_id.role === "admin" ? "from-blue-500 via-blue-400 to-blue-600 bg-[200%_auto] bg-clip-text text-transparent" : ""}`}>{user?.displayName || "Khách vãng lai"}</h1>
+                                                        <h1 className={`line-clamp-1 animate-text-gradient bg-gradient-to-r font-semibold ${review.user_id.role === "admin" ? "from-blue-500 via-blue-400 to-blue-600 bg-[200%_auto] bg-clip-text text-transparent" : ""}`}>{review?.user_id?.displayName || "Khách vãng lai"}</h1>
                                                         {token && (
                                                             <Badge variant="secondary" className="bg-blue-600 text-white flex items-center gap-1 text-xs">
                                                                 <Image src={getIconLevel(review.user_id?.gamification?.level || 0)} width={14} height={14} alt="" />
