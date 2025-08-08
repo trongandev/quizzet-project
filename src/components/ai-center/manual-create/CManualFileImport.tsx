@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Upload, FileText, Download, X, Bot, Sparkles, CheckCircle, Eye, Save, File } from "lucide-react"
-import { BsFiletypeDocx, BsFiletypePdf, BsFiletypeTxt, BsFiletypeXlsx } from "react-icons/bs"
+import { BsFiletypeDocx } from "react-icons/bs"
 import axios from "axios"
 import { toast } from "sonner"
 import { AIResultPreview } from "../AIResuiltPreview"

@@ -1,52 +1,52 @@
-"use client";
+"use client"
 
-import { useState, useEffect, useMemo, useCallback } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Edit, Trash2, Plus, CheckCircle, Bot, Save, AlertCircle, Sparkle } from "lucide-react";
-import { renderHightlightedContent } from "../renderCode";
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { optimizedPromptEditQuestions } from "@/lib/optimizedPrompt";
-import { toast } from "sonner";
+import { useState, useEffect, useMemo, useCallback } from "react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Badge } from "@/components/ui/badge"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Edit, Trash2, Plus, CheckCircle, Bot, Save, AlertCircle, Sparkle } from "lucide-react"
+import { renderHightlightedContent } from "../renderCode"
+import { GoogleGenerativeAI } from "@google/generative-ai"
+import { optimizedPromptEditQuestions } from "@/lib/optimizedPrompt"
+import { toast } from "sonner"
 
 interface QuizQuestion {
-    title: string;
-    subject: string;
-    content: string;
-    questions: Quiz[];
+    title: string
+    subject: string
+    content: string
+    questions: Quiz[]
 }
 
 interface Quiz {
-    id: string;
-    type: "multiple-choice" | "true-false" | "short-answer";
-    question: string;
-    answers?: string[];
-    correct: string;
-    points: number;
+    id: string
+    type: "multiple-choice" | "true-false" | "short-answer"
+    question: string
+    answers?: string[]
+    correct: string
+    points: number
 }
 
 interface AIResultPreviewProps {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    quiz: QuizQuestion;
-    setOpenAddMoreInfo: (open: boolean) => void;
-    setGeneratedQuiz: any;
+    open: boolean
+    onOpenChange: (open: boolean) => void
+    quiz: QuizQuestion
+    setOpenAddMoreInfo: (open: boolean) => void
+    setGeneratedQuiz: any
 }
 
 export function AIResuiltPreviewDeCuong({ open, onOpenChange, quiz, setOpenAddMoreInfo, setGeneratedQuiz }: AIResultPreviewProps) {
-    const [quizData, setQuizData] = useState<QuizQuestion>(quiz);
-    const [filterQuizData, setFilterQuizData] = useState<QuizQuestion>(quiz);
-    const [editingQuestion, setEditingQuestion] = useState<Quiz | null>(null);
-    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [activeFilter, setActiveFilter] = useState<"all" | "valid" | "invalid">("all");
+    const [quizData, setQuizData] = useState<QuizQuestion>(quiz)
+    const [filterQuizData, setFilterQuizData] = useState<QuizQuestion>(quiz)
+    const [editingQuestion, setEditingQuestion] = useState<Quiz | null>(null)
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+    const [loading, setLoading] = useState(false)
+    const [activeFilter, setActiveFilter] = useState<"all" | "valid" | "invalid">("all")
     const [newQuestion, setNewQuestion] = useState<Quiz>({
         id: "",
         type: "multiple-choice",
@@ -54,31 +54,31 @@ export function AIResuiltPreviewDeCuong({ open, onOpenChange, quiz, setOpenAddMo
         answers: ["", "", "", ""],
         correct: "",
         points: 1,
-    });
+    })
 
     // ✅ Helper function để apply filter
     const applyFilter = useCallback((data: QuizQuestion, filter: "all" | "valid" | "invalid"): QuizQuestion => {
         if (filter === "all") {
-            return data;
+            return data
         } else if (filter === "valid") {
             return {
                 ...data,
                 questions: data.questions.filter((q) => q.question && q.correct != "-1"),
-            };
+            }
         } else if (filter === "invalid") {
             return {
                 ...data,
                 questions: data.questions.filter((q) => !q.question || q.correct == "-1"),
-            };
+            }
         }
-        return data;
-    }, []);
+        return data
+    }, [])
 
     const handleEditQuestion = useCallback((question: Quiz) => {
-        setNewQuestion(question);
-        setEditingQuestion(question);
-        setIsEditDialogOpen(true);
-    }, []);
+        setNewQuestion(question)
+        setEditingQuestion(question)
+        setIsEditDialogOpen(true)
+    }, [])
 
     const handleAddQuestion = useCallback(() => {
         setNewQuestion({
@@ -88,96 +88,96 @@ export function AIResuiltPreviewDeCuong({ open, onOpenChange, quiz, setOpenAddMo
             answers: ["", "", "", ""],
             correct: "-1",
             points: 1,
-        });
-        setEditingQuestion(null);
-        setIsEditDialogOpen(true);
-    }, []);
+        })
+        setEditingQuestion(null)
+        setIsEditDialogOpen(true)
+    }, [])
 
     // ✅ Sửa lại handleSaveQuestion
     const handleSaveQuestion = useCallback(() => {
-        if (!newQuestion.question.trim()) return;
+        if (!newQuestion.question.trim()) return
 
         // Update quizData
-        const updatedQuestions = editingQuestion ? quizData.questions.map((q) => (q.id === editingQuestion.id ? newQuestion : q)) : [...quizData.questions, newQuestion];
+        const updatedQuestions = editingQuestion ? quizData.questions.map((q) => (q.id === editingQuestion.id ? newQuestion : q)) : [...quizData.questions, newQuestion]
 
         const newQuizData = {
             ...quizData,
             questions: updatedQuestions,
-        };
+        }
 
-        setQuizData(newQuizData);
-        setFilterQuizData(applyFilter(newQuizData, activeFilter));
+        setQuizData(newQuizData)
+        setFilterQuizData(applyFilter(newQuizData, activeFilter))
 
-        setIsEditDialogOpen(false);
-        setEditingQuestion(null);
-    }, [newQuestion, editingQuestion, quizData, applyFilter, activeFilter]);
+        setIsEditDialogOpen(false)
+        setEditingQuestion(null)
+    }, [newQuestion, editingQuestion, quizData, applyFilter, activeFilter])
 
     const handleDeleteQuestion = useCallback(
         (questionId: string) => {
-            const updatedQuestions = quizData.questions.filter((q) => q.id !== questionId);
+            const updatedQuestions = quizData.questions.filter((q) => q.id !== questionId)
             const newQuizData = {
                 ...quizData,
                 questions: updatedQuestions,
-            };
+            }
 
-            setQuizData(newQuizData);
-            setFilterQuizData(applyFilter(newQuizData, activeFilter));
+            setQuizData(newQuizData)
+            setFilterQuizData(applyFilter(newQuizData, activeFilter))
         },
         [quizData, applyFilter, activeFilter]
-    );
+    )
 
     const handleQuestionTypeChange = useCallback((type: Quiz["type"]) => {
         setNewQuestion((prev) => {
-            const updated = { ...prev, type, correct: "" };
+            const updated = { ...prev, type, correct: "" }
 
             if (type === "multiple-choice") {
-                updated.answers = ["", "", "", ""];
+                updated.answers = ["", "", "", ""]
             } else if (type === "true-false") {
-                updated.answers = ["Đúng", "Sai"];
+                updated.answers = ["Đúng", "Sai"]
             } else {
-                updated.answers = undefined;
+                updated.answers = undefined
             }
 
-            return updated;
-        });
-    }, []);
+            return updated
+        })
+    }, [])
 
     const handleOptionChange = useCallback((index: number, value: string) => {
         setNewQuestion((prev) => ({
             ...prev,
             answers: prev.answers?.map((opt, i) => (i === index ? value : opt)),
-        }));
-    }, []);
+        }))
+    }, [])
 
     const handleChangeAnswers = useCallback((value: string) => {
         setNewQuestion((prev) => ({
             ...prev,
             correct: value,
-        }));
-    }, []);
+        }))
+    }, [])
 
     // ✅ Sửa lại handleFilterChange
     const handleFilterChange = useCallback((filter: "all" | "valid" | "invalid") => {
-        setActiveFilter(filter);
-    }, []);
+        setActiveFilter(filter)
+    }, [])
 
     const handleQuestionTextChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setNewQuestion((prev) => ({ ...prev, question: e.target.value }));
-    }, []);
+        setNewQuestion((prev) => ({ ...prev, question: e.target.value }))
+    }, [])
 
     // ✅ Sử dụng useMemo để tính toán errors dựa trên quizData
     const totalErrors = useMemo(() => {
-        return quizData.questions.filter((q) => !q.question || q.answers?.length === 0 || q.correct == "-1").length;
-    }, [quizData.questions]);
+        return quizData.questions.filter((q) => !q.question || q.answers?.length === 0 || q.correct == "-1").length
+    }, [quizData.questions])
 
     const validQuestionsCount = useMemo(() => {
-        return quizData.questions.filter((q) => q.question && q.correct != "-1").length;
-    }, [quizData.questions]);
+        return quizData.questions.filter((q) => q.question && q.correct != "-1").length
+    }, [quizData.questions])
 
     // ✅ Update filterQuizData khi quizData thay đổi
     useEffect(() => {
-        setFilterQuizData(applyFilter(quizData, activeFilter));
-    }, [quizData, activeFilter, applyFilter]);
+        setFilterQuizData(applyFilter(quizData, activeFilter))
+    }, [quizData, activeFilter, applyFilter])
 
     // const getQuestionTypeLabel = (type: string) => {
     //     switch (type) {
@@ -193,15 +193,15 @@ export function AIResuiltPreviewDeCuong({ open, onOpenChange, quiz, setOpenAddMo
     // };
 
     const handleRemoveAllErrors = useCallback(() => {
-        const updatedQuestions = quizData.questions.filter((q) => q.correct != "-1");
+        const updatedQuestions = quizData.questions.filter((q) => q.correct != "-1")
         const newQuizData = {
             ...quizData,
             questions: updatedQuestions,
-        };
+        }
 
-        setQuizData(newQuizData);
-        setFilterQuizData(applyFilter(newQuizData, activeFilter));
-    }, [quizData, applyFilter, activeFilter]);
+        setQuizData(newQuizData)
+        setFilterQuizData(applyFilter(newQuizData, activeFilter))
+    }, [quizData, applyFilter, activeFilter])
 
     const clearPatterns = useMemo(() => {
         return (questions: Quiz[]) => {
@@ -209,89 +209,89 @@ export function AIResuiltPreviewDeCuong({ open, onOpenChange, quiz, setOpenAddMo
                 /^Câu\s*\d+[:\.]?\s*/, // Câu 1:, Câu 2., Câu 3
                 /^câu\s*\d+[:\.]?\s*/, // câu 1:, câu 2., câu 3
                 /^\d+[:\.]?\s*/, // 1:, 2., 3
-            ];
+            ]
 
             const cleanedQuestions = questions.map((quest: Quiz) => {
-                let cleanedQuestion = quest.question;
+                let cleanedQuestion = quest.question
 
                 // Áp dụng từng pattern để loại bỏ
                 patternsToRemove.forEach((pattern) => {
-                    cleanedQuestion = cleanedQuestion.replace(pattern, "");
-                });
+                    cleanedQuestion = cleanedQuestion.replace(pattern, "")
+                })
 
                 return {
                     ...quest,
                     question: cleanedQuestion.trim(),
-                };
-            });
+                }
+            })
 
-            return cleanedQuestions;
-        };
-    }, []);
-    const genAI = useMemo(() => new GoogleGenerativeAI(process.env.API_KEY_AI || ""), []);
+            return cleanedQuestions
+        }
+    }, [])
+    const genAI = useMemo(() => new GoogleGenerativeAI(process.env.API_KEY_AI || ""), [])
     const handleEditByAI = useCallback(async () => {
         try {
-            setLoading(true);
-            const questions = filterQuizData.questions;
+            setLoading(true)
+            const questions = filterQuizData.questions
             if (questions.length === 0) {
-                toast.info("Không có câu hỏi nào để chỉnh sửa.", { position: "top-center" });
-                return;
+                toast.info("Không có câu hỏi nào để chỉnh sửa.", { position: "top-center" })
+                return
             }
             if (questions.length > 20) {
-                toast.info("Chỉ có thể chỉnh sửa tối đa 20 câu hỏi một lần.", { position: "top-center" });
-                return;
+                toast.info("Chỉ có thể chỉnh sửa tối đa 20 câu hỏi một lần.", { position: "top-center" })
+                return
             }
 
             // Loại bỏ các pattern thường gặp ở đầu câu hỏi
-            const cleanedQuestions = clearPatterns(questions);
+            const cleanedQuestions = clearPatterns(questions)
 
-            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-            const prompt = optimizedPromptEditQuestions(cleanedQuestions);
-            const result = await model.generateContent(prompt);
+            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" })
+            const prompt = optimizedPromptEditQuestions(cleanedQuestions)
+            const result = await model.generateContent(prompt)
 
             const responseText = result?.response
                 .text()
                 .replace(/^```json\s*/, "")
                 .replace(/^```html\s*/, "")
-                .replace(/```\s*$/, "");
+                .replace(/```\s*$/, "")
 
-            const aiEditedQuestions = JSON.parse(responseText || "");
+            const aiEditedQuestions = JSON.parse(responseText || "")
 
             // ✅ Thay thế thay vì thêm mới
             // Tạo Map để tra cứu nhanh các câu hỏi đã được AI chỉnh sửa
-            const editedQuestionsMap = new Map();
+            const editedQuestionsMap = new Map()
             aiEditedQuestions.forEach((q: any) => {
                 editedQuestionsMap.set(q.id, {
                     ...q,
                     correct: String(q.correct), // Đảm bảo correct là string
-                });
-            });
+                })
+            })
 
             // Cập nhật quizData bằng cách thay thế những câu đã được AI chỉnh sửa
             const updatedQuestions = quizData.questions.map((originalQuestion) => {
-                const editedQuestion = editedQuestionsMap.get(originalQuestion.id);
-                return editedQuestion || originalQuestion; // Sử dụng câu đã chỉnh sửa nếu có, nếu không giữ nguyên
-            });
+                const editedQuestion = editedQuestionsMap.get(originalQuestion.id)
+                return editedQuestion || originalQuestion // Sử dụng câu đã chỉnh sửa nếu có, nếu không giữ nguyên
+            })
 
             const newQuizData = {
                 ...quizData,
                 questions: updatedQuestions,
-            };
+            }
 
-            setQuizData(newQuizData);
-            setFilterQuizData(applyFilter(newQuizData, activeFilter));
-            toast.success("Đã chỉnh sửa câu hỏi thành công!", { position: "top-center" });
+            setQuizData(newQuizData)
+            setFilterQuizData(applyFilter(newQuizData, activeFilter))
+            toast.success("Đã chỉnh sửa câu hỏi thành công!", { position: "top-center" })
         } catch (error: any) {
-            console.error("Error during AI editing:", error);
-            toast.error("Đã xảy ra lỗi khi chỉnh sửa câu hỏi bằng AI.", { description: error.message, position: "top-center" });
+            console.error("Error during AI editing:", error)
+            toast.error("Đã xảy ra lỗi khi chỉnh sửa câu hỏi bằng AI.", { description: error.message, position: "top-center" })
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    }, [filterQuizData, clearPatterns, quizData, applyFilter, activeFilter, genAI]);
+    }, [filterQuizData, clearPatterns, quizData, applyFilter, activeFilter, genAI])
     return (
         <>
             <Dialog open={open} onOpenChange={onOpenChange}>
-                <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+                <DialogContent className="max-w-6xl h-[90vh] overflow-y-auto">
                     <DialogHeader className="border-b pb-4">
                         <DialogTitle className="flex items-center justify-between">
                             <div className="flex items-center space-x-2">
@@ -310,22 +310,14 @@ export function AIResuiltPreviewDeCuong({ open, onOpenChange, quiz, setOpenAddMo
                                         {quizData.questions.length}
                                     </Badge>
                                 </Button>
-                                <Button
-                                    variant={activeFilter === "valid" ? "outline" : "secondary"}
-                                    size="sm"
-                                    onClick={() => handleFilterChange("valid")}
-                                    className="flex items-center space-x-2 text-green-700 border-green-200 hover:bg-green-50 h-11 dark:text-green-200 dark:border-green-700 dark:hover:bg-green-700/50 dark:bg-green-800/50">
+                                <Button variant={activeFilter === "valid" ? "outline" : "secondary"} size="sm" onClick={() => handleFilterChange("valid")} className="flex items-center space-x-2 text-green-700 border-green-200 hover:bg-green-50 h-11 dark:text-green-200 dark:border-green-700 dark:hover:bg-green-700/50 dark:bg-green-800/50">
                                     <CheckCircle className="h-3 w-3" />
                                     <span>Hợp lệ</span>
                                     <Badge variant="secondary" className="ml-1 bg-green-100 text-green-700">
                                         {validQuestionsCount}
                                     </Badge>
                                 </Button>
-                                <Button
-                                    variant={activeFilter === "invalid" ? "outline" : "destructive"}
-                                    size="sm"
-                                    onClick={() => handleFilterChange("invalid")}
-                                    className="flex items-center space-x-2 text-red-700 border-red-200 hover:bg-red-50 h-11 dark:text-red-200 dark:border-red-700 dark:hover:bg-red-700/50 dark:bg-red-800/50">
+                                <Button variant={activeFilter === "invalid" ? "outline" : "destructive"} size="sm" onClick={() => handleFilterChange("invalid")} className="flex items-center space-x-2 text-red-700 border-red-200 hover:bg-red-50 h-11 dark:text-red-200 dark:border-red-700 dark:hover:bg-red-700/50 dark:bg-red-800/50">
                                     <AlertCircle className="h-3 w-3" />
                                     <span>Cần sửa</span>
                                     <Badge variant="secondary" className="ml-1 bg-red-100 text-red-700">
@@ -334,9 +326,7 @@ export function AIResuiltPreviewDeCuong({ open, onOpenChange, quiz, setOpenAddMo
                                 </Button>
                                 {activeFilter === "invalid" && totalErrors > 0 && (
                                     <>
-                                        <Button
-                                            className="text-red-700 border-red-200 hover:bg-red-50 h-11 dark:text-red-200 dark:border-red-700 dark:hover:bg-red-700/50 dark:bg-red-800/50"
-                                            onClick={handleRemoveAllErrors}>
+                                        <Button className="text-red-700 border-red-200 hover:bg-red-50 h-11 dark:text-red-200 dark:border-red-700 dark:hover:bg-red-700/50 dark:bg-red-800/50" onClick={handleRemoveAllErrors}>
                                             <Trash2 /> Xóa hết những câu lỗi
                                         </Button>
                                         {/* <Button
@@ -364,14 +354,10 @@ export function AIResuiltPreviewDeCuong({ open, onOpenChange, quiz, setOpenAddMo
                                 </div>
                             </p>
                         )}
-                        <div className="space-y-4 max-h-[700px] overflow-y-auto">
+                        <div className="space-y-4 max-h-[450px] overflow-y-auto">
                             {filterQuizData &&
                                 filterQuizData.questions.map((question, index) => (
-                                    <Card
-                                        key={question.id}
-                                        className={`p-2 md:p-6 border-l-4 ${
-                                            Number(question.correct) == -1 ? "border-l-red-700 dark:border-l-red-400 bg-red-500/10" : "border-l-green-700 dark:border-l-green-400 bg-green-500/10"
-                                        }  hover:shadow-lg transition-shadow duration-200`}>
+                                    <Card key={question.id} className={`p-2 md:p-6 border-l-4 ${Number(question.correct) == -1 ? "border-l-red-700 dark:border-l-red-400 bg-red-500/10" : "border-l-green-700 dark:border-l-green-400 bg-green-500/10"}  hover:shadow-lg transition-shadow duration-200`}>
                                         <CardHeader className="pb-3 p-2 md:p-6 ">
                                             <div className="flex  flex-col-reverse gap-3 md:gap-0 md:flex-row items-start justify-between ">
                                                 <div className="flex-1">
@@ -410,13 +396,7 @@ export function AIResuiltPreviewDeCuong({ open, onOpenChange, quiz, setOpenAddMo
                                             <CardContent className="pt-0 p-2 md:p-6 ">
                                                 <div className="space-y-1">
                                                     {question.answers.map((option, optIndex) => (
-                                                        <div
-                                                            key={optIndex}
-                                                            className={`p-2 rounded text-sm ${
-                                                                String(optIndex) == question.correct
-                                                                    ? "bg-green-50 text-green-700 border border-green-200 dark:bg-green-900/50 dark:text-green-200 dark:border-green-700"
-                                                                    : "bg-gray-50 dark:bg-gray-900/50 text-gray-800 dark:text-gray-200"
-                                                            }`}>
+                                                        <div key={optIndex} className={`p-2 rounded text-sm ${String(optIndex) == question.correct ? "bg-green-50 text-green-700 border border-green-200 dark:bg-green-900/50 dark:text-green-200 dark:border-green-700" : "bg-gray-50 dark:bg-gray-900/50 text-gray-800 dark:text-gray-200"}`}>
                                                             {activeFilter === "valid" ? (
                                                                 <span className="font-medium">
                                                                     {String.fromCharCode(65 + optIndex)}. {renderHightlightedContent(option)}
@@ -450,7 +430,7 @@ export function AIResuiltPreviewDeCuong({ open, onOpenChange, quiz, setOpenAddMo
                                     <p className="text-center text-sm">Không có từ nào...</p>
                                 </div>
                             )}
-                            {quizData.questions.length > 0 && totalErrors === 0 && (
+                            {quizData.questions.length > 0 && totalErrors === 0 && activeFilter !== "invalid" && (
                                 <div className=" h-52 flex items-center justify-center">
                                     <p className="text-center text-sm">Đã sửa hết lỗi...</p>
                                 </div>
@@ -467,9 +447,10 @@ export function AIResuiltPreviewDeCuong({ open, onOpenChange, quiz, setOpenAddMo
                                 className="text-white bg-gradient-to-r from-purple-500 to-pink-500"
                                 disabled={totalErrors > 0}
                                 onClick={() => {
-                                    setOpenAddMoreInfo(true);
-                                    setGeneratedQuiz(filterQuizData);
-                                }}>
+                                    setOpenAddMoreInfo(true)
+                                    setGeneratedQuiz(filterQuizData)
+                                }}
+                            >
                                 <Save className="mr-2 h-4 w-4" />
                                 {totalErrors > 0 ? `Sửa hết ${totalErrors} lỗi trước khi lưu` : "Lưu và xuất bản Quiz"}
                             </Button>
@@ -488,13 +469,7 @@ export function AIResuiltPreviewDeCuong({ open, onOpenChange, quiz, setOpenAddMo
                     <div className="space-y-4">
                         <div>
                             <Label htmlFor="question-text">Câu hỏi</Label>
-                            <Textarea
-                                id="question-text"
-                                placeholder="Nhập câu hỏi..."
-                                value={newQuestion.question}
-                                onChange={(e) => setNewQuestion((prev) => ({ ...prev, question: e.target.value }))}
-                                className="mt-1 h-40"
-                            />
+                            <Textarea id="question-text" placeholder="Nhập câu hỏi..." value={newQuestion.question} onChange={(e) => setNewQuestion((prev) => ({ ...prev, question: e.target.value }))} className="mt-1 h-40" />
                         </div>
 
                         <div className="hidden">
@@ -518,12 +493,7 @@ export function AIResuiltPreviewDeCuong({ open, onOpenChange, quiz, setOpenAddMo
                                     {newQuestion &&
                                         newQuestion.answers?.map((option, index) => (
                                             <div key={index} className="flex items-center space-x-2">
-                                                <Input
-                                                    placeholder={`Lựa chọn ${index + 1}`}
-                                                    value={option}
-                                                    onChange={(e) => handleOptionChange(index, e.target.value)}
-                                                    className={String(index) == newQuestion.correct ? "border-green-500 bg-green-50 dark:bg-green-800/50 dark:text-green-200" : ""}
-                                                />
+                                                <Input placeholder={`Lựa chọn ${index + 1}`} value={option} onChange={(e) => handleOptionChange(index, e.target.value)} className={String(index) == newQuestion.correct ? "border-green-500 bg-green-50 dark:bg-green-800/50 dark:text-green-200" : ""} />
                                                 <div className="flex items-center space-x-2">
                                                     <Label htmlFor={`option-${index}`} className="flex items-center space-x-1">
                                                         {String(index) == newQuestion.correct ? (
@@ -563,13 +533,7 @@ export function AIResuiltPreviewDeCuong({ open, onOpenChange, quiz, setOpenAddMo
                         {newQuestion.type === "short-answer" && (
                             <div>
                                 <Label htmlFor="text-answer">Đáp án mẫu</Label>
-                                <Textarea
-                                    id="text-answer"
-                                    placeholder="Nhập đáp án mẫu..."
-                                    value={newQuestion.correct}
-                                    onChange={(e) => setNewQuestion((prev) => ({ ...prev, correct: e.target.value }))}
-                                    className="mt-1"
-                                />
+                                <Textarea id="text-answer" placeholder="Nhập đáp án mẫu..." value={newQuestion.correct} onChange={(e) => setNewQuestion((prev) => ({ ...prev, correct: e.target.value }))} className="mt-1" />
                             </div>
                         )}
 
@@ -587,16 +551,7 @@ export function AIResuiltPreviewDeCuong({ open, onOpenChange, quiz, setOpenAddMo
 
                         <div className="hidden">
                             <Label htmlFor="points">Điểm số</Label>
-                            <Input
-                                id="points"
-                                type="number"
-                                disabled
-                                min="1"
-                                defaultValue={1}
-                                value={newQuestion.points}
-                                onChange={(e) => setNewQuestion((prev) => ({ ...prev, points: Number.parseInt(e.target.value) || 1 }))}
-                                className="mt-1"
-                            />
+                            <Input id="points" type="number" disabled min="1" defaultValue={1} value={newQuestion.points} onChange={(e) => setNewQuestion((prev) => ({ ...prev, points: Number.parseInt(e.target.value) || 1 }))} className="mt-1" />
                         </div>
                     </div>
 
@@ -611,5 +566,5 @@ export function AIResuiltPreviewDeCuong({ open, onOpenChange, quiz, setOpenAddMo
                 </DialogContent>
             </Dialog>
         </>
-    );
+    )
 }

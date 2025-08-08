@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { ArrowLeft, Share2, Flag, Star, Send, ThumbsUp, MessageCircle, Users, Clock, BookOpen, Eye, Play, Trophy, ArrowBigLeft } from "lucide-react"
+import { ArrowLeft, Share2, Flag, Star, Send, ThumbsUp, MessageCircle, Users, Clock, BookOpen, Eye, Play, Trophy, ArrowBigLeft, Pencil } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -11,7 +11,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
-import { IComment, IQuestion, IQuiz, IUser } from "@/types/type"
+import { IComment, IDataQuiz, IQuestion, IQuiz, IUser } from "@/types/type"
 import { useRouter } from "next/navigation"
 import handleCompareDate from "@/lib/CompareDate"
 import { POST_API } from "@/lib/fetchAPI"
@@ -21,8 +21,12 @@ import { Progress } from "../ui/progress"
 import Loading from "../ui/loading"
 import { renderContentWithLaTeX, renderHightlightedContent } from "../renderCode"
 import Image from "next/image"
+import { useUser } from "@/context/userContext"
+import { AIResuiltPreviewDeCuong } from "@/components/decuong/AIResuiltPreviewDeCuong"
+import DialogAddMoreInfoQuiz from "@/components/ai-center/DialogAddMoreInfoQuiz"
+import { IGeneratedQuiz } from "@/components/ai-center/create-with-ai/typeCreateAI"
 interface PropsDetailQuiz {
-    quiz?: IQuestion[]
+    quiz?: IDataQuiz[]
     data?: IQuiz
     comment: IComment[]
     setComment: React.Dispatch<React.SetStateAction<IComment[]>>
@@ -37,9 +41,12 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
     const [review, setReview] = useState("")
     const defaultReport = { type_of_violation: "spam", content: "" }
     const [report, setReport] = useState(defaultReport)
-    const [quizSlice, setQuizSlice] = useState<IQuestion[]>()
+    const [quizSlice, setQuizSlice] = useState<IDataQuiz[]>()
     const router = useRouter()
     const token = Cookies.get("token") || ""
+    const [generatedQuiz, setGeneratedQuiz] = useState<IGeneratedQuiz | null>(null)
+    const [showPreview, setShowPreview] = useState(false)
+    const [openAddMoreInfo, setOpenAddMoreInfo] = useState(false)
     useEffect(() => {
         if (quiz && quiz.length > 5) {
             setQuizSlice(quiz.slice(0, 5))
@@ -83,19 +90,6 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
         }
     }
 
-    // function calAvg(arr: IComment[]) {
-    //     let sum = 0;
-    //     if (arr.length == 0) return 0;
-    //     for (let i = 0; i < arr.length; i++) {
-    //         sum += arr[i]?.rating;
-    //     }
-    //     return sum / arr.length;
-    // }
-
-    // function Round(num: number) {
-    //     return Math.round(num * 10) / 10;
-    // }
-
     const handleReport = async () => {
         try {
             setLoadingReport(true)
@@ -124,6 +118,24 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
 
     const handleSeeAllQuestion = () => {
         setQuizSlice(quiz || [])
+    }
+
+    const handleOpenEditModal = () => {
+        setGeneratedQuiz({
+            title: data?.title || "",
+            subject: data?.subject || "",
+            content: data?.content || "",
+            questions:
+                quiz?.map((q) => ({
+                    id: q.id,
+                    type: "multiple-choice",
+                    question: q.question,
+                    answers: q.answers,
+                    correct: q.correct,
+                    points: 1,
+                })) || [],
+        } as IGeneratedQuiz)
+        setShowPreview(true)
     }
 
     const totalStar = comment.reduce((acc, curr) => acc + curr.rating, 0)
@@ -254,15 +266,23 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                                 <Play className="h-5 w-5 mr-2" />
                                                 Bắt đầu làm quiz
                                             </Button>
-                                            {/* <Button className="" variant="secondary" onClick={}>
-                                                Lưu thành file docx
-                                            </Button> */}
+                                            {user && user._id === data?.uid._id && (
+                                                <Button className="" variant="outline" size="lg" onClick={handleOpenEditModal}>
+                                                    <Pencil /> Chỉnh sửa
+                                                </Button>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
                                 <div className="absolute -top-4 -right-4 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
                                 <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-white/5 rounded-full blur-2xl"></div>
                             </div>
+                            {generatedQuiz && <AIResuiltPreviewDeCuong open={showPreview} onOpenChange={setShowPreview} quiz={generatedQuiz} setOpenAddMoreInfo={setOpenAddMoreInfo} setGeneratedQuiz={setGeneratedQuiz} />}
+                            {generatedQuiz && (
+                                <DialogAddMoreInfoQuiz generatedQuiz={generatedQuiz} openAddMoreInfo={openAddMoreInfo} setOpenAddMoreInfo={setOpenAddMoreInfo}>
+                                    <></>
+                                </DialogAddMoreInfoQuiz>
+                            )}
 
                             {/* Quiz Preview */}
                             <Card className="shadow-lg border-0 bg-white/70 dark:bg-slate-800/50 dark:border-white/10 backdrop-blur-sm ">

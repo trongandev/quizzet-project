@@ -16,11 +16,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import QuizAIInterfaceOption from "@/components/ai-center/create-with-ai/QuizAIInterfaceOption"
 import { IGeneratedQuiz, QuizAIInterface, QuizAIText } from "@/components/ai-center/create-with-ai/typeCreateAI"
 import QuizAITextOption from "@/components/ai-center/create-with-ai/QuizAITextOption"
+import QuizAIInterface2 from "@/components/ai-center/create-with-ai/QuizAIInterface2"
 
 export function CQuizAI() {
     const [dataQuizInterface, setDataQuizInterface] = useState<QuizAIInterface>({ topic: "", description: "", questionCount: [10], difficulty: "medium" })
     const [dataQuizText, setDataQuizText] = useState<QuizAIText>({ content: "", questionCount: [50] })
-    const [activeTab, setActiveTab] = useState("gui")
+    const [activeTab, setActiveTab] = useState("gui1")
     const [openAddMoreInfo, setOpenAddMoreInfo] = useState(false)
 
     const [isGenerating, setIsGenerating] = useState(false)
@@ -201,7 +202,7 @@ export function CQuizAI() {
     }, [pathname])
 
     return (
-        <div className="p-6 max-w-4xl mx-auto space-y-6">
+        <div className="px-6  mx-auto space-y-6">
             <div className="text-center space-y-2">
                 <div className="flex items-center justify-center space-x-2">
                     <SidebarTrigger />
@@ -210,25 +211,28 @@ export function CQuizAI() {
                 <p className="text-muted-foreground">Mô tả chủ đề và để AI tạo quiz hoàn chỉnh cho bạn</p>
             </div>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="">
-                <TabsList className="grid grid-cols-3  h-12">
-                    <TabsTrigger value="gui" className="flex items-center gap-2 h-10">
+                <TabsList className="grid grid-cols-3   h-12">
+                    <TabsTrigger value="gui1" className="flex items-center gap-2 h-10">
                         <MousePointerClick className="w-4 h-4" />
                         Giao diện
                     </TabsTrigger>
+
                     <TabsTrigger value="text" className="flex items-center gap-2 h-10">
                         <LetterText className="w-4 h-4" />
                         Văn bản
                     </TabsTrigger>
-                    <TabsTrigger value="file" className="flex items-center gap-2 h-10">
+                    <TabsTrigger value="file" className="items-center gap-2 h-10 hidden md:flex">
                         <FileText className="w-4 h-4" />
                         Tệp tin (chưa hỗ trợ)
                     </TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="gui" className="space-y-6">
+                <TabsContent value="gui1" className="space-y-6">
                     <QuizAIInterfaceOption generatedQuiz={generatedQuiz} dataQuizInterface={dataQuizInterface} setDataQuizInterface={setDataQuizInterface} handleGenerate={handleGenerate} isGenerating={isGenerating} />
                 </TabsContent>
-
+                <TabsContent value="gui2" className="space-y-6">
+                    {/* <QuizAIInterface2 generatedQuiz={generatedQuiz} dataQuizInterface={dataQuizInterface} setDataQuizInterface={setDataQuizInterface} handleGenerate={handleGenerate} isGenerating={isGenerating} /> */}
+                </TabsContent>
                 <TabsContent value="text" className="space-y-6">
                     <QuizAITextOption dataQuizText={dataQuizText} setDataQuizText={setDataQuizText} generatedQuiz={generatedQuiz} handleGenerate={handleGenerate} isGenerating={isGenerating} />
                 </TabsContent>
