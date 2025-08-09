@@ -38,9 +38,10 @@ interface AIResultPreviewProps {
     quiz: QuizQuestion
     setOpenAddMoreInfo: (open: boolean) => void
     setGeneratedQuiz: any
+    isEdit?: boolean
 }
 
-export function AIResuiltPreviewDeCuong({ open, onOpenChange, quiz, setOpenAddMoreInfo, setGeneratedQuiz }: AIResultPreviewProps) {
+export function AIResuiltPreviewDeCuong({ open, onOpenChange, quiz, setOpenAddMoreInfo, setGeneratedQuiz, isEdit = false }: AIResultPreviewProps) {
     const [quizData, setQuizData] = useState<QuizQuestion>(quiz)
     const [filterQuizData, setFilterQuizData] = useState<QuizQuestion>(quiz)
     const [editingQuestion, setEditingQuestion] = useState<Quiz | null>(null)
@@ -291,7 +292,7 @@ export function AIResuiltPreviewDeCuong({ open, onOpenChange, quiz, setOpenAddMo
     return (
         <>
             <Dialog open={open} onOpenChange={onOpenChange}>
-                <DialogContent className="max-w-6xl h-[90vh] overflow-y-auto">
+                <DialogContent className="max-w-6xl max-h-[90vh] overflow-x-auto">
                     <DialogHeader className="border-b pb-4">
                         <DialogTitle className="flex items-center justify-between">
                             <div className="flex items-center space-x-2">
@@ -426,12 +427,12 @@ export function AIResuiltPreviewDeCuong({ open, onOpenChange, quiz, setOpenAddMo
                                     </Card>
                                 ))}
                             {quizData.questions.length === 0 && (
-                                <div className=" h-52 flex items-center justify-center">
+                                <div className="h-[450px] flex items-center justify-center">
                                     <p className="text-center text-sm">Không có từ nào...</p>
                                 </div>
                             )}
-                            {quizData.questions.length > 0 && totalErrors === 0 && activeFilter !== "invalid" && (
-                                <div className=" h-52 flex items-center justify-center">
+                            {quizData.questions.length > 0 && totalErrors === 0 && activeFilter === "invalid" && (
+                                <div className="h-[450px] flex items-center justify-center">
                                     <p className="text-center text-sm">Đã sửa hết lỗi...</p>
                                 </div>
                             )}
@@ -452,7 +453,7 @@ export function AIResuiltPreviewDeCuong({ open, onOpenChange, quiz, setOpenAddMo
                                 }}
                             >
                                 <Save className="mr-2 h-4 w-4" />
-                                {totalErrors > 0 ? `Sửa hết ${totalErrors} lỗi trước khi lưu` : "Lưu và xuất bản Quiz"}
+                                {totalErrors > 0 ? `Sửa hết ${totalErrors} lỗi trước khi lưu` : isEdit ? "Cập nhật lại bài quiz" : "Lưu và xuất bản Quiz"}
                             </Button>
                         </div>
                     </div>

@@ -1,16 +1,14 @@
-import React, { useEffect, useMemo, useRef, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Input } from "../ui/input"
-import { Save, Sparkle, Upload, X } from "lucide-react"
+import { Save, Sparkle } from "lucide-react"
 import { Label } from "../ui/label"
 import { Button } from "../ui/button"
-import Image from "next/image"
 import { toast } from "sonner"
 import Cookies from "js-cookie"
 import { POST_API } from "@/lib/fetchAPI"
 import { useRouter } from "next/navigation"
 import Loading from "../ui/loading"
-import axios from "axios"
 import { Textarea } from "../ui/textarea"
 import { GoogleGenerativeAI } from "@google/generative-ai"
 import { optimizedPromptGenerateTitle } from "@/lib/optimizedPrompt"
@@ -35,9 +33,14 @@ interface Props {
     openAddMoreInfo: boolean
     setOpenAddMoreInfo: (open: boolean) => void
     generatedQuiz?: QuizQuestion
+    isEdit?: boolean
+    params?: any
+    setShowPreview?: any
+    reloadData?: () => void
 }
 
-export default function DialogAddMoreInfoQuiz({ children, generatedQuiz, openAddMoreInfo, setOpenAddMoreInfo }: Props) {
+export default function DialogAddMoreInfoQuiz({ children, isEdit, params, setShowPreview, generatedQuiz, openAddMoreInfo, setOpenAddMoreInfo, reloadData }: Props) {
+    console.log(isEdit, "isEdit")
     const defaultGeneratedQuiz = {
         title: "",
         subject: "",
@@ -49,9 +52,6 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz, openAdd
     const [loadingTitle, setLoadingTitle] = useState(false)
     const token = Cookies.get("token") || ""
     const router = useRouter()
-    const [isDragOver, setIsDragOver] = useState(false)
-    const fileInputRef = useRef<HTMLInputElement>(null)
-    const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
     useEffect(() => {
         // Nếu generatedQuiz có giá trị, cập nhật tempQuiz
@@ -77,43 +77,49 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz, openAdd
             setLoading(true)
             e.preventDefault()
             // nếu nó không bắt đầu là http hoặc https thì upload hình lên cloudinary
-            let imageUrl = ""
-            if (selectedFile) {
-                const formData = new FormData()
-
-                formData.append("image", selectedFile)
-                const uploadResponse = await axios.post(`${process.env.API_ENDPOINT}/upload`, formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                        Authorization: `Bearer ${token}`,
-                    },
-                })
-                imageUrl = uploadResponse?.data?.url
-            }
             const newQuiz = {
                 title: tempQuiz.title,
                 subject: tempQuiz.subject,
                 content: tempQuiz.content,
-                img: imageUrl,
                 questions: generatedQuiz?.questions,
             }
-
-            const req = await POST_API("/quiz", newQuiz, "POST", token)
-            const data = await req?.json()
-            if (data.ok) {
-                toast.success("Đã lưu và xuất bản bài quiz", {
-                    position: "top-center",
-                    id: "upload-image",
-                    duration: 3000,
-                })
-                setOpenAddMoreInfo(false)
-                router.push(`/quiz/detail/${data?.quiz?.slug}`)
+            if (isEdit) {
+                const req = await POST_API(`/quiz/update/${params?.slug}`, newQuiz, "PATCH", token)
+                const data = await req?.json()
+                if (data.ok) {
+                    toast.success("Đã cập nhật bài quiz", {
+                        position: "top-center",
+                        id: "upload-image",
+                        duration: 3000,
+                    })
+                    setOpenAddMoreInfo(false)
+                    setShowPreview(false)
+                    if (reloadData) await reloadData()
+                } else {
+                    toast.error("Đã có lỗi xảy ra", {
+                        description: data?.message || "Lỗi không xác định",
+                        position: "top-center",
+                        duration: 10000,
+                    })
+                }
             } else {
-                toast.error("Đã có lỗi xảy ra", {
-                    description: data?.message || "Lỗi không xác định",
-                    position: "top-center",
-                    duration: 10000,
-                })
+                const req = await POST_API("/quiz", newQuiz, "POST", token)
+                const data = await req?.json()
+                if (data.ok) {
+                    toast.success("Đã lưu và xuất bản bài quiz", {
+                        position: "top-center",
+                        id: "upload-image",
+                        duration: 3000,
+                    })
+                    setOpenAddMoreInfo(false)
+                    router.push(`/quiz/detail/${data?.quiz?.slug}`)
+                } else {
+                    toast.error("Đã có lỗi xảy ra", {
+                        description: data?.message || "Lỗi không xác định",
+                        position: "top-center",
+                        duration: 10000,
+                    })
+                }
             }
         } catch (error: any) {
             console.error("Error uploading image:", error)
@@ -128,74 +134,6 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz, openAdd
         }
     }
 
-    const handleFileSelect = (file: File) => {
-        // Validate file type
-        const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/gif"]
-        if (!allowedTypes.includes(file.type)) {
-            alert("Please select a PNG, JPG, or GIF file.")
-            return
-        }
-
-        // Validate file size (3MB)
-        const maxSize = 3 * 1024 * 1024 // 10MB in bytes
-        if (file.size > maxSize) {
-            alert("Kích thước tập tin phải nhỏ hơn 3MB.")
-            return
-        }
-
-        setSelectedFile(file)
-    }
-
-    const handleButtonClick = () => {
-        fileInputRef.current?.click()
-    }
-
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0]
-        if (file) {
-            handleFileSelect(file)
-            const reader = new FileReader()
-            reader.onload = () => {
-                setIsDragOver(false) // Reset drag over state
-            }
-            reader.readAsDataURL(file)
-        }
-    }
-
-    const handleDragOver = (event: React.DragEvent) => {
-        event.preventDefault()
-        setIsDragOver(true)
-    }
-
-    const handleDragLeave = (event: React.DragEvent) => {
-        event.preventDefault()
-        setIsDragOver(false)
-    }
-
-    const handleDrop = (event: React.DragEvent) => {
-        event.preventDefault()
-        setIsDragOver(false)
-
-        const file = event.dataTransfer.files?.[0]
-        if (file) {
-            handleFileSelect(file)
-        }
-    }
-
-    const removeFile = () => {
-        setSelectedFile(null)
-        if (fileInputRef.current) {
-            fileInputRef.current.value = ""
-        }
-    }
-
-    const formatFileSize = (bytes: number) => {
-        if (bytes === 0) return "0 Bytes"
-        const k = 1024
-        const sizes = ["Bytes", "KB", "MB", "GB"]
-        const i = Math.floor(Math.log(bytes) / Math.log(k))
-        return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]
-    }
     const genAI = useMemo(() => new GoogleGenerativeAI(process.env.API_KEY_AI || ""), [])
     const handleGenerateTitle = async () => {
         if (loadingTitle) return // Prevent multiple clicks
@@ -233,40 +171,7 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz, openAdd
                     <DialogHeader>
                         <DialogTitle>Nhập thêm thông tin bài quiz </DialogTitle>
                     </DialogHeader>
-                    <div className="grid gap-4 my-5 h-[450px] md:h-[550px] overflow-y-auto">
-                        <div className="">
-                            <div autoFocus className={`cursor-pointer hover:border-primary/50 hover:bg-primary/5 border-2 border-dashed rounded-lg p-8 text-center transition-colors ${isDragOver ? "border-primary bg-primary/5" : "border-muted-foreground/25"}`} onDragOver={handleDragOver} onDragLeave={handleDragLeave} onClick={handleButtonClick} onDrop={handleDrop}>
-                                <div className="flex flex-col items-center space-y-2">
-                                    <div className="p-3 bg-muted rounded-full">
-                                        <Upload className="h-6 w-6 text-muted-foreground" />
-                                    </div>
-                                    <div className="space-y-1">
-                                        <p className="text-sm font-medium">Tải lên hình - kéo vào hoặc bỏ qua</p>
-                                        <p className="text-xs text-muted-foreground">PNG, JPG, GIF tới 3MB</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {selectedFile && (
-                                <div className="mt-3 flex items-center justify-between p-3 bg-muted rounded-lg">
-                                    <div className="flex items-center space-x-3">
-                                        <div className="flex-shrink-0 relative h-20 w-36">
-                                            <Image src={URL.createObjectURL(selectedFile)} alt="Selected file preview" fill className="rounded-md object-cover" />
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-medium truncate max-w-[255px]">{selectedFile.name}</p>
-                                            <p className="text-xs text-muted-foreground">{formatFileSize(selectedFile.size)}</p>
-                                        </div>
-                                    </div>
-                                    <Button variant="ghost" size="sm" onClick={removeFile} className="h-8 w-8 p-0">
-                                        <X className="h-4 w-4" />
-                                    </Button>
-                                </div>
-                            )}
-
-                            <input ref={fileInputRef} type="file" accept=".png,.jpg,.jpeg,.gif" onChange={handleFileChange} className="hidden" />
-                        </div>
-
+                    <div className="grid gap-4 my-5 max-h-[550px] overflow-y-scroll">
                         <div className="">
                             <Label htmlFor="name-1">Tên bài quiz</Label>
                             <div className="flex items-center justify-between gap-2 md:gap-5">
@@ -280,7 +185,7 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz, openAdd
                         </div>
                         <div className="grid gap-3">
                             <Label htmlFor="username-1">Nội dung</Label>
-                            <Textarea className="h-12" id="username-1" name="username" placeholder="Nhập nội dung" value={tempQuiz.content} onChange={(e) => handleSetValueTempQuiz("content", e.target.value)} required />
+                            <Textarea className="h-24" id="username-1" name="username" placeholder="Nhập nội dung" value={tempQuiz.content} onChange={(e) => handleSetValueTempQuiz("content", e.target.value)} required />
                         </div>
                         <div className="grid gap-3">
                             <Label htmlFor="subject">Môn học</Label>
@@ -295,7 +200,7 @@ export default function DialogAddMoreInfoQuiz({ children, generatedQuiz, openAdd
                         </DialogClose>
                         <Button size="lg" className="flex-1 text-white bg-gradient-to-r from-blue-500 to-cyan-500" onClick={handleSubmit} disabled={loading}>
                             {loading ? <Loading /> : <Save className="mr-2 h-4 w-4" />}
-                            Lưu và xuất bản
+                            {isEdit ? "Cập nhật" : "Lưu và xuất bản"}
                         </Button>
                     </DialogFooter>
                 </div>

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { ArrowLeft, Share2, Flag, Star, Send, ThumbsUp, MessageCircle, Users, Clock, BookOpen, Eye, Play, Trophy, ArrowBigLeft, Pencil } from "lucide-react"
+import { ArrowLeft, Share2, Flag, Star, Send, ThumbsUp, MessageCircle, Users, Clock, BookOpen, Eye, Play, Trophy, ArrowBigLeft, Pencil, RotateCcw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -11,17 +11,15 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
-import { IComment, IDataQuiz, IQuestion, IQuiz, IUser } from "@/types/type"
+import { IComment, IDataQuiz, IQuiz, IUser } from "@/types/type"
 import { useRouter } from "next/navigation"
 import handleCompareDate from "@/lib/CompareDate"
 import { POST_API } from "@/lib/fetchAPI"
 import Cookies from "js-cookie"
 import { toast } from "sonner"
-import { Progress } from "../ui/progress"
 import Loading from "../ui/loading"
 import { renderContentWithLaTeX, renderHightlightedContent } from "../renderCode"
 import Image from "next/image"
-import { useUser } from "@/context/userContext"
 import { AIResuiltPreviewDeCuong } from "@/components/decuong/AIResuiltPreviewDeCuong"
 import DialogAddMoreInfoQuiz from "@/components/ai-center/DialogAddMoreInfoQuiz"
 import { IGeneratedQuiz } from "@/components/ai-center/create-with-ai/typeCreateAI"
@@ -31,12 +29,16 @@ interface PropsDetailQuiz {
     comment: IComment[]
     setComment: React.Dispatch<React.SetStateAction<IComment[]>>
     user?: IUser | null
+    params?: any
+    loadingReload?: any
+    reloadData?: () => void
 }
 
-export default function DetailQuiz({ quiz, data, comment, setComment, user }: PropsDetailQuiz) {
+export default function DetailQuiz({ quiz, params, data, comment, setComment, user, loadingReload, reloadData }: PropsDetailQuiz) {
     const [userRating, setUserRating] = useState(5)
     const [isReportModalOpen, setIsReportModalOpen] = useState(false)
     const [loading, setLoading] = useState(false)
+
     const [loadingReport, setLoadingReport] = useState(false)
     const [review, setReview] = useState("")
     const defaultReport = { type_of_violation: "spam", content: "" }
@@ -154,6 +156,10 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                             </Button>
                         </div>
                         <div className="flex items-center space-x-2">
+                            <Button variant="secondary" size="sm" disabled={loadingReload} onClick={reloadData}>
+                                <RotateCcw className={`h-4 w-4 mr-2 ${loadingReload && "animate-spin"}`} />
+                                Cập nhật dữ liệu
+                            </Button>
                             <Button variant="outline" size="sm">
                                 <Share2 className="h-4 w-4 mr-2" />
                                 Chia sẻ
@@ -277,9 +283,9 @@ export default function DetailQuiz({ quiz, data, comment, setComment, user }: Pr
                                 <div className="absolute -top-4 -right-4 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
                                 <div className="absolute -bottom-8 -left-8 w-40 h-40 bg-white/5 rounded-full blur-2xl"></div>
                             </div>
-                            {generatedQuiz && <AIResuiltPreviewDeCuong open={showPreview} onOpenChange={setShowPreview} quiz={generatedQuiz} setOpenAddMoreInfo={setOpenAddMoreInfo} setGeneratedQuiz={setGeneratedQuiz} />}
+                            {generatedQuiz && <AIResuiltPreviewDeCuong open={showPreview} isEdit={true} onOpenChange={setShowPreview} quiz={generatedQuiz} setOpenAddMoreInfo={setOpenAddMoreInfo} setGeneratedQuiz={setGeneratedQuiz} />}
                             {generatedQuiz && (
-                                <DialogAddMoreInfoQuiz generatedQuiz={generatedQuiz} openAddMoreInfo={openAddMoreInfo} setOpenAddMoreInfo={setOpenAddMoreInfo}>
+                                <DialogAddMoreInfoQuiz isEdit={true} params={params} setShowPreview={setShowPreview} generatedQuiz={generatedQuiz} openAddMoreInfo={openAddMoreInfo} setOpenAddMoreInfo={setOpenAddMoreInfo} reloadData={reloadData}>
                                     <></>
                                 </DialogAddMoreInfoQuiz>
                             )}
