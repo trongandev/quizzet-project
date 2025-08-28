@@ -232,7 +232,7 @@ interface IReplyTo {
     unsend: boolean
 }
 
-interface UserId {
+export interface UserId {
     _id: string
     displayName: string
     profilePicture: string

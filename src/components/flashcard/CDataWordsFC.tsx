@@ -1,8 +1,7 @@
 import React, { useMemo } from "react"
-import { AlertCircle, ArrowRight, BookOpen, Brain, CheckCircle, Clock, NotepadTextDashed, RotateCcw, Target, TrendingUp } from "lucide-react"
+import { AlertCircle, ArrowRight, BookOpen, Brain, CheckCircle, Clock, NotepadTextDashed, RotateCcw, TrendingUp } from "lucide-react"
 import { Badge } from "../ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { useRouter } from "next/navigation"
 import { Button } from "../ui/button"
 import { formatDistanceToNowStrict } from "date-fns"
@@ -135,9 +134,12 @@ export default function CDataWordsFC({ summary }: { summary: ISummary }) {
                         <Badge className="text-[10px] bg-green-100 text-green-800">Hoàn thành</Badge>
                     </div>
                     <div className="text-3xl font-bold text-green-900 dark:text-green-400 mb-1">{learnedWords}</div>
-                    <div className="text-sm text-green-700 dark:text-green-300">Đã học thuộc</div>
+                    <div className="text-sm text-green-700 dark:text-green-300 flex justify-between">
+                        <span>Đã học thuộc</span>
+                        <span className="text-xs text-green-600 dark:text-green-400">{Math.floor((learnedWords / total) * 100)}%</span>
+                    </div>
                     <div className="mt-2 w-full bg-green-200 rounded-full h-2">
-                        <div className="bg-green-600 h-2 rounded-full" style={{ width: `${learnedWords}%` }}></div>
+                        <div className="bg-green-600 h-2 rounded-full" style={{ width: `${(learnedWords / total) * 100}%` }}></div>
                     </div>
                 </div>
                 {/* Known Cards */}

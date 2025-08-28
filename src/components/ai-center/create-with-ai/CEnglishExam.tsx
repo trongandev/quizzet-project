@@ -18,7 +18,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai"
 import { optimizedPromptEnglishExam } from "@/lib/optimizedPrompt"
 import { toast } from "sonner"
 import { ExamInterface } from "@/components/ai-center/ExamInterface"
-import { IEnglishExam } from "@/types/typeEnglishExam"
+import { IEnglishExam, Question } from "@/types/typeEnglishExam"
 import { contentSuggestions, difficultyLevels, questionCounts, questionsTemplate, questionTimeLimits, questionTypes, skillTypes } from "@/components/ai-center/create-with-ai/configEnglish"
 
 export default function CEnglishExam() {
@@ -37,9 +37,19 @@ export default function CEnglishExam() {
 
     const [generatedQuestions, setGeneratedQuestions] = useState<IEnglishExam | null>(null)
     const [isGenerating, setIsGenerating] = useState(false)
-
+    const [jsonOutput, setJsonOutput] = useState<Question[]>([])
     const genAI = useMemo(() => new GoogleGenerativeAI(process.env.API_KEY_AI || ""), [])
-
+    const SetDataEnglishExam = (newJsonOutput?: any) => {
+        const newExamData: IEnglishExam = {
+            title: quizData.title,
+            description: quizData.description,
+            difficulty: quizData.difficulty as any,
+            skills: quizData.skills as any,
+            timeLimit: quizData.timeLimit,
+            questions: newJsonOutput || jsonOutput,
+        }
+        setGeneratedQuestions(newExamData)
+    }
     const handleGenerateQuestionsWithAI = async () => {
         try {
             setGeneratedQuestions(null)
@@ -55,18 +65,11 @@ export default function CEnglishExam() {
                 .replace(/^```html\s*/, "")
                 .replace(/```\s*$/, "")
 
-            const jsonOutput = JSON.parse(responseText || "")
+            const newJsonOutput = JSON.parse(responseText || "")
+            setJsonOutput(newJsonOutput)
             setIsGenerating(false)
+            SetDataEnglishExam(newJsonOutput)
 
-            const newExamData: IEnglishExam = {
-                title: quizData.title,
-                description: quizData.description,
-                difficulty: quizData.difficulty as any,
-                skills: quizData.skills as any,
-                timeLimit: quizData.timeLimit,
-                questions: jsonOutput || [],
-            }
-            setGeneratedQuestions(newExamData)
             console.log("Generated Questions:", jsonOutput)
             toast.success("Tạo đề thi tiếng anh thành công!", {
                 position: "top-center",
@@ -231,15 +234,27 @@ export default function CEnglishExam() {
                                             </Select>
                                         </div>
                                     </div>
-                                    <div className={`flex flex-col md:flex-row gap-3 ${generatedQuestions ? "md:flex-row-reverse" : ""}`}>
+                                    <div className={`flex flex-col md:flex-row gap-3 ${generatedQuestions && generatedQuestions?.title !== "test-ai-english" ? "md:flex-row-reverse" : ""}`}>
                                         {generatedQuestions && (
-                                            <Button className={`h-12  ${generatedQuestions ? "w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700" : ""}`} variant="outline" onClick={() => setOpenResult(true)}>
+                                            <Button
+                                                className={`h-12  ${generatedQuestions && generatedQuestions?.title !== "test-ai-english" ? "w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700" : ""}`}
+                                                variant="outline"
+                                                onClick={() => {
+                                                    setOpenResult(true)
+                                                    SetDataEnglishExam()
+                                                }}
+                                            >
                                                 <Eye />
                                                 Xem trước
                                             </Button>
                                         )}
 
-                                        <Button onClick={handleGenerateQuestionsWithAI} disabled={!quizData.content || !quizData.difficulty || quizData.questionTypes.length === 0 || isGenerating} variant="outline" className={`  ${generatedQuestions ? "" : "w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"}  h-12 text-white `}>
+                                        <Button
+                                            onClick={handleGenerateQuestionsWithAI}
+                                            disabled={!quizData.content || !quizData.difficulty || quizData.questionTypes.length === 0 || isGenerating}
+                                            variant="outline"
+                                            className={`  ${generatedQuestions && generatedQuestions?.title !== "test-ai-english" ? "" : "w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"}  h-12 text-white `}
+                                        >
                                             {isGenerating ? (
                                                 <>
                                                     <Loading />

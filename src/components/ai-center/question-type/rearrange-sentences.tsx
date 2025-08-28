@@ -16,7 +16,7 @@ const reorder = (list: any, startIndex: number, endIndex: number) => {
     return result
 }
 
-export function RearrangeSentencesQuestion({ question }: { question: IRearrangeSentencesQuestion }) {
+export function RearrangeSentencesQuestion({ question, is_exam = false }: { question: IRearrangeSentencesQuestion; is_exam?: boolean }) {
     const [editData, setEditData] = useState(question)
     const [edit, setEdit] = useState(false)
     const onDragEnd = (result: any) => {
@@ -47,42 +47,48 @@ export function RearrangeSentencesQuestion({ question }: { question: IRearrangeS
             <Droppable droppableId="droppable-list">
                 {(provided) => (
                     <div {...provided.droppableProps} ref={provided.innerRef}>
-                        <Card className="bg-slate-800 border-slate-700">
+                        <Card className="dark:bg-slate-800 bg-gray-100/80 backdrop-blur-md shadow-md ">
                             <CardContent className="p-6">
-                                <div className="flex items-center justify-between mb-3">
-                                    <div className="flex items-center gap-2 ">
-                                        <ArrowDownAZ className="w-5 h-5 text-blue-400" />
-                                        <h3 className="text-lg font-semibold text-white">Sắp xếp câu thành câu có ý nghĩa</h3>
-                                        <Badge variant="secondary" className="bg-slate-700">
-                                            Đọc hiểu
-                                        </Badge>
-                                    </div>
-                                    <div className="space-x-2">
-                                        <Button variant="outline" size="sm" onClick={resetOrder} className="">
-                                            <RotateCcw />
-                                            Đặt lại
-                                        </Button>
-                                        {edit ? (
-                                            <Button onClick={() => setEdit(false)} variant="outline" size="sm">
-                                                <X /> Tắt chỉnh sửa
+                                <div className="flex items-center justify-between">
+                                    {!is_exam && (
+                                        <div className="flex items-center gap-2 ">
+                                            <ArrowDownAZ className="w-5 h-5 text-blue-400" />
+                                            <h3 className="text-lg font-semibold text-white">Sắp xếp câu thành câu có ý nghĩa</h3>
+                                            <Badge variant="secondary" className="bg-slate-700">
+                                                Đọc hiểu
+                                            </Badge>
+                                        </div>
+                                    )}
+
+                                    {!is_exam && (
+                                        <div className="space-x-2">
+                                            <Button variant="outline" size="sm" onClick={resetOrder} className="">
+                                                <RotateCcw />
+                                                Đặt lại
                                             </Button>
-                                        ) : (
-                                            <Button onClick={() => setEdit(true)} variant="outline" size="sm">
-                                                <SquarePen /> Mở chỉnh sửa
+                                            {edit ? (
+                                                <Button onClick={() => setEdit(false)} variant="outline" size="sm">
+                                                    <X /> Tắt chỉnh sửa
+                                                </Button>
+                                            ) : (
+                                                <Button onClick={() => setEdit(true)} variant="outline" size="sm">
+                                                    <SquarePen /> Mở chỉnh sửa
+                                                </Button>
+                                            )}
+                                            <Button onClick={handleRemove} variant="destructive" size="sm">
+                                                <Trash2 /> Xóa
                                             </Button>
-                                        )}
-                                        <Button onClick={handleRemove} variant="destructive" size="sm">
-                                            <Trash2 /> Xóa
-                                        </Button>
-                                    </div>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="mb-6">
                                     <div className=" mb-6">{edit ? <Input value={editData.question_text} onChange={(e) => setEditData({ ...editData, question_text: e.target.value })} className="" /> : <h3 className="text-xl font-semibold text-white">{question.question_text}</h3>}</div>
 
                                     {!edit &&
+                                        !is_exam &&
                                         question.scrambled_sentences.map((item: any, index: any) => (
-                                            <Card key={item.id} className="mb-2 bg-slate-800 border-slate-700">
+                                            <Card key={item.id} className="mb-2 dark:bg-slate-800 bg-gray-100/80 backdrop-blur-md shadow-md ">
                                                 <CardContent className="flex items-center justify-between p-3 gap-2">
                                                     <div className="flex items-center gap-2 flex-1">
                                                         <GripVertical className="text-slate-400" />
@@ -94,24 +100,27 @@ export function RearrangeSentencesQuestion({ question }: { question: IRearrangeS
                                             </Card>
                                         ))}
 
-                                    {edit &&
+                                    {(edit || is_exam) &&
                                         editData.scrambled_sentences.map((item: any, index: any) => (
                                             <Draggable key={item.id} draggableId={item.id} index={index}>
                                                 {(provided) => (
-                                                    <Card ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} className="mb-2 bg-slate-800 border-slate-700">
+                                                    <Card ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} className="mb-2 dark:bg-slate-800 bg-gray-100/80 backdrop-blur-md shadow-md ">
                                                         <CardContent className="flex items-center justify-between p-3 gap-2">
                                                             <div className="flex items-center gap-2 flex-1">
                                                                 <GripVertical className="text-slate-400" />
-
-                                                                <Input
-                                                                    value={item.text}
-                                                                    onChange={(e) => {
-                                                                        const newItems = [...editData.scrambled_sentences]
-                                                                        newItems[index].text = e.target.value
-                                                                        setEditData({ ...editData, scrambled_sentences: newItems })
-                                                                    }}
-                                                                    className="w-full flex-1"
-                                                                />
+                                                                {edit ? (
+                                                                    <Input
+                                                                        value={item.text}
+                                                                        onChange={(e) => {
+                                                                            const newItems = [...editData.scrambled_sentences]
+                                                                            newItems[index].text = e.target.value
+                                                                            setEditData({ ...editData, scrambled_sentences: newItems })
+                                                                        }}
+                                                                        className="w-full flex-1"
+                                                                    />
+                                                                ) : (
+                                                                    <span className="text-slate-300">{item.text}</span>
+                                                                )}
                                                             </div>
                                                             <Badge variant="secondary">{index + 1}</Badge>
                                                         </CardContent>
@@ -129,7 +138,7 @@ export function RearrangeSentencesQuestion({ question }: { question: IRearrangeS
                                     </div>
                                 )}
                                 {/* Preview */}
-                                <div className="bg-slate-700 rounded-lg p-4">
+                                <div className="dark:bg-slate-700 bg-gray-100/80 backdrop-blur-md shadow-md rounded-md p-4">
                                     <h4 className="font-medium text-slate-300 mb-3">Xem trước đoạn văn:</h4>
                                     <div className="text-white leading-relaxed">
                                         {question.scrambled_sentences.map((sentence: any, index: number) => (

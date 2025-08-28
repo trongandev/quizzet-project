@@ -19,9 +19,10 @@ interface ExamInterfaceProps {
     examData: IEnglishExam
     open: boolean
     setOpen: (open: boolean) => void
+    isEdit?: boolean
 }
 
-export function ExamInterface({ examData, open, setOpen }: ExamInterfaceProps) {
+export function ExamInterface({ examData, isEdit = true, open, setOpen }: ExamInterfaceProps) {
     const token = Cookies.get("token") || ""
     const renderQuestion = (question: any) => {
         switch (question.question_type) {
@@ -48,17 +49,19 @@ export function ExamInterface({ examData, open, setOpen }: ExamInterfaceProps) {
         // Logic to handle publishing the exam
         try {
             console.log("Publishing exam...", examData)
+            toast.loading("Đang xuất bản bài thi...", { duration: 5000, id: "publish-exam" })
             const req = await POST_API("/english-exam", examData, "POST", token)
             const res = await req?.json()
             if (res.ok) {
                 toast.success("Đã tạo bài thi thành công!")
+                setOpen(false) // Close the dialog after publishing
             } else {
                 toast.error("Có lỗi sảy ra", { description: res.message })
             }
         } catch (error: any) {
             toast.error("Có lỗi sảy ra", { description: error.message, duration: 10000 })
         } finally {
-            setOpen(false) // Close the dialog after publishing
+            toast.dismiss("publish-exam") // Dismiss the loading toast
         }
     }
 
@@ -89,9 +92,11 @@ export function ExamInterface({ examData, open, setOpen }: ExamInterfaceProps) {
                         <X />
                         Đóng
                     </Button>
-                    <Button className="text-white bg-gradient-to-r from-purple-500 to-pink-500" onClick={handlePublish}>
-                        <FolderUp /> Xuất bản
-                    </Button>
+                    {isEdit && (
+                        <Button className="text-white bg-gradient-to-r from-purple-500 to-pink-500" onClick={handlePublish}>
+                            <FolderUp /> Xuất bản
+                        </Button>
+                    )}
                 </div>
             </DialogContent>
         </Dialog>

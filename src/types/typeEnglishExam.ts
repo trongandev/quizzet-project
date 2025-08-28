@@ -1,3 +1,5 @@
+import { UserId } from "@/types/type"
+
 // Định nghĩa cho các thành phần con của câu hỏi
 interface IOption {
     id: string // ID duy nhất cho lựa chọn (ví dụ: "opt_a", "opt_b")
@@ -88,7 +90,7 @@ export interface IReadingComprehensionQuestion extends IBaseQuestion {
 }
 
 // Union Type cho Question, cho phép một biến Question có thể là bất kỳ loại câu hỏi nào trên
-type Question = IMultipleChoiceQuestion | IFillInTheBlankQuestion | IMatchingQuestion | IRearrangeSentencesQuestion | IRewriteSentenceQuestion | IImageDescriptionQuestion | IListeningComprehensionQuestion | IReadingComprehensionQuestion
+export type Question = IMultipleChoiceQuestion | IFillInTheBlankQuestion | IMatchingQuestion | IRearrangeSentencesQuestion | IRewriteSentenceQuestion | IImageDescriptionQuestion | IListeningComprehensionQuestion | IReadingComprehensionQuestion
 
 // Enum/Union Literal Types cho các trường cố định
 type QuestionType = "multiple_choice" | "fill_in_the_blank" | "matching" | "rearrange_sentences" | "rewrite_sentence" | "image_description" | "listening_comprehension" | "reading_comprehension"
@@ -99,10 +101,15 @@ type DifficultyLevel = "a1" | "a2" | "b1" | "b2" | "c1" | "c2"
 
 // Interface chính cho cấu trúc bài kiểm tra đầy đủ
 export interface IEnglishExam {
+    _id?: string // ID duy nhất của bài kiểm tra
     title: string
+    user_id?: UserId
     description: string
     difficulty: DifficultyLevel
     skills: SkillType[]
     timeLimit: number
     questions: Question[] // Mảng các câu hỏi, sử dụng union type Question
+    is_published?: boolean // Trạng thái xuất bản
+    created_at?: Date
+    updated_at?: Date
 }

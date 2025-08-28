@@ -50,6 +50,13 @@ export default function CFlashcardPractice({ fc }: { fc: Flashcard[] }) {
     const [isSuccess, setIsSuccess] = useState(false)
     const [isSpeaking, setIsSpeaking] = useState(false)
     const [reverse, setReverse] = useState(false)
+    const [isShowTrans, setIsShowTrans] = useState(() => {
+        if (typeof window !== "undefined") {
+            const saved = localStorage.getItem("isShowTrans")
+            return saved ? JSON.parse(saved) : false
+        }
+        return false
+    })
     const router = useRouter()
     const token = Cookies.get("token") || ""
     const { user } = useUser() || {}
@@ -299,7 +306,7 @@ export default function CFlashcardPractice({ fc }: { fc: Flashcard[] }) {
 
             await speakWord(currentCard.title, currentCard.language || "english")
 
-            handleRate(wrongCount > 0 ? 3 : 5) // Đánh giá 5 sao cho thẻ flashcard
+            handleRate(wrongCount > 0 ? 3 : 4) // Đánh giá 5 sao cho thẻ flashcard
             setSelectedAnswers({}) // ✅ Reset selected answers
         } else {
             handlePlayAudio("wrong")
@@ -417,6 +424,16 @@ export default function CFlashcardPractice({ fc }: { fc: Flashcard[] }) {
                         }, 2000)
                     }
                     break
+                case "/":
+                    e.preventDefault()
+                    setIsShowTrans((prev: any) => {
+                        localStorage.setItem("isShowTrans", JSON.stringify(!prev))
+                        return !prev
+                    })
+                    break
+
+                default:
+                    break
             }
         },
         [feature, checkListeningAnswer]
@@ -501,7 +518,7 @@ export default function CFlashcardPractice({ fc }: { fc: Flashcard[] }) {
                                                     {loadingAudio ? <Loading /> : <Volume2 size={24} />}
                                                 </Button>
                                             </div>
-                                            <p className="text-gray-500 text-lg font-bold">{currentCard?.transcription}</p>
+                                            {!isShowTrans && <p className="text-gray-500 text-lg font-bold">{currentCard?.transcription}</p>}
 
                                             <p className="text-gray-500 text-sm">(Click to flip)</p>
                                         </div>
@@ -514,7 +531,12 @@ export default function CFlashcardPractice({ fc }: { fc: Flashcard[] }) {
                                                 transform: "rotateY(180deg)",
                                             }}
                                         >
-                                            {isFlipped && <p className="text-lg ">{currentCard?.define}</p>}
+                                            {isFlipped && (
+                                                <>
+                                                    <p className="text-lg ">{currentCard?.define}</p>
+                                                    <p className="text-gray-500 text-lg font-bold">{currentCard?.transcription}</p>
+                                                </>
+                                            )}
 
                                             {currentCard?.example && (
                                                 <div className="mt-4 p-4 bg-slate-50 dark:bg-slate-800/50 dark:text-slate-200 rounded-lg w-full">
@@ -652,6 +674,10 @@ export default function CFlashcardPractice({ fc }: { fc: Flashcard[] }) {
                                     <div className="flex items-center gap-2">
                                         <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">Shift</kbd>
                                         <span className="">Phát âm thanh</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <kbd className="px-2 py-1 bg-white dark:bg-gray-500/50 rounded shadow text-sm">/</kbd>
+                                        <span className="">{isShowTrans ? "Bật" : "Ẩn"} phiên âm</span>
                                     </div>
                                 </div>
                             </div>

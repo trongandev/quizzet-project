@@ -23,7 +23,7 @@ export function MultipleChoiceQuestion({ question }: { question: IMultipleChoice
         setEdit(false) // Tắt chế độ chỉnh sửa sau khi lưu
     }
     return (
-        <Card className="bg-slate-800 border-slate-700">
+        <Card className="dark:bg-slate-800 bg-gray-100/80 backdrop-blur-md shadow-md ">
             <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2 ">
