@@ -17,10 +17,13 @@ import Image from "next/image"
 import Cookies from "js-cookie"
 import { useUser } from "@/context/userContext"
 import RotatingText from "@/components/RotatingText"
+import { GET_API_WITHOUT_COOKIE } from "@/lib/fetchAPI"
+import CDeCuongTypeText from "@/components/decuong/CDeCuongTypeText"
 export default function CHome({ quizData, publicFlashcards }: { quizData: IQuiz[]; publicFlashcards: IListFlashcard[] }) {
     const router = useRouter()
     const [isOpen, setIsOpen] = useState(false)
     const videoRef = useRef<HTMLVideoElement>(null)
+    const [dataDeCuong, setDataDeCuong] = useState<any>([])
     const { refetchUser } = useUser() || {}
     const handleClose = () => {
         setIsOpen(false)
@@ -32,6 +35,11 @@ export default function CHome({ quizData, publicFlashcards }: { quizData: IQuiz[
         if (!newMember) {
             setIsOpen(true)
         }
+        const fetchAPI = async () => {
+            const res = await GET_API_WITHOUT_COOKIE("/so")
+            setDataDeCuong(res || [])
+        }
+        fetchAPI()
     }, [])
 
     useEffect(() => {
@@ -195,13 +203,12 @@ export default function CHome({ quizData, publicFlashcards }: { quizData: IQuiz[
 
                 {/* Public Flashcards */}
                 <PublicFCHome publicFlashcards={publicFlashcards} />
+                <div className="mb-10">
+                    <CDeCuongTypeText findText={dataDeCuong?.findText} />
+                </div>
                 <div className="my-5 mt-10">
                     <CQuiz quizData={quizData} />
                 </div>
-                {/* <div className="mb-10">
-                    <CDeCuongTypeText findText={findText} />
-                </div>
-                <DeCuongTypeFile findFile={findFile} /> */}
                 <div className="mt-10 bg-gradient-to-r from-emerald-200/80 to-lime-200/80 dark:from-emerald-800/50 dark:to-lime-800/50 pt-5 rounded-xl shadow-md border border-gray-300 dark:border-white/10 overflow-hidden">
                     <div className="flex items-center justify-center flex-col gap-3  px-3">
                         <Badge className="flex gap-2 items-center bg-emerald-100 text-emerald-700 dark:bg-emerald-800 dark:text-emerald-200">

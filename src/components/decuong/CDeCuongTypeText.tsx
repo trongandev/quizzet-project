@@ -14,7 +14,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 export default function CDeCuongTypeText({ findText }: { findText: ISO[] }) {
     const [toggleBtnSortNumber, setToggleBtnSortNumber] = useState(true)
-
     const [searchTerm, setSearchTerm] = useState("")
     const [sortOrder, setSortOrder] = useState("asc") // "asc" or "desc"
     const [viewMode, setViewMode] = useState(3) // "grid 4x2" or "grid3x2"
