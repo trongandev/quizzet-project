@@ -125,6 +125,7 @@ export default function CHome({ quizData, publicFlashcards }: { quizData: IQuiz[
             ),
         },
     ]
+    console.log(dataDeCuong)
     return (
         <div className="text-gray-700">
             <div className="px-2  dark:text-white space-y-20">

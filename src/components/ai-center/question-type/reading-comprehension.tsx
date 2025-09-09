@@ -9,7 +9,7 @@ import { useState } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 
-export function ReadingComprehensionQuestion({ question }: { question: IReadingComprehensionQuestion }) {
+export function ReadingComprehensionQuestion({ question, id }: { question: IReadingComprehensionQuestion; id?: number }) {
     const [editData, setEditData] = useState(question)
     const [edit, setEdit] = useState(false)
     const handleRemove = () => {}
@@ -22,9 +22,9 @@ export function ReadingComprehensionQuestion({ question }: { question: IReadingC
         question.correct_answer_id = editData.correct_answer_id
         setEdit(false) // Tắt chế độ chỉnh sửa sau khi lưu
     }
-    console.log("ReadingComprehensionQuestion", question)
+
     return (
-        <div className="space-y-6">
+        <div className="space-y-6" id={`question-${id}`}>
             {/* Reading Passage */}
             <Card className="bg-slate-800 border-slate-700">
                 <CardContent className="p-6">

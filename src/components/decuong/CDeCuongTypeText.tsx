@@ -28,8 +28,8 @@ export default function CDeCuongTypeText({ findText }: { findText: ISO[] }) {
     const startIndex = (currentPage - 1) * itemsPerPage
     const endIndex = startIndex + itemsPerPage
     const currentItems = data?.slice(startIndex, endIndex)
+    console.log(currentItems)
     const router = useRouter()
-    const displaySO = currentItems
     useEffect(() => {
         const checkMobile = () => {
             const mobile = window.innerWidth < 768
@@ -124,6 +124,7 @@ export default function CDeCuongTypeText({ findText }: { findText: ISO[] }) {
 
         return pages
     }
+    console.log(findText)
 
     return (
         <div className=" mt-10 flex flex-col gap-5  ">
@@ -202,45 +203,46 @@ export default function CDeCuongTypeText({ findText }: { findText: ISO[] }) {
                 </div>
             </div>
             <div className={`grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4 ${viewMode === 4 ? "lg:grid-cols-4" : "lg:grid-cols-3"} h-[416px] overflow-y-scroll`}>
-                {displaySO?.map((item: any, index: any) => (
-                    <div className="bg-white dark:bg-slate-800/50 hover:shadow-md rounded-xl h-[350px] md:h-[250px] flex flex-col md:flex-row overflow-hidden shadow-sm border border-white/10 group " key={index}>
-                        <div className="relative overflow-hidden flex-1  h-full">
-                            <Image src={item.image} alt={item.title} className="object-cover absolute w-full   hover:scale-105 transition-all duration-300" priority fill />
-                            <div className="absolute z-1 bottom-0 bg-linear-item w-full text-white text-[10px] p-2 font-bold ">
-                                <p className="flex gap-1 items-center">
-                                    <FaRegQuestionCircle />
-                                    Số câu hỏi: {item.lenght}
-                                </p>
-                                <p className="flex gap-1 items-center">
-                                    <FaRegEye />
-                                    Lượt xem: {item.view}
-                                </p>
+                {findText &&
+                    findText?.map((item: any, index: any) => (
+                        <div className="bg-white dark:bg-slate-800/50 hover:shadow-md rounded-xl h-[350px] md:h-[250px] flex flex-col md:flex-row overflow-hidden shadow-sm border border-white/10 group " key={index}>
+                            <div className="relative overflow-hidden flex-1  h-full">
+                                <Image src={item.image} alt={item.title} className="object-cover absolute w-full   hover:scale-105 transition-all duration-300" priority fill />
+                                <div className="absolute z-1 bottom-0 bg-linear-item w-full text-white text-[10px] p-2 font-bold ">
+                                    <p className="flex gap-1 items-center">
+                                        <FaRegQuestionCircle />
+                                        Số câu hỏi: {item.lenght}
+                                    </p>
+                                    <p className="flex gap-1 items-center">
+                                        <FaRegEye />
+                                        Lượt xem: {item.view}
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                        <div className="flex justify-between flex-col p-3 flex-1">
-                            <h1 className="font-bold line-clamp-2 h-[48px]">{item.title}</h1>
-                            <p className="text-sm text-slate-600 dark:text-slate-300">{item.content || "Không có mô tả..."}</p>
-                            <div className="">
-                                {item?.user_id && (
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Avatar className="w-8 h-8">
-                                            <AvatarImage src={item?.user_id?.profilePicture} className="object-cover" />
-                                            <AvatarFallback className="text-xs">A</AvatarFallback>
-                                        </Avatar>
-                                        <div className="">
-                                            <span className="text-slate-400 text-sm">{item.user_id.displayName}</span>
-                                            <p className="text-xs text-gray-600 dark:text-gray-500">{handleCompareDate(item.date)}</p>
+                            <div className="flex justify-between flex-col p-3 flex-1">
+                                <h1 className="font-bold line-clamp-2 h-[48px]">{item.title}</h1>
+                                <p className="text-sm text-slate-600 dark:text-slate-300">{item.content || "Không có mô tả..."}</p>
+                                <div className="">
+                                    {item?.user_id && (
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Avatar className="w-8 h-8">
+                                                <AvatarImage src={item?.user_id?.profilePicture} className="object-cover" />
+                                                <AvatarFallback className="text-xs">A</AvatarFallback>
+                                            </Avatar>
+                                            <div className="">
+                                                <span className="text-slate-400 text-sm">{item.user_id.displayName}</span>
+                                                <p className="text-xs text-gray-600 dark:text-gray-500">{handleCompareDate(item.date)}</p>
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
 
-                                <Button onClick={() => router.push(`/decuong/${item.slug}`)} variant="outline" className="w-full dark:text-white">
-                                    <Eye /> Xem ngay
-                                </Button>
+                                    <Button onClick={() => router.push(`/decuong/${item.slug}`)} variant="outline" className="w-full dark:text-white">
+                                        <Eye /> Xem ngay
+                                    </Button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
                 {data && data.length === 0 ? <p className="text-primary">Không có đề cương nào...</p> : ""}
             </div>
             {/* Pagination */}

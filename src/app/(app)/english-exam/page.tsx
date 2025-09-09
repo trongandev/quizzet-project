@@ -36,7 +36,12 @@ export default function EnglishExamPage() {
     console.log(generatedQuestions, "generatedQuestions")
     return (
         <div className="w-full min-h-screen md:w-[1000px] xl:w-[1200px] px-2 md:px-0 mx-auto py-20">
-            <p className="text-2xl font-bold mb-3">Đề thi tiếng anh</p>
+            <div className="flex items-center justify-between">
+                <p className="text-2xl font-bold mb-3">Đề thi tiếng anh</p>
+                <Link href={"/ai-center/create-with-ai/english-ai"}>
+                    <Button className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white">Tạo thử đề thi ngay</Button>
+                </Link>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
                 {filterEnglishExam.map((quiz) => (
                     <Card key={quiz._id} className="bg-slate-800 border-slate-700 hover:bg-slate-750 transition-colors">

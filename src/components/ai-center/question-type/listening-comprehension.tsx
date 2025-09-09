@@ -11,7 +11,7 @@ import { EdgeSpeechTTS } from "@lobehub/tts"
 import { toast } from "sonner"
 import Loading from "@/components/ui/loading"
 
-export function ListeningComprehensionQuestion({ question }: { question: IListeningComprehensionQuestion }) {
+export function ListeningComprehensionQuestion({ question, id }: { question: IListeningComprehensionQuestion; id?: number }) {
     const [editData, setEditData] = useState(question)
     const [edit, setEdit] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -113,7 +113,7 @@ export function ListeningComprehensionQuestion({ question }: { question: IListen
         setEdit(false) // Tắt chế độ chỉnh sửa sau khi lưu
     }
     return (
-        <div className="space-y-6">
+        <div className="space-y-6" id={`question-${id}`}>
             {/* Audio Player */}
             <Card className="bg-slate-800 border-slate-700">
                 <CardContent className="p-6">

@@ -13,7 +13,7 @@ interface CreateMatchingQuestion {
     left_items: ILeftItem[]
     right_items: IRightItem[]
 }
-export function MatchingQuestion({ question }: { question: IMatchingQuestion }) {
+export function MatchingQuestion({ question, id }: { question: IMatchingQuestion; id?: number }) {
     const [selectedAnswers, setSelectedAnswers] = useState<Array<{ left: string; right: string }>>([])
     const [currentSelection, setCurrentSelection] = useState<{ left: string | null; right: string | null }>({
         left: null,
@@ -141,7 +141,7 @@ export function MatchingQuestion({ question }: { question: IMatchingQuestion }) 
         setEdit(false) // Tắt chế độ chỉnh sửa sau khi lưu
     }
     return (
-        <Card className="bg-slate-800 border-slate-700">
+        <Card className="bg-slate-800 border-slate-700" id={`question-${id}`}>
             <CardContent className="p-3 md:p-6">
                 <div className="flex flex-col md:flex-row gap-2 justify-between md:items-center mb-6">
                     <div className="flex items-center gap-2">

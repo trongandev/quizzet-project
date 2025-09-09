@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 
-export function FillInBlankQuestion({ question }: { question: IFillInTheBlankQuestion }) {
+export function FillInBlankQuestion({ question, id }: { question: IFillInTheBlankQuestion; id?: number }) {
     const [editData, setEditData] = useState(question)
     const [edit, setEdit] = useState(false)
 
@@ -21,7 +21,7 @@ export function FillInBlankQuestion({ question }: { question: IFillInTheBlankQue
     }
 
     return (
-        <Card className="bg-slate-800 border-slate-700">
+        <Card className="bg-slate-800 border-slate-700" id={`question-${id}`}>
             <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2 ">

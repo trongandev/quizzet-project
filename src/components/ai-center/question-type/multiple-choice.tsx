@@ -9,7 +9,7 @@ import { IMultipleChoiceQuestion } from "@/types/typeEnglishExam"
 import { CircleDot, Save, SquarePen, Trash2, X } from "lucide-react"
 import { useState } from "react"
 
-export function MultipleChoiceQuestion({ question }: { question: IMultipleChoiceQuestion }) {
+export function MultipleChoiceQuestion({ question, id }: { question: IMultipleChoiceQuestion; id?: number }) {
     const [editData, setEditData] = useState(question)
     const [edit, setEdit] = useState(false)
 
@@ -23,7 +23,7 @@ export function MultipleChoiceQuestion({ question }: { question: IMultipleChoice
         setEdit(false) // Tắt chế độ chỉnh sửa sau khi lưu
     }
     return (
-        <Card className="dark:bg-slate-800 bg-gray-100/80 backdrop-blur-md shadow-md ">
+        <Card className="dark:bg-slate-800 bg-gray-100/80 backdrop-blur-md shadow-md" id={`question-${id}`}>
             <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2 ">

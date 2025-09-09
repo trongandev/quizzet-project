@@ -9,7 +9,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-export function RewriteSentenceQuestion({ question }: { question: IRewriteSentenceQuestion }) {
+export function RewriteSentenceQuestion({ question, id }: { question: IRewriteSentenceQuestion; id?: number }) {
     const [editData, setEditData] = useState(question)
     const [edit, setEdit] = useState(false)
     const handleRemove = () => {}
@@ -21,7 +21,7 @@ export function RewriteSentenceQuestion({ question }: { question: IRewriteSenten
         setEdit(false) // Tắt chế độ chỉnh sửa sau khi lưu
     }
     return (
-        <Card className="bg-slate-800 border-slate-700">
+        <Card className="bg-slate-800 border-slate-700" id={`question-${id}`}>
             <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2 ">

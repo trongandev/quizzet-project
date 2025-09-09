@@ -29,7 +29,6 @@ export const skillTypes = [
     { value: "reading", label: "Đọc hiểu" },
     { value: "listening", label: "Nghe hiểu" },
     { value: "writing", label: "Viết" },
-    { value: "speaking", label: "Nói" },
 ]
 
 export const questionTypes = [
