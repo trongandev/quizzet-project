@@ -1,4 +1,8 @@
 module.exports = {
+    turbopack: {
+        root: "./",
+    },
+
     images: {
         remotePatterns: [
             {
@@ -22,4 +26,4 @@ module.exports = {
         API_SOCKET: process.env.API_SOCKET,
         API_KEY_AI: process.env.API_KEY_AI,
     },
-};
+}

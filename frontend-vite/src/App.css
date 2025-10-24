@@ -1,0 +1,19 @@
+.qwigley-font {
+    font-family: 'Qwigley', cursive;
+}
+
+.negative-shadow-md {
+    box-shadow: 0 -4px 4px -1px #0000001a, 0 2px 4px -1px #0000000f;
+}
+
+.triangle-down-shape {
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-top: 350px solid #d1d5db;
+}
+
+.triangle-up-shape {
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-bottom: 350px solid #d1d5db;
+}

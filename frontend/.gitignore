@@ -13,7 +13,6 @@
 /.next/
 /out/
 
-# production
 /build
 
 # misc
@@ -27,6 +26,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env*.production
 
 # vercel
 .vercel
