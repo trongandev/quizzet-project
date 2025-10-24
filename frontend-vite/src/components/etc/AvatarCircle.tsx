@@ -1,8 +1,7 @@
 import { cn } from '@/lib/utils'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Link } from 'react-router-dom'
-import type { UserMin } from '@/types/etc'
-export default function AvatarCircle({ user, className }: { user?: UserMin; className?: string }) {
+export default function AvatarCircle({ user, className }: { user?: any; className?: string }) {
     return (
         <Tooltip>
             <TooltipTrigger>
@@ -11,7 +10,7 @@ export default function AvatarCircle({ user, className }: { user?: UserMin; clas
                         ? user.displayName
                               .split(' ')
                               .splice(0, 2)
-                              .map((n) => n[0])
+                              .map((n: any) => n[0])
                               .join('')
                         : 'N/A'}
                 </div>
