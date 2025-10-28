@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 // optimiz prompt flascardcard single
 export function optimizedPromptFCSingle(word: string, language: string) {
     return `
@@ -170,7 +171,7 @@ export const optimizedPromptGenerateTitle = (data: any) => {
         "subject": "" // Môn học ngắn gọn
     }
     Dưới đây là thông tin chi tiết, bạn hãy dự đoán tiêu đề, nội dung và môn học của bài quiz:
-${data.map((q: any) => `- Câu hỏi: ${q.question}\n  - Đáp án: ${q.answers.join(", ")}\n`).join("\n")}`
+${data.map((q: any) => `- Câu hỏi: ${q.question}\n  - Đáp án: ${q.answers.join(', ')}\n`).join('\n')}`
 }
 
 export const optimizedPromptEditQuestions = (questions: any[]) => {
@@ -187,7 +188,7 @@ export const optimizedPromptEditQuestions = (questions: any[]) => {
         "correct": "${q.correct}"
     }`
         )
-        .join(",\n    ")}
+        .join(',\n    ')}
     ]`
 }
 
@@ -220,10 +221,10 @@ The output MUST be a JSON object strictly following the provided schema, with no
 --- Task Details ---
 Generate a test with the following specifications:
 Difficulty Level: ${data.difficulty}
-Target Skills: ${data.skills.join(", ")}
+Target Skills: ${data.skills.join(', ')}
 Content/Topic: ${data.content}
 Number of Questions: ${data.questionCount}
-Question Types and Distribution: ${data.questionTypes.join(", ")}
+Question Types and Distribution: ${data.questionTypes.join(', ')}
 
 Ensure all generated questions are relevant to the content/topic and adhere to the specified difficulty and skill focus. For listening_comprehension, please generate a suitable audio_text that fits the topic and difficulty.`
 }
