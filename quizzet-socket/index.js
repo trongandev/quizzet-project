@@ -1,6 +1,5 @@
 const express = require("express")
 const http = require("http")
-const socketIo = require("socket.io")
 const axios = require("axios")
 const app = express()
 const dotenv = require("dotenv")
@@ -102,6 +101,6 @@ app.get("/ping", (req, res) => {
     res.json({ message: "pong" })
 })
 
-server.listen(8080, () => {
-    console.log("server running on ports 8080")
+server.listen(5070, () => {
+    console.log("server running on ports 5070")
 })

@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken")
 
-// Tạo Access Token (hết hạn sau 15 phút)
+// Tạo Access Token (hết hạn sau 7day)
 const generateAccessToken = (userId, role = "user") => {
     return jwt.sign(
         {
@@ -10,7 +10,7 @@ const generateAccessToken = (userId, role = "user") => {
         },
         process.env.ACCESS_TOKEN_SECRET,
         {
-            expiresIn: "15m", // Thay đổi từ 30s thành 15m cho phù hợp
+            expiresIn: "7d", // Thay đổi từ 30s thành 7d cho phù hợp
         }
     )
 }

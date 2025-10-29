@@ -8,6 +8,11 @@ class ProfileService {
         return response.data
     }
 
+    async getProfileAnything() {
+        const response = await axiosInstance.get<any>('/profile/anything')
+        return response.data
+    }
+
     async getProfileById(userId: string) {
         const response = await axiosInstance.get<any>(`/profile/${userId}`)
         return response.data

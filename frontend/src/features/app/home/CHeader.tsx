@@ -1,19 +1,25 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { BookOpen, Brain, Cpu, History, Home, LogOut, Mailbox, Menu, Moon, Speech, Sun, User } from 'lucide-react'
+import { Bell, BookOpen, Brain, Cpu, History, Home, LogOut, Mailbox, Menu, Moon, Speech, Sun, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-// import { Popover, PopoverTrigger } from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTheme } from '@/hooks/useTheme'
+import type { IChat, IGamification, TASKS } from '@/types/etc'
+import profileService from '@/services/profileService'
+import DailyTask from '@/components/etc/DailyTask'
+import etcService from '@/services/etcService'
+import CNotify from '@/components/etc/CNotify'
+import CChat from '@/components/etc/CChat'
 export default function CHeader() {
-    // const [openNoti, setOpenNoti] = useState(false)
-    // const [notify, setNotify] = useState([])
-    // const [gamificationProfile, setGamificationProfile] = useState<IGamification>()
-    // const [chat, setChat] = useState<IChat[]>()
-    // const [unreadCountNotify, setUnreadCountNotify] = useState<number>(0)
-    // const [unreadCountChat, setUnreadCountChat] = useState<number>(0)
+    const [notify, setNotify] = useState([])
+    const [gamificationProfile, setGamificationProfile] = useState<IGamification>()
+    const [chat, setChat] = useState<IChat[]>()
+    const [tasks, setTasks] = useState<TASKS>()
+    const [unreadCountNotify, setUnreadCountNotify] = useState<number>(0)
+    const [unreadCountChat, setUnreadCountChat] = useState<number>(0)
     const [isOpenNavBar, setIsOpenNavBar] = useState(false)
 
     const navigate = useNavigate()
@@ -31,30 +37,36 @@ export default function CHeader() {
     ]
 
     useEffect(() => {
-        // const fetchAPI = async () => {
-        //     const req = await GET_API('/profile/anything', token)
-        //     if (req.ok) {
-        //         setNotify(req?.notifications)
-        //         setUnreadCountNotify(req?.unreadCount || 0)
-        //         setGamificationProfile(req?.gamificationProfile)
-        //         setChat(req?.chats)
-        //         setUnreadCountChat(req?.unreadCountChat || 0)
-        //     }
-        // }
-        // if (token) {
-        //     fetchAPI()
-        // }
-    }, [])
+        const fetchAPI = async () => {
+            const sessionTask = await sessionStorage.getItem('tasksDaily')
+            if (sessionTask && JSON.parse(sessionTask).length < 1) {
+                setTasks(JSON.parse(sessionTask))
+            } else {
+                const taskData = await etcService.getTask()
+                setTasks(taskData)
+                sessionStorage.setItem('tasksDaily', JSON.stringify(taskData))
+            }
+            const res = await profileService.getProfileAnything()
+            if (res) {
+                setNotify(res?.notifications)
+                setUnreadCountNotify(res?.unreadCount || 0)
+                setGamificationProfile(res?.gamificationProfile)
+                setChat(res?.chats)
+                setUnreadCountChat(res?.unreadCountChat || 0)
+            }
+        }
+        if (user) {
+            fetchAPI()
+        }
+    }, [user])
 
-    // const handleRouterNotify = async (item: any) => {
-    //     const req = await GET_API(`/notify/${item?._id}`, token)
-    //     if (req.ok) {
-    //         // setUnreadCountNotify(req?.data?.unreadCount || 0);
-    //         setUnreadCountNotify((prev) => prev - 1)
-    //         router.push(item?.link)
-    //         setOpenNoti(false)
-    //     }
-    // }
+    const handleRouterNotify = async (item: any) => {
+        const req = await etcService.markReadNotify(item?._id)
+        if (req.ok) {
+            setUnreadCountNotify((prev) => prev - 1)
+            navigate(item?.link)
+        }
+    }
 
     return (
         <>
@@ -90,7 +102,7 @@ export default function CHeader() {
             <div className="w-full flex items-center justify-center sticky top-0 z-50 bg-linear-to-r from-primary/80 to-purple-800/80 backdrop-blur-sm py-1 px-3 ">
                 <div className="flex items-center justify-between  mx-auto w-full md:max-w-7xl">
                     <div className="flex items-center gap-2">
-                        <Menu size={16} className="block md:hidden cursor-pointer hover:opacity-60" onClick={() => setIsOpenNavBar(true)} />
+                        <Menu size={16} className="block md:hidden cursor-pointer hover:opacity-60 text-white  " onClick={() => setIsOpenNavBar(true)} />
                         <Link to="/" className="qwigley-font text-4xl translate-y-1 text-white  font-medium">
                             Quizzet
                         </Link>
@@ -105,8 +117,8 @@ export default function CHeader() {
                             </li>
                         ))}
                     </ul>
-                    <div className="flex items-center gap-3">
-                        <div className=" items-center gap-2 hidden md:flex text-white">
+                    <div className="flex items-center">
+                        <div className=" items-center hidden md:flex text-white/70">
                             {theme === 'dark' ? (
                                 <Button variant={'ghost'} className="" onClick={() => setTheme('light')}>
                                     <Sun size={18} className="" />
@@ -128,13 +140,13 @@ export default function CHeader() {
                                 </Link>
                             </div>
                         ) : (
-                            <div className="flex gap-3 items-center">
+                            <div className="flex items-center">
                                 <div className="flex gap-3 items-center">
-                                    {/* {gamificationProfile && tasks && <DailyTask gamificationProfile={gamificationProfile} setGamificationProfile={setGamificationProfile} tasks={tasks} />} */}
+                                    {gamificationProfile && tasks && <DailyTask gamificationProfile={gamificationProfile} setGamificationProfile={setGamificationProfile} tasks={tasks} />}
 
-                                    {/* <Popover>
+                                    <Popover>
                                         <PopoverTrigger asChild>
-                                            <div className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-primary dark:text-white/60 hover:text-white relative">
+                                            <div className="h-7 w-7 flex items-center justify-center hover:bg-gray-600 rounded-md transition-all duration-200 cursor-pointer text-white/70 relative">
                                                 {unreadCountNotify > 0 && (
                                                     <div className="absolute -top-1 -right-1 h-3.5 w-3.5 text-[8px] rounded-full bg-red-500 text-white flex items-center justify-center font-mono tabular-nums">
                                                         {unreadCountNotify}
@@ -146,8 +158,8 @@ export default function CHeader() {
                                         <PopoverContent className="md:w-[500px] max-h-[600px] overflow-y-scroll dark:text-white">
                                             <CNotify notify={notify} handleRouter={handleRouterNotify} />
                                         </PopoverContent>
-                                    </Popover> */}
-                                    {/* {user && chat && <CChat chat={chat} setChat={setChat} unreadCountChat={unreadCountChat} setUnreadCountChat={setUnreadCountChat} token={token} user={user} />} */}
+                                    </Popover>
+                                    {user && chat && <CChat chat={chat} setChat={setChat} unreadCountChat={unreadCountChat} setUnreadCountChat={setUnreadCountChat} user={user} />}
 
                                     <DropdownMenu>
                                         <DropdownMenuTrigger>

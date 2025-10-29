@@ -6,7 +6,7 @@ export default function AppLayout() {
     return (
         <div className="">
             <CHeader />
-            <main className="">
+            <main className="relative">
                 <Outlet />
             </main>
             <CFooter />

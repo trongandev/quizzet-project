@@ -23,6 +23,30 @@ export interface Voice {
     sample: string
 }
 
+export interface IChat {
+    _id: string
+    participants: {
+        userId: IUser
+    }[]
+    messages: IMessage[]
+    last_message: string
+    last_message_date: Date
+    is_read: boolean
+}
+
+export interface IMessage {
+    userId: IUser
+    message: string
+    image?: string
+    isEdit: boolean
+    replyTo?: IMessage
+    unsend: boolean
+    reactions: {
+        userId: IUser
+        emoji: string
+    }[]
+}
+
 export interface IGamification {
     _id: string
     user_id: IUser
