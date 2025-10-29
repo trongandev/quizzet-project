@@ -63,13 +63,13 @@ export default function CHeader() {
                 onClick={() => setIsOpenNavBar(false)}
             />
             <div
-                className={`fixed top-0 left-0 z-999 w-[80%] h-full shadow bg-gray-200  backdrop-blur-xs transition-transform duration-300 ${
+                className={`fixed top-0 left-0 z-999 w-[80%] h-full shadow bg-gray-200/80 dark:bg-gray-700/90  backdrop-blur-md transition-transform duration-300 ${
                     isOpenNavBar ? 'translate-x-0' : '-translate-x-full'
                 } flex flex-col`}
                 onClick={(e) => e.stopPropagation()}
             >
                 <nav className="flex flex-col gap-2 items-start justify-start">
-                    <Link to="/" className="qwigley-font text-5xl  text-primary font-medium text-center block w-full py-4 translate-y-2">
+                    <Link to="/" className="qwigley-font text-5xl  text-primary dark:text-white font-medium text-center block w-full py-4 translate-y-2">
                         Quizzet
                     </Link>
                     {linkData.map((item) => (
@@ -77,7 +77,7 @@ export default function CHeader() {
                             key={item.href}
                             to={item.href}
                             className={`px-4 w-full flex items-center justify-start gap-2 h-12 transition-colors ${
-                                pathname === item.href ? 'border-l-4 border-primary bg-primary/10  text-primary ' : 'text-gray-500'
+                                pathname === item.href ? 'border-l-4 border-primary bg-primary/10 dark:bg-primary/40  text-primary dark:text-white ' : 'text-gray-500 dark:text-white/60'
                             }`}
                             onClick={() => setIsOpenNavBar(false)}
                         >
@@ -155,7 +155,7 @@ export default function CHeader() {
                                                 <img
                                                     src={user?.profilePicture || '/avatar.jpg'}
                                                     alt=""
-                                                    className="object-cover h-full absolute"
+                                                    className="object-cover w-full h-full absolute"
                                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                 />
                                             </div>
@@ -212,13 +212,13 @@ export default function CHeader() {
                 </Modal> */}
                 </div>
             </div>
-            <div className="fixed bottom-0  z-10 px-3 md:px-0 h-12 w-full bg-gray-100  negative-shadow-md flex md:hidden items-center justify-around">
+            <div className="fixed bottom-0  z-10 px-3 md:px-0 h-12 w-full bg-gray-100/90 dark:bg-gray-700/90 backdrop-blur-xs negative-shadow-md grid md:hidden grid-cols-5 items-center justify-center transition-all duration-300">
                 {linkData.map((item) => (
                     <Link
                         key={item.href}
                         to={item.href}
                         className={`flex flex-col items-center justify-center gap-1  h-full hover:text-primary transition-colors border-t-2 ${
-                            pathname === item.href ? 'text-primary  border-primary font-medium' : 'text-gray-500 border-transparent'
+                            pathname === item.href ? 'text-primary dark:text-indigo-400  border-primary dark:border-indigo-400 font-medium' : 'text-gray-500 dark:text-gray-400 border-transparent'
                         } `}
                     >
                         {item.icon}

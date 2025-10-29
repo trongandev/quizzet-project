@@ -295,7 +295,7 @@ export default function FlashcardPage() {
                         <div>
                             {user !== null ? (
                                 <div className="mt-5">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 max-h-[744px] mb-10">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3  mb-10">
                                         {filterDataUserFC && filterDataUserFC.map((item) => <UserFC item={item} key={item._id} />)}
                                         {loading && (
                                             <div className="flex items-center justify-center col-span-4 h-[500px]">
@@ -332,7 +332,7 @@ export default function FlashcardPage() {
                             </div>{' '}
                             <div className="flex flex-wrap gap-2">
                                 <Button variant={language === 'all' ? 'default' : 'outline'} size="sm" className="h-8 dark:text-white " onClick={() => handleLanguageFilter('all')}>
-                                    <Globe className="w-4 h-4 mr-1" /> Tất cả
+                                    <Globe className="w-4 h-4" /> <span className="hidden md:block">Tất cả</span>
                                 </Button>
                                 {languages.map((lang) => (
                                     <Button
@@ -342,7 +342,8 @@ export default function FlashcardPage() {
                                         className="h-8 dark:text-white"
                                         onClick={() => handleLanguageFilter(lang.value)}
                                     >
-                                        {lang.label}
+                                        <span>{lang.flag}</span>
+                                        <span className="hidden md:block">{lang.language}</span>
                                     </Button>
                                 ))}
                             </div>

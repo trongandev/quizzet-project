@@ -86,15 +86,15 @@ export default function OverViewProfile({
                 <CardContent className="space-y-4">
                     <div className="text-center">
                         <div className={`w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center  bg-linear-to-br from-indigo-400 to-indigo-600 ring-4 ring-indigo-500/50`}>
-                            {/* <img src={currentLevel.levelIcon} alt="" width={40} height={40} /> */}
+                            <img src={currentLevel.levelIcon} alt="" width={40} height={40} />
                         </div>
 
                         <h3 className="font-bold">Cấp {gamificationProfile.level + 1}</h3>
                         <p className="text-sm text-slate-400">{currentLevel?.name}</p>
                     </div>
-                    {/* <div className="text-center">
+                    <div className="text-center">
                         <p className="text-xs text-slate-400">Cần {(currentLevel.xpRequired - gamificationProfile.xp).toLocaleString()} XP</p>
-                    </div> */}
+                    </div>
                 </CardContent>
             </Card>
         </div>

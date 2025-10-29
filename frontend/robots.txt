@@ -1,7 +1,10 @@
+# *
 User-agent: *
 Allow: /
 
-Sitemap: https://opic.io.vn/sitemap.xml
+# Host
+Host: "https://quizzet.site/"
 
-User-agent: Googlebot
-Disallow: /private
+# Sitemaps
+Sitemap: "https://quizzet.site/"/sitemap.xml
+Sitemap: https://quizzet.site/sitemap.xml

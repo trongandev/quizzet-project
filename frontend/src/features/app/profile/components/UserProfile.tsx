@@ -149,8 +149,8 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
                     {gamificationProfile && <LevelProfile gamificationProfile={gamificationProfile} levels={levels} />}
                 </TabsContent>
             </Tabs>
-            <div className="mt-5">
-                <div className="flex justify-between items-center mb-3">
+            <div className="mt-5 bg-gray-200/50 dark:bg-gray-800/50 dark:border-gray-700/60 p-3 md:p-5 rounded-xl shadow-sm border border-gray-200">
+                <div className="pl-1 flex justify-between items-center mb-5">
                     <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200">Bộ Flashcard của {userProfile?._id === userProfile?._id ? 'bạn' : userProfile?.displayName}</h2>
                     <Badge variant="secondary" className="dark:bg-slate-700">
                         {(flashcard && flashcard?.length) || 0} flashcard
@@ -167,8 +167,8 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
                     {flashcard && flashcard?.length === 0 && <div className="h-[350px] col-span-12 flex items-center justify-center text-gray-700">Không có dữ liệu...</div>}
                 </div>
             </div>
-            <div className="">
-                <div className="flex justify-between items-center mb-3">
+            <div className="mt-5 bg-gray-200/50 dark:bg-gray-800/50 dark:border-gray-700/60 p-3 md:p-5 rounded-xl shadow-sm border border-gray-200">
+                <div className="pl-1 flex justify-between items-center mb-3">
                     <h2 className="text-2xl font-bold text-slate-800 dark:text-slate-200">Bộ Quiz của {userProfile?._id === userProfile?._id ? 'bạn' : userProfile?.displayName}</h2>
                     <Badge variant="secondary" className="dark:bg-slate-700">
                         {quiz?.length || 0} bộ quiz
@@ -177,6 +177,7 @@ export default function UserProfile({ profile, quiz, flashcard, gamificationProf
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-h-[500px] overflow-y-auto">
                     {quiz && quiz.map((post, index) => <QuizInProfile key={index} post={post} />)}
+                    {quiz && quiz?.length === 0 && <div className="h-[350px] col-span-12 flex items-center justify-center text-gray-500">Không có dữ liệu...</div>}
                 </div>
             </div>
         </div>

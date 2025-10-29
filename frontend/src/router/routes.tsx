@@ -1,9 +1,13 @@
+import AICenterPage from '@/features/app/ai-center/AICenterPage'
+import CommunityPage from '@/features/app/community/QuizPage'
 import FlashcardDetailPage from '@/features/app/flashcard/pages/FlashcardDetailPage'
 import FlashcardPage from '@/features/app/flashcard/pages/FlashcardPage'
 import FlashcardPracticeDetailPage from '@/features/app/flashcard/pages/FlashcardPracticeDetailPage'
+import FlashcardPracticePage from '@/features/app/flashcard/pages/FlashcardPracticePage'
 import HomePage from '@/features/app/home/HomePage'
 import ProfileByIdPage from '@/features/app/profile/pages/ProfileByIdPage'
 import ProfilePage from '@/features/app/profile/pages/ProfilePage'
+import QuizPage from '@/features/app/quiz/QuizPage'
 import ForgotPasswordPage from '@/features/auth/ForgotPasswordPage'
 import LoginPage from '@/features/auth/LoginPage'
 import RegisterPage from '@/features/auth/RegisterPage'
@@ -39,11 +43,27 @@ export const routes: RouteObject[] = [
                         path: 'profile/:userId',
                         element: <ProfileByIdPage />,
                     },
+                    {
+                        path: 'ai-center',
+                        element: <AICenterPage />,
+                    },
+                    {
+                        path: 'quiz',
+                        element: <QuizPage />,
+                    },
+                    {
+                        path: 'community',
+                        element: <CommunityPage />,
+                    },
                 ],
             },
             {
                 path: 'flashcard/:id_flashcard',
                 element: <FlashcardDetailPage />,
+            },
+            {
+                path: 'flashcard/practice',
+                element: <FlashcardPracticePage />,
             },
             {
                 path: 'flashcard/practice/:id_flashcard',

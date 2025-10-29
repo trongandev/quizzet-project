@@ -41,7 +41,7 @@ export default function HomePage() {
         },
     ]
     return (
-        <div className=" my-5 md:my-10">
+        <div className=" my-5 md:my-10  dark:text-slate-300">
             <div className="space-y-20 w-full md:max-w-7xl mx-auto px-3 md:px-0">
                 {import.meta.env.VITE_MAINTAINANCE_MODE === 'true' && (
                     <div className=" font-medium text-center">
@@ -64,10 +64,10 @@ export default function HomePage() {
                 )}
                 {import.meta.env.VITE_MAINTAINANCE_MODE === 'false' && (
                     <div className="">
-                        <h1 className="text-xl md:text-2xl xl:text-4xl font-medium text-center bg-linear-to-br from-primary/80 to-purple-700/80 text-transparent bg-clip-text">
+                        <h1 className="text-2xl xl:text-4xl font-bold text-center bg-linear-to-br from-primary/80 to-purple-700/80 dark:from-primary dark:to-purple-500/80 text-transparent bg-clip-text">
                             Quizzet - Nền tảng học tập thông minh cho sinh viên
                         </h1>
-                        <p className="mt-3 text-lg text-center max-w-6xl mx-auto text-gray-600">
+                        <p className="mt-3 text-md md:text-lg text-center max-w-6xl mx-auto text-gray-600 dark:text-slate-300">
                             Quizzet là người bạn đồng hành đáng tin cậy trên hành trình học tập của bạn. Với sự hỗ trợ từ công nghệ AI tiên tiến, chúng tôi mang đến cho bạn một trải nghiệm học tập độc
                             đáo và hiệu quả hơn bao giờ hết. Khám phá ngay các tính năng nổi bật của Quizzet để tối ưu hóa quá trình học hỏi và phát triển kiến thức của bạn.
                         </p>
@@ -100,23 +100,24 @@ export default function HomePage() {
 
                 <div className="max-w-5xl mx-auto space-y-7">
                     {introductPage.map((section, index) => (
-                        <div className="flex gap-32" key={index}>
+                        <div className="flex gap-5 md:gap-32  flex-col md:flex-row" key={index}>
                             <div className="flex-1">
                                 <h2 className="text-2xl font-medium mb-5">{section.title}</h2>
                                 <ul>
                                     {section.items.map((item, itemIndex) => (
-                                        <li key={itemIndex} className="flex items-center gap-2 mb-3 text-gray-700">
-                                            <Check size={16} className="text-primary" /> {item}
+                                        <li key={itemIndex} className="flex items-center gap-2 mb-3 text-gray-700 dark:text-slate-300">
+                                            <Check size={16} className="text-primary dark:text-blue-500" /> {item}
                                         </li>
                                     ))}
                                 </ul>
                             </div>
-                            <div className="bg-gray-300 relative w-[400px] h-[350px] flex items-center justify-center rounded-md">
-                                <div className={`absolute h-full w-20 -left-12 ${index % 2 === 0 ? 'triangle-down-shape' : 'triangle-up-shape'}`}></div>
+                            <div className="hidden md:flex bg-gray-300 dark:bg-gray-700 relative w-[400px] h-[350px] items-center justify-center rounded-md">
+                                <div className={`absolute h-full w-20 -left-12  ${index % 2 === 0 ? 'triangle-down-shape' : 'triangle-up-shape'}`}></div>
                                 <div className="p-5">
                                     <img src="https://placehold.co/300" alt="" />
                                 </div>
                             </div>
+                            <img className="block md:hidden" src="https://placehold.co/300" alt="" />
                         </div>
                     ))}
                 </div>
@@ -126,10 +127,9 @@ export default function HomePage() {
                     <h1 className=" text-2xl md:text-4xl text-white font-bold">Sẵn sàng bắt đầu hành trình học tập?</h1>
                     <p className="text-md md:text-lg text-white/80">Tham gia cộng đồng hơn 300 học viên đang học tập hiệu quả cùng Quizzet</p>
                     <div className="flex items-center gap-5">
-                        <Link to="/login">
-                            <Button className="h-12 text-xl bg-linear-to-r from-primary/80 to-purple-700/80">
-                                <Zap className=" group-hover:text-yellow-200  rotate-0 group-hover:rotate-180 transition-all duration-300" /> Bắt đầu miễn phí
-                                <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/30 to-transparent transition-all duration-500 translate-x-full group-hover:translate-x-full"></div>
+                        <Link to="/login" className="block ">
+                            <Button className=" h-12 text-xl bg-linear-to-r from-primary/80 to-purple-700/80 dark:text-gray-300">
+                                <Zap className=" group-hover:text-yellow-200   rotate-0 group-hover:rotate-180 transition-all duration-300" /> Bắt đầu miễn phí
                             </Button>
                         </Link>
                     </div>

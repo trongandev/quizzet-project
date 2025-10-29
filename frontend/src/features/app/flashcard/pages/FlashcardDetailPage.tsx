@@ -59,8 +59,6 @@ export default function FlashcardDetailPage() {
     useEffect(() => {
         const fetchAPI = async () => {
             const req = await flashcardService.getFlashcardDetail(id_flashcard)
-            console.log(req)
-            // const req = await GET_API_WITHOUT_COOKIE(`/flashcards/${id_flashcard}`)
             if (req?.ok) {
                 setListFlashcard(req?.listFlashCards)
                 setFilteredFlashcards(sortFlashcards(req?.listFlashCards?.flashcards))

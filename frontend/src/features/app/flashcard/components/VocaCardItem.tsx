@@ -114,7 +114,7 @@ export default function VocaCardItem({ data, speakWord, loadingAudio, setIsEditO
         <Card className={`w-full max-w-2xl md:max-w-full mx-auto shadow-sm hover:shadow-md transition-shadow duration-200 border-l-4 overflow-hidden h-full ${getBorderColor(data.status)}`}>
             <CardContent className=" h-full">
                 {/* Header with status */}
-                <div className="flex items-center justify-between p-4 pb-2">
+                <div className="flex items-center justify-between pb-2">
                     <Badge className={`${getStatusColor(data.status)} font-medium`}>
                         {getStatusText(data.status)}
                         {data.status === 'reviewing' ? '' : ': ' + data.progress?.percentage + '%'}
@@ -172,7 +172,7 @@ export default function VocaCardItem({ data, speakWord, loadingAudio, setIsEditO
                 <HistoryViewModal history={data.history} isHistoryOpen={isHistoryOpen} setIsHistoryOpen={setIsHistoryOpen}></HistoryViewModal>
 
                 {/* Main content */}
-                <div className="px-4 pb-4">
+                <div className="">
                     {/* Chinese sentence - Main focus */}
                     <div className="mb-4">
                         <div className="flex items-start gap-3 mb-2">
@@ -200,7 +200,7 @@ export default function VocaCardItem({ data, speakWord, loadingAudio, setIsEditO
                             </div>
                         </div>
                         {/* Vietnamese meaning */}
-                        <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-3 mb-4">
+                        <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg mb-4">
                             <div className="flex items-start gap-2">
                                 <BookOpen className="w-4 h-4 text-gray-600 dark:text-gray-300 mt-0.5 shrink-0" />
                                 <div>
@@ -257,7 +257,7 @@ export default function VocaCardItem({ data, speakWord, loadingAudio, setIsEditO
                     {data.note && viewMode === 'full' && (
                         <>
                             <Separator className="my-4" />
-                            <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-3">
+                            <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg">
                                 <div className="flex items-start gap-2">
                                     <Lightbulb className="w-4 h-4 text-gray-600 dark:text-gray-200 mt-0.5 shrink-0" />
                                     <div>

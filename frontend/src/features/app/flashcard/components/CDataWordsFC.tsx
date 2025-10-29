@@ -164,7 +164,7 @@ export default function CDataWordsFC({ summary }: { summary: ISummary }) {
                         <DialogTitle>{selectedWords?.title}</DialogTitle>
                         <DialogDescription>{selectedWords?.define}</DialogDescription>
                     </DialogHeader>
-                    <div className="min-h-64 overflow-y-auto grid grid-cols-2 grid-flow-row gap-2 md:gap-3 rounded-lg">
+                    <div className="max-h-[70vh] overflow-y-auto grid grid-cols-2 grid-flow-row gap-2 md:gap-3 rounded-lg">
                         {selectedWords &&
                             selectedWords?.words?.map((word, index) => (
                                 <div className={`border-2  border-dashed  rounded-lg p-5 ${getBackgroundColor(selectedWords.type)} `} key={index}>

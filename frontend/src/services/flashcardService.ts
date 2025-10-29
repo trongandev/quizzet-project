@@ -21,6 +21,11 @@ class FlashcardService {
         const response = await axiosInstance.post<any>('/list-flashcards', data)
         return response.data
     }
+
+    async getFlashcardPractice() {
+        const response = await axiosInstance.get<any>(`/flashcards/practice`)
+        return response.data
+    }
     async getFlashcard(id: string) {
         const response = await axiosInstance.get<any>(`/flashcards/${id}`)
         return response.data
