@@ -33,15 +33,14 @@ export default function ForgotPasswordPage() {
         setLoading(true)
         try {
             const res = await authService.forgotPassword({ email: values.email })
-            console.log(res)
-            // if (res) {
-            //     toast.success('Yêu cầu đặt lại mật khẩu thành công', {
-            //         description: 'Vui lòng kiểm tra email của bạn để đặt lại mật khẩu',
-            //         position: 'top-center',
-            //     })
-            //     setIsEmailSent(true)
-            //     formik.resetForm()
-            // }
+            if (res) {
+                toast.success('Yêu cầu đặt lại mật khẩu thành công', {
+                    description: 'Vui lòng kiểm tra email của bạn để đặt lại mật khẩu',
+                    position: 'top-center',
+                })
+                setIsEmailSent(true)
+                formik.resetForm()
+            }
         } catch (error) {
             toast.warning((error as Error).message)
         } finally {

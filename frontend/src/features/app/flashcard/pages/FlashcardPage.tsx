@@ -17,6 +17,8 @@ import { type IListFlashcard } from '@/types/flashcard'
 // import PaginationUI from '@/components/etc/PaginationUI'
 import type { IPagination, ISummary } from '@/types/etc'
 import PaginationUI from '@/components/etc/PaginationUI'
+import ToastLogErrror from '@/components/etc/ToastLogErrror'
+import LoadingGrid from '@/components/etc/LoadingGrid'
 
 export default function FlashcardPage() {
     const navigate = useNavigate()
@@ -27,13 +29,12 @@ export default function FlashcardPage() {
     const [dataUserFC, setDataUserFC] = useState<IListFlashcard[]>([])
     const [filterDataUserFC, setFilterDataUserFC] = useState<IListFlashcard[]>([])
     const [dataPublicFC, setDataPublicFC] = useState<IListFlashcard[]>([])
-    const [filterDataPublicFC, setFilterDataPublicFC] = useState<IListFlashcard[]>([])
     const [summary, setSummary] = useState<ISummary | null>(null)
     // const [successFC, setSuccessFC] = useState<IListFlashcard[]>([])
     const { user } = useAuth()
     const [tabFlashcard, setTabFlashcard] = useState('my-sets') // my-sets | community | success-fc
     // Pagination states
-    const [currentPage, setCurrentPage] = useState(Number(location.search) || 1)
+    const [currentPage, setCurrentPage] = useState(1)
     // const [itemsPerPage, setItemsPerPage] = useState(8)
     const [pagination, setPagination] = useState<IPagination>({ currentPage: 1, totalPages: 1, itemsPerPage: 8, totalItems: 0, hasNextPage: false, hasPrevPage: false })
 
@@ -46,14 +47,11 @@ export default function FlashcardPage() {
             const sessionPublicFC = sessionStorage.getItem('publicFlashcards|')
             if (sessionPublicFC && JSON.parse(sessionPublicFC).length > 0) {
                 setDataPublicFC(JSON.parse(sessionPublicFC))
-
-                setFilterDataPublicFC(JSON.parse(sessionPublicFC))
             } else {
                 const res = await flashcardService.getListFlashcardPublic({ currentPage, itemsPerPage: pagination.itemsPerPage })
                 setDataPublicFC(res.publicFlashcards || [])
-                setFilterDataPublicFC(res.publicFlashcards || [])
                 setPagination(res.pagination)
-                // sessionStorage.setItem('publicFlashcards', JSON.stringify(res))
+                // sessionStorage.setItem('publicFlashcards', JSON.stringify(res.publicFlashcards || []))
             }
 
             if (user) {
@@ -67,30 +65,32 @@ export default function FlashcardPage() {
             setLoading(false)
         }
         initData()
-    }, [user, currentPage])
+    }, [user])
+
+    useEffect(() => {
+        const fetchPublicFC = async () => {
+            const param = new URLSearchParams(location.search)
+            const language = param.get('language') || 'all'
+            // const search = param.get('search') || ''
+            const res = await flashcardService.getListFlashcardPublic({ currentPage, itemsPerPage: pagination.itemsPerPage, language: language })
+            setDataPublicFC(res.publicFlashcards || [])
+            setPagination(res.pagination)
+        }
+        try {
+            setLoading(true)
+            fetchPublicFC()
+        } catch (error: any) {
+            ToastLogErrror(error)
+        } finally {
+            setLoading(false)
+        }
+    }, [currentPage, location.search, pagination.itemsPerPage])
 
     const handleClose = () => {
         setIsOpen(false)
         localStorage.setItem('tutorialFC', 'true') // Lưu trạng thái đã xem
     }
-    const filterData = useCallback(
-        (langCode: string, searchValue: string, flashcards = dataPublicFC) => {
-            let filtered = flashcards
 
-            // Apply language filter
-            if (langCode !== 'all') {
-                filtered = filtered?.filter((item) => item.language === langCode) || []
-            }
-
-            // Apply search filter
-            if (searchValue.trim()) {
-                filtered = filtered?.filter((item) => item.title.toLowerCase().includes(searchValue.toLowerCase())) || []
-            }
-
-            return filtered
-        },
-        [dataPublicFC]
-    )
     const updateURL = useCallback(
         (tab: string, page: number, lang: string, search: string) => {
             if (tab !== 'community') {
@@ -156,23 +156,23 @@ export default function FlashcardPage() {
         }
     }, [])
 
-    useEffect(() => {
-        if (tabFlashcard === 'community') {
-            const filtered = filterData(language, searchFC) || []
-            setFilterDataPublicFC(filtered)
-        }
-    }, [language, searchFC, tabFlashcard, filterData])
+    // useEffect(() => {
+    //     if (tabFlashcard === 'community') {
+    //         const filtered = filterData(language, searchFC) || []
+    //         setFilterDataPublicFC(filtered)
+    //     }
+    // }, [language, searchFC, tabFlashcard, filterData])
 
     // // ✅ Handle language filter với URL update
     const handleLanguageFilter = (langCode: string) => {
         setLanguage(langCode)
         setCurrentPage(1) // Reset về trang 1
-        if (langCode === 'all') {
-            setFilterDataPublicFC(dataPublicFC || [])
-        } else {
-            const filtered = dataPublicFC?.filter((item) => item.language === langCode) || []
-            setFilterDataPublicFC(filtered)
-        }
+        // if (langCode === 'all') {
+        //     setFilterDataPublicFC(dataPublicFC || [])
+        // } else {
+        //     const filtered = dataPublicFC?.filter((item) => item.language === langCode) || []
+        //     setFilterDataPublicFC(filtered)
+        // }
         updateURL(tabFlashcard, 1, langCode, searchFC)
     }
 
@@ -181,15 +181,15 @@ export default function FlashcardPage() {
         setSearchFC(value)
         setCurrentPage(1) // Reset về trang 1
 
-        if (tabFlashcard === 'community') {
-            const search = dataPublicFC?.filter((item) => item.title.toLowerCase().includes(value.toLowerCase())) || []
-            setFilterDataUserFC(search)
-        } else {
-            const search = dataUserFC.filter((item) => item.title.toLowerCase().includes(value.toLowerCase()))
-            setFilterDataPublicFC(search)
-        }
+        // if (tabFlashcard === 'community') {
+        //     const search = dataPublicFC?.filter((item) => item.title.toLowerCase().includes(value.toLowerCase())) || []
+        //     setFilterDataUserFC(search)
+        // } else {
+        //     const search = dataUserFC.filter((item) => item.title.toLowerCase().includes(value.toLowerCase()))
+        //     setFilterDataPublicFC(search)
+        // }
 
-        updateURL(tabFlashcard, 1, language, value)
+        // updateURL(tabFlashcard, 1, language, value)
     }
 
     useEffect(() => {
@@ -199,13 +199,6 @@ export default function FlashcardPage() {
         }
     }, [])
 
-    // useEffect(() => {
-    //     if (window.innerWidth < 768) {
-    //         setItemsPerPage(4) // Adjust items per page for mobile view
-    //     } else {
-    //         setItemsPerPage(8) // Default items per page for larger screens
-    //     }
-    // }, [user, dataUserFC])
     return (
         <div className="my-8 w-full md:max-w-7xl mx-auto px-3 md:px-0 min-h-screen">
             <div className="">
@@ -286,9 +279,9 @@ export default function FlashcardPage() {
                                 setFilterDataUserFC={setFilterDataUserFC}
                                 setTabFlashcard={setTabFlashcard}
                             >
-                                <Button className="text-white w-full md:w-auto" disabled={user === undefined}>
+                                <Button className="text-white w-full md:w-auto" disabled={user === null}>
                                     <Plus className="w-4 h-4 mr-2" />
-                                    Tạo bộ flashcard mới
+                                    {user === null ? 'Đăng nhập để tạo bộ flashcard' : 'Tạo bộ flashcard mới'}
                                 </Button>
                             </CreateFlashcardModal>
                         </div>
@@ -353,13 +346,14 @@ export default function FlashcardPage() {
 
                         <div className="mt-5">
                             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5 mb-10">
-                                {filterDataPublicFC && filterDataPublicFC.map((item) => <PublicFC item={item} key={item?._id} />)}
+                                {!loading && dataPublicFC && dataPublicFC.map((item) => <PublicFC item={item} key={item?._id} />)}
 
-                                {filterDataPublicFC && filterDataPublicFC?.length <= 0 && (
+                                {dataPublicFC && dataPublicFC?.length <= 0 && (
                                     <div className="h-[350px] col-span-full flex items-center justify-center text-gray-700 dark:text-gray-300">Không có dữ liệu...</div>
                                 )}
+                                {loading && <LoadingGrid />}
                             </div>
-                            <PaginationUI currentPage={currentPage} pagination={pagination} onPageChange={handlePageChange} />
+                            <PaginationUI pagination={pagination} onPageChange={handlePageChange} />
                         </div>
                     </TabsContent>
                     <TabsContent value="success-fc">

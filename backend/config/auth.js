@@ -18,7 +18,6 @@ passport.use(
                 // Tìm user theo Google ID trước
                 let user = await User.findOne({ googleId: profile.id })
                 if (user) {
-                    console.log("user found with googleId:", user)
                     // Nếu đã tồn tại Google ID, trả về user
                     // kiểm tra xem có GamificationProfile không, nếu không thì tạo mới
                     const gamificationProfile = await GamificationProfile.findOne({ user_id: user._id })
@@ -32,7 +31,7 @@ passport.use(
                     }
                     return done(null, user)
                 } else {
-                    console.log("user not found with googleId")
+                    ;("user not found with googleId")
                     // Tìm user theo email
                     const existingUserByEmail = await User.findOne({
                         email: profile.emails[0].value,

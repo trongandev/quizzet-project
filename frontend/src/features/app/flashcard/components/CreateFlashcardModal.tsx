@@ -43,7 +43,6 @@ export function CreateFlashcardModal({ children, open, setOpen, dataUserFC, setD
             const req = await flashcardService.createListFlashcards(formData)
             toast.success('Tạo thành công flashcard')
             setOpen(false)
-            console.log(req)
             setDataUserFC([req?.listFlashCard, ...dataUserFC])
             setFilterDataUserFC([req?.listFlashCard, ...filterDataUserFC])
 

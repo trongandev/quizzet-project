@@ -55,7 +55,6 @@ class AuthService {
     // Register user
     async register(data: RegisterRequest): Promise<AuthResponse> {
         const response = await axiosInstance.post<AuthResponse>('/auth/register', data)
-        console.log(response)
         return response.data
     }
 

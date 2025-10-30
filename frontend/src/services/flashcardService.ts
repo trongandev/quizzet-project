@@ -2,8 +2,9 @@ import axiosInstance from './axiosInstance'
 import type { IListFlashcard } from '@/types/flashcard'
 
 class FlashcardService {
-    async getListFlashcardPublic({ currentPage, itemsPerPage }: { currentPage?: number; itemsPerPage?: number }) {
-        const response = await axiosInstance.get<any>(`/list-flashcards/public?page=${currentPage}&limit=${itemsPerPage}`)
+    async getListFlashcardPublic({ currentPage, itemsPerPage, language }: { currentPage?: number; itemsPerPage?: number; language?: string }) {
+        //&search=${search}
+        const response = await axiosInstance.get<any>(`/list-flashcards/public?page=${currentPage}&limit=${itemsPerPage}&language=${language}`)
         return response.data
     }
 

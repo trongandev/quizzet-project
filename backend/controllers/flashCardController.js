@@ -492,8 +492,7 @@ exports.getListFlashCardById = async (req, res) => {
 exports.updateListFlashCard = async (req, res) => {
     try {
         const { _id } = req.params
-        const updateData = req.body
-        console.log("Update data:", updateData)
+        const updateData = req.body("Update data:", updateData)
         const cacheKey = `listFlashCards_${_id}`
         const listFlashCard = await ListFlashCard.findByIdAndUpdate(_id, updateData, { new: true })
 
@@ -553,11 +552,23 @@ exports.deleteListFlashCard = async (req, res) => {
 // Lấy tất cả flashcard ở chế độ public
 exports.getAllFlashCardsPublic = async (req, res) => {
     try {
-        const { page = 1, limit = 8 } = req.query
+        const { page = 1, limit = 8, search, language } = req.query
         const skip = (page - 1) * limit
+        const query = {}
+
+        query.public = true
+
+        // Tìm kiếm theo tên hoặc mô tả
+        if (search) {
+            query.$or = [{ name: { $regex: search, $options: "i" } }, { description: { $regex: search, $options: "i" } }]
+        }
+
+        if (language && language !== "all") {
+            query.language = language
+        }
         const [flashcard, total] = await Promise.all([
-            ListFlashCard.find({ public: true }).populate("userId", "_id displayName profilePicture").skip(skip).limit(limit).sort({ created_at: -1 }).lean(),
-            ListFlashCard.countDocuments({ public: true }),
+            ListFlashCard.find(query).populate("userId", "_id displayName profilePicture").skip(skip).limit(limit).sort({ created_at: -1 }).lean(),
+            ListFlashCard.countDocuments(query),
         ])
 
         const totalPages = Math.ceil(total / limit)
@@ -567,10 +578,10 @@ exports.getAllFlashCardsPublic = async (req, res) => {
         return res.status(200).json({
             publicFlashcards: flashcard,
             pagination: {
-                currentPage: page,
+                currentPage: parseInt(page),
                 totalPages,
                 totalItems: total,
-                itemsPerPage: limit,
+                itemsPerPage: parseInt(limit),
                 hasNextPage,
                 hasPrevPage,
             },

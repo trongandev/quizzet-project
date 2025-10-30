@@ -146,7 +146,6 @@ export default function EditVocaModal({
         try {
             setLoading(true)
             const req = await flashcardService.updatedFlashcard(editFlashcard?._id || '', formData)
-            console.log(req)
             if (req.ok) {
                 toast.success('Chỉnh sửa flashcard thành công')
                 setIsEditOpen(false)

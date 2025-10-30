@@ -90,7 +90,6 @@ export default function AddMoreVocaModal({ children, listFlashcard, setListFlash
                 language: listFlashcard?.language,
                 data: flashcards || '',
             })
-            console.log(req)
             if (req?.ok) {
                 toast.success('Gửi dữ liệu thành công', {
                     description: 'Các từ vựng mới đã được thêm vào bộ flashcard của bạn.',

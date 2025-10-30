@@ -75,10 +75,8 @@ io.to(chatRoomId).emit("typingStatus", Array.from(typingUsers.get(chatRoomId) ||
 
     socket.on("joinRoom", (roomId) => {
         socket.join(roomId);
-        console.log(`Người dùng ${socket.id} đã tham gia phòng ${roomId}`);
     });
 
     socket.on("leaveRoom", (roomId) => {
         socket.leave(roomId);
-        console.log(`Người dùng ${socket.id} đã rời khỏi phòng ${roomId}`);
     });

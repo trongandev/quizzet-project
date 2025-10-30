@@ -37,7 +37,6 @@ export function EditListFlashcardModal({ children, editListFlashcard, listFlashc
         try {
             setLoading(true)
             const req = await flashcardService.updatedListFlashcards(editListFlashcard?._id, { ...formData })
-            console.log(req)
             // const req = await POST_API("/list-flashcards/" + editListFlashcard?._id, { ...formData }, "PATCH", token)
             // const res = await req?.json()
             if (req.ok) {

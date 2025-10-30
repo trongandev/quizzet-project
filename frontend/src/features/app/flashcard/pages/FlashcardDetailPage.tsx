@@ -31,6 +31,7 @@ import { getLanguageFlag, getLanguageName } from '@/lib/utilUI'
 import AddVocaModal from '../components/AddVocaModal'
 import VocaCardItem from '../components/VocaCardItem'
 import EditVocaModal from '../components/EditVocaModal'
+import LoadingGrid from '@/components/etc/LoadingGrid'
 
 export default function FlashcardDetailPage() {
     const [loading, setLoading] = useState(false)
@@ -51,7 +52,7 @@ export default function FlashcardDetailPage() {
         })
     }
 
-    const [filteredFlashcards, setFilteredFlashcards] = useState<Flashcard[]>([])
+    const [filteredFlashcards, setFilteredFlashcards] = useState<Flashcard[] | null>(null)
     const [listFlashcard, setListFlashcard] = useState<IListFlashcard>()
     const [editListFlashcard, setEditListFlashcard] = useState<IEditFlashcard>()
     const [statusCounts, setStatusCount] = useState<IWordCount>()
@@ -66,7 +67,14 @@ export default function FlashcardDetailPage() {
                 setStatusCount(req?.statusCounts)
             }
         }
-        fetchAPI()
+        try {
+            setLoading(true)
+            fetchAPI()
+        } catch (error) {
+            ToastLogErrror(error)
+        } finally {
+            setLoading(false)
+        }
     }, [id_flashcard])
 
     useEffect(() => {
@@ -397,7 +405,11 @@ export default function FlashcardDetailPage() {
                     viewMode === 'simple' ? 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 ' : ' md:grid-cols-3 '
                 } gap-3 md:gap-4 xl:gap-5 px-3 md:px-5 w-full `}
             >
-                {filteredFlashcards && filteredFlashcards?.length > 0 ? (
+                {loading && <LoadingGrid className="h-[700px]" />}
+
+                {!loading &&
+                    filteredFlashcards &&
+                    filteredFlashcards?.length > 0 &&
                     filteredFlashcards.map((item: Flashcard) => (
                         <VocaCardItem
                             key={item._id}
@@ -412,24 +424,26 @@ export default function FlashcardDetailPage() {
                             setListFlashcard={setListFlashcard}
                             viewMode={viewMode}
                         />
-                    ))
-                ) : (
+                    ))}
+                {!loading && filteredFlashcards?.length === 0 && (
                     <div className="col-span-full text-center h-[80vh] flex flex-col gap-2 items-center justify-center">
                         <h1 className="text-xl">Không có từ vựng nào trong flashcard này</h1>
                         <p className="text-gray-500 ">Bạn hãy bấm vào nút thêm từ vựng để học nhé</p>
                     </div>
                 )}
             </div>
-            <EditVocaModal
-                isEditOpen={isEditOpen}
-                setIsEditOpen={setIsEditOpen}
-                editFlashcard={editFlashcard}
-                setEditFlashcard={setEditFlashcard}
-                listFlashcard={listFlashcard}
-                filteredFlashcards={filteredFlashcards}
-                setFilteredFlashcards={setFilteredFlashcards}
-                setListFlashcard={setListFlashcard}
-            ></EditVocaModal>
+            {filteredFlashcards && filteredFlashcards.length === 0 && !loading && (
+                <EditVocaModal
+                    isEditOpen={isEditOpen}
+                    setIsEditOpen={setIsEditOpen}
+                    editFlashcard={editFlashcard}
+                    setEditFlashcard={setEditFlashcard}
+                    listFlashcard={listFlashcard}
+                    filteredFlashcards={filteredFlashcards}
+                    setFilteredFlashcards={setFilteredFlashcards}
+                    setListFlashcard={setListFlashcard}
+                ></EditVocaModal>
+            )}
         </div>
     )
 }

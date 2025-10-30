@@ -73,7 +73,6 @@ export default function UpdatePasswordPage() {
         try {
             setLoading(true)
             const res = await authService.changePassword(profile)
-            console.log(res)
             if (res?.ok) {
                 toast.success(res.message, {
                     position: 'top-center',

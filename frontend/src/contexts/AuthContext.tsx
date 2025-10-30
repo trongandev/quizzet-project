@@ -127,7 +127,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             TokenStorage.setAccessToken(accessToken)
             TokenStorage.setRefreshToken(refreshToken)
             TokenStorage.setUser(req.data.user)
-            console.log(req.data.user, 'user from findProfileById')
 
             setAuthState({
                 user: req.data.user,

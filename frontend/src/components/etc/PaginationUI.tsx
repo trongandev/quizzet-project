@@ -1,16 +1,16 @@
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink } from '@/components/ui/pagination'
-import type { IPagination } from '@/types/etc'
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem } from '@/components/ui/pagination'
 import { Button } from '../ui/button'
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
+import type { IPagination } from '@/types/etc'
 
 type PaginationUIProps = {
-    currentPage: number
     pagination: IPagination
     onPageChange: (page: number) => void
 }
 
 function getPageNumbers(current: number, total: number) {
-    const pages = []
+    const pages: (number | '...')[] = []
+    if (total <= 1) return [1]
     if (total <= 5) {
         for (let i = 1; i <= total; i++) pages.push(i)
     } else {
@@ -24,47 +24,52 @@ function getPageNumbers(current: number, total: number) {
     }
     return pages
 }
-
-export default function PaginationUI({ currentPage, pagination, onPageChange }: PaginationUIProps) {
-    const { totalPages, hasNextPage, hasPrevPage } = pagination
-    const pages = getPageNumbers(currentPage, totalPages)
+export default function PaginationUI({ pagination, onPageChange }: PaginationUIProps) {
+    const { currentPage, totalPages } = pagination
+    const total = Math.max(1, Math.floor(totalPages) || 1)
+    const pages = getPageNumbers(Math.min(currentPage, total), total)
+    console.log(pagination)
 
     return (
-        <Pagination>
-            <PaginationContent>
-                <PaginationItem>
-                    <Button variant={'outline'} size={'sm'} disabled={!hasPrevPage} onClick={() => onPageChange(currentPage - 1)}>
-                        <ChevronLeftIcon />
-                        <span className="hidden sm:block">Quay về</span>
-                    </Button>
-                </PaginationItem>
-                {pages.map((page, idx) =>
-                    page === '...' ? (
-                        <PaginationItem key={idx}>
-                            <PaginationEllipsis />
-                        </PaginationItem>
-                    ) : (
-                        <PaginationItem key={page}>
-                            <PaginationLink
-                                href="#"
-                                isActive={page === currentPage}
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    if (page !== currentPage) onPageChange(Number(page))
-                                }}
-                            >
-                                {page}
-                            </PaginationLink>
-                        </PaginationItem>
-                    )
-                )}
-                <PaginationItem>
-                    <Button variant={'outline'} size={'sm'} disabled={!hasNextPage} onClick={() => onPageChange(currentPage + 1)}>
-                        <span className="hidden sm:block">Tiến tới</span>
-                        <ChevronRightIcon className="" />
-                    </Button>
-                </PaginationItem>
-            </PaginationContent>
-        </Pagination>
+        <div className="">
+            <Pagination>
+                <PaginationContent>
+                    <PaginationItem>
+                        <Button variant={'outline'} disabled={currentPage == 1} onClick={() => onPageChange(currentPage - 1)}>
+                            <ChevronLeftIcon />
+                            <span className="hidden sm:block">Quay về</span>
+                        </Button>
+                    </PaginationItem>
+                    {pages.map((page, idx) =>
+                        page === '...' ? (
+                            <PaginationItem key={`ellipsis-${idx}`}>
+                                <PaginationEllipsis />
+                            </PaginationItem>
+                        ) : (
+                            <PaginationItem key={`page-${page}-${idx}`}>
+                                <Button
+                                    variant={currentPage == page ? 'outline' : 'ghost'}
+                                    disabled={page == currentPage}
+                                    onClick={() => {
+                                        if (page !== currentPage) onPageChange(Number(page))
+                                    }}
+                                >
+                                    {page}
+                                </Button>
+                            </PaginationItem>
+                        )
+                    )}
+                    <PaginationItem>
+                        <Button variant={'outline'} disabled={currentPage >= total} onClick={() => onPageChange(currentPage + 1)}>
+                            <span className="hidden sm:block">Tiến tới</span>
+                            <ChevronRightIcon className="" />
+                        </Button>
+                    </PaginationItem>
+                </PaginationContent>
+            </Pagination>
+            <div className="text-xs text-gray-600 text-center mt-4">
+                Trang {currentPage} / {total}
+            </div>
+        </div>
     )
 }

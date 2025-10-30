@@ -29,14 +29,12 @@ const getUser = (userId) => {
 
 io.on("connection", (socket) => {
     socket.on("newUser", (userId) => {
-        addNewUser(userId, socket.id)
-        console.log("onlineUsers:", onlineUsers)
+        addNewUser(userId, socket.id)("onlineUsers:", onlineUsers)
         io.emit("getOnlineUsers", onlineUsers)
     })
 
     socket.on("disconnect", () => {
-        removeUser(socket.id)
-        console.log("onlineUsers:", onlineUsers)
+        removeUser(socket.id)("onlineUsers:", onlineUsers)
         io.emit("getOnlineUsers", onlineUsers)
     })
 
@@ -78,18 +76,16 @@ io.on("connection", (socket) => {
             // Nếu lưu thành công, phát lại tin nhắn cho các client khác
             io.to(chatRoomId).emit("message", { ...response.data, displayName, profilePicture })
         } catch (error) {
-            console.log("Lỗi lưu tin nhắn:", error)
+            "Lỗi lưu tin nhắn:", error
         }
     })
 
     socket.on("joinRoom", (roomId) => {
-        socket.join(roomId)
-        console.log(`Người dùng ${socket.id} đã tham gia phòng ${roomId}`)
+        socket.join(roomId)(`Người dùng ${socket.id} đã tham gia phòng ${roomId}`)
     })
 
     socket.on("leaveRoom", (roomId) => {
-        socket.leave(roomId)
-        console.log(`Người dùng ${socket.id} đã rời khỏi phòng ${roomId}`)
+        socket.leave(roomId)(`Người dùng ${socket.id} đã rời khỏi phòng ${roomId}`)
     })
 
     socket.on("userDisconnect", () => {
@@ -102,5 +98,5 @@ app.get("/ping", (req, res) => {
 })
 
 server.listen(5070, () => {
-    console.log("server running on ports 5070")
+    ;("server running on ports 5070")
 })
