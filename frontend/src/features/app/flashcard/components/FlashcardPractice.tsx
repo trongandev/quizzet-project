@@ -371,6 +371,8 @@ export default function FlashcardPractice({ flashcardData }: { flashcardData: Fl
             }
         } catch (error: any) {
             ToastLogErrror(error)
+        } finally {
+            toast.dismiss('send-session')
         }
     }
 

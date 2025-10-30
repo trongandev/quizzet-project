@@ -77,7 +77,7 @@ class FlashcardService {
     }
 
     async batchRateFlashcards(cards: any[]) {
-        const response = await axiosInstance.delete<any>(`/flashcards/batch-rate`, { data: { cards } })
+        const response = await axiosInstance.put<any>(`/flashcards/batch-rate`, { cards })
         return response.data
     }
 }

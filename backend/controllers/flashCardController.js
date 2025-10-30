@@ -205,7 +205,7 @@ exports.batchRate = async (req, res) => {
                 errors: errors,
             })
         } else {
-            res.status(200).json({ message: "Tất cả flashcard đã được cập nhật thành công." })
+            res.status(200).json({ ok: true, message: "Tất cả flashcard đã được cập nhật thành công." })
         }
     } catch (error) {
         console.error("Lỗi khi cập nhật flashcards hàng loạt:", error)
