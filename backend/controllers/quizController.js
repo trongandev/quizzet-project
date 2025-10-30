@@ -7,8 +7,37 @@ const GamificationService = require("../services/gamificationService")
 
 const getQuiz = async (req, res) => {
     try {
-        const quiz = await QuizModel.find({ status: true }).populate("uid", "profilePicture displayName verify").sort({ date: -1 })
-        res.status(200).json({ quiz })
+        const { page = 1, limit = 8, search } = req.query
+        const skip = (page - 1) * limit
+        const query = {}
+
+        query.status = true
+
+        // Tìm kiếm theo tên hoặc mô tả
+        if (search) {
+            query.$or = [{ name: { $regex: search, $options: "i" } }, { description: { $regex: search, $options: "i" } }]
+        }
+
+        const [quiz, total] = await Promise.all([
+            QuizModel.find(query).populate("uid", "profilePicture displayName verify").skip(skip).limit(limit).sort({ date: -1 }).lean(),
+            QuizModel.countDocuments(query),
+        ])
+
+        const totalPages = Math.ceil(total / limit)
+        const hasNextPage = page < totalPages
+        const hasPrevPage = page > 1
+
+        return res.status(200).json({
+            publicQuiz: quiz,
+            pagination: {
+                currentPage: parseInt(page),
+                totalPages,
+                totalItems: total,
+                itemsPerPage: parseInt(limit),
+                hasNextPage,
+                hasPrevPage,
+            },
+        })
     } catch (error) {
         console.error(error)
         res.status(500).json({ message: "Server gặp lỗi, vui lòng thử lại sau ít phút" })
