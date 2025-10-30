@@ -1,7 +1,7 @@
 const express = require("express")
 const passport = require("passport")
 const jwt = require("jsonwebtoken")
-const { generateAccessToken } = require("../utils/generateToken")
+const { generateAccessToken, generateRefreshToken } = require("../utils/generateToken")
 
 const router = express.Router()
 router.get("/api/auth/google", passport.authenticate("google", { scope: ["profile", "email"], failureRedirect: "/login/failure" }))
@@ -17,9 +17,11 @@ router.get(
     }),
     (req, res) => {
         // Tạo token như bình thường
-        console.log("callback", req.user)
-        const token = generateAccessToken(req.user._id, req.user.role)
-        res.redirect(`${process.env.CLIENT_URL}?token=${token}`)
+        // const token = generateAccessToken(req.user._id, req.user.role)
+        const accessToken = generateAccessToken(req.user._id, req.user.role)
+        const refreshToken = generateRefreshToken(req.user._id)
+
+        res.redirect(`${process.env.CLIENT_URL}?accessToken=${accessToken}&refreshToken=${refreshToken}`)
     }
 )
 

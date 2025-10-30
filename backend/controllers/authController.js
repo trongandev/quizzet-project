@@ -6,6 +6,17 @@ const { sendForgetPasswordMail } = require("../services/nodemailer")
 const { GamificationProfile } = require("../models/GamificationProfile")
 const { generateAccessToken, generateRefreshToken } = require("../utils/generateToken")
 
+const getProfile = async (req, res) => {
+    try {
+        const { id } = req.user
+        const user = await User.findById(id).select("-password")
+        return res.status(200).json({ user })
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({ message: "Server gặp lỗi, vui lòng thử lại sau ít phút" })
+    }
+}
+
 const registerUser = async (req, res) => {
     try {
         const { displayName, email, password } = req.body
@@ -225,6 +236,7 @@ const changePassword = async (req, res) => {
 }
 
 module.exports = {
+    getProfile,
     registerUser,
     loginUser,
     logoutUser,

@@ -18,6 +18,11 @@ class ProfileService {
         return response.data
     }
 
+    async findProfileById(userId: string) {
+        const response = await axiosInstance.get<any>(`/profile/find/${userId}`)
+        return response.data
+    }
+
     async updateProfile(userId: string, data: Partial<IUser>) {
         const response = await axiosInstance.patch<APIResponse<IUser>>(`/profile/${userId}`, data)
         return response.data.data

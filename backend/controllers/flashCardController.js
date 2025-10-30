@@ -553,16 +553,32 @@ exports.deleteListFlashCard = async (req, res) => {
 // Lấy tất cả flashcard ở chế độ public
 exports.getAllFlashCardsPublic = async (req, res) => {
     try {
-        const cacheKey = `publicFlashcards`
-        const cachedData = await getCache(cacheKey)
-        if (cachedData) {
-            return res.status(200).json(cachedData.data)
-        }
+        const { page = 1, limit = 8 } = req.query
+        const skip = (page - 1) * limit
+        const [flashcard, total] = await Promise.all([
+            ListFlashCard.find({ public: true }).populate("userId", "_id displayName profilePicture").skip(skip).limit(limit).sort({ created_at: -1 }).lean(),
+            ListFlashCard.countDocuments({ public: true }),
+        ])
 
-        const publicFlashcards = await ListFlashCard.find({ public: true }).populate("userId", "_id displayName profilePicture").sort({ created_at: -1 })
-        await setCache(cacheKey, publicFlashcards)
+        const totalPages = Math.ceil(total / limit)
+        const hasNextPage = page < totalPages
+        const hasPrevPage = page > 1
 
-        return res.status(200).json(publicFlashcards)
+        return res.status(200).json({
+            publicFlashcards: flashcard,
+            pagination: {
+                currentPage: page,
+                totalPages,
+                totalItems: total,
+                itemsPerPage: limit,
+                hasNextPage,
+                hasPrevPage,
+            },
+        })
+
+        // const publicFlashcards = await ListFlashCard.find({ public: true }).populate("userId", "_id displayName profilePicture").sort({ created_at: -1 })
+
+        // return res.status(200).json(publicFlashcards)
     } catch (error) {
         console.error(error)
         return res.status(500).json({ message: "Lỗi khi lấy danh sách flashcards", error: error.message })

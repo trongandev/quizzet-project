@@ -1,5 +1,5 @@
 'use client'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 import { Button } from '@/components/ui/button'
@@ -22,7 +22,7 @@ export default function LoginPage() {
 
     const searchParams = new URLSearchParams(location.search)
     const redirectPath = searchParams.get('redirect') || '/'
-    const { login } = useAuth()
+    const { login, loginWithoutUser } = useAuth()
 
     const formik = useFormik<LoginRequest>({
         initialValues: {
@@ -38,15 +38,19 @@ export default function LoginPage() {
         },
     })
 
-    // const fetchProfileAndSaveCookie = async (data: any) => {
-    //     Cookies.set('token', data.token, {
-    //         expires: 30,
-    //         secure: true,
-    //         sameSite: 'none',
-    //     })
-    //     // Fetch user profile sau khi đăng nhập thành công
-    //     refetchUser?.()
-    // }
+    useEffect(() => {
+        const accessToken = searchParams.get('accessToken')
+        const refreshToken = searchParams.get('refreshToken')
+
+        const fetchLogin = async () => {
+            if (accessToken && refreshToken) {
+                await loginWithoutUser(accessToken, refreshToken)
+                window.history.replaceState({}, document.title, window.location.pathname)
+                navigate('/', { replace: true })
+            }
+        }
+        fetchLogin()
+    }, [])
 
     const fetchLogin = async (values: LoginRequest) => {
         try {

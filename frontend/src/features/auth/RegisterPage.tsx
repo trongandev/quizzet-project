@@ -46,16 +46,6 @@ export default function RegisterPage() {
         },
     })
 
-    // const fetchProfileAndSaveCookie = async (data: any) => {
-    //     Cookies.set('token', data.token, {
-    //         expires: 30,
-    //         secure: true,
-    //         sameSite: 'none',
-    //     })
-    //     // Fetch user profile sau khi đăng nhập thành công
-    //     refetchUser?.()
-    // }
-
     const fetchRegister = async (values: RegisterRequest) => {
         try {
             setLoading(true)
@@ -83,24 +73,6 @@ export default function RegisterPage() {
         if (loading) return // Prevent multiple clicks
         window.location.href = import.meta.env.VITE_API_ENDPOINT + '/auth/google'
     }
-
-    // useEffect(() => {
-    //     const urlParams = new URLSearchParams(window.location.search)
-    //     const token = urlParams.get('token')
-
-    //     if (token) {
-    //         Cookies.set('token', token, { expires: 30 })
-    //         const fetchAPI = async () => {
-    //             await GET_API('/profile', token)
-    //         }
-    //         fetchAPI()
-    //         toast.success('Đăng nhập thành công!', {
-    //             description: 'Đang chuyển hướng đến trang chính...',
-    //             position: 'top-center',
-    //         })
-    //         router.push('/')
-    //     }
-    // }, [token, router])
 
     return (
         <div className="min-h-screen flex items-center justify-center p-4 my-10">

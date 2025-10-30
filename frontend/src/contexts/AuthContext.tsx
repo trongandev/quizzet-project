@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import type { IUser } from '@/types/user'
+import axios from 'axios'
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import type { ReactNode } from 'react'
 
@@ -16,6 +17,7 @@ interface AuthContextType extends AuthState {
     setLoading: (loading: boolean) => void
     getAccessToken: () => string | null
     getRefreshToken: () => string | null
+    loginWithoutUser: (accessToken: string, refreshToken: string) => void
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -115,6 +117,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         })
     }
 
+    const loginWithoutUser = async (accessToken: string, refreshToken: string) => {
+        const req: any = await axios.get(`${import.meta.env.VITE_API_ENDPOINT}/auth/me`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        })
+        if (req.status === 200 && req.data.user) {
+            TokenStorage.setAccessToken(accessToken)
+            TokenStorage.setRefreshToken(refreshToken)
+            TokenStorage.setUser(req.data.user)
+            console.log(req.data.user, 'user from findProfileById')
+
+            setAuthState({
+                user: req.data.user,
+                isAuthenticated: true,
+                isLoading: false,
+            })
+        }
+    }
+
     const logout = () => {
         // Clear all stored data
         TokenStorage.clearAll()
@@ -162,6 +184,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setLoading,
         getAccessToken,
         getRefreshToken,
+        loginWithoutUser,
     }
 
     return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>

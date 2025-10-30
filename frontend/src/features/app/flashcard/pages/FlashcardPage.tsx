@@ -15,7 +15,8 @@ import { languages } from '@/lib/languageOption'
 import PublicFC from '../components/PublicFC'
 import { type IListFlashcard } from '@/types/flashcard'
 // import PaginationUI from '@/components/etc/PaginationUI'
-import type { ISummary } from '@/types/etc'
+import type { IPagination, ISummary } from '@/types/etc'
+import PaginationUI from '@/components/etc/PaginationUI'
 
 export default function FlashcardPage() {
     const navigate = useNavigate()
@@ -32,9 +33,9 @@ export default function FlashcardPage() {
     const { user } = useAuth()
     const [tabFlashcard, setTabFlashcard] = useState('my-sets') // my-sets | community | success-fc
     // Pagination states
-    const [currentPage, setCurrentPage] = useState(location.search || 1)
+    const [currentPage, setCurrentPage] = useState(Number(location.search) || 1)
     // const [itemsPerPage, setItemsPerPage] = useState(8)
-    // const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1, pageSize: 6, totalItems: 0 })
+    const [pagination, setPagination] = useState<IPagination>({ currentPage: 1, totalPages: 1, itemsPerPage: 8, totalItems: 0, hasNextPage: false, hasPrevPage: false })
 
     const [isOpen, setIsOpen] = useState(false)
     const [open, setOpen] = useState(false)
@@ -42,16 +43,17 @@ export default function FlashcardPage() {
     useEffect(() => {
         const initData = async () => {
             setLoading(true)
-            const sessionPublicFC = sessionStorage.getItem('publicFlashcards')
+            const sessionPublicFC = sessionStorage.getItem('publicFlashcards|')
             if (sessionPublicFC && JSON.parse(sessionPublicFC).length > 0) {
                 setDataPublicFC(JSON.parse(sessionPublicFC))
 
                 setFilterDataPublicFC(JSON.parse(sessionPublicFC))
             } else {
-                const res = await flashcardService.getListFlashcardPublic()
-                setDataPublicFC(res || [])
-                setFilterDataPublicFC(res || [])
-                sessionStorage.setItem('publicFlashcards', JSON.stringify(res))
+                const res = await flashcardService.getListFlashcardPublic({ currentPage, itemsPerPage: pagination.itemsPerPage })
+                setDataPublicFC(res.publicFlashcards || [])
+                setFilterDataPublicFC(res.publicFlashcards || [])
+                setPagination(res.pagination)
+                // sessionStorage.setItem('publicFlashcards', JSON.stringify(res))
             }
 
             if (user) {
@@ -65,7 +67,7 @@ export default function FlashcardPage() {
             setLoading(false)
         }
         initData()
-    }, [user])
+    }, [user, currentPage])
 
     const handleClose = () => {
         setIsOpen(false)
@@ -121,10 +123,10 @@ export default function FlashcardPage() {
     }
 
     // ✅ Handle page change với URL update
-    // const handlePageChange = (newPage: number) => {
-    //     setCurrentPage(newPage)
-    //     updateURL(tabFlashcard, newPage, language, searchFC)
-    // }
+    const handlePageChange = (newPage: number) => {
+        setCurrentPage(newPage)
+        updateURL(tabFlashcard, newPage, language, searchFC)
+    }
 
     // ✅ Sync với URL params khi component mount
     useEffect(() => {
@@ -353,11 +355,11 @@ export default function FlashcardPage() {
                             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5 mb-10">
                                 {filterDataPublicFC && filterDataPublicFC.map((item) => <PublicFC item={item} key={item?._id} />)}
 
-                                {dataPublicFC && dataPublicFC?.length <= 0 && (
+                                {filterDataPublicFC && filterDataPublicFC?.length <= 0 && (
                                     <div className="h-[350px] col-span-full flex items-center justify-center text-gray-700 dark:text-gray-300">Không có dữ liệu...</div>
                                 )}
                             </div>
-                            {/* <PaginationUI currentPage={pagination.currentPage} totalPages={pagination.totalPages} onPageChange={handlePageChange} /> */}
+                            <PaginationUI currentPage={currentPage} pagination={pagination} onPageChange={handlePageChange} />
                         </div>
                     </TabsContent>
                     <TabsContent value="success-fc">

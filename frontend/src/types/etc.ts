@@ -1,5 +1,12 @@
 import type { IAchievement, IUser } from './user'
-
+export interface IPagination {
+    currentPage: number
+    totalPages: number
+    totalItems: number
+    itemsPerPage: number
+    hasNextPage: boolean
+    hasPrevPage: boolean
+}
 export interface APIResponse<T> {
     ok: boolean
     status: string

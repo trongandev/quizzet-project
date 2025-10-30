@@ -36,9 +36,8 @@ export function CreateFlashcardModal({ children, open, setOpen, dataUserFC, setD
     }
     const [formData, setFormData] = useState(defaultFormData)
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const createListFlashcards = async () => {
         try {
-            e.preventDefault()
             setLoading(true)
 
             const req = await flashcardService.createListFlashcards(formData)
@@ -57,6 +56,11 @@ export function CreateFlashcardModal({ children, open, setOpen, dataUserFC, setD
             setOpen(false)
         }
     }
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        await createListFlashcards()
+    }
     const handleInputChange = (field: string, value: string | boolean) => {
         setFormData((prev) => ({
             ...prev,
@@ -69,6 +73,11 @@ export function CreateFlashcardModal({ children, open, setOpen, dataUserFC, setD
             ...prev,
             public: value === 'true',
         }))
+    }
+    const handleKeyPress = async (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            await createListFlashcards()
+        }
     }
 
     return (
@@ -90,7 +99,15 @@ export function CreateFlashcardModal({ children, open, setOpen, dataUserFC, setD
                         <Label htmlFor="title" className="text-sm font-medium text-gray-700 dark:text-white/80">
                             Tên bộ flashcard <span className="text-red-500">*</span>
                         </Label>
-                        <Input id="title" placeholder="Ví dụ: Từ vựng TOEIC cơ bản" value={formData.title} onChange={(e) => handleInputChange('title', e.target.value)} className="w-full" required />
+                        <Input
+                            id="title"
+                            placeholder="Ví dụ: Từ vựng TOEIC cơ bản"
+                            value={formData.title}
+                            onChange={(e) => handleInputChange('title', e.target.value)}
+                            onKeyPress={(e) => handleKeyPress(e)}
+                            className="w-full"
+                            required
+                        />
                         <p className="text-xs text-gray-500 dark:text-white/50">Đặt tên mô tả rõ ràng để dễ tìm kiếm sau này</p>
                     </div>
 

@@ -1,8 +1,11 @@
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination'
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink } from '@/components/ui/pagination'
+import type { IPagination } from '@/types/etc'
+import { Button } from '../ui/button'
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 
 type PaginationUIProps = {
     currentPage: number
-    totalPages: number
+    pagination: IPagination
     onPageChange: (page: number) => void
 }
 
@@ -22,21 +25,18 @@ function getPageNumbers(current: number, total: number) {
     return pages
 }
 
-export default function PaginationUI({ currentPage, totalPages, onPageChange }: PaginationUIProps) {
+export default function PaginationUI({ currentPage, pagination, onPageChange }: PaginationUIProps) {
+    const { totalPages, hasNextPage, hasPrevPage } = pagination
     const pages = getPageNumbers(currentPage, totalPages)
 
     return (
         <Pagination>
             <PaginationContent>
                 <PaginationItem>
-                    <PaginationPrevious
-                        href="#"
-                        aria-disabled={currentPage === 1}
-                        onClick={(e) => {
-                            e.preventDefault()
-                            if (currentPage > 1) onPageChange(currentPage - 1)
-                        }}
-                    />
+                    <Button variant={'outline'} size={'sm'} disabled={!hasPrevPage} onClick={() => onPageChange(currentPage - 1)}>
+                        <ChevronLeftIcon />
+                        <span className="hidden sm:block">Quay về</span>
+                    </Button>
                 </PaginationItem>
                 {pages.map((page, idx) =>
                     page === '...' ? (
@@ -59,14 +59,10 @@ export default function PaginationUI({ currentPage, totalPages, onPageChange }: 
                     )
                 )}
                 <PaginationItem>
-                    <PaginationNext
-                        href="#"
-                        aria-disabled={currentPage === totalPages}
-                        onClick={(e) => {
-                            e.preventDefault()
-                            if (currentPage < totalPages) onPageChange(currentPage + 1)
-                        }}
-                    />
+                    <Button variant={'outline'} size={'sm'} disabled={!hasNextPage} onClick={() => onPageChange(currentPage + 1)}>
+                        <span className="hidden sm:block">Tiến tới</span>
+                        <ChevronRightIcon className="" />
+                    </Button>
                 </PaginationItem>
             </PaginationContent>
         </Pagination>

@@ -2,8 +2,8 @@ import axiosInstance from './axiosInstance'
 import type { IListFlashcard } from '@/types/flashcard'
 
 class FlashcardService {
-    async getListFlashcardPublic(): Promise<IListFlashcard[]> {
-        const response = await axiosInstance.get<any>('/list-flashcards/public')
+    async getListFlashcardPublic({ currentPage, itemsPerPage }: { currentPage?: number; itemsPerPage?: number }) {
+        const response = await axiosInstance.get<any>(`/list-flashcards/public?page=${currentPage}&limit=${itemsPerPage}`)
         return response.data
     }
 
