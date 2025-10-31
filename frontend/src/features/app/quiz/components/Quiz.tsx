@@ -37,6 +37,7 @@ export default function Quiz() {
                 setPagination(resQuiz.pagination)
 
                 const resQuizData = await quizService.getQuizByUser()
+                console.log(resQuizData)
                 if (resQuizData.ok) {
                     setDataQuiz(resQuizData.quiz)
                 }
@@ -157,7 +158,7 @@ export default function Quiz() {
                             <div className="relative w-full ">
                                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                                 <Input
-                                    placeholder="Tìm kiếm flashcard..."
+                                    placeholder="Tìm kiếm bài quiz..."
                                     className="pl-10 w-full h-11 border border-gray-300 dark:border-white/10 "
                                     value={searchQuiz}
                                     onChange={(e) => handleSearchQuiz(e.target.value)}
@@ -178,7 +179,7 @@ export default function Quiz() {
                             {user ? (
                                 <div className="mt-3">
                                     <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-3 ">
-                                        {/* {filterQuiz && filterQuiz.map((item) => <QuizItem item={item} key={item._id} />)} */}
+                                        {dataQuiz && dataQuiz.map((item) => <QuizItem item={item} key={item._id} />)}
                                         {loading && (
                                             <div className="flex items-center justify-center col-span-4 h-[500px]">
                                                 <Loading className="h-12 w-12" />{' '}

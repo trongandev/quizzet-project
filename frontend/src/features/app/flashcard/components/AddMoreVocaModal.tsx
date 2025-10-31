@@ -1,5 +1,4 @@
 /* eslint-disable no-unsafe-optional-chaining */
-'use client'
 
 import { useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'

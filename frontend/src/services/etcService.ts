@@ -8,6 +8,10 @@ class etcService {
         const response = await axiosInstance.get<any>('/gamification')
         return response.data
     }
+    async getTopGamification({ currentPage, itemsPerPage, user_id }: { currentPage?: number; itemsPerPage?: number; user_id?: string }) {
+        const response = await axiosInstance.get<any>(`/gamification/top?page=${currentPage}&limit=${itemsPerPage}&user_id=${user_id}`)
+        return response.data
+    }
     async getTask() {
         const response = await axiosInstance.get<any>('/task')
         return response.data
@@ -29,6 +33,16 @@ class etcService {
 
     async createAndCheckExitChat(data: any) {
         const response = await axiosInstance.post<any>(`/chat/create-chat`, data)
+        return response.data
+    }
+
+    async createCommentQuiz(data: any) {
+        const response = await axiosInstance.post<any>(`/quiz/comment`, data)
+        return response.data
+    }
+
+    async createReportQuiz(data: any) {
+        const response = await axiosInstance.post<any>(`/report`, data)
         return response.data
     }
     async uploadImage(data: any) {

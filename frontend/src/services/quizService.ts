@@ -10,6 +10,21 @@ class QuizService {
         const response = await axiosInstance.get<any>('/quiz/getquizbyuser')
         return response.data
     }
+
+    async getQuizBySlug(slug: string) {
+        const response = await axiosInstance.get<any>(`/quiz/${slug}`)
+        return response.data
+    }
+
+    async updateContentQuiz(slug: string, data: any) {
+        const response = await axiosInstance.patch<any>(`/quiz/update/${slug}`, data)
+        return response.data
+    }
+
+    async createQuiz(data: any) {
+        const response = await axiosInstance.post<any>(`/quiz`, data)
+        return response.data
+    }
 }
 
 export default new QuizService()

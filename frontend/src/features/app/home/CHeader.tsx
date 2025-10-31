@@ -1,4 +1,3 @@
-'use client'
 import { useEffect, useState } from 'react'
 import { Bell, BookOpen, Brain, Cpu, History, Home, LogOut, Mailbox, Menu, Moon, Speech, Sun, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'

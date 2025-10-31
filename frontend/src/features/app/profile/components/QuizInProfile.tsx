@@ -8,9 +8,9 @@ import type { IQuiz } from '@/types/etc'
 export default function QuizInProfile({ post }: { post: IQuiz }) {
     const navigate = useNavigate()
     return (
-        <Card onClick={() => navigate(`/quiz/detail/${post.slug}`)} key={post._id} className={`border shadow-md hover:shadow-lg transition-shadow cursor-pointer group`}>
+        <Card onClick={() => navigate(`/quiz/detail/${post.slug}`)} key={post._id} className={`pt-0! overflow-hidden border shadow-md hover:shadow-lg transition-shadow cursor-pointer group`}>
             <div className="relative w-full h-32">
-                <img src={post.img} alt="" className="absolute object-cover group-hover:brightness-75 transition-all duration-300"></img>
+                <img src={post.img} alt="" className="w-full h-full absolute object-cover group-hover:brightness-75 transition-all duration-300"></img>
                 <Badge variant="secondary" className="text-xs absolute z-1 top-1 left-1">
                     {post.subject}
                 </Badge>
@@ -26,12 +26,12 @@ export default function QuizInProfile({ post }: { post: IQuiz }) {
                     <Pencil />
                 </Button>
             </div>
-            <CardHeader className="pb-3 pt-0">
+            <CardHeader className="">
                 <div className="flex justify-between items-start mb-2"></div>
                 <CardTitle className="text-lg line-clamp-2">{post.title}</CardTitle>
                 <CardDescription className="line-clamp-2">{post.content}</CardDescription>
             </CardHeader>
-            <CardContent className="pt-0">
+            <CardContent className="">
                 <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
                     <div className="flex items-center gap-4">
                         <span className="flex items-center gap-1" title="Lượt xem">

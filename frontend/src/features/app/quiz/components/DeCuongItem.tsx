@@ -11,13 +11,13 @@ export default function DeCuongItem({ item }: { item: ISO }) {
     const getFileTypeColor = (type: string) => {
         switch (type) {
             case 'pdf':
-                return 'bg-red-500'
+                return ' bg-red-100 text-red-700 dark:text-white dark:bg-red-500'
             case 'docx':
-                return 'bg-blue-500'
+                return 'bg-blue-100 text-blue-700 dark:text-white dark:bg-blue-500 '
             case 'xlsx':
-                return 'bg-green-500'
+                return 'bg-green-100 text-green-700 dark:text-white dark:bg-green-500 '
             default:
-                return 'bg-gray-500'
+                return 'bg-gray-100 text-gray-700 dark:text-white dark:bg-gray-500 '
         }
     }
 
@@ -37,8 +37,8 @@ export default function DeCuongItem({ item }: { item: ISO }) {
                             <h3 className="text-slate-900 dark:text-white font-semibold text-lg line-clamp-1" title={item.title}>
                                 {item.title}
                             </h3>
-                            <Badge className={`${getFileTypeColor(item.type)} text-white text-xs px-2 py-1`}>
-                                <FileText className="w-4 h-4 text-white mr-1" />
+                            <Badge className={`${getFileTypeColor(item.type)}  text-xs px-2 py-1`}>
+                                <FileText className="w-4 h-4  mr-1" />
                                 {item.type.toUpperCase()}
                             </Badge>
                         </div>

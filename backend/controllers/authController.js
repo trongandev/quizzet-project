@@ -72,7 +72,7 @@ const loginUser = async (req, res) => {
             return res.status(400).json({ message: "Vui lòng điền đẩy đủ" })
         }
 
-        let user = await User.findOne({ email })
+        let user = await User.findOne({ email }).populate("gamification")
         if (!user) {
             return res.status(404).json({ message: "Người dùng không tồn tại" })
         }

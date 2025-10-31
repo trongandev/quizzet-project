@@ -1,5 +1,10 @@
 import AICenterPage from '@/features/app/ai-center/AICenterPage'
-import CommunityPage from '@/features/app/community/QuizPage'
+import { CreateWithAIHomePage } from '@/features/app/ai-center/create-with-ai/CreateWithAIHomePage'
+import { DraftsPage } from '@/features/app/ai-center/create-with-ai/draft/DraftsPage'
+import EnglishAIPage from '@/features/app/ai-center/create-with-ai/english-ai/EnglishAIPage'
+import { QuizAIPage } from '@/features/app/ai-center/create-with-ai/quiz-ai/QuizAIPage'
+import ChatCommunityPage from '@/features/app/community/ChatCommunityPage'
+import TopUserPage from '@/features/app/community/components/TopUserPage'
 import FlashcardDetailPage from '@/features/app/flashcard/pages/FlashcardDetailPage'
 import FlashcardPage from '@/features/app/flashcard/pages/FlashcardPage'
 import FlashcardPracticeDetailPage from '@/features/app/flashcard/pages/FlashcardPracticeDetailPage'
@@ -7,12 +12,14 @@ import FlashcardPracticePage from '@/features/app/flashcard/pages/FlashcardPract
 import HomePage from '@/features/app/home/HomePage'
 import ProfileByIdPage from '@/features/app/profile/pages/ProfileByIdPage'
 import ProfilePage from '@/features/app/profile/pages/ProfilePage'
-import QuizPage from '@/features/app/quiz/QuizPage'
+import QuizDetailPage from '@/features/app/quiz/pages/QuizDetailPage'
+import QuizPage from '@/features/app/quiz/pages/QuizPage'
 import ForgotPasswordPage from '@/features/auth/ForgotPasswordPage'
 import LoginPage from '@/features/auth/LoginPage'
 import RegisterPage from '@/features/auth/RegisterPage'
 import UpdatePasswordPage from '@/features/auth/UpdatePasswordPage'
 import NotFound from '@/features/not-found/NotFound'
+import AICenterLayout from '@/layouts/AICenterLayout'
 import AppLayout from '@/layouts/AppLayout'
 import AuthLayout from '@/layouts/AuthLayout'
 import RootLayout from '@/layouts/RootLayout'
@@ -53,9 +60,17 @@ export const routes: RouteObject[] = [
                     },
                     {
                         path: 'community',
-                        element: <CommunityPage />,
+                        element: <ChatCommunityPage />,
+                    },
+                    {
+                        path: '/community/top',
+                        element: <TopUserPage />,
                     },
                 ],
+            },
+            {
+                path: 'quiz/detail/:slug',
+                element: <QuizDetailPage />,
             },
             {
                 path: 'flashcard/:id_flashcard',
@@ -88,6 +103,33 @@ export const routes: RouteObject[] = [
                     {
                         path: 'update-password',
                         element: <UpdatePasswordPage />,
+                    },
+                ],
+            },
+            {
+                path: 'ai-center',
+                element: <AICenterLayout />,
+                children: [
+                    {
+                        index: true,
+                        path: '',
+                        element: <CreateWithAIHomePage />,
+                    },
+                    {
+                        path: 'create-with-ai',
+                        element: <CreateWithAIHomePage />,
+                    },
+                    {
+                        path: 'create-with-ai/quiz-ai',
+                        element: <QuizAIPage />,
+                    },
+                    {
+                        path: 'create-with-ai/english-ai',
+                        element: <EnglishAIPage />,
+                    },
+                    {
+                        path: 'drafts',
+                        element: <DraftsPage />,
                     },
                 ],
             },

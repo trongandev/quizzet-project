@@ -177,7 +177,7 @@ export interface IQuiz {
     comment: IComment[]
 }
 
-interface IComment {
+export interface IComment {
     user_id: IUser
     quiz_id?: string
     rating: number
@@ -187,12 +187,12 @@ interface IComment {
     created_at: Date
 }
 
-interface IQuestion {
+export interface IQuestion {
     _id: string
     data_quiz: IDataQuiz[]
 }
 
-interface IDataQuiz {
+export interface IDataQuiz {
     id: string
     question: string
     answers: []

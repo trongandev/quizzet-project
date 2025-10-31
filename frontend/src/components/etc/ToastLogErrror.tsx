@@ -3,7 +3,7 @@ import { toast } from 'sonner'
 
 export default function ToastLogErrror(error: AxiosError | any) {
     if (error.response.data.errors === undefined) {
-        return toast.error(error?.response?.data?.message || 'Không tìm thấy tài nguyên')
+        return toast.error(error?.response?.data?.message)
     } else {
         return toast.error(error?.response?.data?.message, {
             description: (
