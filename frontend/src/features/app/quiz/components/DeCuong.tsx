@@ -24,7 +24,6 @@ export default function DeCuong() {
         const fetchSOUser = async () => {
             setLoading(true)
             const res = await soService.getSOByUser()
-            console.log(res)
             setSOUser(res)
             setFilterSOUser(res)
             setLoading(false)

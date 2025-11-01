@@ -85,21 +85,25 @@ export function QuizAIPage() {
 
         if (draftStorage) {
             const existingDrafts = JSON.parse(draftStorage)
+            const isDuplicate = existingDrafts.some((d: any) => d.title === draft.title)
+            if (isDuplicate) {
+                toast.error('Quiz nháp đã tồn tại')
+                return
+            }
             localStorage.setItem('draftQuiz', JSON.stringify([...existingDrafts, draft]))
         } else {
             localStorage.setItem('draftQuiz', JSON.stringify([draft]))
+            // ✅ Toast thông báo auto-save
+            toast.info('Quiz đã được tự động lưu vào nháp', {
+                description: `Do bạn đã rời khỏi trang tạo quiz với chủ đề "${dataQuizInterface.topic}"`,
+                position: 'top-center',
+                duration: 15000,
+                action: {
+                    label: 'Xem nháp',
+                    onClick: () => navigate('/quiz/themcauhoi/drafts'),
+                },
+            })
         }
-
-        // ✅ Toast thông báo auto-save
-        toast.info('Quiz đã được tự động lưu vào nháp', {
-            description: `Do bạn đã rời khỏi trang tạo quiz với chủ đề "${dataQuizInterface.topic}"`,
-            position: 'top-center',
-            duration: 15000,
-            action: {
-                label: 'Xem nháp',
-                onClick: () => navigate('/quiz/themcauhoi/drafts'),
-            },
-        })
     }
 
     const handleGenerate = async (data: any, type: string) => {
@@ -114,7 +118,6 @@ export function QuizAIPage() {
             } else if (type === 'text') {
                 prompt = optimizedPromptQuizTextOption(data.content, data.questionCount[0])
             }
-            console.log('Prompt being sent to AI:', prompt)
             const result = await model.generateContent(prompt)
 
             const responseText = result?.response
@@ -124,7 +127,6 @@ export function QuizAIPage() {
                 .replace(/```\s*$/, '')
 
             const jsonOutput = JSON.parse(responseText || '')
-            console.log('Generated quiz data:', jsonOutput)
             setIsGenerating(false)
 
             // ✅ Kiểm tra xem user còn ở trang này không
@@ -173,19 +175,32 @@ export function QuizAIPage() {
 
         if (draftStorage) {
             const existingDrafts = JSON.parse(draftStorage)
-            localStorage.setItem('draftQuiz', JSON.stringify([...existingDrafts, draft]))
+            const isDuplicate = existingDrafts.some((d: any) => d.title === draft.title)
+            if (isDuplicate) {
+                toast.error('Quiz nháp đã tồn tại')
+                return
+            } else {
+                localStorage.setItem('draftQuiz', JSON.stringify([...existingDrafts, draft]))
+                toast.success('Quiz đã được lưu vào nháp', {
+                    description: 'Bạn có thể xem lại trong phần Draft',
+                    duration: 5000,
+                    action: {
+                        label: 'Xem nháp',
+                        onClick: () => navigate('/ai-center/drafts'),
+                    },
+                })
+            }
         } else {
             localStorage.setItem('draftQuiz', JSON.stringify([draft]))
+            toast.success('Quiz đã được lưu vào nháp', {
+                description: 'Bạn có thể xem lại trong phần Draft',
+                duration: 5000,
+                action: {
+                    label: 'Xem nháp',
+                    onClick: () => navigate('/ai-center/drafts'),
+                },
+            })
         }
-
-        toast.success('Quiz đã được lưu vào nháp', {
-            description: 'Bạn có thể xem lại trong phần Draft',
-            duration: 5000,
-            action: {
-                label: 'Xem nháp',
-                onClick: () => navigate('/ai-center/drafts'),
-            },
-        })
     }
 
     // ✅ Thêm effect để detect route change (alternative approach)

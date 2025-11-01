@@ -16,6 +16,15 @@ class etcService {
         const response = await axiosInstance.get<any>('/task')
         return response.data
     }
+    async getHistoryUser() {
+        const response = await axiosInstance.get<any>('/history')
+        return response.data
+    }
+
+    async getHistoryDetail(id: string) {
+        const response = await axiosInstance.get<any>(`/history/${id}`)
+        return response.data
+    }
     async markReadNotify(id: string) {
         const response = await axiosInstance.get<any>(`/notify/${id}`)
         return response.data
@@ -30,7 +39,10 @@ class etcService {
         const response = await axiosInstance.get<any>(`/chat/${id}`)
         return response.data
     }
-
+    async createHistory(data: any) {
+        const response = await axiosInstance.post<any>(`/history`, data)
+        return response.data
+    }
     async createAndCheckExitChat(data: any) {
         const response = await axiosInstance.post<any>(`/chat/create-chat`, data)
         return response.data

@@ -1,4 +1,22 @@
+import type { Key } from 'react'
 import type { IAchievement, IUser } from './user'
+
+export interface IHistory {
+    _id: string
+    user_id: IUser
+    quiz_id: QuizId
+    score: number
+    total_questions: number
+    time: number
+    userAnswers: Key[]
+    date: Date
+}
+
+interface QuizId {
+    _id: string
+    title: string
+    subject: string
+}
 export interface IPagination {
     currentPage: number
     totalPages: number

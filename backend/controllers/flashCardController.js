@@ -492,7 +492,7 @@ exports.getListFlashCardById = async (req, res) => {
 exports.updateListFlashCard = async (req, res) => {
     try {
         const { _id } = req.params
-        const updateData = req.body("Update data:", updateData)
+        const updateData = req.body
         const cacheKey = `listFlashCards_${_id}`
         const listFlashCard = await ListFlashCard.findByIdAndUpdate(_id, updateData, { new: true })
 

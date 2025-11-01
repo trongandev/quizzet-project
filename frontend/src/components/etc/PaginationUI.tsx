@@ -28,7 +28,6 @@ export default function PaginationUI({ pagination, onPageChange }: PaginationUIP
     const { currentPage, totalPages } = pagination
     const total = Math.max(1, Math.floor(totalPages) || 1)
     const pages = getPageNumbers(Math.min(currentPage, total), total)
-    console.log(pagination)
 
     return (
         <div className="">

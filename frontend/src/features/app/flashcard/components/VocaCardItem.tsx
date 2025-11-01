@@ -234,14 +234,15 @@ export default function VocaCardItem({ data, speakWord, loadingAudio, setIsEditO
                                             <div className="flex items-center gap-2">
                                                 <span className="text-sm font-medium   min-w-5">{index + 1}.</span>
                                                 <p className="light:text-gray-900 flex-1 ">{exa.en}</p>
-                                                <Button variant="ghost" size="sm" disabled={loadingAudio} className="h-6 w-6 p-0 text-gray-400 group-hover:animate-bounce">
+                                                <Button variant="ghost" size="sm" disabled={loadingAudio} className="h-6 w-6 p-0 text-gray-400 group-hover:scale-125 duration-300 transition-all">
                                                     {loadingAudio ? <Loading /> : <Volume2 className="w-3 h-3" />}
                                                 </Button>
                                             </div>
 
                                             {/* Pinyin */}
                                             <div className="ml-6">
-                                                <p className="text-sm  font-mono mb-1">{exa.trans}</p>
+                                                {listFlashcard.isHiddenTranscription && <p className="text-sm  font-mono mb-1">{exa.trans}</p>}
+
                                                 <p className="text-sm italic">{exa.vi}</p>
                                             </div>
                                         </div>

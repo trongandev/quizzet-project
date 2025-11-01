@@ -9,10 +9,13 @@ import FlashcardDetailPage from '@/features/app/flashcard/pages/FlashcardDetailP
 import FlashcardPage from '@/features/app/flashcard/pages/FlashcardPage'
 import FlashcardPracticeDetailPage from '@/features/app/flashcard/pages/FlashcardPracticeDetailPage'
 import FlashcardPracticePage from '@/features/app/flashcard/pages/FlashcardPracticePage'
+import HistoryDetailPage from '@/features/app/history/HistoryDetailPage'
+import HistoryPage from '@/features/app/history/HistoryPage'
 import HomePage from '@/features/app/home/HomePage'
 import ProfileByIdPage from '@/features/app/profile/pages/ProfileByIdPage'
 import ProfilePage from '@/features/app/profile/pages/ProfilePage'
 import QuizDetailPage from '@/features/app/quiz/pages/QuizDetailPage'
+import QuizExamPage from '@/features/app/quiz/pages/QuizExamPage'
 import QuizPage from '@/features/app/quiz/pages/QuizPage'
 import ForgotPasswordPage from '@/features/auth/ForgotPasswordPage'
 import LoginPage from '@/features/auth/LoginPage'
@@ -66,7 +69,19 @@ export const routes: RouteObject[] = [
                         path: '/community/top',
                         element: <TopUserPage />,
                     },
+                    {
+                        path: '/history',
+                        element: <HistoryPage />,
+                    },
+                    {
+                        path: '/history/:id',
+                        element: <HistoryDetailPage />,
+                    },
                 ],
+            },
+            {
+                path: 'quiz/:slug',
+                element: <QuizExamPage />,
             },
             {
                 path: 'quiz/detail/:slug',

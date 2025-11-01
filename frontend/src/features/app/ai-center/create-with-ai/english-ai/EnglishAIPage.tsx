@@ -68,7 +68,6 @@ export default function EnglishAIPage() {
             setIsGenerating(false)
             SetDataEnglishExam(newJsonOutput)
 
-            console.log('Generated Questions:', jsonOutput)
             toast.success('Tạo đề thi tiếng anh thành công!', {
                 position: 'top-center',
                 duration: 5000,
@@ -129,7 +128,7 @@ export default function EnglishAIPage() {
                                     </CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
-                                    <div>
+                                    <div className="space-y-2">
                                         <Label htmlFor="title" className="dark:text-slate-300 text-slate-600">
                                             Tiêu đề
                                         </Label>
@@ -142,7 +141,7 @@ export default function EnglishAIPage() {
                                         />
                                     </div>
 
-                                    <div>
+                                    <div className="space-y-2">
                                         <Label htmlFor="description" className="dark:text-slate-300 text-slate-600">
                                             Mô tả
                                         </Label>
@@ -156,7 +155,7 @@ export default function EnglishAIPage() {
                                     </div>
 
                                     <div className="flex gap-5 md:flex-row flex-col">
-                                        <div className="flex-1">
+                                        <div className="flex-1 space-y-2">
                                             <Label htmlFor="content" className="dark:text-slate-300 text-slate-600">
                                                 Nội dung của bài thi
                                             </Label>
@@ -186,13 +185,13 @@ export default function EnglishAIPage() {
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div>
+                                        <div className="space-y-2">
                                             <Label className="dark:text-slate-300 text-slate-600">Cấp độ khó</Label>
                                             <Select value={quizData.difficulty} onValueChange={(value) => setQuizData({ ...quizData, difficulty: value })}>
-                                                <SelectTrigger className="dark:bg-slate-600/50 dark:border-slate-600 text-slate-600 dark:text-white h-10">
+                                                <SelectTrigger className="dark:bg-slate-600/50 dark:border-slate-600 text-slate-600 dark:text-white w-full h-10">
                                                     <SelectValue placeholder="Chọn cấp độ" />
                                                 </SelectTrigger>
-                                                <SelectContent className=" ">
+                                                <SelectContent className="">
                                                     {difficultyLevels.map((level) => (
                                                         <SelectItem key={level.value} value={level.value} className="dark:text-slate-300 text-slate-600">
                                                             {level.label}
@@ -202,7 +201,7 @@ export default function EnglishAIPage() {
                                             </Select>
                                         </div>
 
-                                        <div>
+                                        <div className="space-y-2">
                                             <Label className="dark:text-slate-300 text-slate-600">Kỹ năng tập trung</Label>
                                             <MultiSelect
                                                 options={skillTypes}
@@ -212,27 +211,27 @@ export default function EnglishAIPage() {
                                         </div>
                                     </div>
 
-                                    <div>
+                                    <div className="space-y-2">
                                         <Label className="dark:text-slate-300 text-slate-600 mb-3 block">Loại câu hỏi</Label>
                                         <div className="flex flex-col md:flex-row gap-3">
                                             <MultiSelect
                                                 options={questionTypes}
                                                 onValueChange={(value) => setQuizData({ ...quizData, questionTypes: value })}
-                                                className="dark:bg-slate-600/50 dark:dark:border-slate-600 text-slate-600 dark:text-white"
+                                                className="flex-1 dark:bg-slate-600/50 dark:dark:border-slate-600 text-slate-600 dark:text-white"
                                             />
-                                            <Button variant="secondary" className="h-10" onClick={handleSeeTemplateQuestionType}>
+                                            <Button variant="secondary" className=" h-10" onClick={handleSeeTemplateQuestionType}>
                                                 <CircleQuestionMark /> Xem các câu hỏi được hỗ trợ
                                             </Button>
                                         </div>
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div>
+                                        <div className="space-y-2">
                                             <Label htmlFor="questionCount" className="dark:text-slate-300 text-slate-600 ">
                                                 Số câu hỏi
                                             </Label>
                                             <Select value={String(quizData.questionCount)} onValueChange={(value) => setQuizData({ ...quizData, questionCount: Number(value) })}>
-                                                <SelectTrigger className="dark:bg-slate-600/50 dark:border-slate-600 text-slate-600 dark:text-white h-10">
+                                                <SelectTrigger className="w-full dark:bg-slate-600/50 dark:border-slate-600 text-slate-600 dark:text-white h-10">
                                                     <SelectValue placeholder="Chọn số câu hỏi" />
                                                 </SelectTrigger>
                                                 <SelectContent className=" ">
@@ -245,12 +244,12 @@ export default function EnglishAIPage() {
                                             </Select>
                                         </div>
 
-                                        <div>
+                                        <div className="space-y-2">
                                             <Label htmlFor="timeLimit" className="dark:text-slate-300 text-slate-600">
                                                 Thời gian làm bài (phút)
                                             </Label>
                                             <Select value={String(quizData.timeLimit)} onValueChange={(value) => setQuizData({ ...quizData, timeLimit: Number(value) })}>
-                                                <SelectTrigger className="dark:bg-slate-600/50 dark:border-slate-600 text-slate-600 dark:text-white h-10">
+                                                <SelectTrigger className="w-full dark:bg-slate-600/50 dark:border-slate-600 text-slate-600 dark:text-white h-10">
                                                     <SelectValue placeholder="Chọn thời gian" />
                                                 </SelectTrigger>
                                                 <SelectContent className=" ">
@@ -268,7 +267,7 @@ export default function EnglishAIPage() {
                                             <Button
                                                 className={`h-12  ${
                                                     generatedQuestions && generatedQuestions?.title !== 'test-ai-english'
-                                                        ? 'w-full bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
+                                                        ? 'flex-1 bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
                                                         : ''
                                                 }`}
                                                 variant="outline"
@@ -284,12 +283,13 @@ export default function EnglishAIPage() {
 
                                         <Button
                                             onClick={handleGenerateQuestionsWithAI}
-                                            disabled={!quizData.content || !quizData.difficulty || quizData.questionTypes.length === 0 || isGenerating}
+                                            disabled={true}
+                                            // disabled={!quizData.content || !quizData.difficulty || quizData.questionTypes.length === 0 || isGenerating}
                                             variant="outline"
                                             className={`  ${
                                                 generatedQuestions && generatedQuestions?.title !== 'test-ai-english'
                                                     ? ''
-                                                    : 'w-full bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
+                                                    : 'flex-1 bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
                                             }  h-12 text-white `}
                                         >
                                             {isGenerating ? (
@@ -300,7 +300,7 @@ export default function EnglishAIPage() {
                                             ) : (
                                                 <>
                                                     <Sparkles className="w-4 h-4 mr-2" />
-                                                    Tạo câu hỏi bằng AI
+                                                    {/* Tạo câu hỏi bằng AI */} Tính năng đang được phát triển còn hạn chế
                                                 </>
                                             )}
                                         </Button>

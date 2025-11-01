@@ -59,7 +59,7 @@ export default function FeatureChoose({ flashcards, handlePlayAudio, userId, spe
 
     useEffect(() => {
         if (sessionRatings && sessionRatings.length > 0 && shuffledPieces.length === 0) {
-            console.log('All pairs matched! Session ratings:', sessionRatings)
+            // console.log('All pairs matched! Session ratings:', sessionRatings)
         }
     }, [sessionRatings, shuffledPieces])
     const handlePieceClick = async (clickedPiece: FlashcardPiece) => {

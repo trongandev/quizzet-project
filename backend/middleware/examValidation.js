@@ -1,17 +1,17 @@
-const { body, param, query, validationResult } = require("express-validator");
+const { body, param, query, validationResult } = require("express-validator")
 
 // Validation middleware to handle errors
 const handleValidationErrors = (req, res, next) => {
-    const errors = validationResult(req);
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({
             ok: false,
             message: "Dữ liệu không hợp lệ",
             errors: errors.array(),
-        });
+        })
     }
-    next();
-};
+    next()
+}
 
 // Validation for creating exam
 const validateCreateExam = [
@@ -23,8 +23,8 @@ const validateCreateExam = [
         .isArray()
         .withMessage("Kỹ năng mục tiêu phải là mảng")
         .custom((skills) => {
-            const validSkills = ["vocabulary", "grammar", "reading", "listening", "writing"];
-            return skills.every((skill) => validSkills.includes(skill));
+            const validSkills = ["vocabulary", "grammar", "reading", "listening", "writing"]
+            return skills.every((skill) => validSkills.includes(skill))
         })
         .withMessage("Kỹ năng mục tiêu không hợp lệ"),
 
@@ -43,7 +43,7 @@ const validateCreateExam = [
     body("questions.*.score_points").optional().isInt({ min: 1, max: 20 }).withMessage("Điểm số phải từ 1-20"),
 
     handleValidationErrors,
-];
+]
 
 // Validation for updating exam
 const validateUpdateExam = [
@@ -54,7 +54,7 @@ const validateUpdateExam = [
     body("difficulty_level").optional().isIn(["A1", "A2", "B1", "B2", "C1", "C2", "Beginner", "Intermediate", "Advanced"]).withMessage("Mức độ khó không hợp lệ"),
 
     handleValidationErrors,
-];
+]
 
 // Validation for submitting exam result
 const validateSubmitResult = [
@@ -67,7 +67,7 @@ const validateSubmitResult = [
     body("time_taken_minutes").optional().isInt({ min: 0 }).withMessage("Thời gian làm bài phải >= 0"),
 
     handleValidationErrors,
-];
+]
 
 // Validation for manual grading
 const validateManualGrading = [
@@ -80,7 +80,7 @@ const validateManualGrading = [
     body("feedback").optional().isLength({ max: 500 }).withMessage("Feedback không được quá 500 ký tự"),
 
     handleValidationErrors,
-];
+]
 
 // Validation for pagination
 const validatePagination = [
@@ -89,84 +89,78 @@ const validatePagination = [
     query("limit").optional().isInt({ min: 1, max: 100 }).withMessage("Giới hạn phải từ 1-100"),
 
     handleValidationErrors,
-];
+]
 
 // Validation for getting exam by ID
-const validateGetExamById = [param("id").isMongoId().withMessage("ID bài thi không hợp lệ"), handleValidationErrors];
+const validateGetExamById = [param("id").isMongoId().withMessage("ID bài thi không hợp lệ"), handleValidationErrors]
 
 // Validation for share link
-const validateShareLink = [param("shareLink").isLength({ min: 10 }).withMessage("Share link không hợp lệ"), handleValidationErrors];
+const validateShareLink = [param("shareLink").isLength({ min: 10 }).withMessage("Share link không hợp lệ"), handleValidationErrors]
 
 // Custom validation for question types
 const validateQuestionData = (req, res, next) => {
-    const { questions } = req.body;
+    const { questions } = req.body
 
     if (!questions || !Array.isArray(questions)) {
-        return next();
+        return next()
     }
 
     for (const question of questions) {
-        const { question_type } = question;
+        const { question_type, question_text } = question
 
         switch (question_type) {
             case "multiple_choice":
             // case "reading_comprehension":
             case "listening_comprehension":
-                if (!question.options || !Array.isArray(question.options) || question.options.length < 2) {
+                if (!question.correct_answer_text) {
                     return res.status(400).json({
                         ok: false,
-                        message: `Câu hỏi ${question_type} phải có ít nhất 2 lựa chọn`,
-                    });
+                        message: `Câu hỏi ${question_text} phải có đáp án đúng`,
+                    })
                 }
-                if (!question.correct_answer_id) {
-                    return res.status(400).json({
-                        ok: false,
-                        message: `Câu hỏi ${question_type} phải có đáp án đúng`,
-                    });
-                }
-                break;
+                break
 
             case "fill_in_the_blank":
             case "rewrite_sentence":
                 if (!question.correct_answer_text) {
                     return res.status(400).json({
                         ok: false,
-                        message: `Câu hỏi ${question_type} phải có đáp án đúng`,
-                    });
+                        message: `Câu hỏi ${question_text} phải có đáp án đúng`,
+                    })
                 }
-                break;
+                break
 
             case "matching":
                 if (!question.left_items || !question.right_items || !question.correct_matches) {
                     return res.status(400).json({
                         ok: false,
                         message: "Câu hỏi matching phải có đầy đủ items và correct_matches",
-                    });
+                    })
                 }
-                break;
+                break
 
             case "rearrange_sentences":
                 if (!question.scrambled_sentences || !question.correct_order_ids) {
                     return res.status(400).json({
                         ok: false,
                         message: "Câu hỏi rearrange phải có scrambled_sentences và correct_order_ids",
-                    });
+                    })
                 }
-                break;
+                break
 
             case "image_description":
                 if (!question.image_url || !question.correct_answer_keywords) {
                     return res.status(400).json({
                         ok: false,
                         message: "Câu hỏi image_description phải có image_url và correct_answer_keywords",
-                    });
+                    })
                 }
-                break;
+                break
         }
     }
 
-    next();
-};
+    next()
+}
 
 module.exports = {
     validateCreateExam,
@@ -178,4 +172,4 @@ module.exports = {
     validateShareLink,
     validateQuestionData,
     handleValidationErrors,
-};
+}

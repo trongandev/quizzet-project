@@ -37,7 +37,6 @@ export default function ChatCommunityPage() {
     const fetchInitialMessages = useCallback(async () => {
         setLoading(true)
         const req = await chatComService.getPublicChat({ currentPage: 1, itemsPerPage: 50 })
-        console.log(req)
         if (req.ok) {
             const sortedMessages = req.publicChat.sort((a: any, b: any) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
             setMessages(sortedMessages)

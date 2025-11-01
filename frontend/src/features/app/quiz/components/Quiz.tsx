@@ -32,12 +32,10 @@ export default function Quiz() {
             try {
                 setLoading(true)
                 const resQuiz = await quizService.getPublicQuizzes({ currentPage: 1, itemsPerPage: 8 })
-                console.log(resQuiz)
                 setDataQuizPublic(resQuiz.publicQuiz)
                 setPagination(resQuiz.pagination)
 
                 const resQuizData = await quizService.getQuizByUser()
-                console.log(resQuizData)
                 if (resQuizData.ok) {
                     setDataQuiz(resQuizData.quiz)
                 }

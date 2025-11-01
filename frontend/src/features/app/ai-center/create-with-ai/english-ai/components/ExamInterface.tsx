@@ -45,7 +45,6 @@ export function ExamInterface({ examData, isEdit = true, open, setOpen }: ExamIn
     const handlePublish = async () => {
         // Logic to handle publishing the exam
         try {
-            console.log('Publishing exam...', examData)
             toast.loading('Đang xuất bản bài thi...', { duration: 5000, id: 'publish-exam' })
             const req = await engExService.createEnglishExam(examData)
             if (req.ok) {
@@ -61,7 +60,7 @@ export function ExamInterface({ examData, isEdit = true, open, setOpen }: ExamIn
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="h-[90vh] p-3 md:p-6  max-w-4xl">
+            <DialogContent className="h-[90vh] p-3 md:p-6 w-full md:max-w-7xl">
                 <div className="min-h-[500px]  md:min-h-[600px] overflow-y-scroll space-y-3">
                     <div className="">
                         <h1 className="text-xl font-semibold">{examData.title || 'Chưa có tiêu đề'}</h1>

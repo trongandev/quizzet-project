@@ -97,13 +97,13 @@ export default function QuizAIInterfaceOption({ dataQuizInterface, setDataQuizIn
                                     {difficultyOptions.map((option) => (
                                         <Card
                                             key={option.value}
-                                            className={`relative !ml-0 flex-1 p-3 rounded-lg cursor-pointer dark:border-white/10 ${
-                                                dataQuizInterface.difficulty === option.value ? option.color : 'bg-white dark:bg-gray-800'
+                                            className={`relative ml-0! flex-1 p-3 rounded-lg cursor-pointer dark:border-white/10 border-2 ${
+                                                dataQuizInterface.difficulty === option.value ? option.color + ' ' + option.bgColor : 'bg-white dark:bg-gray-800'
                                             } hover:shadow-md transition-shadow ml-2`}
                                             onClick={() => handleChangeValue('difficulty', option.value)}
                                         >
                                             <div className="flex items-center space-x-2">
-                                                <Badge className={`${dataQuizInterface.difficulty === option.value ? '' : option.color} dark:border-white/10 `}>{option.badge}</Badge>
+                                                <Badge className={`${option.bgColor} shadow-md text-white`}>{option.badge}</Badge>
                                                 <span className="text-sm">{option.label}</span>
                                                 <div
                                                     className={`absolute top-1 right-1 w-3 h-3  rounded-full dark:border-white/50 ${
@@ -170,7 +170,7 @@ export default function QuizAIInterfaceOption({ dataQuizInterface, setDataQuizIn
 
                             <div className="space-y-2">
                                 <span className="text-sm mr-2">Độ khó:</span>
-                                <Badge className={difficultyOptions.find((d) => d.value === dataQuizInterface.difficulty)?.color}>
+                                <Badge className={difficultyOptions.find((d) => d.value === dataQuizInterface.difficulty)?.bgColor + ' shadow-md text-white'}>
                                     {difficultyOptions.find((d) => d.value === dataQuizInterface.difficulty)?.label}
                                 </Badge>
                             </div>

@@ -55,7 +55,6 @@
 //         const pieces: FlashcardPieceExample[] = []
 //         fc.forEach((card) => {
 //             const randomEx = card.example[Math.floor(Math.random() * card.example.length)]
-//             console.log("Random Example:", randomEx)
 //             pieces.push({ _id: card._id, en: randomEx.en, vi: randomEx.vi, title: card.title })
 //         })
 //         return pieces
@@ -65,7 +64,6 @@
 //         const sliceFC = flashcards && flashcards.length > 5 ? flashcards?.slice(0, 5) : flashcards || []
 
 //         const allPieces = createFlashcardPieces(sliceFC)
-//         console.log("All Pieces:", allPieces)
 //         const shuffled = shuffle(allPieces) // Hàm shuffle của bạn
 //         setSuffledCards(shuffled) // Cập nhật state với mảng đã trộn
 //     }, [flashcards])

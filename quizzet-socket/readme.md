@@ -35,7 +35,6 @@
             // Nếu lưu thành công, phát lại tin nhắn cho các client khác
             io.to(chatRoomId).emit("message", response.data);
         } catch (error) {
-            console.log("Lỗi lưu tin nhắn:", error);
         }
     });
 
